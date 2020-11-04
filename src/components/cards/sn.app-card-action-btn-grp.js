@@ -71,6 +71,7 @@ class SnAppCardActionBtnGrp extends React.Component {
           })}
         >
           <div className="margin-l-auto">
+            {(this.props.hideAdd == null || this.props.hideAdd === false) && (
             <Tooltip title="Add to other Spaces" arrow>
               <IconButton
                 onClick={this.props.onAdd}
@@ -79,6 +80,7 @@ class SnAppCardActionBtnGrp extends React.Component {
                 <AddCircleOutlineOutlinedIcon />
               </IconButton>
             </Tooltip>
+            )}
             <Tooltip title="Edit Skylink" arrow>
               <IconButton
                 onClick={this.props.onEdit}
@@ -87,23 +89,6 @@ class SnAppCardActionBtnGrp extends React.Component {
                 <EditOutlinedIcon />
               </IconButton>
             </Tooltip>
-            {/* <Tooltip title="Info" arrow>
-              <IconButton onClick={this.props.onInfo}>
-                <InfoOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-            {app.skylink && app.skylink.trim() !== "" && (
-              <Tooltip title="Launch Skylink" arrow>
-                <IconButton onClick={this.props.onLaunch}>
-                  <OpenInNewIcon />
-                </IconButton>
-              </Tooltip>
-            )} */}
-            {/* <Tooltip title="Download" arrow>
-              <IconButton onClick={this.props.onDownload}>
-                <GetAppOutlinedIcon />
-              </IconButton>
-            </Tooltip> */}
             {this.props.hideDelete === false && (
               <Tooltip title="Remove from this Space" arrow>
                 <IconButton onClick={this.props.onDelete} color="secondary">

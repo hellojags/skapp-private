@@ -15,7 +15,7 @@ import { getCompressedImageFile, generateThumbnailFromVideo } from "../../sn.uti
 import "./sn.upload.scss";
 import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
-import { SkynetClient } from "skynet-js";
+import { SkynetClient, parseSkylink } from "skynet-js";
 import UploadFile from "./UploadFile";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -153,12 +153,13 @@ const SnUpload = React.forwardRef((props, ref) => {
       let resForCompressed = "";
       if (fileType && fileType.startsWith("image")) {
         const compressedFile = await getCompressedImageFile(file);
-        resForCompressed = await client.upload(compressedFile);
+        resForCompressed = await client.uploadFile(compressedFile);
       }
       if (fileType && fileType.startsWith("video")) {
         const videoThumbnail = await generateThumbnailFromVideo({file});
-        resForCompressed = await client.upload(videoThumbnail);
+        resForCompressed = await client.uploadFile(videoThumbnail);
       }
+      console.log("handleDrop -> resForCompressed", parseSkylink(resForCompressed))
       const onUploadProgress = (progress) => {
         const status = progress === 1 ? "processing" : "uploading";
         onFileStateChange(file, { status, progress });
@@ -179,19 +180,19 @@ const SnUpload = React.forwardRef((props, ref) => {
               { onUploadProgress }
             );
           } else {
-            response = await client.upload(file, { onUploadProgress });
+            response = await client.uploadFile(file, { onUploadProgress });
           }
           await props.onUpload({
-            skylink: response.skylink,
+            skylink: parseSkylink(response),
             name: file.name,
             contentType: fileType,
             thumbnail:
-            resForCompressed != null ? resForCompressed.skylink : null,
+            resForCompressed != null ? parseSkylink(resForCompressed) : null,
             contentLength: file.size,
           });
           onFileStateChange(file, {
             status: "complete",
-            url: client.getDownloadUrl(response.skylink),
+            url: client.getSkylinkUrl(response),
           });
           props.onUploadEnd && props.onUploadEnd();
           //send event to parent

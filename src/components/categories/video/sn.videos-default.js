@@ -268,7 +268,8 @@ export default function SnVideosDefault(props) {
                             source="img"
                             hash={props.hash}
                             hideTags={true}
-                            hideDelete={false}
+                            hideDelete={props.senderId!=null}
+                            hideAdd={props.senderId!=null}
                             onAdd={() => handleSkyspaceAdd(app)}
                             onEdit={() => props.openSkyApp(app)}
                             onDelete={() => removeFromSkyspace(app)}

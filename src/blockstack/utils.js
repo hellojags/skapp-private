@@ -1,4 +1,6 @@
-import crypto from 'crypto'
+import crypto from 'crypto';
+import {getJSONFile,setJSONFile} from "../skynet/sn.api.skynet";
+import { SkynetClient,keyPairFromSeed } from "skynet-js";
 
 export function generateSkyhubId(inputStr) {
   return crypto.createHash('sha256').update(inputStr + (new Date())).digest('base64').replace("/", "+");
@@ -18,11 +20,15 @@ export async function decryptContent(session, content, options) {
   return await session.decryptContent(content, options)
 }
 export function getFile(session, FILE_PATH, param) {
+  const { publicKey } = keyPairFromSeed("skyspaces004");
+  const { privateKey } = keyPairFromSeed("skyspaces004");
   const options = { decrypt: param?.decrypt ?? true };
-  return session.getFile(FILE_PATH, options)
+  //return session.getFile(FILE_PATH, options)
+  return getJSONFile(publicKey,FILE_PATH,null,{})
     .then((content) => {
       if (content) {
-        return JSON.parse(content)
+        //return JSON.parse(content);
+        return content;
       }
     })
     .catch(err => {
@@ -35,11 +41,14 @@ export function getFile(session, FILE_PATH, param) {
 }
 // Replace file content with new "content"
 export function putFile(session, FILE_PATH, content, param) {
+  const { publicKey } = keyPairFromSeed("skyspaces004");
+  const { privateKey } = keyPairFromSeed("skyspaces004");
   const options = { encrypt: param?.encrypt ?? true };
   if (content.hasOwnProperty("lastUpdateTS")) {
     content.lastUpdateTS = new Date();
   }
-  return session.putFile(FILE_PATH, JSON.stringify(content), options)
+  //return session.putFile(FILE_PATH, JSON.stringify(content), options)
+  return setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{})
     .catch(err => {
       if (err?.code !== "precondition_failed_error") {
         throw err;
@@ -47,7 +56,10 @@ export function putFile(session, FILE_PATH, content, param) {
     });
 }
 
-export function putFileForShared(session, FILE_PATH, encryptedContent) {
+export async function putFileForShared(session, FILE_PATH, encryptedContent) {
+  try {
+    await deleteFile(session, FILE_PATH);
+  } catch(e){}
   return session.putFile(FILE_PATH, encryptedContent, { encrypt: false, dangerouslyIgnoreEtag: true })
     .catch(err => {
       if (err?.code !== "precondition_failed_error") {
@@ -64,6 +76,7 @@ export function deleteFile(session, FILE_PATH) {
 export function jsonCopy(object) {
   return JSON.parse(JSON.stringify(object))
 }
+
 
 
 

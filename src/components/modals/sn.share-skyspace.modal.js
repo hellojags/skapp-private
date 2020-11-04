@@ -10,7 +10,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DoneIcon from "@material-ui/icons/Done";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, Chip, makeStyles, Popover, Snackbar, Typography } from "@material-ui/core";
-import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, getSkySpace } from "../../blockstack/blockstack-api";
+import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, bsUnshareSpaceFromRecipientLst, getSkySpace } from "../../blockstack/blockstack-api";
 import Slide from "@material-ui/core/Slide";
 import { red } from "@material-ui/core/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,7 +53,7 @@ export default function SnShareSkyspaceModal(props) {
             const idxCurrentSpace = props.sharedWithObj[id].spaces.indexOf(props.skyspaceName);
             props.sharedWithObj[id].spaces.splice(idxCurrentSpace, 1);
             if (props.sharedWithObj[id].spaces.length === 0) {
-                delete props.sharedWithObj[id];
+                // delete props.sharedWithObj[id];
             } else {
                 skylinkListById[id] = [];
                 props.sharedWithObj[id].spaces.forEach(skyspaceName => {
@@ -77,6 +77,7 @@ export default function SnShareSkyspaceModal(props) {
         });
         promises.push(bsSaveSharedWithObj(props.userSession, props.sharedWithObj));
         await Promise.all(promises);
+        await bsUnshareSpaceFromRecipientLst(props.userSession, deletedIdList, props.skyspaceName, props.sharedWithObj);
     }
 
     const shareWithRecipient = async () => {

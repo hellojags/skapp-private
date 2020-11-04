@@ -16,7 +16,8 @@ import SnNew from "../components/new/sn.new";
 import SnTopBar from "../components/navbar/sn.topbar";
 import SnLeftMenu from "../components/navbar/sn.left-menu";
 import SnUserSettings from "../components/user/sn.user-settings";
-import SnMultiUpload from "../components/upload/sn.multi-upload"
+import SnMultiUpload from "../components/upload/sn.multi-upload";
+import snLogin from "../components/login/sn.login";
 
 const useStyles = (theme) => ({
   root: {
@@ -46,7 +47,7 @@ export class SnRouter extends React.Component {
         onCloseCallback={(evt)=> console.log(evt)}
       />
       </div> */}
-      {/* <SnScrollToTop /> */}
+        {/* <SnScrollToTop /> */}
         <div className={classes.root + " router-root"}>
           <CssBaseline />
           <SnTopBar onDrawerToggle={this.handleDrawerToggle} />
@@ -61,15 +62,16 @@ export class SnRouter extends React.Component {
                     </Route>
                     <Route path="/upload" component={SnMultiUpload} />
                     <Route path="/settings" component={SnUserSettings} />
+                    <Route path="/login" component={snLogin} />
                     <Route path="/register" component={SnNew} />
                     <Route path="/apps/:category" component={SnCards} />
-                    <Route path="/skapps" component={SnCards} />
-                    <Route path="/myskapps" component={SnCards} />
                     <Route path="/skylinks" component={SnCards} />
                     <Route path="/skyapps/:id" component={SnNew} />
                     <Route path="/skyspace/:skyspace" component={SnCards} />
                     <Route path="/history" component={SnHistory} />
                     <Route path="/public-cards" component={SnCards} />
+                    <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
+                    <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
                     <Route component={SnMultiUpload} />
                   </Switch>
                 </div>

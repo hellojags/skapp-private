@@ -18,6 +18,7 @@ export const BACKUP_FILEPATH = "skhub/backup/backup.json";
 export const SKYLINK_IDX_FILEPATH = "skhub/skylink/skylinkIdx.json";
 export const SKYSPACE_PATH = "skhub/skyspaces/";
 export const SHARED_PATH_PREFIX = "skhub/shared/";
+export const SHARED_BY_USER_FILEPATH = "skhub/shared/sharedByUser.json";
 export const SHARED_WITH_FILE_PATH = "skhub/shared/sharedWithUser.json ";
 export const SKYSPACE_IDX_FILEPATH = "skhub/skyspaces/skyspaceIdx.json";
 export const HISTORY_FILEPATH = "skhub/history/history.json";

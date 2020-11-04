@@ -261,7 +261,7 @@ class SnUserSettings extends React.Component {
     // }
     const portal = this.state.userSetting?.setting?.portal || DEFAULT_PORTAL;
     const backupFile = await bsGetBackupObjFile(this.props.userSession, portal);
-    const uploadedContent = await new SkynetClient(portal).upload(backupFile);
+    const uploadedContent = await new SkynetClient(portal).uploadFile(backupFile);
     console.log("before HNS");
     const uploadRes = await uploadData("home.skapp",backupFile,false,{});
     console.log("After HNS");
@@ -269,7 +269,7 @@ class SnUserSettings extends React.Component {
     const backupObj = {
       timestamp: timeStr,
       name: "Backup_" + moment(timeStr).format("MM/DD/YYYY h:mm a"),
-      skylink: uploadedContent.skylink,
+      skylink: parseSkylink(uploadedContent),
     };
     const userSetting = this.state.userSetting;
     const backupList = userSetting.setting.backupList || [];

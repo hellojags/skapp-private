@@ -11,16 +11,18 @@ import { showBlockstackConnect, authenticate } from "@blockstack/connect";
 import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
-import { bsSavePublicKey } from "../../blockstack/blockstack-api";
-import SnImportSharedSpaceModal from "../modals/sn.import-shared-space.modal";
+import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
 
 class SnSignin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       anchorEl: null,
-      showImportSkyspaceModal: false
     };
+  }
+
+  routeChange=()=> {
+    this.props.history.push("/login");
   }
 
   doSignIn = () => {
@@ -30,9 +32,11 @@ class SnSignin extends React.Component {
       authOrigin,
       userSession,
       sendToSignIn: true,
-      finished: ({ userSession }) => {
+      finished: async ({ userSession }) => {
         this.props.setUserSession(userSession);
         bsSavePublicKey(userSession);
+        const importedSpace =  await bsGetImportedSpacesObj(userSession, { isImport: true });
+        this.props.setImportedSpace(importedSpace);
         this.props.setPersonGetOtherData(userSession.loadUserData());
       },
       appDetails: appDetails,
@@ -41,7 +45,6 @@ class SnSignin extends React.Component {
     authenticate(authOptions);
   };
   doSignUp = () => {
-
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -55,13 +58,15 @@ class SnSignin extends React.Component {
     };
     showBlockstackConnect(authOptions);
   };
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.person == null) {
       if (this.props.userSession.isSignInPending()) {
         this.props.fetchBlockstackPerson(this.props.userSession);
       } else if (this.getPublicToAccHash() != null) {
         this.doSignUp();
       }
+    } else {
+      this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
     }
   }
 
@@ -85,9 +90,13 @@ class SnSignin extends React.Component {
     console.log("topbar download button clicked");
   };
 
-  importSharedSpace = () => {
-    this.setState({ showImportSkyspaceModal : true });
-  };
+  clearAllStorage = async () => {
+    this.props.setLoaderDisplay(true);
+    await bsClearStorage(this.props.userSession);
+    localStorage.clear();
+    this.props.setLoaderDisplay(true);
+    this.logout();
+  }
 
   render() {
     return (
@@ -98,7 +107,7 @@ class SnSignin extends React.Component {
               onClick={this.doSignIn}
               variant="outlined"
               className="btn-login"
-            >
+            > 
               Login
             </Button>
             <Button
@@ -161,23 +170,13 @@ class SnSignin extends React.Component {
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings
               </MenuItem>
-              <MenuItem onClick={() => this.importSharedSpace()}>
-                Import Shared Space
-              </MenuItem>
+              {process.env.NODE_ENV!=='production' && <MenuItem onClick={this.clearAllStorage}>
+                Clear BS Storage
+              </MenuItem>}
               <MenuItem onClick={this.logout}>Logout</MenuItem>
             </Menu>
           </>
         )}
-
-        <SnImportSharedSpaceModal 
-          open={this.state.showImportSkyspaceModal}
-          onYes={() => {
-            this.setState({ showImportSkyspaceModal: false });
-          }}
-          userSession={this.props.userSession}
-          onNo={() => this.setState({ showImportSkyspaceModal: false })}
-          title={`Import Shared Space`}
-          />
       </>
     );
   }

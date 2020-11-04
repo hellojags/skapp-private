@@ -1,4 +1,4 @@
-import { createSkySpaceIdxObject } from './constants'
+import { createSkySpaceIdxObject, SHARED_BY_USER_FILEPATH } from './constants'
 import { getPublicKeyFromPrivate } from 'blockstack';
 import {
     SKYLINK_PATH,
@@ -29,51 +29,7 @@ import {
     decryptContent,
     putFileForShared
 } from './utils'
-
-// /skhub/skylink/data/{skhubId}.json // content of "skhub.json"
-// /skhub/skylink/skylinkIdx.json
-
-// /skhub/skyspaces/{skyspace 1}.json 
-// /skhub/skyspaces/{skyspace 2}.json 
-// /skhub/skyspaces/skyspaceIdx.json
-
-// Need to maintain following Objects in REDUX STORE
-//session, person, skylinkObj, skylinkIdxObj, skyspaceObj, skyspaceIdxObj, historyObj, usersettingObj
-
-// #######################################
-// ############ login/logout ############
-// doSignIn
-// doSignOut
-// #######################################
-/* 
-export const doSignIn = (session) => {
-    //const session = this.userSession
-    const options = { decrypt: false }
-    if (!session.isUserSignedIn() && session.isSignInPending()) {
-      session.handlePendingSignIn()
-        .then((userData) => {
-        console.log(userData);
-        if (!userData.username) {
-          throw new Error('This app requires a username.')
-        }
-        console.log("### user data this.userSession.loadUserData() ###",this.userSession.loadUserData())
-      })
-    }
-  }
-
-  export const doSignOut = (session) => {
-   session.signUserOut(window.location.origin);
-  }
- */
-// #######################################################################
-// ################################ Skylink  ############################
-// addSkylink
-// addAllSkylinks
-// getSkylink
-// getAllSkylinks
-// deleteSkylink
-// deleteAllSkylinks
-// #######################################################################
+import { BLOCKSTACK_CORE_NAMES } from '../sn.constants';
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -485,7 +441,6 @@ export const bsGetSharedSkyspaceIdxFromSender = async (session, senderStorageId,
     const encryptedContent = await fetch(`${GAIA_HUB_URL}/${senderStorageId}/skhub/shared/${myPublicKey}/${SKYSPACE_PATH}${skyspaceName}.json`)
         .then(res => res.json());
     const decryptedContent = await decryptContent(session, JSON.stringify(encryptedContent));
-    console.log("bsGetSharedSkyspaceIdxFromSender -> decryptedContent", decryptedContent)
 }
 
 // Add SkhubId to SkySpaces
@@ -689,6 +644,13 @@ export const restoreBackup = async (session, backupObj) => {
     return SUCCESS;
 }
 
+export const bsClearStorage = async (session) => {
+    const promises = [];
+    await listFiles(session)
+    .then(filePathList=>filePathList.forEach(path=>promises.push(deleteFile(session, path))));
+    await Promise.all(promises);
+}
+
 export const bsSavePublicKey = async (session) => {
     let publicKey = null;
     try {
@@ -712,25 +674,111 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
 
-export const importSpaceFromUser = async (session, senderId, opt) => {
-    const senderProfile = await lookupProfile(senderId, "https://core.blockstack.org/v1/names");
-    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
-    const senderStorage = bsGetProfileInfo(senderProfile).storage;
-    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-    await bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
+export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
+
+export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
+    const promises = [];
+    const senderListWithNoShare = [];
+    const sharedByUserObj = opt.sharedByUserObj || (await bsGetSharedByUser(session));
+    let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
+    senderIdList && senderIdList.forEach(async senderId => {
+        const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
+        const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
+
+        const promise = lookupProfile(senderId, BLOCKSTACK_CORE_NAMES)
+            .then(senderProfile => {
+                const senderStorage = bsGetProfileInfo(senderProfile).storage;
+                return bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
+            })
+            .then(sharedSpaceIdxObj => {
+                senderToSpacesMap[senderId] = sharedSpaceIdxObj;
+                sharedByUserList.indexOf(senderId) === -1 && sharedByUserList.push(senderId);
+            })
+            .catch(err => {
+                console.log(err);
+                senderListWithNoShare.push(senderId);
+            })
+        promises.push(promise);
+    });
+    await Promise.all(promises);
+    opt?.isImport && await putFile(session, SHARED_BY_USER_FILEPATH, {
+        sharedByUserList,
+        senderToSpacesMap
+    });
+    return {
+        sharedByUserList,
+        senderToSpacesMap
+    };
 }
 
-export const bsGetShrdSkyspaceIdxFromSender = async ( session, senderStorage, loggedInUserStorageId ) => {
-    const SHARED_SKYSPACE_IDX_FILEPATH = loggedInUserStorageId + '/' + SKYSPACE_IDX_FILEPATH;
-    const encSharedSkyspaceIdx = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_IDX_FILEPATH}`).then(res=>res.json());
-    const sharedSkyspaceIdx = await decryptContent(session, JSON.stringify(encSharedSkyspaceIdx));
-    console.log("bsGetShrdSkyspaceIdxFromSender -> sharedSkyspaceIdx", sharedSkyspaceIdx)
+export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
+    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
+    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
+    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
+    const senderStorage = bsGetProfileInfo(senderProfile).storage;
+    const SHARED_SKYSPACE_FILEPATH = loggedInUserStorageId + "/" + SKYSPACE_PATH + skyspace + '.json';
+    const encSkyspaceObj = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
+    const skyspaceObj = JSON.parse(await decryptContent(session, JSON.stringify(encSkyspaceObj)));
+    console.log("bsGetSharedSpaceDetail -> skyspacePath", skyspaceObj);
+    const promises = [];
+    const skylinkArr = [];
+    const loop = skyspaceObj?.skhubIdList.map(skhubId => {
+        const SHARED_SKYLINK_FILE_PATH = loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        promises.push(fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYLINK_FILE_PATH}`)
+            .then(res => res.json())
+            .then(encSkylinkObj => decryptContent(session, JSON.stringify(encSkylinkObj)))
+            .then(skylinkObjStr => {
+                skylinkArr.push(JSON.parse(skylinkObjStr))
+            }))
+    });
+    await Promise.all(promises);
+    console.log("bsGetSharedSpaceDetail -> skylinkArr", skylinkArr);
+    return skylinkArr;
 }
+
+export const bsGetImportedSpacesObj = async (session, opt={}) => {
+    const sharedByUserObj = await bsGetSharedByUser(session);
+    opt["sharedByUserObj"] = sharedByUserObj;
+    return bsGetSpacesFromUserList(session, sharedByUserObj?.sharedByUserList, opt);
+};
+
+export const bsGetSharedByUser = async (session) => {
+    let sharedByUserObj = await getFile(session, SHARED_BY_USER_FILEPATH);
+    return sharedByUserObj;
+}
+
+export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, loggedInUserStorageId) => {
+    const SHARED_SKYSPACE_IDX_FILEPATH = loggedInUserStorageId + '/' + SKYSPACE_IDX_FILEPATH;
+    const encSharedSkyspaceIdx = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_IDX_FILEPATH}`).then(res => res.json());
+    const sharedSkyspaceIdx = await decryptContent(session, JSON.stringify(encSharedSkyspaceIdx));
+    return JSON.parse(sharedSkyspaceIdx);
+}
+
+export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdList) => {
+    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
+    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
+    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
+    const senderStorage = bsGetProfileInfo(senderProfile).storage;
+    const skappList = [];
+    const promises = [];
+    skhubIdList.forEach(skhubId => {
+        const SHARED_SKYLINK_PATH = loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        promises.push(fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYLINK_PATH}`)
+            .then(res => res.json())
+            .then(encSharedSkapp => decryptContent(session, JSON.stringify(encSharedSkapp)))
+            .then(sharedSkappStr => {
+                skappList.push(JSON.parse(sharedSkappStr))
+            }));
+    })
+    await Promise.all(promises);
+    return skappList;
+}
+
 
 export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
     const sharedSkylinkIdxObj = createSkylinkIdxObject();
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
-    const profile = await lookupProfile(sharedWithObj[recipientId].userid, "https://core.blockstack.org/v1/names");
+    const profile = await lookupProfile(sharedWithObj[recipientId].userid, BLOCKSTACK_CORE_NAMES);
     sharedSkylinkIdxObj.skhubIdList = skylinkList;
     const encSharedSkylinkIdxObj = await encryptContent(session, JSON.stringify(sharedSkylinkIdxObj), {
         publicKey: profile?.appsMeta?.[document.location.origin]?.publicKey
@@ -749,9 +797,26 @@ export const bsGetProfileInfo = (profile) => {
     };
 }
 
+export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
+    const promises = []
+    const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
+        promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, BLOCKSTACK_CORE_NAMES)
+        .then(profile => {
+            const recipientStorage = bsGetProfileInfo(profile).storageId;
+            const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
+            const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
+            return deleteFile(session, SHARED_SKYSPACE_FILEPATH)
+        })
+        .then(()=>bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid)), sharedWithObj);
+    });
+    await Promise.all(promises);
+}
+
+//const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
+
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
     // blockstackId='block_antares_va.id.blockstack';
-    const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
+    const profile = await lookupProfile(blockstackId, BLOCKSTACK_CORE_NAMES);
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
     const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
     const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");

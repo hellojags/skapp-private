@@ -336,7 +336,8 @@ class SnAppCard extends React.Component {
               <SnAppCardActionBtnGrp
                 app={app}
                 hash={this.props.hash}
-                hideDelete={false}
+                hideDelete={this.props.senderId!=null}
+                hideAdd={this.props.senderId!=null}
                 onAdd={() => this.handleSkyspaceAdd(app)}
                 onEdit={() => this.openSkyApp(app)}
                 onLaunch={() => this.launchSkyLink(app.skylink)}

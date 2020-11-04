@@ -1,7 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import { setFile,getFile } from "../../skynet/sn.api.skynet";
 import { INITIAL_PORTALS_OBJ } from "../../blockstack/constants";
 import SnUpload from "../new/sn.upload";
 import { v4 as uuidv4 } from 'uuid';
@@ -33,12 +32,12 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
-import { getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
+import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
 
 const useStyles = (theme) => ({
@@ -66,6 +65,7 @@ class SnCards extends React.Component {
     super(props);
     this.state = {
       goToApp: false,
+      senderId: null,
       loadingAllSpacesInfo: true,
       showAddToSkyspace: false,
       skyappId: "",
@@ -180,28 +180,29 @@ class SnCards extends React.Component {
     });
     return categoryCountObj;
   };
-  // This method takes care of fetching data from either blockstack metadata or Public Hash.
-  // If category or SkySpace parameter is provided, It will fetch data using fetchSkyspaceApps.
-  // If Hash is provided, It will fetch data from Public Skylink using fetchPublicApps method.
-   
-  getAppList(category, skyspace, fetchAllSkylinks, hash) {
-    // If category is provided, It will fetch Data/Skapps/skylink from Heroku API
+
+  async getAppList(category, skyspace, fetchAllSkylinks, hash) {
+    const senderId = this.getSenderId();
     category != null && this.props.fetchApps(category);
-    // If SkySpace name is provided, It will fetch Data/Skapps/skylink from blockstack API
-    skyspace != null &&
-      this.props.fetchSkyspaceApps({
-        session: this.props.userSession,
-        skyspace: skyspace,
-      });
-    // If Hash is provided, It will fetch data from Public Skylink using fetchPublicApps method.
+    if (skyspace != null) {
+      if (senderId != null) {
+        this.props.setLoaderDisplay(true);
+        const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
+        this.props.setLoaderDisplay(false);
+        this.props.setApps(appListFromSharedSpace);
+      } else {
+        this.props.fetchSkyspaceApps({
+          session: this.props.userSession,
+          skyspace: skyspace,
+        });
+      }
+    }
     if (hash != null) {
-      // commented for skapp changes
-      //this.props.setDesktopMenuState(false);
-      //this.props.setPortalsListAction(INITIAL_PORTALS_OBJ);
+      this.props.setDesktopMenuState(false);
+      this.props.setPortalsListAction(INITIAL_PORTALS_OBJ);
       this.props.fetchPublicApps(hash);
     }
-    
-    // If fetchAllSkylinks is TRUE, It will fetch data Skylink from SkylinkIdx file.
+
     if (fetchAllSkylinks === true) {
       this.handleSrchKeyChng(null, this.getSearchKeyFromQuery());
       this.props.fetchAllSkylinks({
@@ -212,11 +213,17 @@ class SnCards extends React.Component {
     }
   }
 
+  getSenderId() {
+    if (this.props.location.pathname.indexOf("imported-spaces") > -1) {
+      return this.props.match.params.sender;
+    }
+  }
+
   componentDidMount() {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
+    const senderId = this.getSenderId();
     const queryHash = this.props.location.search.replace("?sialink=", "").trim();
-    //const queryHash = "AAD4zeDxjAhYLZGLWkpSW2trNxom1dqdgrtFU4HJuxe7wQ";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
@@ -225,29 +232,30 @@ class SnCards extends React.Component {
       category,
       fetchAllSkylinks: fetchAllSkylinks,
       page: 1,
-      hash
+      hash,
+      senderId
     });
     this.props.fetchSkyspaceDetail();
-    this.getAppList(category, skyspace, fetchAllSkylinks, hash);
+    this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
+    const senderId = this.getSenderId();
     const queryHash = this.props.location.search.replace("?sialink=", "").trim();
-    //const queryHash = "AAD4zeDxjAhYLZGLWkpSW2trNxom1dqdgrtFU4HJuxe7wQ";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
-    console.log("cards component updated");
+    console.log("sender dillema ", senderId, this.state.senderId);
     if (
       this.state.category !== category ||
       this.state.hash !== hash ||
       this.state.skyspace !== skyspace ||
       this.state.fetchAllSkylinks !== fetchAllSkylinks ||
+      this.state.senderId !== senderId ||
       (fetchAllSkylinks &&
         this.getSearchKeyFromQuery() !== this.state.searchKey)
     ) {
-      console.log("truly updated");
       this.props.fetchSkyspaceDetail();
       this.updateTagFilterList([]);
       this.setState({
@@ -256,9 +264,10 @@ class SnCards extends React.Component {
         fetchAllSkylinks: fetchAllSkylinks,
         category,
         page: 1,
+        senderId
       });
       hash && this.props.setPublicHash(hash);
-      this.getAppList(category, skyspace, fetchAllSkylinks, hash);
+      this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
     }
   }
 
@@ -365,7 +374,8 @@ class SnCards extends React.Component {
             this.state.category,
             this.state.skyspace,
             this.state.fetchAllSkylinks
-          )
+          ),
+        this.state.senderId
       );
     } else {
       return (
@@ -386,6 +396,7 @@ class SnCards extends React.Component {
                     isSelect={this.state.isSelect}
                     arrSelectedAps={this.state.arrSelectedAps}
                     skyspace={skyspace}
+                    senderId={this.state.senderId}
                     allSpacesObj={this.props.snSkyspaceDetail}
                     cardCount={filteredApps.length}
                     onSelection={(app, isDeselection) => this.selectApp(app, isDeselection)}
@@ -419,7 +430,12 @@ class SnCards extends React.Component {
         }]
       });
       const portal = this.props.snUserSetting?.setting?.portal || DEFAULT_PORTAL;
-      const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
+      let uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+      if (uploadedContent) {
+        uploadedContent = {
+          skylink: parseSkylink(uploadedContent)
+        };
+      }
       let historyObj = getEmptyHistoryObject();
       historyObj.fileName = "Public Share";
       historyObj.skylink = uploadedContent.skylink;
@@ -427,6 +443,7 @@ class SnCards extends React.Component {
       bsAddToHistory(this.props.userSession, historyObj);
       this.setState({
         showInfoModal: true,
+        onInfoModalClose: () => this.setState({ showInfoModal: false }),
         infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
       })
       this.props.setLoaderDisplay(false);
@@ -463,6 +480,33 @@ class SnCards extends React.Component {
     document.location.href = SKYSPACE_DEFAULT_PATH + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
   }
 
+  savePublicSpace = async () => {
+    this.props.setLoaderDisplay(true);
+    const publicHashData = await getPublicApps(this.state.hash);
+    const skappListToSave = getAllPublicApps(publicHashData.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps);
+    publicHashData.history[publicHashData.history.length - 1].skylink = this.state.hash;
+    publicHashData.history.push({
+      creationDate: new Date()
+    });
+    publicHashData.data = skappListToSave;
+    const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
+    const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
+    const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+    this.props.setLoaderDisplay(false);
+    const newUrl = document.location.href.replace(
+      this.state.hash,
+      parseSkylink(uploadedContent)
+    );
+    this.setState({
+      showInfoModal: true,
+      infoModalContent: newUrl,
+      onInfoModalClose: () => {
+        this.setState({ showInfoModal: false });
+        document.location.href = newUrl;
+      }
+    });
+  }
+
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
     const page = this.state.filterCriteria.page;
@@ -487,7 +531,11 @@ class SnCards extends React.Component {
       ) {
         source = "skyspace";
       }
-      return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
+      if (this.state.senderId!=null) {
+        return <Redirect to= { `/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`}/>;
+      } else {
+        return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
+      }
     }
     let filteredApps = this.getFilteredApps();
 
@@ -609,6 +657,14 @@ class SnCards extends React.Component {
                   </div>
                   <Button
                     variant="contained"
+                    onClick={this.savePublicSpace}
+                    color="primary"
+                    className="btn-bg-color float-right"
+                  >
+                    Save
+                </Button>
+                  <Button
+                    variant="contained"
                     onClick={this.deleteFromPublic}
                     color="primary"
                     className="btn-bg-color float-right"
@@ -641,7 +697,7 @@ class SnCards extends React.Component {
                   </Button>)}
                 </Grid>
               )}
-              {this.state.hash == null && filteredApps.length > 0 && (
+              {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && (
                 <Grid item xs={12} className="muti-cards-action">
                   {!this.state.isSelect && (
 
@@ -707,7 +763,7 @@ class SnCards extends React.Component {
         </div>
         <SnInfoModal
           open={this.state.showInfoModal}
-          onClose={() => this.setState({ showInfoModal: false })}
+          onClose={this.state.onInfoModalClose}
           title="Public Share Link"
           type="public-share"
           content={this.state.infoModalContent}

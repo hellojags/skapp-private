@@ -10,7 +10,7 @@ import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import ListItem from "@material-ui/core/ListItem";
 import HistoryOutlinedIcon from "@material-ui/icons/HistoryOutlined";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import skyapplogo from "../../skapp_logo_text.png";
+import skyapplogo from "../../SkySpaces_logo.png";
 import ListItemText from "@material-ui/core/ListItemText";
 import BackupOutlinedIcon from "@material-ui/icons/BackupOutlined";
 import SnSkySpaceMenu from "./sn.skyspace-menu";
@@ -96,38 +96,6 @@ class SnLeftMenu extends React.Component {
           </ListItem>
           {this.props.person != null && (
             <>
-             <NavLink
-                activeClassName="active"
-                className="nav-link"
-                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
-                to="/skapps"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <AddToPhotosOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: APP_BG_COLOR }}
-                    primary="All Skapps"
-                  />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                activeClassName="active"
-                className="nav-link"
-                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
-                to="/myskapps"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <AddToPhotosOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: APP_BG_COLOR }}
-                    primary="My Skapps"
-                  />
-                </ListItem>
-              </NavLink>
               <NavLink
                 activeClassName="active"
                 className="nav-link"
@@ -140,7 +108,7 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
-                    primary="Deploy Code"
+                    primary="Upload"
                   />
                 </ListItem>
               </NavLink>
@@ -156,11 +124,11 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
-                    primary="Submit Skapp"
+                    primary="Add Skylink"
                   />
                 </ListItem>
               </NavLink>
-              {/* <NavLink
+              <NavLink
                 activeClassName="active"
                 className="nav-link"
                 onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
@@ -175,7 +143,7 @@ class SnLeftMenu extends React.Component {
                     primary="Activity History"
                   />
                 </ListItem>
-              </NavLink> */}
+              </NavLink>
             </>
           )}
           <>
