@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
+import { setFile,getFile } from "../../skynet/sn.api.skynet";
 import { INITIAL_PORTALS_OBJ } from "../../blockstack/constants";
 import SnUpload from "../new/sn.upload";
 import { v4 as uuidv4 } from 'uuid';

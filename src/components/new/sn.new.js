@@ -1,9 +1,9 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import { InputLabel, FormControl } from "@material-ui/core";
+import { User} from "skynet-js";
 import TextField from "@material-ui/core/TextField";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import { SkynetClient } from "skynet-js";
 import imageCompression from "browser-image-compression";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { withStyles } from "@material-ui/core/styles";
@@ -24,8 +24,8 @@ import SnCarousalMenu from "../tools/sn.carousal-menu";
 import { ID_PROVIDER } from "../../blockstack/constants";
 import { map } from "rxjs/operators";
 import { getSkylinkHeader } from "../../skynet/sn.api.skynet";
-import { submitSkapp } from "../../skynet/sn.api.skynet";
-import { parseSkylink } from "skynet-js";
+import { submitSkapp,getJSONFile,setJSONFile } from "../../skynet/sn.api.skynet";
+import { SkynetClient, keyPairFromSeed, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject } from "../new/sn.new.constants";
 import SnAddSkyspaceModal from "../modals/sn.add-skyspace.modal";
 import { APP_BG_COLOR, ADD_SKYSPACE } from "../../sn.constants";
@@ -311,9 +311,12 @@ class SnNew extends React.Component {
     if (param == null) {
       //await this.categorySpecificTask(this.props.skyapp);
       let skhubId = "";
-      alert ("Before submitSkapp");
-      await submitSkapp(this.props.skyapp);
-      alert ("After submitSkapp");
+      //alert ("Before SkyDb commit");
+      //await submitSkapp(this.props.skyapp);
+      const { publicKey } = keyPairFromSeed("skyspaces001");
+      const { privateKey } = keyPairFromSeed("skyspaces001");
+      let bStatus = await setJSONFile(publicKey,privateKey,"skapp-pub-idx.json",this.props.skyapp,false,false,{});
+      //alert ("After SkyDb commit : status : "+bStatus);
       //Add Skylink to BlockStack
       bsAddSkylink(this.props.userSession, this.props.skyapp, this.props.person)
         .then((id) => {

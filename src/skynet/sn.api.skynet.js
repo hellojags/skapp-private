@@ -36,6 +36,7 @@ import {
   GAIA_HUB_URL
 } from '../blockstack/constants';
 
+let revision = 0;
 export const getSkylinkHeader = (skylinkUrl) => ajax({
   url: skylinkUrl+"?format=concat",
   method: "HEAD",
@@ -87,7 +88,59 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
   return uploadedContent;
 };
 
+export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendFlag,encrypted,options) => {
+  if (publicKey == null || privateKey == null ) {
+    throw new Error("Invalid Keys");
+  }
+  if(appendFlag)
+  {
+    let tempFileData = await getJSONFile(publicKey,fileKey);
+    if(fileData != null && tempFileData != null)
+      fileData = tempFileData.push(fileData);
+  }
+  // TODO: Need to append to UserMaster List. Currently its overwriting
+  const skynetClient = new SkynetClient("https://siasky.net");
+  try {
+    // ## Update SkyDB
+    revision = revision + 1
+    let status = await skynetClient.db.setJSON(privateKey,fileKey,fileData,revision); //<-- update Key Value pair for that specific pubKey
+    console.log("appUser:setJSON:status "+status);
+    
+    // // ### Step2: GET FILE ###
+    // const { entry, signature } = await skynetClient.registry.getEntry(publicKey, fileKey);
+    // let skylink = entry.data;
+    // console.log("setFile:skylink"+skylink);
+    // let skylinkUrl = "https://siasky.net/" + parseSkylink(skylink);
+    // let skappOwnerJSON = await fetch(skylinkUrl).then(res=>res.json());
+    // console.log("skyFile1"+skappOwnerJSON);
+  }
+  catch (error) {
+    //setErrorMessage(error.message);
+    return false;
+  }
+  return true;
+}
 
+export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
+// TODO: Need to append to UserMaster List. Currently its overwriting
+const skynetClient = new SkynetClient("https://siasky.net");
+try
+{
+  //Get User Public Key
+  if (publicKey == null) {
+    throw new Error("Invalid Keys");
+  }
+  const entry = await skynetClient.db.getJSON(publicKey,fileKey);
+  console.log("entry.data "+entry.data);
+  console.log("entry.revision "+entry.revision);
+  return entry.data;
+}
+catch (error) {
+    //setErrorMessage(error.message);
+    console.log("error.message "+error.message);
+    return null;
+  }
+}
 
 export const submitSkapp = async (skylinkObj) => {
   // TODO: Need to append to UserMaster List. Currently its overwriting
