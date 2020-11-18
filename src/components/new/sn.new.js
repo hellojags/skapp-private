@@ -24,7 +24,6 @@ import SnCarousalMenu from "../tools/sn.carousal-menu";
 import { ID_PROVIDER } from "../../blockstack/constants";
 import { map } from "rxjs/operators";
 import { getSkylinkHeader } from "../../skynet/sn.api.skynet";
-import { submitSkapp } from "../../skynet/sn.api.skynet";
 import { parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject } from "../new/sn.new.constants";
 import SnAddSkyspaceModal from "../modals/sn.add-skyspace.modal";
@@ -34,7 +33,7 @@ import {
   SKYLINK_TYPE_SKYLINK,
 } from "./sn.new.constants";
 import { DELETE, UPLOAD } from "../../sn.constants";
-import { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll } from "../../sn.category-constants";
+import { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll, CATEGORY_OBJ } from "../../sn.category-constants";
 import { getPortalFromUserSetting, getCompressedImageFile, generateThumbnailFromVideo, videoToImg } from "../../sn.util";
 import {
   bsAddSkylink,
@@ -44,6 +43,7 @@ import {
   bsRemoveFromSkySpaceList,
   bsAddToHistory,
   getSkyLinkIndex,
+  bsGetSharedSkappListFromSender,
 } from "../../blockstack/blockstack-api";
 import { generateSkyhubId } from "../../blockstack/utils";
 
@@ -73,7 +73,7 @@ class SnNew extends React.Component {
         open: false,
         title: "",
         description: "",
-        onClose: () => {},
+        onClose: () => { },
       },
       showAddSkyspace: false,
       skyspaceModal: {
@@ -120,7 +120,7 @@ class SnNew extends React.Component {
       open: false,
       title: "",
       description: "",
-      onClose: () => {},
+      onClose: () => { },
     };
     this.setState({
       snInfoModal,
@@ -153,11 +153,13 @@ class SnNew extends React.Component {
       });
     } else {
       const id = decodeURIComponent(this.props.match.params.id);
+      let { sender } = this.props.match.params;
+      sender = sender && decodeURIComponent(sender);
       appId = id;
       this.setState({
         isRegister: false,
       });
-      this.getSkyAppDetails(id);
+      this.getSkyAppDetails(id, sender);
     }
   }
 
@@ -166,7 +168,14 @@ class SnNew extends React.Component {
     // this.props.setAppSkyspces([]);
   }
 
-  getSkyAppDetails(skyAppId) {
+  async getSkyAppDetails(skyAppId, sender) {
+    if (sender) {
+      this.props.setLoaderDisplay(true);
+      const skappList = await bsGetSharedSkappListFromSender(this.props.userSession, sender, [skyAppId]);
+      skappList && skappList.length > 0 && this.props.setAppDetail(skappList[0]);
+      this.props.setLoaderDisplay(false);
+      return;
+    }
     getSkyLinkIndex(this.props.userSession)
       .then((skylinkIndex) => {
         if (
@@ -184,23 +193,12 @@ class SnNew extends React.Component {
         console.log(
           "tester",
           this.props.snAppSkyspaces != null &&
-            this.props.snAppSkyspaces.isAppOwner
+          this.props.snAppSkyspaces.isAppOwner
         );
         this.props.fetchSkyspaceAppDetail({
           skyAppId,
           session: this.props.userSession,
         });
-        /* if (locationSearchStr.indexOf("category") > -1) {
-          this.props.fetchAppDetail({
-            skyAppId,
-            session: this.props.userSession,
-          });
-        } else if (locationSearchStr.indexOf("skyspace") > -1 || locationSearchStr.indexOf("history") > -1) {
-          this.props.fetchSkyspaceAppDetail({
-            skyAppId,
-            session: this.props.userSession,
-          });
-        } */
       });
   }
 
@@ -221,7 +219,7 @@ class SnNew extends React.Component {
       }
       return;
     }
-    const { id } = this.props.match.params;
+    const { id, sender } = this.props.match.params;
     appId = id;
     if (this.state.isRegister) {
       this.setState({
@@ -255,7 +253,7 @@ class SnNew extends React.Component {
     this.setState({ snInfoModal });
   };
 
-  categorySpecificTask = async (app)=> {
+  categorySpecificTask = async (app) => {
     const apiUrl = getPortalFromUserSetting(this.props.snUserSetting);
     const skylinkUrl = apiUrl + parseSkylink(app.skylink);
     const skylinkRes = await fetch(skylinkUrl);
@@ -264,25 +262,35 @@ class SnNew extends React.Component {
     app.contentLength = skylinkRes.headers.get("content-length");
     const client = new SkynetClient(apiUrl);
     let res;
-    switch(app.type){
-      case "pictures": 
-        const dataUrl = await imageCompression.getDataUrlFromFile(skylinkFileBlob);
-        const file = await imageCompression.getFilefromDataUrl(dataUrl, "image");
-        const compressedImgFile = await getCompressedImageFile(file)
-        res = await uploadToSkynet(compressedImgFile, client);
-        app.thumbnail = res != null ? res.skylink : "";
+    switch (app.type) {
+      case "pictures":
+        try {
+          const dataUrl = await imageCompression.getDataUrlFromFile(skylinkFileBlob);
+          const file = await imageCompression.getFilefromDataUrl(dataUrl, "image");
+          const compressedImgFile = await getCompressedImageFile(file);
+          res = await uploadToSkynet(compressedImgFile, client);
+        } catch (e) {
+          console.error("Skyspaces handled exception p", e);
+        }
+        app.thumbnail = res != null ? parseSkylink(res) : "";
         break;
       case "video":
-        const video = document.querySelector(`#hidden-upload-video`);
-        let videoResolve = null;
-        const videoPromise = new Promise((resolve) => videoResolve = resolve);
-        video.src=skylinkUrl;
-        video.onloadeddata = videoResolve;
-        video.load();
-        await videoPromise;
-        const thumbnailImgFile = await videoToImg(video);
-        res = await uploadToSkynet(thumbnailImgFile, client);
-        app.thumbnail = res != null ? res.skylink : "";
+        try {
+          if (CATEGORY_OBJ[app.type].fileTypeList.indexOf(app.contentType) > -1) {
+            const video = document.querySelector(`#hidden-upload-video`);
+            let videoResolve = null;
+            const videoPromise = new Promise((resolve) => videoResolve = resolve);
+            video.src = skylinkUrl;
+            video.onloadeddata = videoResolve;
+            video.load();
+            await videoPromise;
+            const thumbnailImgFile = await videoToImg(video);
+            res = await uploadToSkynet(thumbnailImgFile, client);
+          }
+        } catch (e) {
+          console.error("Skyspaces handled exception v", e);
+        }
+        app.thumbnail = res != null ? parseSkylink(res) : "";
         break;
       default:
         console.log("default");
@@ -293,7 +301,6 @@ class SnNew extends React.Component {
   handleSubmit = async (evt, param) => {
     evt.preventDefault();
     let isError = false;
-    // ### Form Validation
     for (const key in this.props.skyapp) {
       if (this.props.skyapp.hasOwnProperty(key)) {
         isError = isError || this.onSubmitValidateField(key);
@@ -305,15 +312,11 @@ class SnNew extends React.Component {
     if (isError) {
       return;
     }
-   this.props.setLoaderDisplay(true);
-
-    // If param is NULL its "Save Skylink" operation
+    this.props.setLoaderDisplay(true);
+    //If param is NULL its "Save Skylink" operation
     if (param == null) {
-      //await this.categorySpecificTask(this.props.skyapp);
+      await this.categorySpecificTask(this.props.skyapp);
       let skhubId = "";
-      alert ("Before submitSkapp");
-      await submitSkapp(this.props.skyapp);
-      alert ("After submitSkapp");
       //Add Skylink to BlockStack
       bsAddSkylink(this.props.userSession, this.props.skyapp, this.props.person)
         .then((id) => {
@@ -377,7 +380,7 @@ class SnNew extends React.Component {
           historyObj.skyspaces = this.props.skyapp.skyspaceList;
           historyObj.savedToSkySpaces =
             this.props.skyapp.skyspaceList &&
-            this.props.skyapp.skyspaceList.length > 0
+              this.props.skyapp.skyspaceList.length > 0
               ? true
               : false;
           if (
@@ -566,9 +569,9 @@ class SnNew extends React.Component {
     this.validateField(fieldName);
   };
 
-  setTypeFromFile = (fileType)=>{
+  setTypeFromFile = (fileType) => {
     const categoryObj = getCategoryObjWithoutAll();
-    const category = Object.keys(categoryObj).find(category=>categoryObj[category].fileTypeList && categoryObj[category].fileTypeList.indexOf(fileType)>-1);
+    const category = Object.keys(categoryObj).find(category => categoryObj[category].fileTypeList && categoryObj[category].fileTypeList.indexOf(fileType) > -1);
     category && this.handleChange(category, {
       key: "type",
     });
@@ -594,10 +597,10 @@ class SnNew extends React.Component {
     historyObj.savedToSkySpaces = false;
     this.props.skyapp.skhubId = generateSkyhubId(
       ID_PROVIDER +
-        ":" +
-        this.props.person.profile.decentralizedID +
-        ":" +
-        uploadObj.skylink
+      ":" +
+      this.props.person.profile.decentralizedID +
+      ":" +
+      uploadObj.skylink
     );
     historyObj.skhubId = this.props.skyapp.skhubId;
     //Get Skylink Header Params
@@ -622,7 +625,7 @@ class SnNew extends React.Component {
       )
       .subscribe(
         (result) => {
-          console.log("getSkylinkHeader : contentLength : "+result["contentLength"])
+          console.log("getSkylinkHeader : contentLength : " + result["contentLength"])
           this.props.setLoaderDisplay(false);
           return result;
         },
@@ -680,15 +683,15 @@ class SnNew extends React.Component {
             onError={(errors) => console.log(errors)}
           >
             <Grid container spacing={1}>
-            <video
-                    src=""
-                    muted
-                    controls
-                    crossOrigin="anonymous"
-                    loop
-                    className="d-none"
-                    id="hidden-upload-video"
-                  ></video>
+              <video
+                src=""
+                muted
+                controls
+                crossOrigin="anonymous"
+                loop
+                className="d-none"
+                id="hidden-upload-video"
+              ></video>
 
               <Grid item xs={12} sm={10}>
                 <TextField
@@ -729,9 +732,9 @@ class SnNew extends React.Component {
                     errorObj.name
                       ? "File name is a mandatory field."
                       : "Max 200 characters. " +
-                        (skyapp.bookmark || skyapp.permission
-                          ? "This is a mandatory field."
-                          : "")
+                      (skyapp.bookmark || skyapp.permission
+                        ? "This is a mandatory field."
+                        : "")
                   }
                   onInput={(e) => {
                     e.target.value = e.target.value.slice(0, 200);
@@ -773,36 +776,36 @@ class SnNew extends React.Component {
                   </InputLabel>
                   <div className="skapp-skyspace-ctrl">
                     {this.props.snSkyspaceList != null &&
-                    this.props.snSkyspaceList.length > 0 ? (
-                      <SnCarousalMenu
-                        selectedItems={
-                          this.props.snAppSkyspacesToChange != null &&
-                          this.props.snAppSkyspacesToChange
-                            .skyspaceForSkhubIdList != null
-                            ? this.props.snAppSkyspacesToChange
+                      this.props.snSkyspaceList.length > 0 ? (
+                        <SnCarousalMenu
+                          selectedItems={
+                            this.props.snAppSkyspacesToChange != null &&
+                              this.props.snAppSkyspacesToChange
+                                .skyspaceForSkhubIdList != null
+                              ? this.props.snAppSkyspacesToChange
                                 .skyspaceForSkhubIdList
-                            : []
-                        }
-                        itemsObj={this.getSkyspaceListForCarousalMenu()}
-                        labelKey={"label"}
-                        onUpdate={(evt) =>
-                          this.handleChange(evt, { key: "skyspaceList" })
-                        }
-                      />
-                    ) : (
-                      <Grid item xs={12} sm={10} justify="flex-start">
-                        <Tooltip title="Create New Space" arrow>
-                          <IconButton
-                            onClick={this.addSkyspace}
-                            justify="flex-start"
-                          >
-                            <AddCircleOutlineOutlinedIcon
-                              style={{ color: APP_BG_COLOR, fontSize: 25 }}
-                            />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                    )}
+                              : []
+                          }
+                          itemsObj={this.getSkyspaceListForCarousalMenu()}
+                          labelKey={"label"}
+                          onUpdate={(evt) =>
+                            this.handleChange(evt, { key: "skyspaceList" })
+                          }
+                        />
+                      ) : (
+                        <Grid item xs={12} sm={10} justify="flex-start">
+                          <Tooltip title="Create New Space" arrow>
+                            <IconButton
+                              onClick={this.addSkyspace}
+                              justify="flex-start"
+                            >
+                              <AddCircleOutlineOutlinedIcon
+                                style={{ color: APP_BG_COLOR, fontSize: 25 }}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        </Grid>
+                      )}
                   </div>
                   <FormHelperText>
                     {"Please select atleast one Space (mandatory field)" +

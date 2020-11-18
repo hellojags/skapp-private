@@ -1,7 +1,6 @@
 import { ajax } from 'rxjs/ajax';
 
-export const API_ROOT = "process.env.REACT_APP_APPSTORE_HOST";
-//export const API_ROOT = "https://skynethub-api-v2.herokuapp.com/skynethub-api-v2";
+export const API_ROOT = process.env.REACT_APP_APPSTORE_HOST;
 export const getAppList = (opt)=>ajax.getJSON(API_ROOT +"?limit=100&category="+opt);
 export const getSkyAppList = (opt)=>ajax.getJSON(API_ROOT +"?limit=100&skyspace="+opt);
 export const fetchSkyAppDetails = (skyAppId)=>ajax.getJSON(API_ROOT + skyAppId);

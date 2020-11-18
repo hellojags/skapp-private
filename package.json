@@ -1,5 +1,5 @@
 {
-  "name": "Skapp",
+  "name": "SkySpaces",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -60,7 +60,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.2",
-    "skynet-js": "2.1.0",
+    "skynet-js": "2.5.0",
     "text-ellipsis": "^1.0.3",
     "typescript": "^3.9.7",
     "uuid": "^8.3.0",

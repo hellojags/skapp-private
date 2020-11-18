@@ -1,40 +1,12 @@
 import { ajax } from 'rxjs/ajax';
 import { map, catchError } from 'rxjs/operators';
-import { SkynetClient, SkyFile, FileID, User, FileType , parseSkylink} from "skynet-js";
+import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
-import { DEFAULT_PORTAL } from "../sn.constants";
+import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
 import { getAllPublicApps } from '../sn.util';
-import { getPortalFromUserSetting, getCompressedImageFile, generateThumbnailFromVideo, videoToImg } from "../sn.util";
+import store from "../reducers";
 
-import {
-  getFile,
-  putFile,
-  deleteFile,
-  generateSkyhubId,
-  listFiles,
-  encryptContent,
-  decryptContent,
-  putFileForShared
-} from '../blockstack/utils';
-import {
-  SKYLINK_PATH,
-  SHARED_WITH_FILE_PATH,
-  SKYLINK_IDX_FILEPATH,
-  SKYSPACE_PATH,
-  SKYSPACE_IDX_FILEPATH,
-  ID_PROVIDER,
-  createSkylinkIdxObject,
-  INITIAL_SETTINGS_OBJ,
-  INITIAL_PORTALS_OBJ,
-  HISTORY_FILEPATH,
-  USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH, SUCCESS, FAILED, createSkySpaceObject,
-  FAILED_DECRYPT_ERR,
-  IGNORE_PATH_IN_BACKUP,
-  PUBLIC_KEY_PATH,
-  SHARED_PATH_PREFIX,
-  GAIA_HUB_URL
-} from '../blockstack/constants';
 
 export const getSkylinkHeader = (skylinkUrl) => ajax({
   url: skylinkUrl+"?format=concat",
@@ -64,7 +36,7 @@ export const getSkylinkHeader = (skylinkUrl) => ajax({
   );
 
 
-export const uploadToSkynet = async(file, skynetClient)=> await skynetClient.upload(file);
+export const uploadToSkynet = async(file, skynetClient)=> await skynetClient.uploadFile(file);
 
 export const getPublicApps = async (hash)=> await fetch((document.location.origin.indexOf("localhost")===-1 ? document.location.origin :  DEFAULT_PORTAL)+"/"+hash).then(res=>res.json());
 
@@ -83,105 +55,37 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
   publicHashData.data = skappListToSave;
   const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
   const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-  const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
-  return uploadedContent;
+  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+  if (uploadedContent){
+    return {
+      skylink : parseSkylink(uploadedContent)
+    };
+  }
+  return null;
 };
 
+/** Start : Skynet Methods **/
+const getPortal = ()=> {
+  let skynetPortal = store.getState().snUserSetting?.setting?.portal;
+  skynetPortal = (skynetPortal && skynetPortal.trim()!=="") ? skynetPortal : DEFAULT_PORTAL;
+  return skynetPortal;
+}
 
-
-export const submitSkapp = async (skylinkObj) => {
-  // TODO: Need to append to UserMaster List. Currently its overwriting
-  const skynetClient = new SkynetClient("https://siasky.net");
+export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendFlag,encrypted,options) => {
+  const skynetClient = new SkynetClient(getPortal());
+  if (publicKey == null || privateKey == null ) {
+    throw new Error("Invalid Keys");
+  }
+  const jsonObj = await getJSONFile(publicKey, fileKey, null, {getEntry: true});
+  if(appendFlag)
+  {
+    let tempFileData = await getJSONFile(publicKey,fileKey);
+    if(fileData != null && tempFileData != null)
+      fileData = tempFileData.push(fileData);
+  }
   try {
-    const skappOwner_name="skappowner";
-    const skappOwner_password="skappowner001";
-    //Get User Public Key
-    const skappOwnerUser = new User(skappOwner_name,skappOwner_password);
-    const skappOwnerUserId=skappOwnerUser.id;
-    console.log("appUser:id "+skappOwnerUser.id);
-    console.log("appUser:PubKey "+skappOwnerUser.publicKey);
-    if (skappOwnerUser == null) {
-      throw new Error("User Not Logged In");
-    }
-    // check if skappId is present. If new Object, this value will be empty
-    let skhubId = skylinkObj.skhubId;
-    if (skylinkObj && (skylinkObj.skhubId == null || skylinkObj.skhubId === "")) {
-      skhubId = generateSkyhubId("skynet" + ":" + skappOwnerUser.id + ":" + skylinkObj.skylink)
-      skylinkObj.skhubId = skhubId;
-    }
-    // ### Step1: SET FILE (USER) ###
-    // ## KEY ##
-    const skappOwnerKey = "skappOwner.json"; // File Key (skapp-appname)
-    const skappOwnerFileID = new FileID("skapp-appid", FileType.PublicUnencrypted, skappOwnerKey);//MAP: keyId
-    // ## VALUE ##
-    const skappOwnerData = new TextEncoder("utf-8").encode(JSON.stringify(skylinkObj));
-    const skappOwnerFile = new File([skappOwnerData], skappOwnerKey, {type: "application/json"}); //MAP: VALUE -> here we will have JSON file.
-    const skappOwnerskyfile = new SkyFile(skappOwnerFile);//<-- It will create skyfile object
-    // ## Update SkyDB
-    let status = await skynetClient.setFile(skappOwnerUser, skappOwnerFileID, skappOwnerskyfile); //<-- update Key Value pair for that specific user
-    console.log("appUser:setFile:status "+status);
-    
-    // ### Step2: GET FILE (USER) ###
-    let existing = await skynetClient.lookupRegistry(skappOwnerUser, skappOwnerFileID);
-    let skylink = existing.value.data;
-    console.log("skylink"+skylink);
-    let skylinkUrl = "https://siasky.net/" + parseSkylink(skylink);
-    let skappOwnerJSON = await fetch(skylinkUrl).then(res=>res.json());
-    console.log("skyFile1"+skappOwnerJSON);
-    // skyFile = await skynetClient.getFile(skappOwnerUser, skylinkIdxFileID);
-    // skylinkIdxObj = await skyFile.file.text();
-    // console.log("value"+skylinkIdxObj);    
-
-    // ### Step3: GET FILE (MASTER) ###
-    const skappMasterUser = new User("skappmaster", "skappmaster001");
-    const skappMasterKey = "skappMaster.json"
-    const skappMasterUserId = skappMasterUser.id;
-    const skappMasterUserPubkey = skappMasterUser.publicKey;
-    console.log("appUser:id"+skappMasterUser.id);
-    console.log("appUser:PubKey"+skappMasterUser.publicKey);
-    const skappMasterFileID = new FileID("skapp-appid", FileType.PublicUnencrypted, skappMasterKey);//MAP: keyId
-    existing = await skynetClient.lookupRegistry(skappMasterUser, skappMasterFileID);
-    let skappMasterJSON;
-    if (existing) 
-    {
-      skylink = existing.value.data;
-      console.log("skylink"+skylink);
-      skylinkUrl = "https://siasky.net/" + parseSkylink(skylink);
-      skappMasterJSON = await fetch(skylinkUrl).then(res=>res.json());
-      console.log("skappMasterJSON "+skappMasterJSON);
-    }
-    //###### Step4: SET FILE (MASTER) #####
-    if (!skappMasterJSON) //empty
-    {
-        skappMasterJSON = {
-        version: "v1",
-        createTS: new Date(),
-        lastUpdateTS: new Date(),
-        skappusers: [{username:skappOwner_name,userid:skappOwnerUserId}],
-      }
-    }
-    else if(skappMasterJSON.skappusers.some(user => user.userid === skappOwnerUserId) === true ) { //already present in Index
-      //throw new Error("Skylink already exist");
-      //User already exist in SkappMaster
-      return true;
-    }
-    else
-    {
-      skappMasterJSON.skappusers.push({username:skappOwner_name,userid:skappOwnerUserId})
-      // ## VALUE ##
-      const data_en = new TextEncoder("utf-8").encode(JSON.stringify(skappMasterJSON));
-      const file = new File([data_en], skappMasterKey, { type: "application/json"}); //MAP: VALUE -> here we will have JSON file.
-      const skyfile = new SkyFile(file);//<-- It will create skyfile object
-      status = await skynetClient.setFile(skappMasterUser, skappMasterFileID, skyfile); //<-- update Key Value pair for that specific user
-      console.log("skappOwnerUser:setFile:status"+status);
-      //###### Step5: GET FILE (MASTER) #####
-      existing = await skynetClient.lookupRegistry(skappMasterUser, skappMasterFileID);
-      // if (!existing) {
-      //   throw new Error("not found");
-      // }
-      skylink = existing.value.data;
-      console.log("skylink"+skylink);
-    }
+    let revision =  (jsonObj ? jsonObj.revision : 0)  + 1;
+    let status = await skynetClient.db.setJSON(privateKey,fileKey,fileData, revision); //<-- update Key Value pair for that specific pubKey
   }
   catch (error) {
     //setErrorMessage(error.message);
@@ -189,3 +93,35 @@ export const submitSkapp = async (skylinkObj) => {
   }
   return true;
 }
+
+export const snKeyPairFromSeed = (userSeed)=>genKeyPairFromSeed(userSeed);
+
+export const snSerializeSkydbPublicKey = (publicKey)=>publicKey;
+
+export const snDeserializeSkydbPublicKey = (publicKeyStr)=>publicKeyStr;
+
+export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
+  const skynetClient = new SkynetClient(getPortal());
+  try
+  {
+    //Get User Public Key
+    if (publicKey == null) {
+      throw new Error("Invalid Keys");
+    }
+    const entry = await skynetClient.db.getJSON(publicKey,fileKey);
+    if(entry)
+    {
+      if (options.getEntry) {
+        return entry;
+      }
+      return entry.data;
+    }
+  }
+  catch (error) {
+      //setErrorMessage(error.message);
+      console.log("error.message "+error.message);
+      return null;
+    }
+    return null;
+}
+/** END : Skynet Methods **/

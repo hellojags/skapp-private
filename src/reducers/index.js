@@ -30,6 +30,7 @@ import { fetchHistoryEpic } from "./sn.history.epic";
 import { snPortalsListEpic } from "./sn.portals.epic";
 import SnPerson from "./sn.person.reducer";
 import SnAppSkyspaceList from "./sn.app-skyspacelist.reducer";
+import SnImportedSpace from "./sn.imported-space.reducer";
 import SnHistory from "./sn.history.reducer";
 import SnUploadListReducer from "./sn.upload-list.reducer";
 import SnAudioPlayerReducer from "./sn.audio-player.reducer";
@@ -60,6 +61,7 @@ const allReducers = combineReducers({
   snPublicInMemory: SnPublicInMemory,
   snUploadList: SnUploadListReducer,
   SnAudioPlayer: SnAudioPlayerReducer,
+  snImportedSpace: SnImportedSpace
 });
 
 const rootEpic = combineEpics(

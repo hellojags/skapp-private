@@ -23,7 +23,7 @@ export const CATEGORY_OBJ = {
   "video/mp4"],
     getLogo: () => <FontAwesomeIcon icon="video"></FontAwesomeIcon>,
     heading: "Videos",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete) => (
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
         <SnVideo
           filteredApps={filteredApps}
           page={page}
@@ -35,6 +35,7 @@ export const CATEGORY_OBJ = {
           isSelect={isSelect}
           arrSelectedAps={arrSelectedAps}
           hash={hash}
+          senderId={senderId}
         />
       )
   },
@@ -43,7 +44,7 @@ export const CATEGORY_OBJ = {
   "image/tiff"],
     getLogo: () => <CameraAltOutlinedIcon />,
     heading: "Images",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete) => (
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
         <SnImages
           filteredApps={filteredApps}
           page={page}
@@ -55,6 +56,7 @@ export const CATEGORY_OBJ = {
           isSelect={isSelect}
           arrSelectedAps={arrSelectedAps}
           hash={hash}
+          senderId={senderId}
         />
       )
   },
@@ -62,7 +64,7 @@ export const CATEGORY_OBJ = {
     fileTypeList: ["audio/aac", "audio/mpeg"],
     getLogo: () => <FontAwesomeIcon icon="headphones"></FontAwesomeIcon>,
     heading: "Audio",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete) => (
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
       <SnAudio
         filteredApps={filteredApps}
         page={page}
@@ -74,6 +76,7 @@ export const CATEGORY_OBJ = {
         isSelect={isSelect}
         arrSelectedAps={arrSelectedAps}
         hash={hash}
+        senderId={senderId}
       />
     )
   },

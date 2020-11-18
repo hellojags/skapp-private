@@ -269,7 +269,8 @@ export default function SnImagesDefault(props) {
                             hash={props.hash}
                             source="img"
                             hideTags={true}
-                            hideDelete={false}
+                            hideDelete={props.senderId!=null}
+                            hideAdd={props.senderId!=null}
                             onAdd={() => handleSkyspaceAdd(app)}
                             onEdit={() => props.openSkyApp(app)}
                             onDelete={() => removeFromSkyspace(app)}

@@ -9,12 +9,12 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DoneIcon from "@material-ui/icons/Done";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { Button, Chip, makeStyles, Popover, Snackbar, Typography } from "@material-ui/core";
-import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, getSkySpace } from "../../blockstack/blockstack-api";
+import { Button, Chip, makeStyles, Popover, Tooltip, Typography } from "@material-ui/core";
+import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, bsUnshareSpaceFromRecipientLst, getSkySpace } from "../../blockstack/blockstack-api";
 import Slide from "@material-ui/core/Slide";
-import { red } from "@material-ui/core/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import cliTruncate from "cli-truncate";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -53,7 +53,7 @@ export default function SnShareSkyspaceModal(props) {
             const idxCurrentSpace = props.sharedWithObj[id].spaces.indexOf(props.skyspaceName);
             props.sharedWithObj[id].spaces.splice(idxCurrentSpace, 1);
             if (props.sharedWithObj[id].spaces.length === 0) {
-                delete props.sharedWithObj[id];
+                // delete props.sharedWithObj[id];
             } else {
                 skylinkListById[id] = [];
                 props.sharedWithObj[id].spaces.forEach(skyspaceName => {
@@ -77,6 +77,7 @@ export default function SnShareSkyspaceModal(props) {
         });
         promises.push(bsSaveSharedWithObj(props.userSession, props.sharedWithObj));
         await Promise.all(promises);
+        await bsUnshareSpaceFromRecipientLst(props.userSession, deletedIdList, props.skyspaceName, props.sharedWithObj);
     }
 
     const shareWithRecipient = async () => {
@@ -94,7 +95,7 @@ export default function SnShareSkyspaceModal(props) {
             props.onNo();
         } catch (err) {
             dispatch(setLoaderDisplay(false));
-            console.log("share space error", err);
+            setDeletedIdList([]);
             setShowAlert(true);
         }
     }
@@ -123,9 +124,11 @@ export default function SnShareSkyspaceModal(props) {
                                     .filter(key => deletedIdList.indexOf(key) === -1)
                                     .filter(id => props.sharedWithObj[id].spaces.indexOf(props.skyspaceName) > -1)
                                     .map((key, idx) =>
-                                        <Chip key={idx} label={props.sharedWithObj[key].userid}
-                                            onDelete={() => handleDelete(key)}
-                                            color="primary" variant="outlined" />
+                                        <Tooltip title={props.sharedWithObj[key].userid} arrow>
+                                            <Chip key={idx} label={cliTruncate(props.sharedWithObj[key].userid, 30)}
+                                                onDelete={() => handleDelete(key)}
+                                                color="primary" variant="outlined" />
+                                        </Tooltip>
                                     )}
                                 <TextField
                                     id="recipientId"
@@ -184,16 +187,6 @@ export default function SnShareSkyspaceModal(props) {
             </Button>
                 </DialogActions>
             </Dialog>
-            {/* <Snackbar
-        open={showAlert}
-        autoHideDuration={40000}
-        onClose={() => setShowAlert(false)}
-        style={{ zIndex: 999999}}
-      >
-        <Alert onClose={() => setShowAlert(false)} severity={"error"}>
-          The user has not created an account with Skyspaces!
-        </Alert>
-      </Snackbar> */}
         </>
     );
 }

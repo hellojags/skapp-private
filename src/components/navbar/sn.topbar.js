@@ -1,7 +1,7 @@
 import React from "react";
-import skyapplogo from "../../skapp_logo_text.png";
+import skyapplogo from "../../SkySpaces_g.png";
 import FormControl from '@material-ui/core/FormControl';
-import skyapplogo_only from "../../skapp_logo.png";
+import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -162,32 +162,29 @@ class SnTopBar extends React.Component {
     this.props.snPublicHash && evt.preventDefault();
   }
 
-  savePublicSpace = async () => {
-    this.props.setLoaderDisplay(true);
-    const publicHashData = await getPublicApps(this.props.snPublicHash);
-    const skappListToSave = getAllPublicApps(publicHashData.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps);
-    publicHashData.history[publicHashData.history.length - 1].skylink = this.props.snPublicHash;
-    publicHashData.history.push({
-      creationDate: new Date()
-    });
-    publicHashData.data = skappListToSave;
-    const skylinkListFile = getSkylinkPublicShareFile(this.props.userSession, publicHashData);
-    const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-    const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
-    this.props.setLoaderDisplay(false);
-    const newUrl = document.location.href.replace(
-      this.props.snPublicHash,
-      uploadedContent.skylink
-    );
-    this.setState({
-      showInfoModal: true,
-      infoModalContent: newUrl,
-      onInfoModalClose: () => {
-        this.setState({ showInfoModal: false });
-        document.location.href = newUrl;
-      }
-    })
-  }
+  renderChangePortal = (value) => <FormControl className={this.props.classes.portalFormControl}>
+    <Select
+      labelId="demo-simple-select-label"
+      id="pulic-share-portal"
+      value={value}
+      onChange={(evt) => this.changePublicPortal(evt.target.value)}
+    >
+      <MenuItem className="d-none" value={value}>
+        Change Portal
+                        </MenuItem>
+      {document.location.origin.indexOf("localhost") > -1 && (
+        <MenuItem value={document.location.origin}>
+          {document.location.origin}
+        </MenuItem>
+      )}
+      {this.props.snPortalsList &&
+        this.props.snPortalsList.portals.map((obj, index) => (
+          <MenuItem key={index} value={obj.url}>
+            {obj.name}
+          </MenuItem>
+        ))}
+    </Select>
+  </FormControl>
 
   render() {
     const { classes } = this.props;
@@ -254,26 +251,10 @@ class SnTopBar extends React.Component {
                       </form>
                     </div>
                   </Grid>
-                  <Grid item xs={this.props.snPublicHash ? 3 : 1} sm={this.props.snPublicHash ? 2 : 1}>
+                  <Grid item xs={this.props.snPublicHash ? 2 : 1} sm={this.props.snPublicHash ? 2 : 1}>
                     <Tooltip title="Download Skylink Content" arrow>
                       <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={this.onDownload} />
                     </Tooltip>
-                    {this.props.snPublicHash && (
-                      <>
-                        <Button
-                          variant="contained"
-                          onClick={this.savePublicSpace}
-                          color="primary"
-                          className="btn-bg-color hidden-xs-dn"
-                          style={{ marginLeft: 5 }}
-                        >
-                          Save
-                    </Button>
-                        <SaveOutlinedIcon className="hidden-sm-up" style={{ color: APP_BG_COLOR }}
-                          onClick={this.savePublicSpace}
-                        />
-                      </>
-                    )}
                   </Grid>
                 </>
               )}
@@ -293,30 +274,7 @@ class SnTopBar extends React.Component {
                     </IconButton>
                   </Tooltip>
                   {!this.props.snShowDesktopMenu && (
-
-                    <FormControl className={classes.portalFormControl}>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="pulic-share-portal"
-                        value="Change Portal"
-                        onChange={(evt) => this.changePublicPortal(evt.target.value)}
-                      >
-                        <MenuItem className="d-none" value="Change Portal">
-                          Change Portal
-          </MenuItem>
-                        {document.location.origin.indexOf("localhost") > -1 && (
-                          <MenuItem value={document.location.origin}>
-                            {document.location.origin}
-                          </MenuItem>
-                        )}
-                        {this.props.snPortalsList &&
-                          this.props.snPortalsList.portals.map((obj, index) => (
-                            <MenuItem key={index} value={obj.url}>
-                              {obj.name}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </FormControl>
+                    this.renderChangePortal("Change Portal")
                   )}
                   {this.props.snShowDesktopMenu && (
                     // TODO: need to create a reducer for signin component display
@@ -326,7 +284,7 @@ class SnTopBar extends React.Component {
               </Grid>
               <Grid
                 item
-                xs={this.props.person != null ? 2 : 10}
+                xs={(this.props.person != null || this.props.snPublicHash != null) ? 2 : 10}
                 className="hidden-sm-up"
               >
                 <div className="top-icon-container float-right">
@@ -334,6 +292,7 @@ class SnTopBar extends React.Component {
                     // TODO: need to create a reducer for signin component display
                     <SnSignin />
                   )}
+                  {this.renderChangePortal("")}
                 </div>
               </Grid>
             </Grid>
