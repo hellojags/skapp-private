@@ -24,7 +24,7 @@ import {
   DEFAULT_PORTAL,
   PUBLIC_SHARE_BASE_URL,
   PUBLIC_SHARE_ROUTE,
-  PUBLIC_SHARE_APP_HASH, SKYSPACE_DEFAULT_PATH, PUBLIC_TO_ACC_QUERY_PARAM
+  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME
 } from "../../sn.constants";
 import {
   CATEGORY_OBJ,
@@ -223,7 +223,7 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.replace("?sialink=", "").trim();
+    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
@@ -243,10 +243,9 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.replace("?sialink=", "").trim();
+    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
-    console.log("sender dillema ", senderId, this.state.senderId);
     if (
       this.state.category !== category ||
       this.state.hash !== hash ||
@@ -472,12 +471,16 @@ class SnCards extends React.Component {
 
   addPublicSpaceToAccount = async () => {
     let publicUpload = null;
-    // if (this.props.snPublicInMemory.addedSkapps?.length>0 || this.props.snPublicInMemory.deletedSkapps?.length>0) {
     this.props.setLoaderDisplay(true);
     publicUpload = await savePublicSpace(this.state.hash, this.props.snPublicInMemory);
     this.props.setLoaderDisplay(false);
-    // }
-    document.location.href = SKYSPACE_DEFAULT_PATH + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
+    const redirectToRoute = "/login" + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
+    if (process.env.NODE_ENV === 'production') {
+      document.location.href = SKYSPACE_HOSTNAME + "/#" + redirectToRoute;
+    } else {
+      this.props.setPublicHash(null);
+      this.props.history.push(redirectToRoute);
+    }
   }
 
   savePublicSpace = async () => {

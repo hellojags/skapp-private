@@ -154,7 +154,6 @@ class SnSkySpaceMenu extends React.Component {
     evt.stopPropagation();
     this.props.setLoaderDisplay(true);
     const sharedWithObj = await bsGetSharedWithObj(this.props.userSession);
-    console.log("SnSkySpaceMenu -> launchShareModal -> sharedWithObj", sharedWithObj);
     this.props.setLoaderDisplay(false);
     this.setState({
       showShareSkyspaceModal: true,

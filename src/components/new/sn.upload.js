@@ -17,7 +17,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { SkynetClient, parseSkylink } from "skynet-js";
 import UploadFile from "./UploadFile";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -150,7 +150,7 @@ const SnUpload = React.forwardRef((props, ref) => {
       }
       props.onUploadStart && props.onUploadStart();
       const fileType = file.type;
-      let resForCompressed = "";
+      let resForCompressed;
       if (fileType && fileType.startsWith("image")) {
         const compressedFile = await getCompressedImageFile(file);
         resForCompressed = await client.uploadFile(compressedFile);
@@ -159,7 +159,6 @@ const SnUpload = React.forwardRef((props, ref) => {
         const videoThumbnail = await generateThumbnailFromVideo({file});
         resForCompressed = await client.uploadFile(videoThumbnail);
       }
-      console.log("handleDrop -> resForCompressed", parseSkylink(resForCompressed))
       const onUploadProgress = (progress) => {
         const status = progress === 1 ? "processing" : "uploading";
         onFileStateChange(file, { status, progress });

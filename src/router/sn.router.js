@@ -9,7 +9,6 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import SnScrollToTop from "./sn.scroll-to-top";
 import SnCards from "../components/cards/sn.cards";
 import SnHistory from "../components/history/sn.history";
 import SnNew from "../components/new/sn.new";
@@ -18,6 +17,7 @@ import SnLeftMenu from "../components/navbar/sn.left-menu";
 import SnUserSettings from "../components/user/sn.user-settings";
 import SnMultiUpload from "../components/upload/sn.multi-upload";
 import snLogin from "../components/login/sn.login";
+import SnProfile from "../components/sn.profile";
 
 const useStyles = (theme) => ({
   root: {
@@ -69,6 +69,7 @@ export class SnRouter extends React.Component {
                     <Route path="/skyapps/:id" component={SnNew} />
                     <Route path="/skyspace/:skyspace" component={SnCards} />
                     <Route path="/history" component={SnHistory} />
+                    <Route path="/profile" component={SnProfile} />
                     <Route path="/public-cards" component={SnCards} />
                     <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
                     <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
