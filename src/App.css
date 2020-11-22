@@ -10323,6 +10323,12 @@ a.nav-link div.MuiButtonBase-root.MuiListItem-root.MuiListItem-gutters.MuiListIt
   font-weight: bold !important;
 }
 
+.btn-skyid-login {
+  background: var(--app-bg-color) !important;
+  color: var(--white) !important;
+  font-weight: bold !important;
+}
+
 .btn-signup {
   background: var(--app-bg-color) !important;
   color: var(--white) !important;

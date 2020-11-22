@@ -8,13 +8,15 @@ import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { withRouter } from "react-router";
 import { showBlockstackConnect, authenticate } from "@blockstack/connect";
-import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM, BROWSER_STORAGE, ID_PROVIDER_SKYDB, ID_PROVIDER_BLOCKSTACK } from "../../sn.constants";
+import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM, BROWSER_STORAGE, ID_PROVIDER_SKYID, ID_PROVIDER_SKYDB, ID_PROVIDER_BLOCKSTACK } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
 import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
 import SnInfoModal from "../modals/sn.info.modal";
 import { getUserSessionType } from "../../sn.util";
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey } from "../../skynet/sn.api.skynet";
+
+
 
 class SnSignin extends React.Component {
   constructor(props) {
@@ -26,6 +28,7 @@ class SnSignin extends React.Component {
       infoModalContent: "public"
     };
   }
+  
 
   gotoSkydbLogin = () => {
     const publicHash = this.getPublicToAccHash();
@@ -81,16 +84,16 @@ class SnSignin extends React.Component {
     showBlockstackConnect(authOptions);
   };
   async componentDidMount() {
-    if (this.props.person == null) {
-      if (this.props.userSession.isSignInPending && this.props.userSession.isSignInPending()) {
-        this.props.fetchBlockstackPerson(this.props.userSession);
-      } else if (this.getPublicToAccHash() != null) {
-        // this.doSignUp();
-        this.gotoSkydbLogin();
-      }
-    } else {
-      this.props.setImportedSpace(await bsGetImportedSpacesObj(this.props.userSession || userSession));
-    }
+    // if (this.props.person == null) {
+    //   if (this.props.userSession.isSignInPending && this.props.userSession.isSignInPending()) {
+    //     this.props.fetchBlockstackPerson(this.props.userSession);
+    //   } else if (this.getPublicToAccHash() != null) {
+    //     // this.doSignUp();
+    //     this.gotoSkydbLogin();
+    //   }
+    // } else {
+    //   this.props.setImportedSpace(await bsGetImportedSpacesObj(this.props.userSession || userSession));
+    // }
   }
 
   getPublicToAccHash = () => (new URLSearchParams(this.props.location.search)).get(PUBLIC_TO_ACC_QUERY_PARAM);
@@ -125,7 +128,7 @@ class SnSignin extends React.Component {
     this.handleClick();
     this.setState({
       showInfoModal: true,
-      infoModalContent: snSerializeSkydbPublicKey(snKeyPairFromSeed(this.props.userSession.skydbseed).publicKey)
+      infoModalContent: this.props.person.appPublicKey
     });
   };
 
@@ -134,6 +137,13 @@ class SnSignin extends React.Component {
       <>
         {this.props.person == null && (
           <>
+            {/* <Button
+              onClick={this.gotoSkyIDLogin}
+              variant="outlined"
+              className="btn-login"
+            >
+              SkyID Login
+            </Button>
             <Button
               onClick={this.gotoSkydbLogin}
               variant="outlined"
@@ -154,7 +164,7 @@ class SnSignin extends React.Component {
               className="btn-signup"
             >
               Sign Up
-            </Button>
+            </Button> */}
             {/* <Grid container spacing={1} >
             <Grid item>
               <Button onClick={this.doSignIn} variant="outlined" style={{borderColor:APP_BG_COLOR, color: APP_BG_COLOR, fontWeight: "bold" }}>
@@ -180,7 +190,7 @@ class SnSignin extends React.Component {
             )} */}
         {this.props.person && (
           <>
-            <Tooltip title={"Welcome " + this.props.person.username.replace(".id.blockstack", "") + " !"}>
+            <Tooltip title={"Welcome " + this.props.person?.profile?.username?.replace(".id.blockstack", "") + " !"}>
               <Avatar
                 alt="Remy Sharp"
                 src=""
@@ -189,7 +199,7 @@ class SnSignin extends React.Component {
                 aria-haspopup="true"
                 onClick={(evt) => this.handleClick(evt)}
               >
-                {this.props.person.username.charAt(0).toUpperCase()}
+                {this.props.person?.profile?.username?.charAt(0).toUpperCase()}
               </Avatar>
             </Tooltip>
             <Menu
@@ -202,14 +212,14 @@ class SnSignin extends React.Component {
             >
               <div style={{ color: APP_BG_COLOR, fontWeight: "bold" }}>
                 {/* UserName: {this.props.person.profile.name} <br/> */}
-                {/* UserID: {this.props.person.username} */}
+                {/* UserID: {this.props.person?.profile?.username} */}
               </div>
 
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings
               </MenuItem>
-              {getUserSessionType(this.props.userSession) === ID_PROVIDER_SKYDB && (<MenuItem onClick={() => this.showSkydbPublicKey()}>
-                Show Skydb Public Key
+              {(getUserSessionType(this.props.userSession) === ID_PROVIDER_SKYDB || getUserSessionType(this.props.userSession) === ID_PROVIDER_SKYID) && (<MenuItem onClick={() => this.showSkydbPublicKey()}>
+                Show Public Key
               </MenuItem>)}
               {process.env.NODE_ENV !== 'production' && getUserSessionType(this.props.userSession) === ID_PROVIDER_BLOCKSTACK && <MenuItem onClick={this.clearAllStorage}>
                 Clear BS Storage

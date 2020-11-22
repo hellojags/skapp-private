@@ -1,4 +1,4 @@
-import { DEFAULT_PORTAL, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from "./sn.constants";
+import { DEFAULT_PORTAL, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from "./sn.constants";
 import imageCompression from "browser-image-compression";
 import { getCategoryObjWithoutAll } from "./sn.category-constants";
 
@@ -127,10 +127,13 @@ export const setTypeFromFile = (fileType, app)=>{
 export const getAllPublicApps = (appsFromHash, inMemoryAddedApps, inMemoryDeletedApps) => 
   subtractSkapps( [...new Set([...inMemoryAddedApps, ...appsFromHash])] , inMemoryDeletedApps);
 
+// I think we can use idp field in session object for this
 export const getUserSessionType = (userSession) => {
   let idType = ID_PROVIDER_BLOCKSTACK;
   if (userSession.skydbseed) {
     idType = ID_PROVIDER_SKYDB; 
+  }else if (userSession.skyid) {
+    idType = ID_PROVIDER_SKYID; 
   }
   return idType;
 }

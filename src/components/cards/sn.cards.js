@@ -97,28 +97,22 @@ class SnCards extends React.Component {
     this.getFilteredApps = this.getFilteredApps.bind(this);
     this.uploadEleRef = React.createRef();
   }
-
-
-
   updateSwitches = (switchFilterList) => {
     const { filterCriteria } = this.state;
     filterCriteria.switchFilterList = switchFilterList;
     this.setState({ filterCriteria });
   };
-
   updateTagFilterList = (tagFilterList) => {
     const { filterCriteria } = this.state;
     filterCriteria.tagFilterList = tagFilterList;
     filterCriteria.page = 1;
     this.setState({ filterCriteria });
   };
-
   udpdatePage = (page) => {
     const { filterCriteria } = this.state;
     filterCriteria.page = page;
     this.setState({ filterCriteria });
   };
-
   handleSrchSbmt(evt) {
     evt.preventDefault();
   }
@@ -181,12 +175,16 @@ class SnCards extends React.Component {
     return categoryCountObj;
   };
 
+  // get all Skylinks per input criteria
   async getAppList(category, skyspace, fetchAllSkylinks, hash) {
-    const senderId = this.getSenderId();
-    category != null && this.props.fetchApps(category);
+    const senderId = this.getSenderId(); // senderId is basically AppStoreProviderID.
+    category != null && this.props.fetchApps(category); // TODO: do we really need this?
+    // If SkySpace is null that means, Link is either "public share hash" or "search action"
     if (skyspace != null) {
+      // SenderID not null means AppStoreProvider and SpaceName is present
       if (senderId != null) {
         this.props.setLoaderDisplay(true);
+        // Get SharedSpace AppList
         const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
         this.props.setLoaderDisplay(false);
         this.props.setApps(appListFromSharedSpace);
@@ -197,12 +195,13 @@ class SnCards extends React.Component {
         });
       }
     }
+    // "public share hash"
     if (hash != null) {
       this.props.setDesktopMenuState(false);
       this.props.setPortalsListAction(INITIAL_PORTALS_OBJ);
       this.props.fetchPublicApps(hash);
     }
-
+    // Search Query
     if (fetchAllSkylinks === true) {
       this.handleSrchKeyChng(null, this.getSearchKeyFromQuery());
       this.props.fetchAllSkylinks({
@@ -236,6 +235,7 @@ class SnCards extends React.Component {
       senderId
     });
     this.props.fetchSkyspaceDetail();
+    // fetch all SkyLinks
     this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
   }
 
@@ -247,13 +247,13 @@ class SnCards extends React.Component {
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
     if (
-      this.state.category !== category ||
-      this.state.hash !== hash ||
+      this.state.category !== category ||  // wehn category is not same as previous state
+      this.state.hash !== hash || 
       this.state.skyspace !== skyspace ||
       this.state.fetchAllSkylinks !== fetchAllSkylinks ||
       this.state.senderId !== senderId ||
       (fetchAllSkylinks &&
-        this.getSearchKeyFromQuery() !== this.state.searchKey)
+        this.getSearchKeyFromQuery() !== this.state.searchKey) // wen fetch all skylink is True and search key is NEW search key.
     ) {
       this.props.fetchSkyspaceDetail();
       this.updateTagFilterList([]);
@@ -266,6 +266,7 @@ class SnCards extends React.Component {
         senderId
       });
       hash && this.props.setPublicHash(hash);
+      // fetch all SkyLinks
       this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
     }
   }

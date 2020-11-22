@@ -60,6 +60,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.2",
+    "skyid": "0.0.4",
     "skynet-js": "2.5.0",
     "text-ellipsis": "^1.0.3",
     "typescript": "^3.9.7",

@@ -32,8 +32,30 @@ const useStyles = (theme) => ({
 });
 
 export class SnRouter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {displayMenu: false};
+  }
+  displayMenu() {
+    if (this.props.location.pathname.indexOf("login") > -1) {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
   render() {
     const { classes } = this.props;
+    const displayMenu = this.state.displayMenu;
+    let SnLeftMenuComponent;
+    if (displayMenu){
+      SnLeftMenuComponent = <SnLeftMenu />
+    }
+    else
+    {
+      SnLeftMenuComponent = <SnLeftMenu />;
+    }
     return (
       <Router>
         {/* <div classsName="lightbox-container" id="lightbox-container">
@@ -51,14 +73,15 @@ export class SnRouter extends React.Component {
         <div className={classes.root + " router-root"}>
           <CssBaseline />
           <SnTopBar onDrawerToggle={this.handleDrawerToggle} />
-          <SnLeftMenu />
+          {SnLeftMenuComponent}
           <main className={classes.content + " router-main"}>
             <div className={classes.toolbar}>
               <div id="content-wrapper" className="d-flex flex-column">
                 <div id="content">
                   <Switch>
                     <Route exact path="/">
-                      <Redirect to="/upload" />
+                      {/* <Redirect to="/upload" /> */}
+                      <Redirect to="/login" />
                     </Route>
                     <Route path="/upload" component={SnMultiUpload} />
                     <Route path="/settings" component={SnUserSettings} />

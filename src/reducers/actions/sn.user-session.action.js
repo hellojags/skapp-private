@@ -5,7 +5,7 @@ import { ACT_TY_SET_USER_SESSION } from "./sn.action.constants";
 export const setUserSession = (userSession) => {
     if (userSession == null) {
         BROWSER_STORAGE.removeItem(STORAGE_USER_SESSION_KEY);
-      } else if (userSession.skydbseed) {
+      } else if (userSession.skydbseed || userSession.skyid) {
         BROWSER_STORAGE.setItem(STORAGE_USER_SESSION_KEY, JSON.stringify(userSession));
       }
     return {

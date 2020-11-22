@@ -12,6 +12,7 @@ import { DEFAULT_PORTAL } from "../sn.constants";
 import { UserSession, AppConfig } from "blockstack";
 
 export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
+export const SKYID_PROFILE_PATH = "profile";
 export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
 export const FOLLOWING_PATH = "skhub/following.json"; // will contain array of public key[array of Users]. this key will be set by app specific pub key/User 
 export const FOLLOWER_PATH = "skhub/follower.json";// will contain array of public key[array of Users]. this key will be set by app specific pub key/User
@@ -28,6 +29,9 @@ export const HISTORY_FILEPATH = "skhub/history/history.json";
 export const USERSETTINGS_FILEPATH = "skhub/settings/usersetting.json";
 export const SKYNET_PORTALS_FILEPATH = "skhub/settings/portals/portals.json";
 export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json";
+// ** Start : AppStore Specific keys
+export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider";
+// ** End : AppStore Specific keys
 export const EXPLORER_URL = "https://explorer.blockstack.org";
 export const SUCCESS = "success";
 export const FAILED = "failed";
@@ -96,6 +100,23 @@ export const INITIAL_SETTINGS_OBJ = () => {
     portal: DEFAULT_PORTAL,
     backupList: []
   }};
+};
+
+export const INITIAL_APPSTORE_PROVIDER_OBJ = {
+  version: "v1",
+  createTS: new Date(),
+  lastUpdateTS: new Date(),
+  providerPKs: [ "3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435" ],
+  providerPubKeySpaceMap: {
+    "3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435": {
+      "version": "v1",
+      "createTS": "2020-11-13T04:42:17.731Z",
+      "lastUpdateTS": "2020-11-13T04:42:17.731Z",
+      "skyspaceList": [
+        "AppStore"
+      ]
+    }
+  }
 };
 
 export const INITIAL_PORTALS_OBJ = {

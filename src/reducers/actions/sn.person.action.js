@@ -3,7 +3,7 @@ import {
   ACT_TY_FETCH_BLOCKSTACK_USER,
   ACT_TY_LOGOUT_BLOCKSTACK_USER,
 } from "./sn.action.constants";
-import { STORAGE_USER_KEY, BROWSER_STORAGE } from "../../sn.constants";
+import { STORAGE_USER_KEY, BROWSER_STORAGE,ID_PROVIDER_SKYID } from "../../sn.constants";
 import { setSkyspaceList, fetchSkyspaceList } from "./sn.skyspace-list.action";
 import store from "../";
 
@@ -34,7 +34,11 @@ export const fetchBlockstackPerson = (userSession) => {
 export const logoutPerson = (userSession) => {
   BROWSER_STORAGE.clear();
   store.dispatch(setSkyspaceList(null));
-  if (userSession.skydbseed) {
+  if (userSession?.idp === ID_PROVIDER_SKYID) {
+    //window.location.href=window.location.origin;
+    setPerson(null);
+    return userSession.skyid.sessionDestroy(window.location.origin);
+  } else if (userSession.skydbseed) {
     window.location.href=window.location.origin;
     return setPerson(null);
   }

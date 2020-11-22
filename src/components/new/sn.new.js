@@ -372,7 +372,7 @@ class SnNew extends React.Component {
         .then(() => {
           //Add skyspace in history. also add Header information if not already present.
           let historyObj = getEmptyHistoryObject();
-          //this.props.skyapp.skhubId = generateSkyhubId(ID_PROVIDER + ":" + this.props.person.profile.decentralizedID + ":" + uploadObj.skylink);
+          //this.props.skyapp.skhubId = generateSkyhubId(ID_PROVIDER + ":" + this.props.person.profile.did + ":" + uploadObj.skylink);
           historyObj.skhubId = this.props.skyapp.skhubId;
           historyObj.skylink = this.props.skyapp.skylink;
           historyObj.fileName = this.props.skyapp.name;
@@ -598,7 +598,7 @@ class SnNew extends React.Component {
     this.props.skyapp.skhubId = generateSkyhubId(
       ID_PROVIDER +
       ":" +
-      this.props.person.profile.decentralizedID +
+      this.props.person.profile.did +
       ":" +
       uploadObj.skylink
     );
