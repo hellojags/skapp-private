@@ -591,7 +591,7 @@ export const bsSetUserSetting = async (session, userSettingObj) => {
 export const bsGetSkyIDProfile = async (session) => {
     //let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
     let personObj = null;
-    const response = await getFile(session, SKYID_PROFILE_PATH,{publicKey: session.skyid.userId });
+    const response = await getFile(session, SKYID_PROFILE_PATH,{publicKey: session.skyid.userId,noDB:true });
     if (response == '') { // file not found
         console.log('Profile not found;, please check your connection and retry')
     } else { // success

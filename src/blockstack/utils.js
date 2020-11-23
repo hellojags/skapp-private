@@ -68,7 +68,7 @@ export function getFile(session, FILE_PATH, param) {
       if(param?.publicKey)
       {
         // pull profile using master public Key
-        promise = getJSONFile(param.publicKey,FILE_PATH,null,{})
+        promise = getJSONFile(param.publicKey,FILE_PATH,null,param)
         .then((content) => {
           if (content) {
             //return JSON.parse(content);
