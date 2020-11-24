@@ -65,7 +65,7 @@ export function getFile(session, FILE_PATH, param) {
   const sessionType = getUserSessionType(session);
   switch(sessionType){
     case ID_PROVIDER_SKYID:
-      if(param?.publicKey)
+      if(param?.publicKey) //if we need to use any other public key
       {
         // pull profile using master public Key
         promise = getJSONFile(param.publicKey,FILE_PATH,null,param)
@@ -78,7 +78,7 @@ export function getFile(session, FILE_PATH, param) {
       }
       else
       {
-        promise = getJSONFile(session?.person?.appPublicKey,FILE_PATH,null,{})
+        promise = getJSONFile(session?.person?.appPublicKey,FILE_PATH,null,param)
         .then((content) => {
           if (content) {
             //return JSON.parse(content);
@@ -122,11 +122,11 @@ export function putFile(session, FILE_PATH, content, param) {
   switch(sessionType){
     case ID_PROVIDER_SKYID:
       //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,content,false,false,{});
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,content,param);
       break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,param);
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:
@@ -147,11 +147,11 @@ export async function putFileForShared(session, FILE_PATH, encryptedContent) {
   switch(sessionType){
     case ID_PROVIDER_SKYID:
       //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,encryptedContent,false,false,{});
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,encryptedContent,{});
       break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,{});
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:
@@ -176,11 +176,11 @@ export function deleteFile(session, FILE_PATH) {
   switch(sessionType){
     case ID_PROVIDER_SKYID:
       //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,null,false,false,{});
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,null,{});
       break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,null,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,null,{});
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:

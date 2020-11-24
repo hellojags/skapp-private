@@ -6,7 +6,7 @@ import prettyBytes from 'pretty-bytes';
 import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
-import {getJSONfromDB,setJSONinDB} from "../db/indexedDB"
+import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
 
 const pwa = true; //progressive web app, offline first
 
@@ -73,10 +73,10 @@ const getPortal = () => {
   return skynetPortal;
 }
 
-export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, appendFlag, encrypted, options) => {
-  if (pwa) {
+export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, options) => {
+  if (pwa && (options?.skydb == undefined)) {
     try {
-      await setJSONinDB(fileKey,fileData);
+      await setJSONinDB(fileKey, fileData);
       return true;
     }
     catch (error) {
@@ -85,21 +85,26 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, appe
     }
   }
   else {
-    const skynetClient = new SkynetClient(getPortal());
-    if (publicKey == null || privateKey == null) {
-      throw new Error("Invalid Keys");
-    }
-    // change below call to registery only
-    const jsonObj = await getJSONFile(publicKey, fileKey, null, { getEntry: true });
-    if (appendFlag) {
-      let tempFileData = await getJSONFile(publicKey, fileKey);
-      if (fileData != null && tempFileData != null)
-        fileData = tempFileData.push(fileData);
-    }
     try {
-      let revision = (jsonObj ? jsonObj.revision : 0) + 1;
-
-      let status = await skynetClient.db.setJSON(privateKey, fileKey, fileData, revision); //<-- update Key Value pair for that specific pubKey
+      const skynetClient = new SkynetClient(getPortal());
+      if (publicKey == null || privateKey == null) {
+        throw new Error("Invalid Keys");
+      }
+      const registryEntry = await getRegistry(publicKey, fileKey);
+      let revision = (registryEntry ? registryEntry.revision : 0) + 1;
+      // create linked list to track history
+      if (options.historyflag == true) {
+        let skylink = registryEntry ? registryEntry.data : null;
+        fileData.prevSkylink = skylink;
+      }
+      // // change below call to registery only
+      // //const jsonObj = await getJSONFile(publicKey, fileKey, null, { getEntry: true });
+      // if (appendFlag) {
+      //   let tempFileData = await getJSONFile(publicKey, fileKey);
+      //   if (fileData != null && tempFileData != null)
+      //     fileData = tempFileData.push(fileData);
+      // }
+      let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData, revision); //<-- update Key Value pair for that specific pubKey
     }
     catch (error) {
       //setErrorMessage(error.message);
@@ -116,20 +121,18 @@ export const snSerializeSkydbPublicKey = (publicKey) => publicKey;
 export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr;
 
 export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
-
   try {
-    if (pwa && (options?.noDB == undefined)) {
+    if (pwa && (options?.skydb == undefined)) {
       try {
-         const result = await getJSONfromDB(fileKey);
-         console.log("result" + result);
-         return result;
+        const result = await getJSONfromDB(fileKey);
+        console.log("result" + result);
+        return result;
       }
       catch (error) {
         //setErrorMessage(error.message);
         console.log("error.message " + error.message);
         return null;
       }
-
     }
     else {
       const skynetClient = new SkynetClient(getPortal());
@@ -145,6 +148,23 @@ export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
         return entry.data;
       }
     }
+  }
+  catch (error) {
+    //setErrorMessage(error.message);
+    console.log("error.message " + error.message);
+    return null;
+  }
+  return null;
+}
+export const getRegistry = async (publicKey, fileKey, options) => {
+  try {
+    const skynetClient = new SkynetClient(getPortal());
+    //Get User Public Key
+    if (publicKey == null) {
+      throw new Error("Invalid Keys");
+    }
+    const { entry } = await skynetClient.registry.getEntry(publicKey, fileKey);
+    return entry;
   }
   catch (error) {
     //setErrorMessage(error.message);

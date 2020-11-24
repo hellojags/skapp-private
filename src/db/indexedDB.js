@@ -8,11 +8,11 @@ localforage.config({
     driver      : localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
     name        : 'Skapp',
     version     : 1.0,
-    storeName   : 'skydb', // Should be alphanumeric, with underscores.
+    storeName   : 'skyDB', // Should be alphanumeric, with underscores.
     description : 'Skynet App Store'
 });
 
-let IndexedDB4SkyDB = localforage.createInstance();
+let IndexedDB4SkyDB = localforage.createInstance({name : 'Skapp', storeName : 'skyDB'});
 
 export const setJSONinDB = async (key,value) => {
     let result = null;
@@ -48,6 +48,38 @@ export const removeJSONfromDB = async (key) => {
         console.log(err);
     }
     return value;
+}
+
+export const getAllItemsFromIDB = async (storeName) => {
+    let result = [];
+    let keys = [];
+    let recordCount = 0;
+    try {
+        // The same code, but using ES6 Promises.
+        await IndexedDB4SkyDB.iterate(function(value, key, iterationNumber) {
+            result.push({key :value})
+            keys.push(key)
+            recordCount = iterationNumber;
+            console.log([key, value]);
+        }).then(function() {
+            console.log('Iteration has completed');
+        }).catch(function(err) {
+            // This code runs if there were any errors
+            result = [];
+            keys = [];
+            recordCount = 0;
+            console.log(err);
+        });
+        console.log('result'+result);
+    } catch (err) {
+        // This code runs if there were any errors.
+        console.log(err);
+        result = [];
+        keys = [];
+        recordCount = 0;
+        
+    }
+    return {recordCount, keys, result};
 }
 
 export const clearAllfromDB = async () => {

@@ -18,6 +18,7 @@ import { NavLink } from "react-router-dom";
 import { APP_BG_COLOR } from "../../sn.constants";
 import { connect } from "react-redux";
 import builtWithSiaLogo from '../../Sia.svg';
+import { Grid, Button } from '@material-ui/core';
 import {
   mapStateToProps,
   matchDispatcherToProps,
@@ -56,28 +57,28 @@ class SnLeftMenu extends React.Component {
     super(props);
     this.menuBar = this.menuBar.bind(this);
   }
-
+  
   menuBar(classes, isMobile) {
     return (
       <React.Fragment>
         <div className={classes.toolbar}>
           <div className="banner-text hidden-sm-up">
-          <div className="ribbon"><span>BETA</span></div>
-          <img
-                  src={skyapplogo}
-                  alt="SkySpaces"
-                  className="cursor-pointer hidden-sm-up center"
-                  height="40"
-                  width="170"
-                ></img>
-                </div>
+            <div className="ribbon"><span>BETA</span></div>
+            <img
+              src={skyapplogo}
+              alt="SkySpaces"
+              className="cursor-pointer hidden-sm-up center"
+              height="40"
+              width="170"
+            ></img>
+          </div>
         </div>
         <List className="left-menu-list-root">
-        <ListItem  className="appstore-mobile-link hidden-sm-up">
-        <ListItemText>
-          <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
-          </ListItemText>
-        </ListItem>
+          <ListItem className="appstore-mobile-link hidden-sm-up">
+            <ListItemText>
+              <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
+            </ListItemText>
+          </ListItem>
           <ListItem
             button
             className="appstore-mobile-link hidden-sm-up"
@@ -144,6 +145,74 @@ class SnLeftMenu extends React.Component {
                   />
                 </ListItem>
               </NavLink>
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                to="/skapp/appstore"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ color: APP_BG_COLOR }}
+                    primary="App Store"
+                  />
+                </ListItem>
+              </NavLink>
+
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                to="/skapp/myskapps"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ color: APP_BG_COLOR }}
+                    primary="My Apps"
+                  />
+                </ListItem>
+              </NavLink>
+
+            <NavLink
+                activeClassName="active"
+                className="nav-link"
+                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                to="/skapp/hosting"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ color: APP_BG_COLOR }}
+                    primary="Hosting"
+                  />
+                </ListItem>
+              </NavLink>
+
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                to="/publish"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ color: APP_BG_COLOR }}
+                    primary="Publish Skapp"
+                  />
+                </ListItem>
+              </NavLink>
+
             </>
           )}
           <>
@@ -155,22 +224,21 @@ class SnLeftMenu extends React.Component {
             )}
           </>
         </List>
-       
         <div className="fixfooter">
-        <div className={classes.FooterText}> 
-                            &copy; 2020 SkySpaces
+          <div className={classes.FooterText}>
+            &copy; 2020 SkySpaces
                             {/* <a 
                             href="https://github.com/skynethubio/SkySpaces" 
                             target="_blank"
                             rel="noopener noreferrer">
                                 <FontAwesomeIcon icon={faGithub} />
                             </a> */}
-                            </div>
-                            <a href="https://sia.tech/" target="_blank"
-                                rel="noopener noreferrer">
-                                <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
-                            </a>
-                        </div>
+          </div>
+          <a href="https://sia.tech/" target="_blank"
+            rel="noopener noreferrer">
+            <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
+          </a>
+        </div>
       </React.Fragment>
     );
   }
@@ -197,19 +265,19 @@ class SnLeftMenu extends React.Component {
         </Hidden>
         {this.props.showDesktopMenu && (
 
-        <Hidden xsDown implementation="css">
-          <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={this.props.showDesktopMenu}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            {this.menuBar(classes)}
-          </Drawer>
-        </Hidden>
+          <Hidden xsDown implementation="css">
+            <Drawer
+              className={classes.drawer}
+              variant="persistent"
+              anchor="left"
+              open={this.props.showDesktopMenu}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              {this.menuBar(classes)}
+            </Drawer>
+          </Hidden>
         )}
       </React.Fragment>
     );

@@ -11,6 +11,8 @@
 import { DEFAULT_PORTAL } from "../sn.constants";
 import { UserSession, AppConfig } from "blockstack";
 
+export const SKAPPP_SKYDB_DATAKEY = "skhub/skapp/skydb";
+
 export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
 export const SKYID_PROFILE_PATH = "profile";
 export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
@@ -60,7 +62,7 @@ export const createPersonObject = () => {
   };
 };
 
-export const createHistoryObject = () => {}
+export const createHistoryObject = () => { }
 
 // skylinkIdx.json file will have array of SkylinkIdxObj
 export const createSkylinkIdxObject = () => {
@@ -93,20 +95,33 @@ export const createSkySpaceObject = () => {
 
 export const INITIAL_SETTINGS_OBJ = () => {
   return {
-  version: "v1",
-  createTS: new Date(),
-  lastUpdateTS: new Date(),
-  setting: {
-    portal: DEFAULT_PORTAL,
-    backupList: []
-  }};
+    version: "v1",
+    createTS: new Date(),
+    lastUpdateTS: new Date(),
+    setting: {
+      portal: DEFAULT_PORTAL,
+      backupList: []
+    }
+  };
+};
+
+export const INITIAL_SKYDB_OBJ = () => {
+  return {
+    version: "v1",
+    prevSkylink: "",
+    recordCount: 0,
+    createTS: new Date(),
+    lastUpdateTS: new Date(),
+    db: [],
+    keys: []
+  };
 };
 
 export const INITIAL_APPSTORE_PROVIDER_OBJ = {
   version: "v1",
   createTS: new Date(),
   lastUpdateTS: new Date(),
-  providerPKs: [ "3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435" ],
+  providerPKs: ["3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435"],
   providerPubKeySpaceMap: {
     "3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435": {
       "version": "v1",

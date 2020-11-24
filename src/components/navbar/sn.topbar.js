@@ -38,6 +38,11 @@ import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
+import {
+  syncWithSkyDB
+} from "../../blockstack/blockstack-api";
+import SnDataSync from '../datasync/sn.datasync';
+
 
 const drawerWidth = 240;
 const useStyles = (theme) => ({
@@ -88,8 +93,92 @@ class SnTopBar extends React.Component {
       publicPortal: DEFAULT_PORTAL,
       showInfoModal: false,
       infoModalContent: "",
+      syncStatus: null,
       onInfoModalClose: () => this.setState({ showInfoModal: false })
     };
+  }
+
+  postSync = async () => {
+    this.setState({ syncStatus: 'syncing' });
+    let status = await syncWithSkyDB(this.props.userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    alert("Success" + status);
+    if (status == true) {
+      this.setState({ syncStatus: 'synced' });
+    }
+    // alert("postSync clicked !!");
+    // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
+
+    // const status = await navigator.permissions.query({
+    //   name: 'periodic-background-sync',
+    // });
+    // if (status.state === 'granted') {
+    //   // Periodic background sync can be used.
+    //   alert("periodic sync can be used !!");
+    // } else {
+    //   // Periodic background sync cannot be used.
+    //   alert("periodic sync can NOT be used !!");
+    //   navigator.serviceWorker.ready.then(function(registration) {
+    //     registration.periodicSync.permissionState().then(function(state) {
+    //       if (state == 'prompt') 
+    //       alert("showSyncRegisterUI here for permission");
+    //     });
+    //   });
+    // }
+
+    // Periodic Sync Check
+    // https://web.dev/periodic-background-sync/
+    // https://github.com/WICG/background-sync/tree/master/explainers
+    // const registration = await navigator.serviceWorker.ready;
+    // if ('periodicSync' in registration) {
+    //   try {
+    //     await registration.periodicSync.register('content-sync', {
+    //       // An interval of one day.
+    //       // minInterval: 24 * 60 * 60 * 1000,
+    //       minInterval: 30000,
+    //     });
+    //     alert("content Synched");
+    //   } catch (error) {
+    //     // Periodic background sync cannot be used.
+    //     alert("Error Synching content" + error);
+    //   }
+    // }
+
+    // Periodic Sync Registration
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.register({
+    //     tag: 'post-data-periodic',         // default: ''
+    //     minPeriod: 12 * 60 * 60 * 1000, // default: 0
+    //     powerState: 'avoid-draining',   // default: 'auto'
+    //     networkState: 'avoid-cellular'  // default: 'online'
+    //   }).then(function (periodicSyncReg) {
+    //     alert("periodicSync success");
+    //   }, function () {
+    //     // failure
+    //     alert("periodicSync failure");
+    //   })
+    // });
+
+    // // Example: unregister all periodic syncs, except "get-latest-news":
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.getRegistrations().then(function (syncRegs) {
+    //     syncRegs.filter(function (reg) {
+    //       return reg.tag != 'post-data-periodic';
+    //     }).forEach(function (reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
+
+    // getting pending sync details
+    // navigator.serviceWorker.ready.then(function(registration) {
+    //   registration.periodicSync.getRegistrations().then(function(syncRegs) {
+    //     syncRegs.filter(function(reg) {
+    //       return reg.tag != 'get-latest-news';
+    //     }).forEach(function(reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
   }
 
   getSkylinkIdxObject = (evt) => {
@@ -251,21 +340,32 @@ class SnTopBar extends React.Component {
                       </form>
                     </div>
                   </Grid>
-                  <Grid item xs={this.props.snPublicHash ? 2 : 1} sm={this.props.snPublicHash ? 2 : 1}>
+                  {/* <Grid item xs={this.props.snPublicHash ? 2 : 1} sm={this.props.snPublicHash ? 2 : 1}>
                     <Tooltip title="Download Skylink Content" arrow>
                       <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={this.onDownload} />
                     </Tooltip>
-                  </Grid>
+                  </Grid> */}
                 </>
               )}
-
-              <Grid
-                item
-                sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
-                className="hidden-xs-dn"
-              >
-                <div className="top-icon-container float-right">
-                  <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
+                <Grid item>
+                  <SnDataSync syncStatus={this.state.syncStatus}></SnDataSync>
+                </Grid>
+                <Grid item >
+                  <Button
+                    onClick={this.postSync}
+                    variant="contained"
+                    style={{ textTransform: "none" }}
+                    className={'${classes.margin} btn-login'}>
+                    Manual Sync
+                  </Button>
+                </Grid>
+              <div className="top-icon-container float-right">
+                {/* <Grid
+                  item
+                  sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
+                  className="hidden-xs-dn"
+                >
+                  <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
                   <Tooltip title="Launch SkyApps" arrow>
                     <IconButton
                       onClick={() => window.open("https://skyapps.hns.siasky.net")}
@@ -273,15 +373,15 @@ class SnTopBar extends React.Component {
                       <AppsOutlinedIcon style={{ color: APP_BG_COLOR }} />
                     </IconButton>
                   </Tooltip>
-                  {!this.props.snShowDesktopMenu && (
-                    this.renderChangePortal("Change Portal")
-                  )}
-                  {this.props.snShowDesktopMenu && (
-                    // TODO: need to create a reducer for signin component display
-                    <SnSignin />
-                  )}
-                </div>
-              </Grid>
+                </Grid> */}
+                {!this.props.snShowDesktopMenu && (
+                  this.renderChangePortal("Change Portal")
+                )}
+                {this.props.snShowDesktopMenu && (
+                  // TODO: need to create a reducer for signin component display
+                  <SnSignin />
+                )}
+              </div>
               <Grid
                 item
                 xs={(this.props.person != null || this.props.snPublicHash != null) ? 2 : 10}

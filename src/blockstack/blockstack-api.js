@@ -17,7 +17,9 @@ import {
     PUBLIC_KEY_PATH,
     SHARED_PATH_PREFIX,
     GAIA_HUB_URL,
-    SKYID_PROFILE_PATH
+    SKYID_PROFILE_PATH,
+    SKAPPP_SKYDB_DATAKEY,
+    INITIAL_SKYDB_OBJ
 } from './constants'
 import { lookupProfile } from "blockstack";
 import {
@@ -34,6 +36,48 @@ import {
 import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from '../sn.constants';
 import { getUserSessionType } from '../sn.util';
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey } from '../skynet/sn.api.skynet';
+import {getAllItemsFromIDB} from "../db/indexedDB";
+
+
+// update SkyDB
+// step1: fetch all data from database
+// step2: use skynet setJSON method
+
+export const syncWithSkyDB = async (session, dataKey, idbStoreName) => {
+    let status = false;
+    try
+    {
+        // get all data
+        const {recordCount, keys, result} =  await getAllItemsFromIDB("skyDB");
+        let skydbJSON = await getFile(session,SKAPPP_SKYDB_DATAKEY,{skydb:true});
+        if(skydbJSON && skydbJSON != 'undefined')
+        {
+            skydbJSON.db = result;
+            skydbJSON.keys = keys;
+            skydbJSON.recordCount = recordCount;
+            status = await putFile(session,SKAPPP_SKYDB_DATAKEY,skydbJSON,{skydb:true,historyflag: true});
+        }
+        else
+        {
+            skydbJSON = INITIAL_SKYDB_OBJ;
+            skydbJSON.db = result;
+            skydbJSON.keys = keys;
+            skydbJSON.recordCount = recordCount;
+            status = await putFile(session,SKAPPP_SKYDB_DATAKEY,skydbJSON,{skydb:true,historyflag: true});
+        }
+        // update SkyDB
+        //let status = await putFile(session, SKAPPP_SKYDB_DATAKEY, skydbJSON);
+        skydbJSON = await getFile(session,SKAPPP_SKYDB_DATAKEY,{skydb:true});
+        //console.log("skydbJSON"+skydbJSON);
+        
+    }
+    catch(error)
+    {
+        return status;
+    }
+    return status;
+}
+
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -591,7 +635,7 @@ export const bsSetUserSetting = async (session, userSettingObj) => {
 export const bsGetSkyIDProfile = async (session) => {
     //let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
     let personObj = null;
-    const response = await getFile(session, SKYID_PROFILE_PATH,{publicKey: session.skyid.userId,noDB:true });
+    const response = await getFile(session, SKYID_PROFILE_PATH,{publicKey: session.skyid.userId,skydb:true });
     if (response == '') { // file not found
         console.log('Profile not found;, please check your connection and retry')
     } else { // success
