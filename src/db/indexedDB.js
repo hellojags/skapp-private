@@ -1,23 +1,51 @@
 import localforage from 'localforage';
+import { extendPrototype } from 'localforage-setitems';
 import { STORAGE_USER_SESSION_KEY} from "../sn.constants";
-
+import {IDB_NAME,IDB_STORE_NAME,IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
 //const IndexedDB4SkyDB = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY) ? BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY)?.IndexedDB4SkyDB : null;
 // var IndexedDB4SkyDB = localforage.createInstance();
 
+// database design
+// Database Name: Skapp
+// Store Names
+// Store1 --> SkyDB: This is database that will be synched with SkyDB. maintains application metadata
+// Store2 --> AppCache: this stores apps cache and can be deleted safely. Not required to maintain in SkyDB. Think of it as Local Storage 
+// Store3 --> SkynetCache: This cache will be used to store Skynet File for caching. Variable in Size per user disk space. 
+
+extendPrototype(localforage);
+
 localforage.config({
     driver      : localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
-    name        : 'Skapp',
+    name        : IDB_NAME,
     version     : 1.0,
-    storeName   : 'skyDB', // Should be alphanumeric, with underscores.
     description : 'Skynet App Store'
 });
 
-let IndexedDB4SkyDB = localforage.createInstance({name : 'Skapp', storeName : 'skyDB'});
+let IndexedDB4SkyDB = localforage.createInstance({storeName : IDB_STORE_NAME});
 
 export const setJSONinDB = async (key,value) => {
     let result = null;
     try {
         await IndexedDB4SkyDB.setItem(key, value);
+    }catch (err) {
+        // This code runs if there were any errors.
+        console.log(err);
+    }
+    return result;
+}
+
+export const setAllinDB = async (arrayOfJson) => {
+    let result = null;
+    try {
+        //await IndexedDB4SkyDB.setItems(arrayOfJson);
+       
+        await arrayOfJson.forEach((item) => {
+        let key =  Object.keys(item)[0];
+        let value = item[key];
+        console.log(key+":"+value);
+        setJSONinDB(key,value);
+        });
+
     }catch (err) {
         // This code runs if there were any errors.
         console.log(err);
@@ -43,6 +71,7 @@ export const removeJSONfromDB = async (key) => {
     let value = null;
     try {
         await IndexedDB4SkyDB.removeItem(key);
+        await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
     }catch (err) {
         // This code runs if there were any errors.
         console.log(err);
@@ -57,12 +86,12 @@ export const getAllItemsFromIDB = async (storeName) => {
     try {
         // The same code, but using ES6 Promises.
         await IndexedDB4SkyDB.iterate(function(value, key, iterationNumber) {
-            result.push({key :value})
+            result.push({[key] :value})
             keys.push(key)
             recordCount = iterationNumber;
             console.log([key, value]);
         }).then(function() {
-            console.log('Iteration has completed');
+            //console.log('Iteration has completed');
         }).catch(function(err) {
             // This code runs if there were any errors
             result = [];
@@ -70,14 +99,13 @@ export const getAllItemsFromIDB = async (storeName) => {
             recordCount = 0;
             console.log(err);
         });
-        console.log('result'+result);
+        //console.log('result'+result);
     } catch (err) {
         // This code runs if there were any errors.
-        console.log(err);
+        //console.log(err);
         result = [];
         keys = [];
         recordCount = 0;
-        
     }
     return {recordCount, keys, result};
 }

@@ -34,11 +34,12 @@ export const fetchBlockstackPerson = (userSession) => {
 export const logoutPerson = (userSession) => {
   BROWSER_STORAGE.clear();
   store.dispatch(setSkyspaceList(null));
-  if (userSession?.idp === ID_PROVIDER_SKYID) {
+  //if (userSession?.idp === ID_PROVIDER_SKYID) {
     //window.location.href=window.location.origin;
-    setPerson(null);
-    return userSession.skyid.sessionDestroy(window.location.origin);
-  } else if (userSession.skydbseed) {
+    //setPerson(null);
+    //return userSession.skyid.sessionDestroy("/");
+  //} else 
+  if (userSession.skydbseed) {
     window.location.href=window.location.origin;
     return setPerson(null);
   }

@@ -18,68 +18,80 @@ export const CATEGORY_OBJ = {
     getLogo: () => <AllInclusiveIcon />,
     heading: "All",
   },
-  video: {
-    fileTypeList: ["video/x-msvideo", "video/mpeg", "video/ogg", "video/webm", "video/3gpp", "video/3gpp2",
-  "video/mp4"],
+  Video: {
     getLogo: () => <FontAwesomeIcon icon="video"></FontAwesomeIcon>,
-    heading: "Videos",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
-        <SnVideo
-          filteredApps={filteredApps}
-          page={page}
-          skyspace={skyspace}
-          itemsPerPage={itemsPerPage}
-          openSkyApp={openSkyApp}
-          onDelete={funcOnDelete}
-          onSelection={onSelection}
-          isSelect={isSelect}
-          arrSelectedAps={arrSelectedAps}
-          hash={hash}
-          senderId={senderId}
-        />
-      )
+    heading: "Videos"
   },
   pictures: {
-    fileTypeList: ["image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml",
-  "image/tiff"],
     getLogo: () => <CameraAltOutlinedIcon />,
-    heading: "Images",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
-        <SnImages
-          filteredApps={filteredApps}
-          page={page}
-          skyspace={skyspace}
-          itemsPerPage={itemsPerPage}
-          openSkyApp={openSkyApp}
-          onDelete={funcOnDelete}
-          onSelection={onSelection}
-          isSelect={isSelect}
-          arrSelectedAps={arrSelectedAps}
-          hash={hash}
-          senderId={senderId}
-        />
-      )
+    heading: "Images"
   },
   audio: {
-    fileTypeList: ["audio/aac", "audio/mpeg"],
     getLogo: () => <FontAwesomeIcon icon="headphones"></FontAwesomeIcon>,
-    heading: "Audio",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
-      <SnAudio
-        filteredApps={filteredApps}
-        page={page}
-        skyspace={skyspace}
-        itemsPerPage={itemsPerPage}
-        openSkyApp={openSkyApp}
-        onDelete={funcOnDelete}
-        onSelection={onSelection}
-        isSelect={isSelect}
-        arrSelectedAps={arrSelectedAps}
-        hash={hash}
-        senderId={senderId}
-      />
-    )
+    heading: "Audio"
   },
+  // video: {
+  //   fileTypeList: ["video/x-msvideo", "video/mpeg", "video/ogg", "video/webm", "video/3gpp", "video/3gpp2",
+  // "video/mp4"],
+  //   getLogo: () => <FontAwesomeIcon icon="video"></FontAwesomeIcon>,
+  //   heading: "Videos",
+  //   cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
+  //       <SnVideo
+  //         filteredApps={filteredApps}
+  //         page={page}
+  //         skyspace={skyspace}
+  //         itemsPerPage={itemsPerPage}
+  //         openSkyApp={openSkyApp}
+  //         onDelete={funcOnDelete}
+  //         onSelection={onSelection}
+  //         isSelect={isSelect}
+  //         arrSelectedAps={arrSelectedAps}
+  //         hash={hash}
+  //         senderId={senderId}
+  //       />
+  //     )
+  // },
+  // pictures: {
+  //   fileTypeList: ["image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml",
+  // "image/tiff"],
+  //   getLogo: () => <CameraAltOutlinedIcon />,
+  //   heading: "Images",
+  //   cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
+  //       <SnImages
+  //         filteredApps={filteredApps}
+  //         page={page}
+  //         skyspace={skyspace}
+  //         itemsPerPage={itemsPerPage}
+  //         openSkyApp={openSkyApp}
+  //         onDelete={funcOnDelete}
+  //         onSelection={onSelection}
+  //         isSelect={isSelect}
+  //         arrSelectedAps={arrSelectedAps}
+  //         hash={hash}
+  //         senderId={senderId}
+  //       />
+  //     )
+  // },
+  // audio: {
+  //   fileTypeList: ["audio/aac", "audio/mpeg"],
+  //   getLogo: () => <FontAwesomeIcon icon="headphones"></FontAwesomeIcon>,
+  //   heading: "Audio",
+  //   cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
+  //     <SnAudio
+  //       filteredApps={filteredApps}
+  //       page={page}
+  //       skyspace={skyspace}
+  //       itemsPerPage={itemsPerPage}
+  //       openSkyApp={openSkyApp}
+  //       onDelete={funcOnDelete}
+  //       onSelection={onSelection}
+  //       isSelect={isSelect}
+  //       arrSelectedAps={arrSelectedAps}
+  //       hash={hash}
+  //       senderId={senderId}
+  //     />
+  //   )
+  // },
   documents: {
     fileTypeList: ["application/x-abiword", "application/x-freearc", "application/vnd.amazon.ebook", "application/msword",
     "text/html", "text/plain", "application/pdf"],

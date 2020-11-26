@@ -18,8 +18,12 @@ import {
     SHARED_PATH_PREFIX,
     GAIA_HUB_URL,
     SKYID_PROFILE_PATH,
-    SKAPPP_SKYDB_DATAKEY,
-    INITIAL_SKYDB_OBJ
+    DK_IDB_SKAPP,
+    INITIAL_SKYDB_OBJ,
+    CONFLICT,
+    IDB_STORE_NAME,
+    IDB_LAST_SYNC_REVISION_NO,
+    IDB_IS_OUT_OF_SYNC
 } from './constants'
 import { lookupProfile } from "blockstack";
 import {
@@ -32,50 +36,137 @@ import {
     decryptContent,
     putFileForShared,
     getFileUsingPublicKeyStr
-} from './utils'
+} from './utils';
 import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from '../sn.constants';
 import { getUserSessionType } from '../sn.util';
-import { snKeyPairFromSeed, snSerializeSkydbPublicKey } from '../skynet/sn.api.skynet';
-import {getAllItemsFromIDB} from "../db/indexedDB";
+import { snKeyPairFromSeed, snSerializeSkydbPublicKey, getRegistry } from '../skynet/sn.api.skynet';
+import { getAllItemsFromIDB, getJSONfromDB, setJSONinDB, setAllinDB } from "../db/indexedDB";
+import { getInitialDataJSON } from '../db/data/masterdata';
 
+export const firstTimeUserSetup = async (session) => {
+    try {
+        // (check IndexedDB and registry for any data, if no data that means firsttime user) -->
+        let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO);
+        if (idbLastRegistryEntry && idbLastRegistryEntry != null) // if entry is present in IndexedDB user is existing user.
+        {
+            return false;// not firsttime user
+        }
+        else {
+            let skydbEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKAPP);
+            
+            if (skydbEntry && skydbEntry != 'undefined') {
+                return false;// not firsttime user
+            }
+            else // first time user
+            {
+
+                let dataJSON = JSON.parse(getInitialDataJSON);
+                // 1.
+                // 2. 
+                // create Inital sample data (esp in case of SkySpaces) - Images, video, Audio files...etc 
+                // user check
+                // add here initial load of Skapps
+                // read space data from initialData folder and load it for user. 
+                // TODO: Ideally we shall fetch it from Skapp dataKey. "skhub/skapp/initialdata.json"
+                // call dataSync
+               
+                // Step1: load Initial data from InitialData.json to IndexedDB.  Metadata files (appstore, myapps, hosting)
+                await setAllinDB(dataJSON.data);
+                // Step2: Metadata File for "Provider" 
+                
+                // Step3: update revision number to 1
+                await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision:"1"});
+                // Sync Data with SkyDB
+                await syncData(session);
+                return true;// Yes, firsttime user
+            }
+        }
+    }
+    catch (error) {
+        console.log("error"+error);
+    }
+}
+
+export const syncData = async (session, skyDBdataKey, idbStoreName) => {
+    try {
+        // fetch registryEntry
+        let registryEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKAPP);
+
+        // check revision number 
+        let skyDBRevisionNo = (registryEntry && registryEntry != 'undefined') ? registryEntry.revision : 0;
+        let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO);
+        let isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC); 
+        let idbRevisionNo = idbLastRegistryEntry ? idbLastRegistryEntry.revision : 0;
+
+        // IndexedDB Out-of-Sync Scenario: If revision number is larger in SkyDB, Fetch data from SkyDB and update IndexDB
+        // This is possible issue scenario where data is updated using another device or browser instance. what if you have local change? prompt user?
+        if (parseInt(skyDBRevisionNo) > parseInt(idbRevisionNo)) {
+            // give prompt to user to make decision (data conflict status on UI)
+            // OR Just make decision for them to update SkyDB, not good idea but for now lets keep it like this. (TODO: update this logic after Beta)
+            //1. Fetch data from SkyDB
+            let skydbJSON = await getFile(session, DK_IDB_SKAPP, { skydb: true });
+            if (skydbJSON && skydbJSON != 'undefined' && skydbJSON.db) {
+                await skydbJSON.db.forEach((item) => {
+                    let key =  Object.keys(item)[0];
+                    let value = item[key];
+                    //2. update IndexedDB Store
+                    setJSONinDB(key,value);
+                });
+                await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, skyDBRevisionNo);
+            }
+            else {
+                return FAILED;
+            }
+            // or status = CONFLICT;
+            // This must be last step
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); 
+        }
+        // SkyDB Out-of-Sync Scenario: If revision number is larger in IndexedDB, fetch data from IndexedDB and update SkyDB
+        else if (isOutofSync || (parseInt(skyDBRevisionNo) < parseInt(idbRevisionNo))) {
+            // Get all IndexedDB data
+            const { recordCount, keys, result } = await getAllItemsFromIDB(IDB_STORE_NAME);
+            // create SkyDB JSON
+            let skydbJSON = INITIAL_SKYDB_OBJ();
+            skydbJSON['db'] = result;
+            skydbJSON['keys'] = keys;
+            skydbJSON['recordCount'] = recordCount;
+            //update SkyDB
+            if (registryEntry && registryEntry != 'undefined') {
+                await putFile(session, DK_IDB_SKAPP, skydbJSON, { skydb: true, historyflag: true });
+            }
+            else {
+                await putFile(session, DK_IDB_SKAPP, skydbJSON, { skydb: true }); // no history flag since its first time call.
+            }
+            // update IndexedDB with revision number
+            await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision: (skyDBRevisionNo +1) }); //we are doing plus one since we uploaded file to Skynet and revision is incremented.
+            // This must be last step
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);
+        }
+        else {
+            console.log("Data is already in sync");
+        }
+
+        // if (skydbEntry && skydbEntry != 'undefined') {
+        //     return;
+        // }
+        // else // first time user
+        // {
+        //     // read space data from initialData folder and load it for user. 
+        //     // TODO: Ideally we shall fetch it from Skapp dataKey. "skhub/skapp/initialdata.json"
+
+        // }
+    }
+    catch (error) {
+        return FAILED;
+    }
+    return SUCCESS;;
+}
 
 // update SkyDB
 // step1: fetch all data from database
-// step2: use skynet setJSON method
-
+// step2: use skynet setJSON method to commit data
 export const syncWithSkyDB = async (session, dataKey, idbStoreName) => {
-    let status = false;
-    try
-    {
-        // get all data
-        const {recordCount, keys, result} =  await getAllItemsFromIDB("skyDB");
-        let skydbJSON = await getFile(session,SKAPPP_SKYDB_DATAKEY,{skydb:true});
-        if(skydbJSON && skydbJSON != 'undefined')
-        {
-            skydbJSON.db = result;
-            skydbJSON.keys = keys;
-            skydbJSON.recordCount = recordCount;
-            status = await putFile(session,SKAPPP_SKYDB_DATAKEY,skydbJSON,{skydb:true,historyflag: true});
-        }
-        else
-        {
-            skydbJSON = INITIAL_SKYDB_OBJ;
-            skydbJSON.db = result;
-            skydbJSON.keys = keys;
-            skydbJSON.recordCount = recordCount;
-            status = await putFile(session,SKAPPP_SKYDB_DATAKEY,skydbJSON,{skydb:true,historyflag: true});
-        }
-        // update SkyDB
-        //let status = await putFile(session, SKAPPP_SKYDB_DATAKEY, skydbJSON);
-        skydbJSON = await getFile(session,SKAPPP_SKYDB_DATAKEY,{skydb:true});
-        //console.log("skydbJSON"+skydbJSON);
-        
-    }
-    catch(error)
-    {
-        return status;
-    }
-    return status;
+
 }
 
 
@@ -597,45 +688,45 @@ export const bsSetUserSetting = async (session, userSettingObj) => {
     return;
 }
 // Sample Object skyId and Profile
-    // skyId -->
-    // {
-    //     callback: function () { [native code] },
-    //     appId: "SkySpaces",
-    //     opts: {
-    //         devMode: true,
-    //     },
-    //     seed: "e26283c753cf0fefb577ee1d3d999c401f897127123471343d93c0366f6aa1c3", // App Specific Seed
-    //     userId: "c1a956eb2cc4fc9c2d34c9a48eae8dba7ad89c7a57d6f55f320c07f9c1eb8ea7", //Master Public Key
-    //     url: "http://localhost:3000/",
-    //     appImg: null,
-    // }
-    // SkyID Profile Object - using Master PublicKey -->
-    // {
-    //     "username": "skyspaces",
-    //     "aboutMe": "",
-    //     "dapps": {
-    //       "Example skapp": {
-    //         "url": "https://sky-note.hns.siasky.net/",
-    //         "publicKey": "fb1e595e70cd02845583a2e7b8a4c0278744cecebbf3aef8474ae9c8932c2b2e",
-    //         "img": null
-    //       },
-    //       "SkySpaces": {
-    //         "url": "http://localhost:3000/",
-    //         "publicKey": "370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d04d07f04",
-    //         "img": null
-    //       },
-    //       "skyfeed": {
-    //         "url": "https://sky-id.hns.siasky.net/?appId=skyfeed&redirect=backConnect",
-    //         "publicKey": "b7fe28de361766b730ea169226352198fe3e4a2995454045f1787d5a528eb40f",
-    //         "img": null
-    //       }
-    //     }
-    //   }
+// skyId -->
+// {
+//     callback: function () { [native code] },
+//     appId: "SkySpaces",
+//     opts: {
+//         devMode: true,
+//     },
+//     seed: "e26283c753cf0fefb577ee1d3d999c401f897127123471343d93c0366f6aa1c3", // App Specific Seed
+//     userId: "c1a956eb2cc4fc9c2d34c9a48eae8dba7ad89c7a57d6f55f320c07f9c1eb8ea7", //Master Public Key
+//     url: "http://localhost:3000/",
+//     appImg: null,
+// }
+// SkyID Profile Object - using Master PublicKey -->
+// {
+//     "username": "skyspaces",
+//     "aboutMe": "",
+//     "dapps": {
+//       "Example skapp": {
+//         "url": "https://sky-note.hns.siasky.net/",
+//         "publicKey": "fb1e595e70cd02845583a2e7b8a4c0278744cecebbf3aef8474ae9c8932c2b2e",
+//         "img": null
+//       },
+//       "SkySpaces": {
+//         "url": "http://localhost:3000/",
+//         "publicKey": "370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d04d07f04",
+//         "img": null
+//       },
+//       "skyfeed": {
+//         "url": "https://sky-id.hns.siasky.net/?appId=skyfeed&redirect=backConnect",
+//         "publicKey": "b7fe28de361766b730ea169226352198fe3e4a2995454045f1787d5a528eb40f",
+//         "img": null
+//       }
+//     }
+//   }
 
 export const bsGetSkyIDProfile = async (session) => {
     //let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
     let personObj = null;
-    const response = await getFile(session, SKYID_PROFILE_PATH,{publicKey: session.skyid.userId,skydb:true });
+    const response = await getFile(session, SKYID_PROFILE_PATH, { publicKey: session.skyid.userId, skydb: true });
     if (response == '') { // file not found
         console.log('Profile not found;, please check your connection and retry')
     } else { // success

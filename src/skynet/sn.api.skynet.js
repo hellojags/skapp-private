@@ -4,6 +4,7 @@ import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
 import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
+import {IDB_IS_OUT_OF_SYNC} from "../blockstack/constants"
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
 import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
@@ -77,6 +78,7 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
   if (pwa && (options?.skydb == undefined)) {
     try {
       await setJSONinDB(fileKey, fileData);
+      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
       return true;
     }
     catch (error) {
@@ -90,7 +92,7 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
       if (publicKey == null || privateKey == null) {
         throw new Error("Invalid Keys");
       }
-      const registryEntry = await getRegistry(publicKey, fileKey);
+      const registryEntry = await getRegistry(publicKey, fileKey); // I think we dont neeed to do this. SDK is doing it for us.
       let revision = (registryEntry ? registryEntry.revision : 0) + 1;
       // create linked list to track history
       if (options.historyflag == true) {
@@ -104,7 +106,8 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
       //   if (fileData != null && tempFileData != null)
       //     fileData = tempFileData.push(fileData);
       // }
-      let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData, revision); //<-- update Key Value pair for that specific pubKey
+      //console.log("Final JSON "+JSON.stringify(fileData));
+      let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData); //<-- update Key Value pair for that specific pubKey
     }
     catch (error) {
       //setErrorMessage(error.message);

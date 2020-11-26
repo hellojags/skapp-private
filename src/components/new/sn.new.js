@@ -142,7 +142,7 @@ class SnNew extends React.Component {
 
   componentDidMount() {
     const path = this.props.match.path;
-    if (path === "/register") {
+    if (path === "/register" || path === "/publish") {
       this.setState({
         isRegister: true,
         isAppOwner: true,
@@ -204,7 +204,7 @@ class SnNew extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const path = this.props.match.path;
-    if (path === "/register") {
+    if (path === "/register" || path === "/publish") {
       if (!this.state.isRegister) {
         this.setState({
           isRegister: true,

@@ -30,7 +30,8 @@ export const logoutPersonEpic = (action$) =>
   action$.pipe(
     ofType(ACT_TY_LOGOUT_BLOCKSTACK_USER),
     switchMap((action) => {
-      return from(action.payload.signUserOut(window.location.origin)).pipe(
+      // return from(action.payload.signUserOut(window.location.origin)).pipe(// commenting blockstack call
+      return from(action.payload.skyid.sessionDestroy("/")).pipe(
         map((res) => {
           return setPerson(null);
         })

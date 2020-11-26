@@ -39,9 +39,10 @@ import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
 import {
-  syncWithSkyDB
+  syncData,firstTimeUserSetup
 } from "../../blockstack/blockstack-api";
 import SnDataSync from '../datasync/sn.datasync';
+import { SUCCESS } from '../../blockstack/constants';
 
 
 const drawerWidth = 240;
@@ -99,10 +100,11 @@ class SnTopBar extends React.Component {
   }
 
   postSync = async () => {
-    this.setState({ syncStatus: 'syncing' });
-    let status = await syncWithSkyDB(this.props.userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
-    alert("Success" + status);
-    if (status == true) {
+    this.setState({ syncStatus: 'synced' });
+    let status = await syncData(this.props.userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    //let status = await firstTimeUserSetup(this.props.userSession, null, null);
+    alert("Success " + status);
+    if (status == SUCCESS) {
       this.setState({ syncStatus: 'synced' });
     }
     // alert("postSync clicked !!");
@@ -277,6 +279,7 @@ class SnTopBar extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const {syncStatus} = this.state;
     return (
       <>
         <AppBar
@@ -348,7 +351,7 @@ class SnTopBar extends React.Component {
                 </>
               )}
                 <Grid item>
-                  <SnDataSync syncStatus={this.state.syncStatus}></SnDataSync>
+                  <SnDataSync syncStatus={syncStatus}></SnDataSync>
                 </Grid>
                 <Grid item >
                   <Button

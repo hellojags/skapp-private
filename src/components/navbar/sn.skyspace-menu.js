@@ -193,7 +193,7 @@ class SnSkySpaceMenu extends React.Component {
                   onClick={() =>
                     this.props.isMobile && this.props.toggleMobileMenuDisplay()
                   }
-                  to={"/skyspace/" + skyspace}
+                  to={"/skapp/" + skyspace}
                 >
                   <ListItem
                     button

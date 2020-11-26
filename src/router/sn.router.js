@@ -87,10 +87,12 @@ export class SnRouter extends React.Component {
                     <Route path="/settings" component={SnUserSettings} />
                     <Route path="/login" component={snLogin} />
                     <Route path="/register" component={SnNew} />
+                    <Route path="/publish" component={SnNew} />
                     <Route path="/apps/:category" component={SnCards} />
                     <Route path="/skylinks" component={SnCards} />
                     <Route path="/skyapps/:id" component={SnNew} />
-                    <Route path="/skyspace/:skyspace" component={SnCards} />
+                     <Route path="/skapp/:skyspace" component={SnCards} />
+                    {/* <Route path="/skyspace/:skyspace" component={SnCards} /> */}
                     <Route path="/history" component={SnHistory} />
                     <Route path="/profile" component={SnProfile} />
                     <Route path="/public-cards" component={SnCards} />

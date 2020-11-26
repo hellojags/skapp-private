@@ -6,10 +6,9 @@ import {
     matchDispatcherToProps,
 } from "./sn.login.container";
 import { connect } from "react-redux";
-import { bsGetImportedSpacesObj, bsGetSkyIDProfile } from '../../blockstack/blockstack-api';
+import { bsGetImportedSpacesObj, bsGetSkyIDProfile,syncData , firstTimeUserSetup} from '../../blockstack/blockstack-api';
 import SkyID from "skyid";
-import {ID_PROVIDER_SKYID, PUBLIC_TO_ACC_QUERY_PARAM} from "../../sn.constants"
-
+import {ID_PROVIDER_SKYID, PUBLIC_TO_ACC_QUERY_PARAM} from "../../sn.constants";
 const styles = theme => ({
     margin: {
         margin: theme.spacing.unit * 2,
@@ -25,9 +24,9 @@ const styles = theme => ({
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
     var devMode = true
 } else {
-    var devMode = false
+    var devMode = true
 }
-const opts = { 'devMode': devMode }
+const opts = { devMode : true }
 
 
 class snLogin extends React.Component {
@@ -45,21 +44,21 @@ class snLogin extends React.Component {
 
     async componentDidMount() {
 
-        this.initializeSkyId();
+        this.initializeSkyId(opts);
         if (this.props.showDesktopMenu === false) {
             this.props.setDesktopMenuState(true);
         }
-        // if we have active per or session object we shall directly login ?
-        // if (this.props.person) {
-        //     this.props.history.push("/upload");
-        // }
+        // if we have active person or session object we shall directly login ?
+        if (this.props.person) {
+            this.props.history.push("/upload");
+        }
 
     }
 
     componentDidUpdate() {
-        // if (this.props.person) {
-        //     this.props.history.push("/upload");
-        // }
+        if (this.props.person) {
+            this.props.history.push("/upload");
+        }
     }
     // Sample Object skyId and Profile
     // skyId -->
@@ -98,11 +97,18 @@ class snLogin extends React.Component {
     //   }
     
     async onSkyIdSuccess(message) {
-        // seed, userId
+        // create userSession Object
         let userSession = {idp: ID_PROVIDER_SKYID, skyid: this.state.skyid};
         const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
         userSession = {...userSession, person: personObj};
         this.props.setUserSession(userSession);
+        // For first time user only 
+        let isFirstTime = await firstTimeUserSetup(userSession);
+        if(!isFirstTime)//if not firsttime call data sync 
+        {
+            // call dataSync
+            await syncData(userSession);
+        }
         this.props.setPersonGetOtherData(personObj);
         this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
         this.props.setLoaderDisplay(false);
@@ -125,9 +131,8 @@ class snLogin extends React.Component {
                 break;
         }
     }
-    initializeSkyId = () => {
-        const skyid = new SkyID('SkySpaces', this.skyidEventCallback, opts);
-        this.setState({ skyid: skyid });
+    initializeSkyId = (opts) => {
+        this.setState({ skyid: new SkyID('SkySpaces', this.skyidEventCallback, opts) });
     }
 
     handleSeedChange = (evt) => {

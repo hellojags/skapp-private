@@ -50,6 +50,10 @@ const useStyles = (theme) => ({
     padding: theme.spacing(3),
   },
   toolbar: theme.mixins.toolbar,
+  listItemText:{
+    fontSize:'1.7em',//Insert your required size
+    color: theme.palette.secondary.main
+  },
 });
 
 class SnLeftMenu extends React.Component {
@@ -157,6 +161,7 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
+                    classes = {{primary:classes.listItemText}}
                     primary="App Store"
                   />
                 </ListItem>
@@ -166,7 +171,7 @@ class SnLeftMenu extends React.Component {
                 activeClassName="active"
                 className="nav-link"
                 onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
-                to="/skapp/myskapps"
+                to="/skapp/myapps"
               >
                 <ListItem button>
                   <ListItemIcon>
@@ -174,6 +179,7 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
+                    classes = {{primary:classes.listItemText}}
                     primary="My Apps"
                   />
                 </ListItem>
@@ -191,6 +197,7 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
+                    classes = {{primary:classes.listItemText}}
                     primary="Hosting"
                   />
                 </ListItem>
@@ -208,7 +215,8 @@ class SnLeftMenu extends React.Component {
                   </ListItemIcon>
                   <ListItemText
                     style={{ color: APP_BG_COLOR }}
-                    primary="Publish Skapp"
+                    classes = {{primary:classes.listItemText}}
+                    primary="Publish App"
                   />
                 </ListItem>
               </NavLink>

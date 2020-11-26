@@ -11,8 +11,6 @@
 import { DEFAULT_PORTAL } from "../sn.constants";
 import { UserSession, AppConfig } from "blockstack";
 
-export const SKAPPP_SKYDB_DATAKEY = "skhub/skapp/skydb";
-
 export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
 export const SKYID_PROFILE_PATH = "profile";
 export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
@@ -31,12 +29,26 @@ export const HISTORY_FILEPATH = "skhub/history/history.json";
 export const USERSETTINGS_FILEPATH = "skhub/settings/usersetting.json";
 export const SKYNET_PORTALS_FILEPATH = "skhub/settings/portals/portals.json";
 export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json";
+
+// IndexedDB specific fields
+export const IDB_NAME = "SkyDB";
+export const IDB_STORE_NAME = "Skapp";
+
+//IndexedDB metadataKey to maintain local state (not required in SkyDB)
+export const IDB_LAST_SYNC_REVISION_NO = "skhub/skapp/idb/lastSyncRevNo";
+export const IDB_IS_OUT_OF_SYNC = "skhub/skapp/idb/isOutOfSync";
+
+// add skyDB datakey name must be prefixed with DK_
+export const DK_IDB_SKAPP = "skhub/skapp/idb";
+export const DK_IDB_SYNC_HISTORY = "skhub/skapp/idb";
+
 // ** Start : AppStore Specific keys
 export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider";
 // ** End : AppStore Specific keys
 export const EXPLORER_URL = "https://explorer.blockstack.org";
 export const SUCCESS = "success";
 export const FAILED = "failed";
+export const CONFLICT = "conflict";
 export const FAILED_DECRYPT_ERR = "FailedDecryptionError";
 export const ID_PROVIDER = "BLOCKSTACK";
 export const avatarFallbackImage =
