@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import skyapplogo from "../../SkySpaces_g.png";
 import FormControl from '@material-ui/core/FormControl';
 import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
@@ -35,18 +36,32 @@ import {
 } from "../../blockstack/blockstack-api";
 import SnSignin from "./sn.signin";
 import { connect } from "react-redux";
-import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
 import {
-  syncData,firstTimeUserSetup
+  syncData, firstTimeUserSetup
 } from "../../blockstack/blockstack-api";
 import SnDataSync from '../datasync/sn.datasync';
 import { SUCCESS } from '../../blockstack/constants';
-
+import { useSelector, useDispatch } from "react-redux";
+// Actions
+import { setMobileMenuDisplay,
+  toggleMobileMenuDisplay
+  } from "../../reducers/actions/sn.mobile-menu.action";
+import { fetchBlockstackPerson,
+logoutPerson,setPerson,
+setPersonGetOtherData } from "../../reducers/actions/sn.person.action";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
+import { fetchPublicApps, setApps } from "../../reducers/actions/sn.apps.action";
+import {setUserSession } from "../../reducers/actions/sn.user-session.action"
+import { fetchAppsSuccess } from "../../reducers/actions/sn.apps.action";
+import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
+import { makeStyles } from "@material-ui/core/styles";
+import useInterval from 'react-useinterval';
 
 const drawerWidth = 240;
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
@@ -74,38 +89,72 @@ const useStyles = (theme) => ({
     padding: theme.spacing(3),
   },
   toolbar: theme.mixins.toolbar,
-});
+}));
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-class SnTopBar extends React.Component {
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchStr: "",
-      invalidSkylink: false,
-      publicPortal: DEFAULT_PORTAL,
-      showInfoModal: false,
-      infoModalContent: "",
-      syncStatus: null,
-      onInfoModalClose: () => this.setState({ showInfoModal: false })
-    };
+export default function SnTopBar(props) {
+  // static propTypes = {
+  //   match: PropTypes.object.isRequired,
+  //   location: PropTypes.object.isRequired,
+  //   history: PropTypes.object.isRequired,
+  // };
+
+  // constructor(props) {
+  //   super(props);
+  //   = {
+  //     searchStr: "",
+  //     invalidSkylink: false,
+  //     publicPortal: DEFAULT_PORTAL,
+  //     showInfoModal: false,
+  //     infoModalContent: "",
+  //     syncStatus: null,
+  //     onInfoModalClose: () => setState({ showInfoModal: false })
+  //   };
+  // }
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  // local
+  const [searchStr, setSearchStr] = useState("");
+  const [invalidSkylink, setInvalidSkylink] = useState(false);
+  const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoModalContent, setInfoModalContent] = useState("");
+  const [syncStatus, setSyncStatus] = useState(null);
+
+  // Store
+  const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
+  const userSession = useSelector((state) => state.userSession);
+  const snPortalsList = useSelector((state) => state.snPortalsList);
+  const snApps = useSelector((state) => state.snApps);
+  const person = useSelector((state) => state.person);
+  const triggerSignIn = useSelector((state) => state.snTriggerSignin);
+  const snUserSetting = useSelector((state) => state.snUserSetting);
+  const snTopbarDisplay = useSelector((state) => state.snTopbarDisplay);
+  const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
+  const snPublicHash = useSelector((state) => state.snPublicHash);
+  const snPublicInMemory = useSelector((state) => state.snPublicInMemory);
+
+  const onInfoModalClose = () => {
+    setShowInfoModal(false);
   }
 
-  postSync = async () => {
-    this.setState({ syncStatus: 'synced' });
-    let status = await syncData(this.props.userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
-    //let status = await firstTimeUserSetup(this.props.userSession, null, null);
+  // useInterval(() => {
+  //   // Your custom logic here
+  //   postSync()
+  // }, 30000);
+
+  const postSync = async () => {
+    setSyncStatus('synced');
+    let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    //let status = await firstTimeUserSetup(userSession, null, null);
     alert("Success " + status);
     if (status == SUCCESS) {
-      this.setState({ syncStatus: 'synced' });
+      setSyncStatus('synced');
     }
     // alert("postSync clicked !!");
     // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
@@ -182,29 +231,31 @@ class SnTopBar extends React.Component {
     //   });
     // });
   }
-
-  getSkylinkIdxObject = (evt) => {
+  useEffect(() => {
+    console.log("Effect in action");
+  }, []);
+  const getSkylinkIdxObject = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
-    getSkylinkIdxObject(this.props.userSession).then((skyLinkIdxObject) => {
-      getSkylink(this.props.userSession, skyLinkIdxObject.skhubIdList[1]);
+    getSkylinkIdxObject(userSession).then((skyLinkIdxObject) => {
+      getSkylink(userSession, skyLinkIdxObject.skhubIdList[1]);
     });
   };
 
-  triggerSearch = async (evt) => {
+  const triggerSearch = async (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
-    if (this.props.snPublicHash != null) {
-      if (this.state.searchStr == null || this.state.searchStr.trim() === "") {
-        const allPublicApps = await getPublicApps(this.props.snPublicHash);
-        this.props.setApps(getAllPublicApps(allPublicApps.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps));
+    if (snPublicHash != null) {
+      if (searchStr == null || searchStr.trim() === "") {
+        const allPublicApps = await getPublicApps(snPublicHash);
+        dispatch(setApps(getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps,snPublicInMemory.deletedSkapps)));
 
       } else {
-        this.props.setLoaderDisplay(true);
-        const allPublicApps = await getPublicApps(this.props.snPublicHash);
-        const filteredApps = getAllPublicApps(allPublicApps.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps)
+        dispatch(setLoaderDisplay(true));
+        const allPublicApps = await getPublicApps(snPublicHash);
+        const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
           .filter((app) => {
-            if (this.state.searchStr && this.state.searchStr.trim() !== "") {
+            if (searchStr && searchStr.trim() !== "") {
               for (const skyAppKey in app) {
                 if (
                   app.hasOwnProperty(skyAppKey) &&
@@ -213,7 +264,7 @@ class SnTopBar extends React.Component {
                   app[skyAppKey]
                     .toString()
                     .toLowerCase()
-                    .indexOf(this.state.searchStr.toLowerCase()) > -1
+                    .indexOf(searchStr.toLowerCase()) > -1
                 ) {
                   return app;
                 }
@@ -223,42 +274,42 @@ class SnTopBar extends React.Component {
             }
             return "";
           });
-        this.props.fetchAppsSuccess(filteredApps);
+        dispatch(fetchAppsSuccess(filteredApps));
       }
     } else {
-      this.props.history.push(
-        "/skylinks?query=" + encodeURIComponent(this.state.searchStr)
+      history.push(
+        "/skylinks?query=" + encodeURIComponent(searchStr)
       );
     }
   };
-  onDownload = () => {
+  const onDownload = () => {
     try {
-      let skylink = parseSkylink(this.state.searchStr)
+      let skylink = parseSkylink(searchStr)
       //alert("skylink" + skylink)
-      launchSkyLink(skylink, this.props.snUserSetting);
+      launchSkyLink(skylink, snUserSetting);
     }
     catch (e) {
-      this.setState({ invalidSkylink: true })
+      setInvalidSkylink(true);
     }
   };
 
-  changePublicPortal = (portal) => {
+  const changePublicPortal = (portal) => {
     document.location.href = document.location.href.replace(
       document.location.origin,
       (new URL(portal)).origin
     );
   }
 
-  handleLogoClick = (evt) => {
-    this.props.snPublicHash && evt.preventDefault();
+  const handleLogoClick = (evt) => {
+    snPublicHash && evt.preventDefault();
   }
 
-  renderChangePortal = (value) => <FormControl className={this.props.classes.portalFormControl}>
+  const renderChangePortal = (value) => <FormControl className={classes.portalFormControl}>
     <Select
       labelId="demo-simple-select-label"
       id="pulic-share-portal"
       value={value}
-      onChange={(evt) => this.changePublicPortal(evt.target.value)}
+      onChange={(evt) => changePublicPortal(evt.target.value)}
     >
       <MenuItem className="d-none" value={value}>
         Change Portal
@@ -268,8 +319,8 @@ class SnTopBar extends React.Component {
           {document.location.origin}
         </MenuItem>
       )}
-      {this.props.snPortalsList &&
-        this.props.snPortalsList.portals.map((obj, index) => (
+      {snPortalsList &&
+        snPortalsList.portals.map((obj, index) => (
           <MenuItem key={index} value={obj.url}>
             {obj.name}
           </MenuItem>
@@ -277,95 +328,92 @@ class SnTopBar extends React.Component {
     </Select>
   </FormControl>
 
-  render() {
-    const { classes } = this.props;
-    const {syncStatus} = this.state;
-    return (
-      <>
-        <AppBar
-          position="fixed"
-          className={classes.appBar + " topbar-container"}
-          color="inherit"
-        >
-          <Toolbar className={clsx({
-            "d-none": !this.props.snTopbarDisplay,
-          })}>
-            <Grid container spacing={1} alignItems="center">
-              {this.props.snShowDesktopMenu && (
+  return (
+    <>
+      <AppBar
+        position="fixed"
+        className={classes.appBar + " topbar-container"}
+        color="inherit"
+      >
+        <Toolbar className={clsx({
+          "d-none": !snTopbarDisplay,
+        })}>
+          <Grid container spacing={1} alignItems="center">
+            {snShowDesktopMenu && (
 
-                <Grid item xs={1} sm={2} className="hidden-sm-up center-flex-div-content"
-                >
-                  <MenuIcon onClick={this.props.toggleMobileMenuDisplay} />
-                </Grid>
-              )}
-              <Grid item xs={1} sm={2} className="p-top10">
-                <div className="ribbon hidden-xs-dn"><span>BETA</span></div>
-                <NavLink className="sm-up-logo" to="/" onClick={this.handleLogoClick}>
-                  <img
-                    src={skyapplogo}
-                    alt="SkySpaces"
-                    className="cursor-pointer hidden-xs-dn"
-                    height="40"
-                    width="170"
-                  ></img>
-                  <img
-                    src={skyapplogo_only}
-                    alt="SkySpaces"
-                    className="cursor-pointer hidden-sm-up"
-                    height="30"
-                    width="30"
-                  ></img>
-                </NavLink>
+              <Grid item xs={1} sm={2} className="hidden-sm-up center-flex-div-content"
+              >
+                <MenuIcon onClick={() => dispatch(toggleMobileMenuDisplay)} />
               </Grid>
-              {(this.props.person != null || this.props.snPublicHash) && (
-                <>
-                  <Grid item xs={7} sm={7} className="topbar-srch-grid">
-                    <div className="float-center">
-                      <form onSubmit={this.triggerSearch}>
-                        <TextField
-                          id="filled-secondary"
-                          name="searchKey"
-                          autoComplete="off"
-                          variant="outlined"
-                          className="topbar-search-field"
-                          placeholder="Search in Spaces or Download Skylink"
-                          onChange={(evt) =>
-                            this.setState({ searchStr: evt.target.value })
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Search />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </form>
-                    </div>
-                  </Grid>
-                  {/* <Grid item xs={this.props.snPublicHash ? 2 : 1} sm={this.props.snPublicHash ? 2 : 1}>
+            )}
+            <Grid item xs={1} sm={2} className="p-top10">
+              <div className="ribbon hidden-xs-dn"><span>BETA</span></div>
+              <NavLink className="sm-up-logo" to="/" onClick={handleLogoClick}>
+                <img
+                  src={skyapplogo}
+                  alt="SkySpaces"
+                  className="cursor-pointer hidden-xs-dn"
+                  height="40"
+                  width="170"
+                ></img>
+                <img
+                  src={skyapplogo_only}
+                  alt="SkySpaces"
+                  className="cursor-pointer hidden-sm-up"
+                  height="30"
+                  width="30"
+                ></img>
+              </NavLink>
+            </Grid>
+            {(person != null || snPublicHash) && (
+              <>
+                <Grid item xs={7} sm={7} className="topbar-srch-grid">
+                  <div className="float-center">
+                    <form onSubmit={triggerSearch}>
+                      <TextField
+                        id="filled-secondary"
+                        name="searchKey"
+                        autoComplete="off"
+                        variant="outlined"
+                        className="topbar-search-field"
+                        placeholder="Search in Spaces or Download Skylink"
+                        onChange={(evt) =>
+                          setSearchStr(evt.target.value)
+                        }
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Search />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </form>
+                  </div>
+                </Grid>
+                {/* <Grid item xs={props.snPublicHash ? 2 : 1} sm={props.snPublicHash ? 2 : 1}>
                     <Tooltip title="Download Skylink Content" arrow>
-                      <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={this.onDownload} />
+                      <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={onDownload} />
                     </Tooltip>
                   </Grid> */}
-                </>
-              )}
-                <Grid item>
-                  <SnDataSync syncStatus={syncStatus}></SnDataSync>
-                </Grid>
-                <Grid item >
-                  <Button
-                    onClick={this.postSync}
-                    variant="contained"
-                    style={{ textTransform: "none" }}
-                    className={'${classes.margin} btn-login'}>
-                    Manual Sync
+              </>
+            )}
+            <Grid item>
+              <SnDataSync syncStatus={syncStatus}></SnDataSync>
+            </Grid>
+            <Grid item >
+              <Button
+                onClick={postSync}
+                variant="contained"
+                style={{ textTransform: "none" }}
+                className={'${classes.margin} btn-login'}>
+                Manual Sync
                   </Button>
-                </Grid>
-              <div className="top-icon-container float-right">
-                {/* <Grid
+            </Grid>
+            <div className="top-icon-container float-right">
+              {/* <Grid
                   item
-                  sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
+                  sm={props.person != null ? 2 : (props.snPublicHash != null ? 1 : 10)}
                   className="hidden-xs-dn"
                 >
                   <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
@@ -377,55 +425,55 @@ class SnTopBar extends React.Component {
                     </IconButton>
                   </Tooltip>
                 </Grid> */}
-                {!this.props.snShowDesktopMenu && (
-                  this.renderChangePortal("Change Portal")
-                )}
-                {this.props.snShowDesktopMenu && (
+              {!snShowDesktopMenu && (
+                renderChangePortal("Change Portal")
+              )}
+              {snShowDesktopMenu && (
+                // TODO: need to create a reducer for signin component display
+                <SnSignin />
+              )}
+            </div>
+            <Grid
+              item
+              xs={(person != null || snPublicHash != null) ? 2 : 10}
+              className="hidden-sm-up"
+            >
+              <div className="top-icon-container float-right">
+                {snShowDesktopMenu && (
                   // TODO: need to create a reducer for signin component display
                   <SnSignin />
                 )}
+                {renderChangePortal("")}
               </div>
-              <Grid
-                item
-                xs={(this.props.person != null || this.props.snPublicHash != null) ? 2 : 10}
-                className="hidden-sm-up"
-              >
-                <div className="top-icon-container float-right">
-                  {this.props.snShowDesktopMenu && (
-                    // TODO: need to create a reducer for signin component display
-                    <SnSignin />
-                  )}
-                  {this.renderChangePortal("")}
-                </div>
-              </Grid>
             </Grid>
-          </Toolbar>
-        </AppBar>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={this.state.invalidSkylink}
-          autoHideDuration={3000}
-          onClose={() => this.setState({ invalidSkylink: false })}
-          TransitionComponent={"Fade"}
-        >
-          <Alert onClose={() => this.setState({ invalidSkylink: false })} severity="error">
-            Invalid Skylink ! Please enter valid 46 character skylink to Download.
+          </Grid>
+        </Toolbar>
+      </AppBar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={invalidSkylink}
+        autoHideDuration={3000}
+        onClose={() => setInvalidSkylink(false)}
+        TransitionComponent={"Fade"}
+      >
+        <Alert onClose={() => setInvalidSkylink(false)} severity="error">
+          Invalid Skylink ! Please enter valid 46 character skylink to Download.
       </Alert>
-        </Snackbar>
-        <SnInfoModal
-          open={this.state.showInfoModal}
-          onClose={this.state.onInfoModalClose}
-          title="Public Share Link"
-          type="public-share"
-          content={this.state.infoModalContent}
-        />
-      </>
-    );
-  }
+      </Snackbar>
+      <SnInfoModal
+        open={showInfoModal}
+        onClose={() => onInfoModalClose()}
+        title="Public Share Link"
+        type="public-share"
+        content={infoModalContent}
+      />
+    </>
+  );
+  // }
 }
 
-export default withRouter(
-  withStyles(useStyles)(
-    connect(mapStateToProps, matchDispatcherToProps)(SnTopBar)
-  )
-);
+// export default withRouter(
+//   withStyles(useStyles)(
+//     connect(mapStateToProps, matchDispatcherToProps)(SnTopBar)
+//   )
+// );

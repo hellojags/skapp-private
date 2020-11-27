@@ -9,7 +9,7 @@ export default function SnDataSync(props) {
   useEffect(() => {
     setSyncStatus(props.syncStatus);
     setIsOutOfSync(props.isOutOfSync);
-  }, []);
+  }, [syncStatus,isOutOfSync ]);
 
   function handleChange(newValue) {
     setSyncStatus(newValue);
