@@ -1,4 +1,4 @@
-import { createSkySpaceIdxObject, SHARED_BY_USER_FILEPATH, APP_STORE_PROVIDER_FILEPATH, INITIAL_APPSTORE_PROVIDER_OBJ } from './constants'
+import { createSkySpaceIdxObject, SHARED_BY_USER_FILEPATH } from './constants'
 import { getPublicKeyFromPrivate } from 'blockstack';
 import {
     SKYLINK_PATH,
@@ -10,6 +10,7 @@ import {
     createSkylinkIdxObject,
     INITIAL_SETTINGS_OBJ,
     INITIAL_PORTALS_OBJ,
+    INITIAL_DATASYNC_PREF_OBJ,
     HISTORY_FILEPATH,
     USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH, SUCCESS, FAILED, createSkySpaceObject,
     FAILED_DECRYPT_ERR,
@@ -18,12 +19,14 @@ import {
     SHARED_PATH_PREFIX,
     GAIA_HUB_URL,
     SKYID_PROFILE_PATH,
-    DK_IDB_SKAPP,
+    DK_IDB_SKYSPACES,
     INITIAL_SKYDB_OBJ,
     CONFLICT,
     IDB_STORE_NAME,
     IDB_LAST_SYNC_REVISION_NO,
-    IDB_IS_OUT_OF_SYNC
+    IDB_IS_OUT_OF_SYNC,
+    APP_STORE_PROVIDER_FILEPATH,
+    INITIAL_APPSTORE_PROVIDER_OBJ
 } from './constants'
 import { lookupProfile } from "blockstack";
 import {
@@ -42,6 +45,8 @@ import { getUserSessionType } from '../sn.util';
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey, getRegistry } from '../skynet/sn.api.skynet';
 import { getAllItemsFromIDB, getJSONfromDB, setJSONinDB, setAllinDB } from "../db/indexedDB";
 import { getInitialDataJSON } from '../db/data/masterdata';
+import store from "../reducers";
+import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
 
 export const firstTimeUserSetup = async (session) => {
     try {
@@ -52,7 +57,7 @@ export const firstTimeUserSetup = async (session) => {
             return false;// not firsttime user
         }
         else {
-            let skydbEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKAPP);
+            let skydbEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKYSPACES);
             
             if (skydbEntry && skydbEntry != 'undefined') {
                 return false;// not firsttime user
@@ -90,7 +95,7 @@ export const firstTimeUserSetup = async (session) => {
 export const syncData = async (session, skyDBdataKey, idbStoreName) => {
     try {
         // fetch registryEntry
-        let registryEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKAPP);
+        let registryEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKYSPACES);
 
         // check revision number 
         let skyDBRevisionNo = (registryEntry && registryEntry != 'undefined') ? registryEntry.revision : 0;
@@ -104,7 +109,7 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
             // give prompt to user to make decision (data conflict status on UI)
             // OR Just make decision for them to update SkyDB, not good idea but for now lets keep it like this. (TODO: update this logic after Beta)
             //1. Fetch data from SkyDB
-            let skydbJSON = await getFile(session, DK_IDB_SKAPP, { skydb: true });
+            let skydbJSON = await getFile(session, DK_IDB_SKYSPACES, { skydb: true });
             if (skydbJSON && skydbJSON != 'undefined' && skydbJSON.db) {
                 await skydbJSON.db.forEach((item) => {
                     let key =  Object.keys(item)[0];
@@ -119,7 +124,9 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
             }
             // or status = CONFLICT;
             // This must be last step
-            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); 
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); // Data is in sync. set flag in Indexed DB.
+            store.dispatch(setIsDataOutOfSync(false)); // Data is in sync. set flag in store.
+            
         }
         // SkyDB Out-of-Sync Scenario: If revision number is larger in IndexedDB, fetch data from IndexedDB and update SkyDB
         else if (isOutofSync || (parseInt(skyDBRevisionNo) < parseInt(idbRevisionNo))) {
@@ -132,43 +139,26 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
             skydbJSON['recordCount'] = recordCount;
             //update SkyDB
             if (registryEntry && registryEntry != 'undefined') {
-                await putFile(session, DK_IDB_SKAPP, skydbJSON, { skydb: true, historyflag: true });
+                await putFile(session, DK_IDB_SKYSPACES, skydbJSON, { skydb: true, historyflag: true });
             }
             else {
-                await putFile(session, DK_IDB_SKAPP, skydbJSON, { skydb: true }); // no history flag since its first time call.
+                await putFile(session, DK_IDB_SKYSPACES, skydbJSON, { skydb: true }); // no history flag since its first time call.
             }
             // update IndexedDB with revision number
             await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision: (skyDBRevisionNo +1) }); //we are doing plus one since we uploaded file to Skynet and revision is incremented.
             // This must be last step
-            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);// Data is in sync. set flag in IDB.
+            store.dispatch(setIsDataOutOfSync(false));// Data is in sync. set flag in store.
         }
         else {
             console.log("Data is already in sync");
         }
-
-        // if (skydbEntry && skydbEntry != 'undefined') {
-        //     return;
-        // }
-        // else // first time user
-        // {
-        //     // read space data from initialData folder and load it for user. 
-        //     // TODO: Ideally we shall fetch it from Skapp dataKey. "skhub/skapp/initialdata.json"
-
-        // }
     }
     catch (error) {
         return FAILED;
     }
     return SUCCESS;;
 }
-
-// update SkyDB
-// step1: fetch all data from database
-// step2: use skynet setJSON method to commit data
-export const syncWithSkyDB = async (session, dataKey, idbStoreName) => {
-
-}
-
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -198,7 +188,7 @@ export const bsAddSkhubListToSkylinkIdx = async (session, skhubIdList) => {
 };
 
 export const bsAddSkylink = async (session, skylinkObj, person) => {
-    console.log("person", person)
+    //console.log("person", person)
     // check if skhubId is present. If new Object, this value will be empty
     if (person == null) {
         return;
@@ -682,47 +672,10 @@ export const bsGetUserSetting = async (session) => {
     const userSetting = await getFile(session, USERSETTINGS_FILEPATH);
     return userSetting ? userSetting : INITIAL_SETTINGS_OBJ();
 }
-
 export const bsSetUserSetting = async (session, userSettingObj) => {
     await putFile(session, USERSETTINGS_FILEPATH, userSettingObj);
     return;
 }
-// Sample Object skyId and Profile
-// skyId -->
-// {
-//     callback: function () { [native code] },
-//     appId: "SkySpaces",
-//     opts: {
-//         devMode: true,
-//     },
-//     seed: "e26283c753cf0fefb577ee1d3d999c401f897127123471343d93c0366f6aa1c3", // App Specific Seed
-//     userId: "c1a956eb2cc4fc9c2d34c9a48eae8dba7ad89c7a57d6f55f320c07f9c1eb8ea7", //Master Public Key
-//     url: "http://localhost:3000/",
-//     appImg: null,
-// }
-// SkyID Profile Object - using Master PublicKey -->
-// {
-//     "username": "skyspaces",
-//     "aboutMe": "",
-//     "dapps": {
-//       "Example skapp": {
-//         "url": "https://sky-note.hns.siasky.net/",
-//         "publicKey": "fb1e595e70cd02845583a2e7b8a4c0278744cecebbf3aef8474ae9c8932c2b2e",
-//         "img": null
-//       },
-//       "SkySpaces": {
-//         "url": "http://localhost:3000/",
-//         "publicKey": "370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d04d07f04",
-//         "img": null
-//       },
-//       "skyfeed": {
-//         "url": "https://sky-id.hns.siasky.net/?appId=skyfeed&redirect=backConnect",
-//         "publicKey": "b7fe28de361766b730ea169226352198fe3e4a2995454045f1787d5a528eb40f",
-//         "img": null
-//       }
-//     }
-//   }
-
 export const bsGetSkyIDProfile = async (session) => {
     //let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
     let personObj = null;
@@ -761,6 +714,12 @@ export const bsGetPortalsList = async (session) => {
         portalsJSON.portals = INITIAL_PORTALS_OBJ.portals;
     }
     return portalsJSON;
+}
+
+export const bsGetDataSyncPrefList = (session) => {
+    // we may need to add more logic here in future
+    let dataSyncPrefJSON= INITIAL_DATASYNC_PREF_OBJ
+    return dataSyncPrefJSON.dataSyncPrefList;
 }
 
 export const bsSetPortalsList = async (session, portalsObj) => {
@@ -868,7 +827,7 @@ export const bsSavePublicKey = async (session) => {
         console.log(err);
     }
 }
-
+// Get the file that contains all existing List of users with whom spaces are shared so far.
 export const bsGetSharedWithObj = async (session) => {
     try {
         return getFile(session, SHARED_WITH_FILE_PATH);
@@ -878,6 +837,7 @@ export const bsGetSharedWithObj = async (session) => {
 export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
+
 
 // ###################################### Start AppStore specific methods ##################################################################
 export const getAppStoreProviderList = async (session) => {
@@ -954,6 +914,7 @@ export const getSpacesUsingPK = async (session, aspPubkeyList, opt) => {
 }
 // ###################################### END AppStore specific methods ##################################################################
 
+
 // This method is getting called from Modal to import user spaces. This is coming from sn.import-shared-space-modal (input)
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
@@ -972,11 +933,11 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         switch (sessionType) {
             case ID_PROVIDER_SKYID:
                 //loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
-                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, session?.profile?.appPublicKey);
+                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, session?.person?.appPublicKey,{skydb:true});
                 break;
             case ID_PROVIDER_SKYDB:
                 loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
-                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, loggedInUserStorageId);
+                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, loggedInUserStorageId,{skydb:true});
                 break;
             case ID_PROVIDER_BLOCKSTACK:
             default:
@@ -1069,7 +1030,7 @@ export const getStorageIds = async (session, senderId) => {
     let senderStorage, loggedInUserStorageId, remoteUserStorage;
     switch (sessionType) {
         case ID_PROVIDER_SKYID:
-            loggedInUserStorageId = session?.profile?.appPublicKey;
+            loggedInUserStorageId = session?.person?.appPublicKey;
             senderStorage = senderId;
             remoteUserStorage = senderId;
             break;
@@ -1185,7 +1146,7 @@ export const bsUnshareSpaceFromRecipientLst = async (session, recipientIdStrgLst
 }
 
 //const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
-
+// This method is getting called from share-skyspace.Modal
 export const bsShareSkyspace = async (session, skyspaceList, recipientId, sharedWithObj) => {
     //let recipientId;
     let key;
@@ -1258,6 +1219,7 @@ export const bsShareSkyspace = async (session, skyspaceList, recipientId, shared
             .then((encSkylink) => putFileForShared(session, SHARED_SKYLINK_PATH, encSkylink)));
     });
     await Promise.all(promises);
-
+    // once all the files are shared with recipent, update loggedIn users shared list
     await bsSaveSharedWithObj(session, sharedWithObj);
+    // call data sync
 }

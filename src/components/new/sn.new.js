@@ -1,6 +1,10 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { InputLabel, FormControl } from "@material-ui/core";
+import { InputLabel, FormControl, Paper, Typography, Button } from "@material-ui/core";
+import SaveIcon from "@material-ui/icons/Save";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import useStyles from "./sn.new.styles";
 import TextField from "@material-ui/core/TextField";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import { SkynetClient } from "skynet-js";
@@ -46,15 +50,7 @@ import {
   bsGetSharedSkappListFromSender,
 } from "../../blockstack/blockstack-api";
 import { generateSkyhubId } from "../../blockstack/utils";
-
-const useStyles = (theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-});
+import SnFooter from "../footer/sn.footer";
 
 let appId = "";
 
@@ -142,7 +138,7 @@ class SnNew extends React.Component {
 
   componentDidMount() {
     const path = this.props.match.path;
-    if (path === "/register" || path === "/publish") {
+    if (path === "/register") {
       this.setState({
         isRegister: true,
         isAppOwner: true,
@@ -204,7 +200,7 @@ class SnNew extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const path = this.props.match.path;
-    if (path === "/register" || path === "/publish") {
+    if (path === "/register") {
       if (!this.state.isRegister) {
         this.setState({
           isRegister: true,
@@ -372,7 +368,7 @@ class SnNew extends React.Component {
         .then(() => {
           //Add skyspace in history. also add Header information if not already present.
           let historyObj = getEmptyHistoryObject();
-          //this.props.skyapp.skhubId = generateSkyhubId(ID_PROVIDER + ":" + this.props.person.profile.did + ":" + uploadObj.skylink);
+          //this.props.skyapp.skhubId = generateSkyhubId(ID_PROVIDER + ":" + this.props.person.profile.decentralizedID + ":" + uploadObj.skylink);
           historyObj.skhubId = this.props.skyapp.skhubId;
           historyObj.skylink = this.props.skyapp.skylink;
           historyObj.fileName = this.props.skyapp.name;
@@ -598,7 +594,7 @@ class SnNew extends React.Component {
     this.props.skyapp.skhubId = generateSkyhubId(
       ID_PROVIDER +
       ":" +
-      this.props.person.profile.did +
+      this.props.person.profile.decentralizedID +
       ":" +
       uploadObj.skylink
     );
@@ -675,6 +671,326 @@ class SnNew extends React.Component {
     }
 
     if (!showLoader) {
+
+      return (
+        <>
+          <main className={classes.content}>
+            <div style={{ paddingTop: 70, minHeight: "calc(100vh - 100px)" }}>
+              <Grid
+                container
+                spacing={3}
+                className={`most_main_grid_ef ${classes.most_main_grid_ef}`}
+              >
+                <Grid item xs={12} className={classes.main_grid_ef}>
+                  <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
+                    <Paper className={classes.tabsPaper_ef}>
+                      <Typography className={classes.title1_ef}> Skapp Details </Typography>
+                      <ValidatorForm
+                        ref="form"
+                        onSubmit={this.handleSubmit}
+                        onError={(errors) => console.log(errors)}
+                      >
+                        <Grid container spacing={1}>
+                          <video
+                            src=""
+                            muted
+                            controls
+                            crossOrigin="anonymous"
+                            loop
+                            className="d-none"
+                            id="hidden-upload-video"
+                          ></video>
+
+                          <Grid item xs={12}>
+                            <TextField
+                              id="skylink"
+                              name="skylink"
+                              label="Skylink URL"
+                              error={errorObj.skylink}
+                              fullWidth
+                              value={skyapp.skylink}
+                              autoComplete="off"
+                              helperText={
+                                "Please provide 46 character skylink." +
+                                (errorObj.skylink && errorObj["skylink.errorMsg"] !== ""
+                                  ? "Details:" + errorObj["skylink.errorMsg"]
+                                  : "")
+                              }
+                              onInput={(e) => {
+                                e.target.value = e.target.value.slice(0, 200);
+                              }}
+                              onChange={this.handleChange}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} >
+                            <TextField
+                              id="name"
+                              name="name"
+                              label={
+                                "File Name" +
+                                (skyapp.bookmark || skyapp.permission ? "*" : "")
+                              }
+                              fullWidth
+                              error={errorObj.name}
+                              value={skyapp.name}
+                              autoComplete="off"
+                              onChange={this.handleChange}
+                              helperText={
+                                errorObj.name
+                                  ? "File name is a mandatory field."
+                                  : "Max 200 characters. " +
+                                  (skyapp.bookmark || skyapp.permission
+                                    ? "This is a mandatory field."
+                                    : "")
+                              }
+                              onInput={(e) => {
+                                e.target.value = e.target.value.slice(0, 200);
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} >
+                            <FormControl
+                              className={classes.fullWidth}
+                              error={errorObj.description}
+                            >
+                              <TextField
+                                InputProps={{
+                                  className: classes.desc,
+                                }}
+                                className={classes.description_inpt_ef}
+                                placeholder="Description..."
+                                variant="outlined"
+                                value={skyapp.description}
+                                label="Description*"
+                                autoComplete="off"
+                                name="description"
+                                id="mui-theme-provider-outlined-input"
+                                onInput={(e) => {
+                                  e.target.value = e.target.value.slice(0, 500);
+                                }}
+                                onChange={this.handleChange}
+                              />
+                              <FormHelperText>
+                                {"Max 500 characters. " +
+                                  (errorObj.name ? "This is a mandatory field." : "")}
+                              </FormHelperText>
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12} className="select-grid">
+                            <FormControl
+                              className={classes.formControl}
+                              error={errorObj.skyspaceList}
+                              style={{ width: "100%" }}
+                            >
+                              <Grid item xs={2} sm={2}>
+                                {"SkySpace" +
+                                  (skyapp.bookmark || skyapp.permission ? "*" : "")}
+                              </Grid>
+                              <Grid item xs={10} sm={9}>
+
+                                <div>
+                                  {this.props.snSkyspaceList != null &&
+                                    this.props.snSkyspaceList.length > 0 ? (
+                                      <SnCarousalMenu
+                                        selectedItems={
+                                          this.props.snAppSkyspacesToChange != null &&
+                                            this.props.snAppSkyspacesToChange
+                                              .skyspaceForSkhubIdList != null
+                                            ? this.props.snAppSkyspacesToChange
+                                              .skyspaceForSkhubIdList
+                                            : []
+                                        }
+                                        itemsObj={this.getSkyspaceListForCarousalMenu()}
+                                        labelKey={"label"}
+                                        onUpdate={(evt) =>
+                                          this.handleChange(evt, { key: "skyspaceList" })
+                                        }
+                                      />
+                                    ) : (
+                                      <Grid item xs={12} sm={10} justify="flex-start">
+                                        <Tooltip title="Create New Space" arrow>
+                                          <IconButton
+                                            onClick={this.addSkyspace}
+                                            justify="flex-start"
+                                          >
+                                            <AddCircleOutlineOutlinedIcon
+                                              style={{ color: APP_BG_COLOR, fontSize: 25 }}
+                                            />
+                                          </IconButton>
+                                        </Tooltip>
+                                      </Grid>
+                                    )}
+                                </div>
+                                <FormHelperText>
+                                  {"Please select atleast one Space (mandatory field)" +
+                                    (skyapp.permission ? "This is a mandatory field." : "")}
+                                </FormHelperText>
+                              </Grid>
+
+                            </FormControl>
+                          </Grid>
+                          {
+                            <Grid item xs={12} className="select-grid">
+                              <FormControl
+                                className={classes.formControl}
+                                error={errorObj.tags}
+                              >
+                                <ChipInput
+                                  value={skyapp.tags}
+                                  onAdd={(chip) =>
+                                    this.handleChange(chip, { key: "tags", isArray: true })
+                                  }
+                                  onDelete={(chip, index) => {
+                                    this.handleChange(chip, {
+                                      key: "tags",
+                                      isCallback: true,
+                                      callback: (currVal, index) => {
+                                        currVal.splice(index, 1);
+                                        return currVal;
+                                      },
+                                    });
+                                  }}
+                                />
+                                <FormHelperText>
+                                  {"Please select tags. " +
+                                    (skyapp.permission ? "This is a mandatory field." : "")}
+                                </FormHelperText>
+                              </FormControl>
+                            </Grid>
+                          }
+                          <Grid item xs={12} className="select-grid">
+                            <FormControl
+                              className={classes.formControl}
+                              error={errorObj.type}
+                            >
+                              <Autocomplete
+                                options={getCategoryObjWithoutAllAsArray()}
+                                getOptionLabel={(option) => option.label}
+                                value={this.setTypeAutoCompleteValue()}
+                                name="type"
+                                onChange={(evt, value) => {
+                                  this.handleChange(value == null ? null : value.key, {
+                                    key: "type",
+                                  });
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} label="Category" margin="normal" />
+                                )}
+                              />
+                              <FormHelperText>
+                                {"Please select category. This is a mandatory field."}
+                              </FormHelperText>
+                            </FormControl>
+                          </Grid>
+                          {skyapp.category === SKYLINK_TYPE_SKYLINK && (
+                            <>
+                              <Grid item xs={12} sm={10}>
+                                <TextField
+                                  id="git_url"
+                                  name="git_url"
+                                  label="Github/GitLab URL"
+                                  fullWidth
+                                  value={skyapp.git_url}
+                                  autoComplete="off"
+                                  onChange={this.handleChange}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={10}>
+                                <TextField
+                                  id="demo_url"
+                                  name="demo_url"
+                                  label="Demo URL"
+                                  fullWidth
+                                  value={skyapp.demo_url}
+                                  autoComplete="off"
+                                  onChange={this.handleChange}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={10}>
+                                <TextField
+                                  id="developer"
+                                  name="developer"
+                                  label="Developed By"
+                                  fullWidth
+                                  value={skyapp.developer}
+                                  autoComplete="off"
+                                  onChange={this.handleChange}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={10}>
+                                <TextField
+                                  id="appStatus"
+                                  name="appStatus"
+                                  label="App Status"
+                                  fullWidth
+                                  value={skyapp.appStatus}
+                                  autoComplete="off"
+                                  onChange={this.handleChange}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={10}>
+                                <TextField
+                                  id="support"
+                                  name="support"
+                                  label="Support"
+                                  fullWidth
+                                  value={skyapp.support}
+                                  autoComplete="off"
+                                  onChange={this.handleChange}
+                                />
+                              </Grid>
+                            </>
+                          )}
+                          <Grid
+                            item
+                            xs={12}
+                            className={classNames({
+                              "button-grid": true,
+                            })}
+                          >
+                            <SnNewButton
+                              isRegister={isRegister}
+                              isAppOwner={
+                                this.props.snAppSkyspaces != null &&
+                                this.props.snAppSkyspaces.isAppOwner
+                              }
+                              edit={edit}
+                              onDelete={this.handleSubmit}
+                              onEdit={this.handleEditBtn}
+                              onDone={this.handleDoneBtn}
+                            />
+                          </Grid>
+                        </Grid>
+                      </ValidatorForm>
+                    </Paper>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+            <div>
+        <SnFooter />
+      </div>
+          </main>
+          <SnInfoModal
+            open={this.state.snInfoModal.open}
+            onClose={this.state.snInfoModal.onClose}
+            title={this.state.snInfoModal.title}
+            content={this.state.snInfoModal.description}
+          />
+          <SnAddSkyspaceModal
+            open={this.state.showAddSkyspace}
+            title={this.state.skyspaceModal.title}
+            skyspaceName={this.state.skyspaceModal.skyspaceName}
+            handleClickOpen={this.handleAddSpaceOpen}
+            handleClose={this.handleAddSpaceClose}
+            type={this.state.skyspaceModal.type}
+          />
+        </>
+      );
+
+
       return (
         <div className="container-fluid register-container">
           <ValidatorForm

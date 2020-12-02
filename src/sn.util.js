@@ -129,7 +129,8 @@ export const getAllPublicApps = (appsFromHash, inMemoryAddedApps, inMemoryDelete
 
 // I think we can use idp field in session object for this
 export const getUserSessionType = (userSession) => {
-  let idType = ID_PROVIDER_BLOCKSTACK;
+  let idType = ID_PROVIDER_SKYID;
+  //ID_PROVIDER_BLOCKSTACK;
   if (userSession.skydbseed) {
     idType = ID_PROVIDER_SKYDB; 
   }else if (userSession.skyid) {

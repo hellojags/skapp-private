@@ -99,7 +99,7 @@ class SnAddSkyspaceModal extends React.Component {
           <DialogTitle id="form-dialog-title">
             {this.props.title != null && this.props.title.trim() !== ""
               ? this.props.title
-              : "Add New Skyspace"}
+              : "Add New Space"}
           </DialogTitle>
           <DialogContent>
           <ValidatorForm
@@ -109,7 +109,7 @@ class SnAddSkyspaceModal extends React.Component {
               autoFocus
               margin="dense"
               id="name"
-              label="Enter Skyspace Name"
+              label="Enter Space Name"
               fullWidth
               value={this.state.skyspaceName}
               onChange={this.handleChange}

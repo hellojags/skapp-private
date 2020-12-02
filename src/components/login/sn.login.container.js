@@ -28,7 +28,6 @@ export function matchDispatcherToProps(dispatcher){
 
 export function mapStateToProps(state) {
     return { 
-        // Prop Name in component : Name in Redux Store.
         showMobileMenu: state.snShowMobileMenu,
         showDesktopMenu: state.snShowDesktopMenu,
         userSession: state.userSession,

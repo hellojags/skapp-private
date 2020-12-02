@@ -116,6 +116,7 @@ export default function SnShareSkyspaceModal(props) {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         {props.content}
+                        (Hint: User can access PublicKey by clicking on profile icon on left top corner)
                     </DialogContentText>
                     <Grid container spacing={1} direction="row">
                         <Grid item xs={12}>
@@ -130,14 +131,15 @@ export default function SnShareSkyspaceModal(props) {
                                                 color="primary" variant="outlined" />
                                         </Tooltip>
                                     )}
+                                
                                 <TextField
                                     id="recipientId"
                                     name="recipientId"
-                                    label="Recipient Id"
+                                    label="Recipient's PublicKey"
                                     fullWidth
                                     value={recipientId}
                                     autoComplete="off"
-                                    helperText="Please enter recipient blockstack ID."
+                                    helperText="Please enter recipient's publicKey"
                                     onChange={evt => {
                                         setAnchorEl(evt.target);
                                         setRecipientId(evt.target.value);

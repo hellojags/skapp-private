@@ -32,19 +32,20 @@ export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json";
 
 // IndexedDB specific fields
 export const IDB_NAME = "SkyDB";
-export const IDB_STORE_NAME = "Skapp";
+export const IDB_STORE_NAME = "SkySpaces";
 
 //IndexedDB metadataKey to maintain local state (not required in SkyDB)
-export const IDB_LAST_SYNC_REVISION_NO = "skhub/skapp/idb/lastSyncRevNo";
-export const IDB_IS_OUT_OF_SYNC = "skhub/skapp/idb/isOutOfSync";
+export const IDB_LAST_SYNC_REVISION_NO = "skhub/skyspaces/idb/lastSyncRevNo";
+export const IDB_IS_OUT_OF_SYNC = "skhub/skyspaces/idb/isOutOfSync";
 
 // add skyDB datakey name must be prefixed with DK_
-export const DK_IDB_SKAPP = "skhub/skapp/idb";
-export const DK_IDB_SYNC_HISTORY = "skhub/skapp/idb";
+export const DK_IDB_SKYSPACES = "skhub/skyspaces/idb";
+export const DK_IDB_SYNC_HISTORY = "skhub/skyspaces/idb";
 
 // ** Start : AppStore Specific keys
 export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider";
 // ** End : AppStore Specific keys
+
 export const EXPLORER_URL = "https://explorer.blockstack.org";
 export const SUCCESS = "success";
 export const FAILED = "failed";
@@ -112,7 +113,8 @@ export const INITIAL_SETTINGS_OBJ = () => {
     lastUpdateTS: new Date(),
     setting: {
       portal: DEFAULT_PORTAL,
-      backupList: []
+      backupList: [],
+      dataSyncPref: "Every 10 Minutes",
     }
   };
 };
@@ -127,6 +129,49 @@ export const INITIAL_SKYDB_OBJ = () => {
     db: [],
     keys: []
   };
+};
+
+export const INITIAL_DATASYNC_PREF_OBJ = {
+  version: "v1",
+  createTS: new Date(),
+  lastUpdateTS: new Date(),
+  dataSyncPrefList: [
+    {
+      name: "Every 5 Minutes",
+      value: 5,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "Every 10 Minutes",
+      value: 10,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "Every 15 Minutes",
+      value: 15,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "Every 20 Minutes",
+      value: 20,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "Every 25 Minutes",
+      value: 25,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "Every 30 Minutes",
+      value: 30,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "RealTimeSync",
+      value: 0,
+      desc: "Update SkySpaces metadata realtime on SkyDB as local changes are happening. This will cost you more since every change in SkySpace metadata will result in SkyDB write.",
+    },
+  ],
 };
 
 export const INITIAL_APPSTORE_PROVIDER_OBJ = {

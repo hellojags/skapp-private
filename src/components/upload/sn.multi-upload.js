@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import FormControl from "@material-ui/core/FormControl";
+import useStyles from "./sn.multi-upload.styles";
 import { useLocation } from "react-router-dom";
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import AutoComp from "./autofield/autofield";
+import DescriptionIcon from "@material-ui/icons/Description";
+import { BsFileEarmarkArrowUp } from "react-icons/bs";
+import ClearIcon from '@material-ui/icons/Clear';
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Snackbar from "@material-ui/core/Snackbar";
+import { TiAttachment } from "react-icons/ti";
 import MuiAlert from "@material-ui/lab/Alert";
 import { parseSkylink } from "skynet-js";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -20,7 +27,7 @@ import Grid from "@material-ui/core/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import {
   bsAddSkylink, bsAddToHistory, bsAddSkylinkFromSkyspaceList,
- bsAddSkylinkOnly, bsAddSkhubListToSkylinkIdx, bsAddBulkSkyspace
+  bsAddSkylinkOnly, bsAddSkhubListToSkylinkIdx, bsAddBulkSkyspace
 } from "../../blockstack/blockstack-api";
 import {
   createEmptyErrObj,
@@ -34,42 +41,10 @@ import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-co
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
+import { Paper, Switch, Typography, useMediaQuery } from "@material-ui/core";
+import { DropzoneArea } from "material-ui-dropzone";
+import SnFooter from "../footer/sn.footer";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 345,
-  },
-  media: {
-    height: 0,
-    // paddingTop: "56.25%", // 16:9
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-  cardHeader: {
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  downloadGrid: {
-    paddingTop: 20
-  }
-}));
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -80,23 +55,34 @@ function useQuery() {
 }
 
 export default function SnMultiUpload(props) {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const query = useQuery();
 
+  const matches = useMediaQuery("(min-width:950px)");
+
+  const classes = useStyles();
+
   const [errorObj] = useState(createEmptyErrObj());
   const [tags, setTags] = useState([]);
+  const [isDirUpload, setIsDirUpload] = useState(false);
   const [skyspaceList, setSkyspaceList] = useState([]);
   const [dnldSkylink, setDnldSkylink] = useState([]);
   const [showPublicToAccModal, setShowPublicToAccModal] = useState(false);
-  const uploadEleRef = React.createRef();
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
+  const [state, setState] = React.useState({
+    checkedA: false,
+    checkedB: true,
+  });
+  const [thumbnail, setThumb] = React.useState("");
+  const uploadEleRef = createRef();
+  const dropZoneRef = createRef();
 
   const stUserSession = useSelector((state) => state.userSession);
   const stSnSkyspaceList = useSelector((state) => state.snSkyspaceList);
   const stPerson = useSelector((state) => state.person);
+  const stUploadList = useSelector((state) => state.snUploadList);
   const stUserSetting = useSelector((state) => state.snUserSetting);
   const skyapp = getEmptySkylinkObject();
 
@@ -108,9 +94,22 @@ export default function SnMultiUpload(props) {
     handlePublicToAcc();
   }, [query.get(PUBLIC_TO_ACC_QUERY_PARAM)]);
 
+
   useEffect(() => {
     handlePublicToAcc();
   }, []);
+
+  const handleSwitchChnge = (event) => {
+    setIsDirUpload(event.target.checked);
+  };
+  const handleImage = (files) => {
+    if (files.length) {
+      setThumb(files[0]);
+    }
+  };
+  const delImg = () => {
+    setThumb("");
+  };
 
   const handlePublicToAcc = () => {
     if (stPerson != null) {
@@ -185,74 +184,163 @@ export default function SnMultiUpload(props) {
     dispatch(fetchSkyspaceAppCount());
   }
 
-  return (
-    <div className="container-fluid register-container">
-      <Grid container spacing={1} direction="row">
-        <Grid item xs={12} sm={10} style={{ color: "red", paddingTop: 20 }}>
-          Warning: Content uploaded using SkySpaces is not encrypted.
-        </Grid>
-        {stPerson && (<Grid item xs={12} sm={10} className="select-grid">
-          <FormControl className={classes.formControl} error={errorObj.type}>
-            {stSnSkyspaceList && (<Autocomplete
-              multiple
-              options={stSnSkyspaceList}
-              getOptionLabel={(space) => space}
-              name="skyspaceList"
-              onChange={(evt, value) => setSkyspaceList(value)}
-              renderInput={(params) => (
-                <TextField {...params} label="Skyspace" margin="normal" />
-              )}
-            />)}
-            <FormHelperText>
-              {"Please select Space. This is a mandatory field."}
-            </FormHelperText>
-          </FormControl>
-        </Grid>)}
-        {stPerson && (<Grid item xs={12} sm={10} className="select-grid">
-          <FormControl className={classes.formControl} error={errorObj.tags}>
-            <ChipInput defaultValue={skyapp.tags} onChange={setTags}
-            />
-            <FormHelperText>Please select tags.</FormHelperText>
-          </FormControl>
-        </Grid>)}
-        {!stPerson && (
-          <>
-            <Grid item xs={11} sm={9} className="dropzone-grid">
-              <TextField
-                id="dnldSkylink"
-                name="dnldSkylink"
-                label="Please enter Skylink to download"
-                fullWidth
-                autoComplete="off"
-                onChange={evt => setDnldSkylink(evt.target.value)}
-              />
-            </Grid>
-            <Grid item xs={1} sm={1} className="padding-t-20">
-              <Tooltip title="Download Skylink Content" arrow>
-                <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={onDownload} />
-              </Tooltip>
-            </Grid>
-          </>
-        )}
-        <Grid item xs={12} sm={10} className="dropzone-grid">
-          <FormControl
-            className="full-width"
-            id="file-dropzone"
-            error={errorObj.files}
-          >
-            <SnUpload
-              name="files"
-              ref={uploadEleRef}
-              portal={getPortalFromUserSetting(stUserSetting)}
-              fileList={skyapp.files}
-              onUpload={onUpload}
-            />
-            <FormHelperText>Please select a file to upload.</FormHelperText>
-          </FormControl>
-        </Grid>
-        {/* <button onClick={()=>uploadEleRef.current.click()}>Click</button> */}
-      </Grid>
+  const copyToClipboard = (url) => {
+    navigator.clipboard.writeText(url);
+  };
 
+  return (
+    <main className={matches ? classes.content : classes.contentBgColor}>
+      <div style={{ paddingTop: 40,
+                    minHeight: "calc(100vh - 70px)", }}>
+        <Grid container spacing={3} className={classes.most_main_grid_uc}>
+          <Grid item xs={12} className={classes.main_grid_uc}>
+            <Paper className={`${classes.paper} ${classes.MaintabsPaper_uc}`}>
+            <Paper className={classes.tabsPaper_uc}>
+              <Typography className={classes.uc_title}>Upload Content</Typography>
+                <Grid container spacing={3} className={classes.tags_inpt_main_grid}>
+                  <Grid
+                    item
+                    lg={5}
+                    md={5}
+                    sm={5}
+                    xs={12}
+                    style={{ padding: "none" }}
+                  >
+                    {stSnSkyspaceList && <AutoComp list={stSnSkyspaceList}
+                      onChange={setSkyspaceList} />}
+                  </Grid>
+                  {stPerson && (<Grid item lg={5}
+                    md={5}
+                    sm={5}
+                    xs={12} className="select-grid">
+                    <FormControl className={classes.formControl} error={errorObj.tags}>
+                      <ChipInput defaultValue={skyapp.tags} onChange={setTags}
+                      />
+                      <FormHelperText>Add Tags</FormHelperText>
+                    </FormControl>
+                  </Grid>)}
+                  <Grid item xs={2}>
+                    <Switch
+                      onChange={handleSwitchChnge}
+                      name="checkedA"
+                      color="default"
+                      inputProps={{ "aria-label": "secondary checkbox" }}
+                    />
+                  </Grid>
+                </Grid>
+                {/* dropzone */}
+                <Grid container spacing={3} className="drpZone_main_grid">
+                  <Grid item xs={12}>
+                    {/* <div className="d-none"> */}
+                    <div>
+                      <SnUpload
+                        name="files"
+                        ref={uploadEleRef}
+                        directoryMode={isDirUpload}
+                        onUpload={onUpload}
+                      />
+                    </div>
+                    <div className="d-none">
+
+                      <DropzoneArea
+                        showPreviewsInDropzone={false}
+                        onDrop={(files) => {
+                          uploadEleRef.current.handleDrop(files)
+                        }}
+                        //  className={classes.dropZonArea}
+                        Icon={"none"}
+                        inputProps={{ webkitdirectory: true, mozdirectory: true }}
+                        ref={dropZoneRef}
+                        webkitdirectory={true}
+                        mozdirectory={true}
+                        maxFileSize={210000000}
+                        onDelete={delImg}
+                        filesLimit={100}
+                        showAlerts={false}
+                        dropzoneText={
+                          <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                            <div>
+                              <BsFileEarmarkArrowUp
+                                style={{
+                                  fontSize: "55px",
+                                  color: "#c5c5c5",
+                                  marginBottom: "10px",
+                                }}
+                              />
+                            </div>
+                            <span
+                              style={{
+                                fontSize: 14,
+                                fontWeight: "bold",
+                                color: "#c5c5c5",
+                              }}
+                            >
+                              Drop a {isDirUpload ? "directory" : "file"} here or
+                        <span style={{ color: "#1ed660", marginLeft: "3px" }}>
+                                click here to upload
+                        </span>
+                            </span>
+                          </div>
+                        }
+                      />
+                    </div>
+
+                  </Grid>
+                </Grid>
+
+                {stUploadList && stUploadList.length > 0 && stUploadList
+                  .map((fileObj) => (<Grid container spacing={3}>
+                    <Grid
+                      item
+                      xs={12}
+                      className={classes.show_img_title_grid}
+                    >
+                      <span>
+                        <DescriptionIcon className={classes.descIcon} />
+                      </span>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <div >
+                          <Typography className={classes.img_name_txt}>
+                            {fileObj?.file?.path}
+                          </Typography>
+                          {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.img_name_txt}>
+                            Skylink: {fileObj?.url}
+                          </Typography>)}
+                          {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.img_name_txt}>
+                            {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
+                          </Typography>)}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {/* <TiAttachment
+                      style={{
+                        fontSize: "18px",
+                        color: "#1ed660",
+                        marginRight: 10,
+                      }}
+                    /> */}
+                          {fileObj?.status === 'complete' && <FileCopyIcon
+                            style={{
+                              fontSize: "18px",
+                              color: "#1ed660",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => copyToClipboard(fileObj?.url)}
+                          />}
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>))}
+              </Paper>
+            </Paper>
+          </Grid>
+        </Grid>
+      </div>
       <Snackbar
         open={showAlert}
         autoHideDuration={4000}
@@ -274,6 +362,9 @@ export default function SnMultiUpload(props) {
         onClose={() => setShowPublicToAccModal(false)}
         onSave={importPublicAppsToSpaces}
       />
-    </div>
+      <div>
+        <SnFooter />
+      </div>
+    </main>
   );
 }

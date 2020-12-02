@@ -10,7 +10,7 @@ import {
   APP_BG_COLOR, STORAGE_SKYAPP_DETAIL_KEY,
   BROWSER_STORAGE
 } from "../../sn.constants";
-import MaterialTable from "material-table"
+import MaterialTable from "material-table";
 import { readableBytes } from "../../sn.util";
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -39,6 +39,9 @@ import {
 import { bsSetHistory, bsClearHistory } from "../../blockstack/blockstack-api";
 import { authenticate } from "@blockstack/connect";
 import { ITEMS_PER_PAGE } from "../../sn.constants";
+import styles from "./sn.history.styles";
+import { Paper, Typography } from "@material-ui/core";
+import SnFooter from "../footer/sn.footer";
 
 const tableIcons = {
   Add: React.forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -60,31 +63,24 @@ const tableIcons = {
   ViewColumn: React.forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const useStyles = (theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-});
+const useStyles = styles;
 
-const doSignIn = () => {
-  const authOptions = {
-    redirectTo: "/",
-    manifestPath: '/manifest.json',
-    authOrigin,
-    userSession,
-    sendToSignIn: true,
-    finished: ({ userSession }) => {
-      this.props.setUserSession(userSession);
-      this.props.setPersonGetOtherData(userSession.loadUserData());
-    },
-    appDetails: appDetails,
-  };
-  //this.props.userSession.redirectToSignIn();
-  authenticate(authOptions);
-};
+// const doSignIn = () => {
+//   const authOptions = {
+//     redirectTo: "/",
+//     manifestPath: '/manifest.json',
+//     authOrigin,
+//     userSession,
+//     sendToSignIn: true,
+//     finished: ({ userSession }) => {
+//       this.props.setUserSession(userSession);
+//       this.props.setPersonGetOtherData(userSession.loadUserData());
+//     },
+//     appDetails: appDetails,
+//   };
+//   //this.props.userSession.redirectToSignIn();
+//   authenticate(authOptions);
+// };
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -125,7 +121,7 @@ class SnHistory extends React.Component {
         { title: 'Activity Type', field: 'action' },
         {
           title: 'Spaces', field: 'skyspaces',
-          render: (rowData) => rowData.skyspaces ? this.loadAvailableAction(rowData): "N/A"
+          render: (rowData) => rowData.skyspaces ? this.loadAvailableAction(rowData) : "N/A"
         }
       ],
     };
@@ -145,7 +141,7 @@ class SnHistory extends React.Component {
         STORAGE_SKYAPP_DETAIL_KEY,
         JSON.stringify(this.props.skyapp)
       );
-      doSignIn();
+      //doSignIn();
     } else {
       this.setState({
         saveToSkyspace: true,
@@ -157,7 +153,7 @@ class SnHistory extends React.Component {
     return (rowData.savedToSkySpaces === false) ?
       <Tooltip title="Add to Spaces" arrow>
         <IconButton onClick={() => this.onSaveToSkyspace(rowData)}>
-          <AddCircleOutlineOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 25 }} />
+          <AddCircleOutlineOutlinedIcon className={this.props.classes.spaceIcon}/>
         </IconButton>
       </Tooltip> : <div>{rowData.skyspaces}</div>;
   }
@@ -210,43 +206,122 @@ class SnHistory extends React.Component {
 
   render() {
     let { columns } = this.state;
+    const { classes } = this.props;
     if (this.state.saveToSkyspace) {
       return <Redirect to="/register" />;
     }
     return (
-      <div className="container-fluid register-container">
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={12}>
-            <MaterialTable
-              icons={tableIcons}
-              title="Activity History"
-              columns={columns}
-              data={this.props.history}
-              options={{
-                selection: true,
-                sorting: true,
-                actionsColumnIndex: -1
-              }}
-              actions={[
-                {
-                  tooltip: 'Remove Selected Activity History',
-                  icon: tableIcons.Delete,
-                  onClick: (event, rows) => { this.deleteSelectedHistory(rows) }
-                }
-              ]}
-            />
+      <main className={classes.content}>
+        <div style={{ paddingTop: 40 }}>
+        <Grid container spacing={3} className={classes.most_main_grid_actvHstry}>
+      <Grid item xs={12} className={classes.main_grid_actvHstry}>
+        <Paper
+          className={`${classes.paper} ${classes.MaintabsPaper_actvHstry}`}
+        >
+          <Paper className={classes.tabsPaper_actvHstry}>
+            <Grid container spacing={3} style={{ paddingBottom: "10px" }}>
+              <Grid item xs={12}>
+              <div
+                  style={{
+                    paddingTop: "40px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography className={classes.actvHstry_title}>
+                    Activity History
+                  </Typography>
+                  {/* search */}
+                  <div className={classes.search_main_div}>
+                    <span>
+                      <i
+                        className="fas fa-search srch-icon-inside-field-input"
+                        style={{ position: "relative", top: "8px" }}
+                      ></i>
+                    </span>
+
+                    <input
+                      className={`form-control mr-sm-2 ${classes.srch_inpt}`}
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    boxShadow: "0 0 10px rgba(0,0,0,.4)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {/* <Table /> */}
+                </div>
+
+
+                    <div
+                      style={{
+                        paddingTop: "40px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* <Typography className={classes.actvHstry_title}>
+                        Activity History
+                      </Typography> */}
+
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "0 0 10px rgba(0,0,0,.4)",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <MaterialTable
+                        icons={tableIcons}
+                        title="Activity History"
+                        columns={columns}
+                        data={this.props.history}
+                        options={{
+                          selection: true,
+                          sorting: true,
+                          actionsColumnIndex: -1
+                        }}
+                        actions={[
+                          {
+                            tooltip: 'Remove Selected Activity History',
+                            icon: tableIcons.Delete,
+                            onClick: (event, rows) => { this.deleteSelectedHistory(rows) }
+                          }
+                        ]}
+                      />
+                    </div>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Paper>
           </Grid>
         </Grid>
-        <Snackbar
-          open={this.state.openCopySuccess}
-          autoHideDuration={4000}
-          onClose={this.closeCopySucess}
-        >
-          <Alert onClose={this.closeCopySucess} severity="success">
-            Skylink successfully copied to clipboard!
+        <div className="container-fluid register-container">
+          <Snackbar
+            open={this.state.openCopySuccess}
+            autoHideDuration={4000}
+            onClose={this.closeCopySucess}
+          >
+            <Alert onClose={this.closeCopySucess} severity="success">
+              Skylink successfully copied to clipboard!
           </Alert>
-        </Snackbar>
+          </Snackbar>
+        </div>
+        <div>
+        <SnFooter />
       </div>
+      </div>
+      </main> 
     );
   }
 }

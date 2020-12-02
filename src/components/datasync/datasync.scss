@@ -1,7 +1,7 @@
-$is-blue: #00b3E9;
-$is-dark-blue: #0081A0;
-$is-iron : #9296A0 !default;
-$is-green : #5FBA50 !default;
+$is-blue: #1ed660;
+$is-dark-blue: rgb(238, 55, 55);
+$is-iron : black !default;
+$is-green : #1ed660 !default;
 
 :root {
   font-family: 'Roboto', sans-serif;
@@ -96,7 +96,7 @@ $duration: 1.4s;
 
 .sync-success {
   transform-origin: center;
-  animation: bounceIn .75s ease-in-out infinite
+  // animation: bounceIn .75s ease-in-out infinite
 }
 
 @keyframes rotator {

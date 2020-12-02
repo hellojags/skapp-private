@@ -1,17 +1,42 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import useStyles from "./sn.cards.styles";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined";
+import GamesOutlinedIcon from "@material-ui/icons/GamesOutlined";
+import PlaylistAddOutlinedIcon from "@material-ui/icons/PlaylistAddOutlined";
+import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
+import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import DescriptionOutlinedIcon from "@material-ui/icons/DescriptionOutlined";
+import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
+import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
+import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import DoneAllIcon from "@material-ui/icons/DoneAll";
 import Grid from "@material-ui/core/Grid";
+import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
+import AppsIcon from "@material-ui/icons/Apps";
+import ReorderIcon from "@material-ui/icons/Reorder";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputBase from "@material-ui/core/InputBase";
+import LowPriorityIcon from "@material-ui/icons/LowPriority";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import PublishIcon from "@material-ui/icons/Publish";
+import HeadsetIcon from "@material-ui/icons/Headset";
 import { INITIAL_PORTALS_OBJ } from "../../blockstack/constants";
 import SnUpload from "../new/sn.upload";
 import { v4 as uuidv4 } from 'uuid';
 import { SkynetClient, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject, getEmptySkylinkObject } from "../new/sn.new.constants";
 import BlockIcon from '@material-ui/icons/Block';
-import { Button, FormControlLabel, Switch } from "@material-ui/core";
+import { Button, FormControlLabel, Switch, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { green } from "@material-ui/core/colors";
 import { subtractSkapps, getPortalFromUserSetting, setTypeFromFile, getAllPublicApps } from "../../sn.util";
@@ -39,26 +64,30 @@ import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
+import SnFooter from "../footer/sn.footer";
+import SnViewMore from "../tools/sn.view-more";
 
-const useStyles = (theme) => ({
-  small: {
-    width: theme.spacing(3),
-    height: theme.spacing(3),
+
+const BootstrapInput = withStyles((theme) => ({
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: "white",
+    color: theme.palette.linksColor,
+    //   border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    //   transition: theme.transitions.create(['border-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    "&:focus": {
+      // borderRadius: 4,
+      // borderColor: '#80bdff',
+      backgroundColor: "white",
+      // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
   },
-  avatar: {
-    backgroundColor: green[500],
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "0px",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-});
+}))(InputBase);
+
 
 class SnCards extends React.Component {
   constructor(props) {
@@ -89,7 +118,18 @@ class SnCards extends React.Component {
       hash: null,
       showInfoModal: false,
       infoModalContent: null,
-      isDir: false
+      isDir: false,
+
+
+
+      //new UI START
+      activeStep: 0,
+      filterSelection: "emp",
+      isTrue: false,
+      GridUi: true
+
+      //new UI END
+
     };
     this.openSkyApp = this.openSkyApp.bind(this);
     this.handleSrchSbmt = this.handleSrchSbmt.bind(this);
@@ -97,22 +137,67 @@ class SnCards extends React.Component {
     this.getFilteredApps = this.getFilteredApps.bind(this);
     this.uploadEleRef = React.createRef();
   }
+
+  //new ui start
+  setActiveStep = (activeStep) => this.setState({ activeStep });
+  setFilterSelection = (filterSelection) => this.setState({ filterSelection });
+  setGridUi = (GridUi) => this.setState({ GridUi });
+  handleUploadSection = (value) => {
+    this.setIsTrue(value);
+  };
+  handleChange = (event) => {
+    this.setFilterSelection(event.target.value);
+  };
+
+  getStepContent = (stepIndex) => {
+    switch (stepIndex) {
+      case 0:
+        return {/* <AllSpaces /> */ };
+      case 1:
+        return {/* <ImagesGallery handleUploadSection={handleUploadSection} /> */ };
+      case 2:
+        return {/* <AudioSpaces /> */ };
+      case 3:
+        return {/* <EditFile /> */ };
+      default:
+        return "unknown step";
+    }
+  }
+  getStepContentForList = (stepIndex) => {
+    switch (stepIndex) {
+      case 0:
+        return {/* <AllSpacesListView /> */ };
+      case 1:
+        return {/* <ImagesGallery handleUploadSection={handleUploadSection} /> */ };
+      case 2:
+        return {/* <AudioSpacesListView /> */ };
+      case 3:
+        return {/* <EditFile /> */ };
+      default:
+        return "unknown step";
+    }
+  }
+  //new ui end
+
   updateSwitches = (switchFilterList) => {
     const { filterCriteria } = this.state;
     filterCriteria.switchFilterList = switchFilterList;
     this.setState({ filterCriteria });
   };
+
   updateTagFilterList = (tagFilterList) => {
     const { filterCriteria } = this.state;
     filterCriteria.tagFilterList = tagFilterList;
     filterCriteria.page = 1;
     this.setState({ filterCriteria });
   };
+
   udpdatePage = (page) => {
     const { filterCriteria } = this.state;
     filterCriteria.page = page;
     this.setState({ filterCriteria });
   };
+
   handleSrchSbmt(evt) {
     evt.preventDefault();
   }
@@ -175,16 +260,12 @@ class SnCards extends React.Component {
     return categoryCountObj;
   };
 
-  // get all Skylinks per input criteria
   async getAppList(category, skyspace, fetchAllSkylinks, hash) {
-    const senderId = this.getSenderId(); // senderId is basically AppStoreProviderID.
-    category != null && this.props.fetchApps(category); // TODO: do we really need this?
-    // If SkySpace is null that means, Link is either "public share hash" or "search action"
+    const senderId = this.getSenderId();
+    category != null && this.props.fetchApps(category);
     if (skyspace != null) {
-      // SenderID not null means AppStoreProvider and SpaceName is present
       if (senderId != null) {
         this.props.setLoaderDisplay(true);
-        // Get SharedSpace AppList
         const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
         this.props.setLoaderDisplay(false);
         this.props.setApps(appListFromSharedSpace);
@@ -195,13 +276,12 @@ class SnCards extends React.Component {
         });
       }
     }
-    // "public share hash"
     if (hash != null) {
       this.props.setDesktopMenuState(false);
       this.props.setPortalsListAction(INITIAL_PORTALS_OBJ);
       this.props.fetchPublicApps(hash);
     }
-    // Search Query
+
     if (fetchAllSkylinks === true) {
       this.handleSrchKeyChng(null, this.getSearchKeyFromQuery());
       this.props.fetchAllSkylinks({
@@ -222,7 +302,7 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
@@ -235,7 +315,6 @@ class SnCards extends React.Component {
       senderId
     });
     this.props.fetchSkyspaceDetail();
-    // fetch all SkyLinks
     this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
   }
 
@@ -243,17 +322,17 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
     if (
-      this.state.category !== category ||  // wehn category is not same as previous state
-      this.state.hash !== hash || 
+      this.state.category !== category ||
+      this.state.hash !== hash ||
       this.state.skyspace !== skyspace ||
       this.state.fetchAllSkylinks !== fetchAllSkylinks ||
       this.state.senderId !== senderId ||
       (fetchAllSkylinks &&
-        this.getSearchKeyFromQuery() !== this.state.searchKey) // wen fetch all skylink is True and search key is NEW search key.
+        this.getSearchKeyFromQuery() !== this.state.searchKey)
     ) {
       this.props.fetchSkyspaceDetail();
       this.updateTagFilterList([]);
@@ -266,7 +345,6 @@ class SnCards extends React.Component {
         senderId
       });
       hash && this.props.setPublicHash(hash);
-      // fetch all SkyLinks
       this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
     }
   }
@@ -379,6 +457,45 @@ class SnCards extends React.Component {
       );
     } else {
       return (
+        <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
+          {filteredApps
+            .slice(
+              (page - 1) * ITEMS_PER_PAGE,
+              (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+            )
+            .map((app, i) => {
+              cardCount = cardCount + 1;
+              return (
+                <SnAppCard
+                  key={i}
+                  app={app}
+                  hash={this.state.hash}
+                  isSelect={this.state.isSelect}
+                  arrSelectedAps={this.state.arrSelectedAps}
+                  skyspace={skyspace}
+                  senderId={this.state.senderId}
+                  allSpacesObj={this.props.snSkyspaceDetail}
+                  cardCount={filteredApps.length}
+                  onSelection={(app, isDeselection) => this.selectApp(app, isDeselection)}
+                  onOpenSkyApp={this.openSkyApp}
+                  onDelete={() => {
+                    this.props.fetchSkyspaceDetail();
+                    this.getAppList(
+                      this.state.category,
+                      this.state.skyspace,
+                      this.state.fetchAllSkylinks
+                    );
+                  }
+                  }
+                />
+              );
+            })
+          }
+        </Grid>
+      );
+
+
+      return (
         <Grid item xs={12}>
           <Grid container spacing={1}>
             {filteredApps
@@ -451,6 +568,7 @@ class SnCards extends React.Component {
   }
 
   deleteFromPublic = (evt) => {
+    evt.preventDefault();
     if (this.state.isSelect && this.state.arrSelectedAps.length > 0) {
       console.log("public apps to delete ", this.state.arrSelectedAps);
       const inMemObj = this.props.snPublicInMemory;
@@ -470,7 +588,8 @@ class SnCards extends React.Component {
     this.props.setApps(getAllPublicApps(this.props.snApps, inMemObj.addedSkapps, inMemObj.deletedSkapps));
   }
 
-  addPublicSpaceToAccount = async () => {
+  addPublicSpaceToAccount = async (evt) => {
+    evt.preventDefault();
     let publicUpload = null;
     this.props.setLoaderDisplay(true);
     publicUpload = await savePublicSpace(this.state.hash, this.props.snPublicInMemory);
@@ -484,7 +603,8 @@ class SnCards extends React.Component {
     }
   }
 
-  savePublicSpace = async () => {
+  savePublicSpace = async (evt) => {
+    evt.preventDefault();
     this.props.setLoaderDisplay(true);
     const publicHashData = await getPublicApps(this.state.hash);
     const skappListToSave = getAllPublicApps(publicHashData.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps);
@@ -511,8 +631,24 @@ class SnCards extends React.Component {
     });
   }
 
+  selectPublicAll = (evt, filteredApps) => {
+    evt.preventDefault();
+    this.setState({ isSelect: true, arrSelectedAps: filteredApps })
+  }
+
+  cancelPublicSelect = (evt) => {
+    evt.preventDefault();
+    this.setState({ isSelect: false, arrSelectedAps: [] });
+  }
+
+  publicSelect = (evt) => {
+    evt.preventDefault();
+    this.setState({ isSelect: true, arrSelectedAps: [] });
+  }
+
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
+    const { classes } = this.props;
     const page = this.state.filterCriteria.page;
     const filterList = this.state.filterCriteria.tagFilterList;
     let filterCriteria = "";
@@ -535,13 +671,439 @@ class SnCards extends React.Component {
       ) {
         source = "skyspace";
       }
-      if (this.state.senderId!=null) {
-        return <Redirect to= { `/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`}/>;
+      if (this.state.senderId != null) {
+        return <Redirect to={`/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`} />;
       } else {
         return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
       }
     }
     let filteredApps = this.getFilteredApps();
+
+
+    return (
+      <main className={this.state.hash ? classes.publicContent : classes.content}>
+        <div style={{ paddingTop: 70, minHeight: "calc(100vh - 100px)" }}>
+
+          <Grid
+            container
+            className="most_main_grid_gallery"
+            spacing={3}
+            style={{ width: "99%", margin: "auto" }}
+          >
+            <Grid item lg={2} md={2} sm={12} xs={12}>
+              <Typography className={classes.gallery_title}>Spaces</Typography>
+              <Typography className={classes.gallery_subTitle}>
+                {this.state.hash == null && skyspace}
+                {this.state.hash != null && "Public Space"}
+              </Typography>
+            </Grid>
+            {filteredApps.length > 0 && <>
+              <Grid
+                item
+                lg={10}
+                md={10}
+                sm={12}
+                xs={12}
+                className={`${classes.gallery_title_btns_grid
+                  } ${"most_main_grid_gallery_style"}`}
+              >
+                {/*  All */}
+                <Typography
+                  onClick={() => this.updateTagFilterList([])}
+                  variant="span"
+                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext}`}
+                  style={
+                    this.state.filterCriteria != null &&
+                      this.state.filterCriteria.tagFilterList.length === 0
+                      ? { backgroundColor: "APP_BG_COLOR" }
+                      : {}
+                  }
+                >
+                  All
+                    <Typography variant="span" className={classes.innerValue_All}>
+                    {" "}
+                    {this.props.snApps && this.props.snApps.length}
+                  </Typography>
+                </Typography>
+                {Object.keys(getCategoryObjWithoutAll())
+                  .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
+                  .map((key, idx) => idx < 3 && (
+                    <Typography
+                      onClick={() => this.updateTagFilterList([key])}
+                      variant="span"
+                      key={idx}
+                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
+                    >
+                      {/* <CameraAltOutlinedIcon style={{ fontSize: "20px" }} /> */}
+                      <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
+                        &nbsp; {getCategoryObjWithoutAll()[key].heading}
+                      <Typography variant="span" className={classes.innerValue_All}>
+                        {categoryWiseCount[key]
+                          ? categoryWiseCount[key]
+                          : 0}
+                      </Typography>
+                    </Typography>
+                  ))}
+                <div className={`${classes.menuverticalIcon_div} ${"menu_icon_top"}`}>
+                  <SnViewMore
+                    onItemClick={key => this.updateTagFilterList([key])}
+                    itemLabel={key => getCategoryObjWithoutAll()[key].heading}
+                    showCount={true}
+                  >
+
+                    {Object.keys(getCategoryObjWithoutAll())
+                      .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
+                      .map((key, idx) => idx >= 3 && (
+                        <div
+                          style={{
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Typography
+                            onClick={() => this.updateTagFilterList([key])}
+                            variant="span"
+                            className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext_menu}`}
+                          >
+                            {getCategoryObjWithoutAll()[key].heading}
+                            <Typography variant="span" className={classes.innerValue_All}>
+                              {categoryWiseCount[key]
+                                ? categoryWiseCount[key]
+                                : 0}
+                            </Typography>
+                          </Typography>
+                        </div>
+
+                      ))}
+                  </SnViewMore>
+                </div>
+              </Grid>
+
+              {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && this.state.isSelect &&
+                <Grid container spacing={3} style={{ margin: "0px" }}>
+                  <Grid
+                    item
+                    xs={12}
+                    className={classes.titleBar_onSelect_img_grid_gallery}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => this.setState({ arrSelectedAps: filteredApps })}
+                          startIcon={<DoneAllIcon style={{ color: "#1ed660" }} />}
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                          }}
+                        >
+                          Select all
+                      </Button>
+
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Delete
+                      </Button>
+
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => this.createSkylinkPublicShare()}
+                          startIcon={
+                            <ShareOutlinedIcon style={{ color: "#1ed660" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Share
+                      </Button>
+
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <GamesOutlinedIcon style={{ color: "#1ed660" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Move to
+                      </Button>
+
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <PlaylistAddOutlinedIcon
+                              style={{ color: "#1ed660" }}
+                            />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Add to
+                      </Button>
+                      </div>
+
+                      <div style={{ textAlign: "right" }}>
+                        {this.state.arrSelectedAps.length} Selected
+                      <ClearOutlinedIcon
+                          onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                          style={{
+                            color: "#1ed660",
+                            fontSize: "18px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>}
+
+
+            </>}
+            {this.isTrue ? null : (
+              <>
+                <Grid
+                  item
+                  lg={this.state.hash != null ? 12 : 6}
+                  md={this.state.hash != null ? 12 : 6}
+                  sm={12}
+                  xs={12}
+                  style={{ display: "flex", alignItems: "flex-end" }}
+                >
+                  <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                  />
+                  {this.state.hash != null && filteredApps.length > 0 &&
+                    (
+                      <label htmlFor="contained-button-file">
+                        <Button
+                          onClick={() => this.uploadEleRef.current.gridRef.current.click()}
+                          variant="contained"
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          type="button"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Upload
+                    </Button>
+                        <Button
+                          variant="contained"
+                          type="button"
+                          onClick={this.addPublicSpaceToAccount}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Add To Skyspaces
+                </Button>
+                        <div className="d-none">
+                          <SnUpload
+                            name="files"
+                            ref={this.uploadEleRef}
+                            directoryMode={this.state.isDir}
+                            onUpload={this.onPublicUpload}
+                            portal={getPortalFromUserSetting(this.props.snUserSetting)}
+                          />
+                        </div>
+                        <Button
+                          variant="contained"
+                          type="button"
+                          onClick={this.savePublicSpace}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Save
+                </Button>
+                        <Button
+                          variant="contained"
+                          type="button"
+                          onClick={this.deleteFromPublic}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Delete
+                </Button>
+                        <Button
+                          variant="contained"
+                          onClick={(evt) => this.selectPublicAll(evt, filteredApps)}
+                          color="primary"
+                          type="button"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Select All
+                </Button>
+                        {!this.state.isSelect && (<Button
+                          variant="contained"
+                          onClick={this.publicSelect}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Select
+                        </Button>)}
+                        {this.state.isSelect && (<Button
+                          onClick={this.cancelPublicSelect}
+                          variant="contained"
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Cancel
+                        </Button>)}
+                      </label>
+                    )
+                  }
+                  {/* <span style={{ marginLeft: 20 }}></span>
+                  <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
+                    <AppsIcon className={classes.appsIcon} />
+                  </IconButton>
+
+                  <IconButton aria-label="delete" onClick={() => this.setGridUi(false)}>
+                    <ReorderIcon className={classes.reOrdered} />
+                  </IconButton> */}
+                </Grid>
+
+                <Grid
+                  item
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {/* <LowPriorityIcon className={classes.lowPriorIcon} />
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      input={<BootstrapInput />}
+                      inputProps={{
+                        classes: {
+                          icon: classes.icon,
+                        },
+                      }}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={this.filterSelection}
+                      disableUnderline={true}
+                      onChange={this.handleChange}
+                    >
+                      <MenuItem value={"emp"} className={classes.menuColor}>
+                        Latest filter
+                  </MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                  </FormControl> */}
+                  {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && (
+                    <>
+                      {!this.state.isSelect &&
+                        <Button
+                          variant="contained"
+                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
+                          color="primary"
+                          className={classes.sharedSpaceButn}
+                          startIcon={<CheckCircleIcon style={{ color: "white" }} />}
+                        >
+                          Select
+                        </Button>
+                      }
+                    </>
+                  )}
+                </Grid>
+              </>
+            )}
+          </Grid>
+
+          {/* {this.GridUi ? this.getStepContent(this.state.activeStep) : this.getStepContentForList(this.state.activeStep)} */}
+          {this.renderCards(filteredApps, page, cardCount, skyspace)}
+          <Grid item xs={12} style={{display: "flex"}}>
+            {false && filterCriteria === 'audio' ?
+              <AudioPlayer /> :
+              <SnPagination
+                page={page}
+                totalCount={filteredApps.length}
+                onChange={this.udpdatePage}
+              />}
+          </Grid>
+          <Grid item xs={12} style={{display: "flex"}}>
+            {filterCriteria === 'audio' && 
+              <AudioPlayer /> 
+            }
+          </Grid>
+        </div>
+        <SnInfoModal
+          open={this.state.showInfoModal}
+          onClose={this.state.onInfoModalClose}
+          title="Public Share Link"
+          type="public-share"
+          content={this.state.infoModalContent}
+        />
+        <div>
+          <SnFooter />
+        </div>
+      </main>
+    );
 
     return (
       <div className="card-parent-conatiner">
@@ -632,7 +1194,7 @@ class SnCards extends React.Component {
                 </Button>
                   <Button
                     variant="contained"
-                    onClick={() => this.uploadEleRef.current.click()}
+                    onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                     color="primary"
                     className="btn-bg-color"
                   >

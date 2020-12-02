@@ -27,14 +27,13 @@ export const WEBSERVICE_FAILURE = "failure";
 export const APP_TITLE = "SkySpaces";
 export const APP_BG_COLOR = "var(--app-bg-color)";
 export const ITEMS_PER_PAGE = 9;
-
-//App local storage
 export const STORAGE_SKYSPACE_APP_COUNT_KEY = "SKYSPACE_APP_COUNT";
 export const STORAGE_USER_KEY = "USER";
 export const STORAGE_SKYSPACE_LIST_KEY = "SKYSPACELIST";
 export const STORAGE_USER_SETTING_KEY = "USER_SETTING";
 export const STORAGE_PORTALS_LIST_KEY = "PORTALS_LIST";
 export const STORAGE_USER_SESSION_KEY = "USER_SESSION";
+export const STORAGE_DARK_MODE_KEY = "darkMode";
 export const BROWSER_STORAGE = localStorage;
 export const BLOCKSTACK_CORE_NAMES = "https://core.blockstack.org/v1/names";
 export const STORAGE_REDIRECT_POST_LOGIN_KEY = "REDIRECT_POST_LOGIN";
@@ -62,12 +61,15 @@ export const DOWNLOAD = "Download";
 export const PUBLIC_IMPORT = "Public Import";
 export const DEFAULT_PORTAL = "https://siasky.net/";
 export const PUBLIC_SHARE_BASE_URL = "https://siasky.net/AAB-SesrL4TJn8l6F0besVVWYCK8axTjTmffFK4WTBPLWA/?#/";
-export const PUBLIC_SHARE_APP_HASH = "AABUuxbDppnCu6Pz4MNWzw2UW63Bl4g-7LKWSHbWD7khcA";
+export const PUBLIC_SHARE_APP_HASH = "AACUSyTS5w3gcQ21_h0WTviSXt9laQggkBl5TWEYY_ZwKA";
 export const PUBLIC_SHARE_ROUTE = "public-cards/";
 //export const DOWNLOAD_PORTAL = process.env.REACT_APP_SIASKYNET_HOST;
 //export const SKYNETHUB_PORTAL = process.env.REACT_APP_SKYNETHUB_HOST;
-//export const SKYSPACE_DEFAULT_PATH = "https://skyspaces.io/#/upload";//commented for skapp
-export const SKYSPACE_DEFAULT_PATH = "https://skyspaces.io/#/login";
+export const SKYSPACE_DEFAULT_PATH = "https://skyspaces.io/#/upload";
 export const SKYSPACE_HOSTNAME = "https://skyspaces.io";
 export const PUBLIC_TO_ACC_QUERY_PARAM = "sharedhash";
 export const MUSIC_SVG_BASE64_DATA = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjUgMjUiID48c3R5bGUgdHlwZT0idGV4dC9jc3MiPi5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTEyIDNsLjAxIDEwLjU1Yy0uNTktLjM0LTEuMjctLjU1LTItLjU1QzcuNzkgMTMgNiAxNC43OSA2IDE3czEuNzkgNCA0LjAxIDRTMTQgMTkuMjEgMTQgMTdWN2g0VjNoLTZ6bS0xLjk5IDE2Yy0xLjEgMC0yLS45LTItMnMuOS0yIDItMiAyIC45IDIgMi0uOSAyLTIgMnoiLz48L2c+PC9zdmc+';
+
+
+export const MUI_THEME_LIGHT = "light";
+export const MUI_THEME_DARK = "dark";

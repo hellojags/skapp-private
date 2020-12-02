@@ -7,9 +7,9 @@ import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from ".
 import {IDB_IS_OUT_OF_SYNC} from "../blockstack/constants"
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
-import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
-
-const pwa = true; //progressive web app, offline first
+import { getJSONfromDB, setJSONinDB } from "../db/indexedDB";
+import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
+const pwa = true;
 
 export const getSkylinkHeader = (skylinkUrl) => ajax({
   url: skylinkUrl + "?format=concat",
@@ -75,10 +75,11 @@ const getPortal = () => {
 }
 
 export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, options) => {
-  if (pwa && (options?.skydb == undefined)) {
+  if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
     try {
       await setJSONinDB(fileKey, fileData);
       await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
+      store.dispatch(setIsDataOutOfSync(true)); // set value is store
       return true;
     }
     catch (error) {
@@ -125,7 +126,7 @@ export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr;
 
 export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
   try {
-    if (pwa && (options?.skydb == undefined)) {
+    if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
       try {
         const result = await getJSONfromDB(fileKey);
         console.log("result" + result);
@@ -159,6 +160,7 @@ export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
   }
   return null;
 }
+
 export const getRegistry = async (publicKey, fileKey, options) => {
   try {
     const skynetClient = new SkynetClient(getPortal());
@@ -176,4 +178,3 @@ export const getRegistry = async (publicKey, fileKey, options) => {
   }
   return null;
 }
-/** END : Skynet Methods **/

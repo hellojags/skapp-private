@@ -56,7 +56,7 @@ export async function decryptContent(session, content, options) {
   return await promise;
 }
 export const getFileUsingPublicKeyStr = async (publicKeyStr, FILE_PATH )=> {
-  const result = await getJSONFile(snDeserializeSkydbPublicKey(publicKeyStr) ,FILE_PATH,null,{});
+  const result = await getJSONFile(publicKeyStr,FILE_PATH,null,{skydb:true});
   return JSON.parse(result);
 };
 
@@ -147,11 +147,11 @@ export async function putFileForShared(session, FILE_PATH, encryptedContent) {
   switch(sessionType){
     case ID_PROVIDER_SKYID:
       //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,encryptedContent,{});
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,encryptedContent,{skydb:true});
       break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,{skydb:true});
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:

@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
+import useStyles from "./sn.audio.styles";
+import AudioPlayer from "./sn.audio-player";
+import Typography from "@material-ui/core/Typography";
+import ImageIcon from "@material-ui/icons/Image";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import Paper from "@material-ui/core/Paper";
+import HeadsetIcon from "@material-ui/icons/Headset";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import Grid from "@material-ui/core/Grid";
-import { launchSkyLink } from "../../../sn.util";
+import moment from "moment";
+import { launchSkyLink, readableBytes } from "../../../sn.util";
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SnAppCardActionBtnGrp from "../../cards/sn.app-card-action-btn-grp";
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,7 +26,7 @@ import cliTruncate from "cli-truncate";
 import SnAddToSkyspaceModal from "../../modals/sn.add-to-skyspace.modal";
 import { skylinkToUrl } from "../../../sn.util";
 import { red } from "@material-ui/core/colors";
-import { DOWNLOAD, APP_BG_COLOR, MUSIC_SVG_BASE64_DATA } from "../../../sn.constants";
+import { DOWNLOAD, APP_BG_COLOR, MUSIC_SVG_BASE64_DATA, ITEMS_PER_PAGE } from "../../../sn.constants";
 import {
   bsGetSkyspaceNamesforSkhubId,
   bsAddSkylinkFromSkyspaceList,
@@ -31,42 +42,9 @@ import IconButton from "@material-ui/core/IconButton";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Box from '@material-ui/core/Box';
+import { CATEGORY_OBJ } from "../../../sn.category-constants";
+import { Chip } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-    paddingBottom: 10,
-  },
-  media: {
-    height: 0,
-    // paddingTop: "56.25%", // 16:9
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-  cardHeader: {
-    paddingTop: 5,
-    paddingBottom: 5
-  },
-  largeButton: {
-    padding: 24
-  },
-}));
 
 
 export default function SnAudioDefault(props) {
@@ -186,6 +164,144 @@ export default function SnAudioDefault(props) {
       dispatch(setChangedAudioStatusAction(true));
     }
   };
+
+  const copyToClipboard = (app) => {
+    navigator.clipboard.writeText(app.skylink);
+    this.setState({ openCopySuccess: true });
+  };
+
+  const trimDescription = (strValue, maxLength) =>{
+    if (strValue && strValue.length > maxLength) {
+      return strValue.slice(0, maxLength - 3) + "...";
+    } else {
+      return strValue;
+    }
+  };
+
+  return (
+    <>
+    <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
+    {props.filteredApps &&
+            props.filteredApps
+            .map((app, i) => {
+              let isActive = (currentAudio && currentAudio.id === app.skhubId) ? true : false;
+
+              return (
+                <>
+                    <Grid item xs={12} style={{ marginTop: 10 }}>
+        <Paper className={classes.paperStyling}>
+          <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
+            <Grid item xs={12}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div>
+                  <HeadsetIcon className={classes.spaceIcons} />
+                </div>
+                <div style={{ paddingLeft: 20 }}>
+                  <Typography variant="span" className={classes.spaceName}>
+                  {cliTruncate(app.name, 100, { position: "middle" })}
+                  </Typography>
+                </div>
+                <div style={{ paddingLeft: 30 }}>
+                  <Typography variant="span" className={classes.createAtTime}>
+                  {app.contentType}
+                  </Typography>
+                </div>
+                <div style={{ paddingLeft: 30 }}>
+                  <Typography variant="span" className={classes.createAtTime}>
+                  {readableBytes(app.contentLength)}
+                  </Typography>
+                </div>
+                <div style={{ paddingLeft: 30 }}>
+                  <Typography variant="span" className={classes.createAtTime}>
+                  {moment(app.createTS).format(
+                        "MM/DD/YYYY h:mm:ss a"
+                      )}
+                  </Typography>
+                </div>
+                {props.isSelect && (
+                  <div style={{marginLeft: "auto"}}>
+                    {props.arrSelectedAps.indexOf(app) === -1 && (
+                      <RadioButtonUncheckedIcon className="selection-radio"
+                        onClick={() => props.onSelection(app)} />
+                    )}
+                    {props.arrSelectedAps.indexOf(app) > -1 && (
+                      <RadioButtonCheckedIcon className="selection-radio"
+                        onClick={() => props.onSelection(app, true)} />
+                    )}
+                  </div>
+                )}
+              
+              {!props.isSelect && <div style={{ marginLeft: "auto"}}>
+                <Tooltip title="Play" arrow>
+                  <IconButton
+                    onClick={() => { onPlayButtonClicked(app.skhubId) }}
+                    style={{ color: APP_BG_COLOR }}>
+                    <PlayArrowIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>}
+              </div>
+            </Grid>
+            <Grid item xs={12} style={{ paddingTop: 0, paddingBottom: 0 }}>
+              <div
+                style={{
+                  //   marginTop: 8,
+                  // marginBottom: 10,
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Grid item xs={12} style={{ paddingTop: 0, paddingBottom: 0 }}>
+                  <SnAppCardActionBtnGrp
+                    app={app}
+                    source="img"
+                    hash={props.hash}
+                    hideDelete={props.senderId!=null}
+                    hideAdd={props.senderId!=null}
+                    onAdd={() => handleSkyspaceAdd(app)}
+                    onEdit={() => props.openSkyApp(app)}
+                    onDelete={() => removeFromSkyspace(app)}
+                    onDownload={() => download(app)}
+                  />
+                  </Grid>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+        </Paper>
+        {/* <AudioPlayer />  */}
+      </Grid>
+                </>
+              );
+            })
+    }
+      
+  
+
+      {/* <AudioPlayer /> */}
+    </Grid>
+    <SnAddToSkyspaceModal
+        userSession={stUserSession}
+        open={showAddToSkyspace}
+        availableSkyspaces={availableSkyspaces}
+        onClose={() => setShowAddToSkyspace(false)}
+        onSave={saveAddToSkyspaceChanges}
+      />
+    </>
+  );
 
   return (
     <>

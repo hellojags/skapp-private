@@ -8,6 +8,7 @@ import SnPublicHash from "./sn.public-hash.reducer";
 import SnAppDetailReducer from "./sn.app-detail.reducer";
 import SnInfoModalReducer from "./sn.info.modal.reducer";
 import SnUserSessionReducer from "./sn.user-session.reducer";
+import SnIsDataOutOfSyncReducer from "./sn.isDataOutOfSync.reducer";
 import SnTriggerSignInReducer from "./sn.trigger-signin.reducer";
 import SnSkyspaceDetailReducer from "./sn.skyspace-detail.reducer";
 import SnUserSettingReducer from "./sn.user-settings.reducer";
@@ -33,6 +34,7 @@ import SnAppSkyspaceList from "./sn.app-skyspacelist.reducer";
 import SnImportedSpace from "./sn.imported-space.reducer";
 import SnHistory from "./sn.history.reducer";
 import SnUploadListReducer from "./sn.upload-list.reducer";
+import SnDarkMode from "./sn.dark-mode.reducer";
 import SnAudioPlayerReducer from "./sn.audio-player.reducer";
 import { composeWithDevTools } from 'redux-devtools-extension';
 const redux = require("redux");
@@ -47,6 +49,7 @@ const allReducers = combineReducers({
   snAppDetail: SnAppDetailReducer,
   snInfoModalState: SnInfoModalReducer,
   userSession: SnUserSessionReducer,
+  snIsDataOutOfSync: SnIsDataOutOfSyncReducer,
   person: SnPerson,
   snSkyspaceList: SnSkyspaceListReducer,
   snPortalsList: SnPortalsListReducer,
@@ -61,7 +64,8 @@ const allReducers = combineReducers({
   snPublicInMemory: SnPublicInMemory,
   snUploadList: SnUploadListReducer,
   SnAudioPlayer: SnAudioPlayerReducer,
-  snImportedSpace: SnImportedSpace
+  snImportedSpace: SnImportedSpace,
+  snDarkMode: SnDarkMode
 });
 
 const rootEpic = combineEpics(

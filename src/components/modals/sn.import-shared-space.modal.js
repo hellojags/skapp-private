@@ -55,19 +55,21 @@ export default (props) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">Import Shared Space</DialogTitle>
+            <DialogTitle id="alert-dialog-title">Add Shared Spaces (Private Sharing Between Users)</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Please enter the user-id of the user who has shared a space with you
+                    Please enter "PublicKey" of the user who has shared a space with you<br/>
+                    (Hint: User can access PublicKey by clicking on profile icon on left top corner)
+                   
             </DialogContentText>
                 <TextField
                     id="recipientId"
                     name="recipientId"
-                    label="User Id"
+                    label="Sender's PublicKey"
                     fullWidth
                     value={senderId}
                     autoComplete="off"
-                    helperText="Please enter User ID."
+                    helperText="Please enter PublicKey"
                     onChange={(evt) => setSenderId(evt.target.value)}
                 />
             </DialogContent>

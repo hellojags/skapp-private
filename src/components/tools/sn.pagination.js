@@ -25,6 +25,7 @@ class SnPagination extends React.Component{
                 page={page} 
                 onChange={this.onChange}
                 color="primary" 
+                style={{ margin: "auto"}}
                 className="cards-pagination" />
         );
     }
