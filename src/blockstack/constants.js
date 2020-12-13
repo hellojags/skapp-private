@@ -45,7 +45,6 @@ export const DK_IDB_SYNC_HISTORY = "skhub/skyspaces/idb";
 // ** Start : AppStore Specific keys
 export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider";
 // ** End : AppStore Specific keys
-
 export const EXPLORER_URL = "https://explorer.blockstack.org";
 export const SUCCESS = "success";
 export const FAILED = "failed";
@@ -174,23 +173,6 @@ export const INITIAL_DATASYNC_PREF_OBJ = {
   ],
 };
 
-export const INITIAL_APPSTORE_PROVIDER_OBJ = {
-  version: "v1",
-  createTS: new Date(),
-  lastUpdateTS: new Date(),
-  providerPKs: ["3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435"],
-  providerPubKeySpaceMap: {
-    "3f064c0b1e36a7bc1fabc50df2ad93c008a5fc68a79b9b1a0560e35d5b06d435": {
-      "version": "v1",
-      "createTS": "2020-11-13T04:42:17.731Z",
-      "lastUpdateTS": "2020-11-13T04:42:17.731Z",
-      "skyspaceList": [
-        "AppStore"
-      ]
-    }
-  }
-};
-
 export const INITIAL_PORTALS_OBJ = {
   version: "v1",
   createTS: new Date(),
@@ -221,8 +203,8 @@ export const INITIAL_PORTALS_OBJ = {
     {
       //portalId: 3,
       createTS: new Date(),
-      name: "SiaCDN.com",
-      url: "https://www.siacdn.com",
+      name: "skyportal.xyz",
+      url: "https://skyportal.xyz",
       //priority: "3",
       type: "public",
       selected: 0,

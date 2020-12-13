@@ -53,7 +53,7 @@ const SnRouter = (props) => {
         <Route path="/skyspace/:skyspace" component={SnCards} />
         <Route path="/history" component={SnHistory} />
         <Route path="/profile" component={SnProfile} />
-        <Route path="/public-cards" component={SnCards} />
+        <Route path="/public-sharing" component={SnCards} />
         <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
         <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
         <Route component={SnMultiUpload} />

@@ -40,7 +40,7 @@ import { DOWNLOAD } from "../../../sn.constants";
 import {
   bsGetSkyspaceNamesforSkhubId,
   bsAddSkylinkFromSkyspaceList,
-  bsRemoveFromSkySpaceList,
+  bsRemoveSkappFromSpace,
   bsRemoveSkylinkFromSkyspaceList,
   bsAddToHistory
 } from "../../../blockstack/blockstack-api";
@@ -169,7 +169,7 @@ export default function SnImagesDefault(props) {
     const skhubId = app.skhubId;
     dispatch(setLoaderDisplay(true));
     if (typeof props.skyspace != "undefined" && props.skyspace) {
-      bsRemoveFromSkySpaceList(stUserSession, props.skyspace, skhubId).then(
+      bsRemoveSkappFromSpace(stUserSession, props.skyspace, skhubId).then(
         (res) => {
           dispatch(fetchSkyspaceAppCount());
           dispatch(setLoaderDisplay(false));

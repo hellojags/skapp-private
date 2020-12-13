@@ -15,10 +15,10 @@ const SnFooter = () => (
                         target="_blank"
                         className="span-donate">Donate</Link>
                     {/* Privacy */}
-                    <Link rel="noopener noreferrer" target="_blank" href="SkySpaces-Privacy Notice.pdf"
+                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Privacy Notice.pdf"
                         className="span-privacy">Privacy</Link>
                     {/* Terms */}
-                    <Link rel="noopener noreferrer" target="_blank" href="SkySpaces-Terms.pdf"
+                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Terms.pdf"
                         className="span-terms">Terms</Link>
 
                     {/* twitter icon */}

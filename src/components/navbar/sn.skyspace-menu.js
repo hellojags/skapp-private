@@ -8,6 +8,7 @@ import SnConfirmationModal from "../modals/sn.confirmation.modal";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { BiCoinStack } from "react-icons/bi";
 import Tooltip from "@material-ui/core/Tooltip";
+import Button from "@material-ui/core/Button";
 import RefreshOutlinedIcon from "@material-ui/icons/RefreshOutlined";
 import SnAddSkyspaceModal from "../modals/sn.add-skyspace.modal";
 import {
@@ -217,12 +218,27 @@ class SnSkySpaceMenu extends React.Component {
                   className={this.props.classes.shareIconStyle}
                   onClick={(evt) => this.onDelete(evt, skyspace)}
                 />
-                <FaShareSquare className={this.props.classes.shareIconStyle}
-                  onClick={(evt) => this.launchShareModal(evt, skyspace)} />
+
+                {/* <button className={this.props.classes.button}
+                  onClick={(evt) => this.launchShareModal(evt, skyspace)} size="small"
+                  style={{
+                    background: "transparent",
+                    color: "#636f70",
+                    boxShadow: "none",
+                  }}>
+                   <i class="fas fa-people-arrows shareIconStyle"></i>
+                  </button> */}
+                 
+                
+                  <a
+                  onClick={(evt) => this.launchShareModal(evt, skyspace)} className={this.props.classes.shareIconStyleNew} title="Private Share">
+                  <i class="fas fa-people-arrows icon_private_share_menu"></i>
+                  </a>
               </span>
-            </div>
+            </div >
           ))
-        )}
+        )
+        }
 
         <div className={this.props.classes.spaceLinkStyle}>
           <span>
@@ -237,7 +253,7 @@ class SnSkySpaceMenu extends React.Component {
           </span>
         </div>
 
-        <div className={this.props.classes.sideProf_div}>
+        <div >
           {this.props.snImportedSpace?.sharedByUserList
             ?.filter(userId => this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length > 0)
             .map((userId) => (
@@ -257,23 +273,23 @@ class SnSkySpaceMenu extends React.Component {
                   <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
                     <span style={{ fontSize: "12px" }} className={this.props.classes.sharedSpace_names}>{cliTruncate(userId, 18)}</span>
                     {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
-                          <NavLink
-                            activeClassName="active"
-                            key={skyspace}
-                            className="imported-space-nav-link"
-                            onClick={() =>
-                              this.props.isMobile && this.props.toggleMobileMenuDisplay()
-                            }
-                            to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
-                          >
-                            <div className={this.props.classes.icon_sub_title_div} >
-                            # {cliTruncate(skyspace, 20)}
-                              {/* <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
+                      <NavLink
+                        activeClassName="active"
+                        key={skyspace}
+                        className="imported-space-nav-link"
+                        onClick={() =>
+                          this.props.isMobile && this.props.toggleMobileMenuDisplay()
+                        }
+                        to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
+                      >
+                        <div className={this.props.classes.icon_sub_title_div} >
+                          # {cliTruncate(skyspace, 20)}
+                          {/* <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
                           (13)
                         </span> */}
-                            </div>
-                          </NavLink>
-                        ))}
+                        </div>
+                      </NavLink>
+                    ))}
                   </div>
                 </div>
               </>

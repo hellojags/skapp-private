@@ -118,6 +118,9 @@ const useStyles = (theme) => ({
     color: `${theme.palette.primary.textColor}`,
     fontSize: "13px",
   },
+  selected_count: {
+    color: theme.palette.linksColor,
+  },
   innerValue_All: {
     background: theme.palette.spacesTabsCount,
     borderRadius: "100%",
@@ -126,7 +129,7 @@ const useStyles = (theme) => ({
     padding: "3px",
     display: "inline-block",
     width: "25px",
-    color: `${theme.palette.primary.main}`,
+    // color: `${theme.palette.primary.main}`,
     textAlign: "center",
     // paddingRight: "3px",
   },

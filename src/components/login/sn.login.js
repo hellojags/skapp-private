@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox, Tabs, Tab, InputAdornment, Typography } from '@material-ui/core';
+import { Paper, withStyles, Grid, TextField, Button, Link, InputAdornment, Typography } from '@material-ui/core';
 import LockIcon from "@material-ui/icons/Lock";
 import { Face, Fingerprint, PermIdentity } from '@material-ui/icons';
 import styles from "./sn.login.styles";
@@ -8,15 +8,16 @@ import {
     matchDispatcherToProps,
 } from "./sn.login.container";
 import { connect } from "react-redux";
-import { bsGetImportedSpacesObj,bsGetSkyIDProfile,syncData , firstTimeUserSetup } from '../../blockstack/blockstack-api';
+import { bsGetImportedSpacesObj, bsGetSkyIDProfile, syncData, firstTimeUserSetup } from '../../blockstack/blockstack-api';
 import SkyID from "skyid";
-import {ID_PROVIDER_SKYID} from "../../sn.constants";
+import { ID_PROVIDER_SKYID } from "../../sn.constants";
+import SnLandingUploadDisclaimer from "../upload/sn.landing-upload-disclaimer";
 
-let devMode = true;
+let devMode = false;
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
-     devMode = true
+    devMode = true
 } else {
-     devMode = true
+    devMode = false
 }
 class snLogin extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class snLogin extends React.Component {
         this.skyidEventCallback = this.skyidEventCallback.bind(this)
     }
     componentDidMount() {
-        this.initializeSkyId({devMode : true});
+        this.initializeSkyId({ devMode: process.env.NODE_ENV !== 'production' });
         if (this.props.showDesktopMenu === false) {
             this.props.setDesktopMenuState(true);
         }
@@ -77,26 +78,25 @@ class snLogin extends React.Component {
         }
     }
     async onSkyIdSuccess(message) {
-        try
-        {
-        // create userSession Object
-        let userSession = { idp: ID_PROVIDER_SKYID, skyid: this.state.skyid };
-        const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
-        userSession = { ...userSession, person: personObj };
-        this.props.setUserSession(userSession);
-        // For first time user only 
-        let isFirstTime = await firstTimeUserSetup(userSession);
-        if (!isFirstTime)//if not firsttime call data sync 
-        {
-            // call dataSync
-            await syncData(userSession);
+        try {
+            // create userSession Object
+            let userSession = { idp: ID_PROVIDER_SKYID, skyid: this.state.skyid };
+            const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
+            userSession = { ...userSession, person: personObj };
+            this.props.setUserSession(userSession);
+            // For first time user only 
+            let isFirstTime = await firstTimeUserSetup(userSession);
+            if (!isFirstTime)//if not firsttime call data sync 
+            {
+                // call dataSync
+                await syncData(userSession);
+            }
+            this.props.setPersonGetOtherData(personObj);
+            this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
+            this.props.setLoaderDisplay(false);
+            this.props.history.push("/upload" + this.props.location.search);
         }
-        this.props.setPersonGetOtherData(personObj);
-        this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
-        this.props.setLoaderDisplay(false);
-        this.props.history.push("/upload" + this.props.location.search);
-        }
-        catch(error){
+        catch (error) {
             console.log("Error during login process. login failed");
             this.props.setLoaderDisplay(false);
         }
@@ -129,7 +129,8 @@ class snLogin extends React.Component {
         const { classes } = this.props;
         const { value } = this.state;
         return (
-            <div style={{ paddingTop: 150 }}>
+            <div style={{ paddingTop: 100 }}>
+                <SnLandingUploadDisclaimer />
                 <Grid
                     container
                     spacing={3}
@@ -227,7 +228,7 @@ class snLogin extends React.Component {
                                         </Grid>
                                     </Grid>
                                 ) : (
-                                        <Grid item lg={12} className={classes.mail_inpt_grid}>
+                                        <Grid item lg={12} className={classes.mail_inpt_grid} style={{ margin: "auto" }}>
                                             <div>
                                                 {/* <TextField
                                                     className={`${classes.margin} ${classes.mail_textfield}`}
@@ -270,7 +271,7 @@ class snLogin extends React.Component {
                                                 Forgot Your Password?
                                             </Typography>
                                             <Grid container spacing={3}>
-                                                <Grid item xs={8} style={{ margin: "auto" }}>
+                                                <Grid item lg={8} xs={12} style={{ margin: "auto" }}>
                                                     <Button
                                                         variant="contained"
                                                         className={classes.butn_login}
@@ -286,21 +287,27 @@ class snLogin extends React.Component {
                         </Paper>
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
-                            <span style={{ fontWeight: "400" }}>
-                            Note: This update of SkySpaces introduces breaking changes,<br/>  
-                            Old version of app is available at - <a src="https://skyspaces.io"  class="cursor-pointer">https://skyspaces.io</a> <br/> 
-                            We will provide in-app data migration option soon...<br/> 
-                            </span> 
+                                <span style={{ fontWeight: "400" }}>
+                                    Note: This update of SkySpaces introduces breaking changes,<br />
+                            Old version of app is available at - <Link rel="noopener noreferrer" target="_blank" href="https://skyspaces.io">https://skyspaces.io</Link>
+                            <br/>
+                            We will provide in-app data migration option soon...<br />
+                                </span>
                             </Grid>
                         </Grid>
+
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
                                 Registring to SkySpaces,you accept our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
-                                    Terms of use
-                                </span>{" "}and <br /> our{" "}
+                                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Terms.pdf">Terms of use</Link>
+                                </span>{" "}and our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
-                                    Privacy policy
+                                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Privacy Notice.pdf">Privacy policy</Link>
+                                </span>
+                                <br/>
+                                <span>
+                                <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span class="fa fa-envelope"></span> hello@skyspaces.io</Link>
                                 </span>
                             </Grid>
                         </Grid>

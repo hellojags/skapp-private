@@ -58,6 +58,8 @@ import {
 import SnDataSync from '../datasync/sn.datasync';
 import { SUCCESS } from '../../blockstack/constants';
 import useInterval from 'react-useinterval';
+import { getJSONfromDB } from "../../db/indexedDB";
+import { IDB_IS_OUT_OF_SYNC} from '../../blockstack/constants';
 
 const drawerWidth = 300;
 
@@ -94,8 +96,12 @@ export default function SnLeftMenu(props) {
   }, [snIsDataOutOfSync]);
   
   useInterval(async () => {
+    //console.log("Inside useInterval");
+    let isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC); 
+    //console.log("isOutofSync "+isOutofSync);
     // Your custom logic here
-    if (snIsDataOutOfSync) {
+    //if (false) {
+    if (snIsDataOutOfSync || isOutofSync === undefined || isOutofSync === null) {
       setUiSyncStatus("syncing");
       let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
       //let status = await firstTimeUserSetup(userSession, null, null);
@@ -110,7 +116,7 @@ export default function SnLeftMenu(props) {
         dispatch(setIsDataOutOfSync(true));
       }
     }
-  }, 30000);
+  }, 90000);
 
   const postSync = async () => {
     dispatch(setIsDataOutOfSync(true)); // Data is out of sync. Update "State" so that components show correct status on UI
@@ -334,7 +340,7 @@ export default function SnLeftMenu(props) {
             />
           </div>}
           <Typography variant="span">
-                AutoSync Check Every 30 Seconds
+                AutoSync Check Every 90 Seconds
           </Typography>
           <Grid container>
               <SnDataSync syncStatus={uiSyncStatus}></SnDataSync>

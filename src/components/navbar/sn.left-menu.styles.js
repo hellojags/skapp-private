@@ -44,6 +44,11 @@ const leftMenuStyles = (theme) => ({
       fontSize: 15,
       color: theme.palette.mediumGray,
     },
+    shareIconStyleNew: {
+      fontSize: 15,
+      color: theme.palette.mediumGray,
+      paddingLeft: 10,
+    },
     list: {
       width: 295,
       [theme.breakpoints.up('sm')]: {

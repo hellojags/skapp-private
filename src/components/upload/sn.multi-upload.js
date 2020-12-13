@@ -21,7 +21,7 @@ import SnUpload from "../new/sn.upload";
 import { getEmptyHistoryObject } from "../new/sn.new.constants";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { red } from "@material-ui/core/colors";
+import { purple, red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,10 +41,10 @@ import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-co
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
-import { Paper, Switch, Typography, useMediaQuery } from "@material-ui/core";
+import { FormControlLabel, Paper, Switch, Typography, useMediaQuery, withStyles } from "@material-ui/core";
 import { DropzoneArea } from "material-ui-dropzone";
 import SnFooter from "../footer/sn.footer";
-
+import SnLandingUploadDisclaimer from "./sn.landing-upload-disclaimer";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -53,6 +53,19 @@ function Alert(props) {
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
+const PurpleSwitch = withStyles({
+  switchBase: {
+    '&$checked': {
+      color: "#28a745",
+    },
+    '&$checked + $track': {
+      backgroundColor: "#28a745",
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
 export default function SnMultiUpload(props) {
   const dispatch = useDispatch();
@@ -192,11 +205,13 @@ export default function SnMultiUpload(props) {
     <main className={matches ? classes.content : classes.contentBgColor}>
       <div style={{ paddingTop: 40,
                     minHeight: "calc(100vh - 70px)", }}>
+                       
         <Grid container spacing={3} className={classes.most_main_grid_uc}>
+        <SnLandingUploadDisclaimer />
           <Grid item xs={12} className={classes.main_grid_uc}>
             <Paper className={`${classes.paper} ${classes.MaintabsPaper_uc}`}>
             <Paper className={classes.tabsPaper_uc}>
-              <Typography className={classes.uc_title}>Upload Content</Typography>
+              <Typography className={classes.uc_title}>Upload Files/Folders to your Space</Typography>
                 <Grid container spacing={3} className={classes.tags_inpt_main_grid}>
                   <Grid
                     item
@@ -220,11 +235,16 @@ export default function SnMultiUpload(props) {
                     </FormControl>
                   </Grid>)}
                   <Grid item xs={2}>
-                    <Switch
-                      onChange={handleSwitchChnge}
-                      name="checkedA"
-                      color="default"
-                      inputProps={{ "aria-label": "secondary checkbox" }}
+                  <FormControlLabel
+                    control={
+                      <PurpleSwitch
+                        onChange={handleSwitchChnge}
+                        name="checkedA"
+                        color="default"
+                        inputProps={{ "aria-label": "secondary checkbox" }}
+                      />
+                    }
+                      label="Dir Upload"
                     />
                   </Grid>
                 </Grid>
@@ -306,13 +326,13 @@ export default function SnMultiUpload(props) {
                         }}
                       >
                         <div >
-                          <Typography className={classes.img_name_txt}>
+                          <Typography className={classes.linkName}>
                             {fileObj?.file?.path}
                           </Typography>
-                          {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.img_name_txt}>
+                          {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                             Skylink: {fileObj?.url}
                           </Typography>)}
-                          {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.img_name_txt}>
+                          {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
                             {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                           </Typography>)}
                         </div>
@@ -325,9 +345,8 @@ export default function SnMultiUpload(props) {
                       }}
                     /> */}
                           {fileObj?.status === 'complete' && <FileCopyIcon
+                            className={classes.descIcon}
                             style={{
-                              fontSize: "18px",
-                              color: "#1ed660",
                               cursor: "pointer",
                             }}
                             onClick={() => copyToClipboard(fileObj?.url)}

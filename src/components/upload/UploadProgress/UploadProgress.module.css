@@ -1,5 +1,11 @@
 :root {
-  --container-width: 400px;
+  --container-max-width: 400px;
+}
+
+@media only screen and (min-width: 570px) {
+  :root {
+    --container-width: 400px;
+  }
 }
 
 .wrapper {
@@ -19,7 +25,7 @@
   margin: 0;
   padding: 5px !important;
   position: fixed;
-  width: var(--container-width);
+  width: var(--container-max-width);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }

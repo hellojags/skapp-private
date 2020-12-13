@@ -52,7 +52,7 @@ class SnAppCardActionBtnGrp extends React.Component {
           )}
 
           {this.props.hash == null && <div style={{ marginLeft: "auto" }}>
-            {(this.props.hideAdd == null || this.props.hideAdd === false) && (
+            {false && (this.props.hideAdd == null || this.props.hideAdd === false) && (
               <Tooltip title="Add to other Spaces" arrow>
                 <IconButton
                   onClick={this.props.onAdd}
@@ -68,7 +68,7 @@ class SnAppCardActionBtnGrp extends React.Component {
                 <EditOutlinedIcon className={classes.tagEditIcon} />
               </IconButton>
             </Tooltip>
-            {this.props.hideDelete === false && (
+            {this.props.hideDelete === false && false && (
               <Tooltip title="Remove from this Space" arrow>
                 <IconButton onClick={this.props.onDelete} color="secondary">
                   <DeleteOutlineIcon className={classes.tagEditIcon} />

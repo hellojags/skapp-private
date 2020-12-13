@@ -4,7 +4,7 @@ import "./Audio.css";
 
 export default function SnAudio(props) {
   const TagName = SnAudioDefault;
-
+  
   return (
     <TagName
       filteredApps={props.filteredApps}
@@ -18,7 +18,7 @@ export default function SnAudio(props) {
       arrSelectedAps={props.arrSelectedAps}
       hash={props.hash}
       senderId={props.senderId}
-
+      GridUi={props.GridUi}
     />
   );
 }

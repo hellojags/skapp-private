@@ -562,11 +562,16 @@ export default function SnTopBar(props) {
             >
               {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
               <div className="butn-th-main-div">
-                <button className="btn th_btn_nvbar">
+                {/* <button className="btn th_btn_nvbar"> */}
+                <a href="https://skyapps.hns.siasky.net" target="_blank"
+                        rel="noopener noreferrer">
+                  <Tooltip title="Skynet AppStore" arrow>
                   <AppsIcon
                     className={classes.appLogo}
                   />
-                </button>
+                  </Tooltip>
+                  </a>
+                {/* </button> */}
               </div>
               {snPublicHash && (
                 renderChangePortal("Change Portal")

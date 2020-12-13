@@ -3,8 +3,15 @@ import { pki, pkcs5, md } from 'node-forge';
 import randomBytes from "randombytes";
 import nacl from 'tweetnacl';
 import naclutil from 'tweetnacl-util';
-import {deriveChildSeed} from 'skynet-js';
+import { deriveChildSeed } from 'skynet-js';
 import { deleteData } from '../skyhub/sn.api.skyhub';
+
+let sodium: any = null;
+
+(async () => {
+  await _sodium.ready;
+  sodium = _sodium;
+})();
 
 function toHexString(byteArray: Uint8Array): string {
   let s = "";
@@ -15,7 +22,37 @@ function toHexString(byteArray: Uint8Array): string {
   });
   return s;
 }
- 
+
+function hexStringToArrayBuffer(hexString: string): Uint8Array {
+  // remove the leading 0x
+  hexString = hexString.replace(/^0x/, '');
+  
+  // ensure even number of characters
+  if (hexString.length % 2 != 0) {
+      console.log('WARNING: expecting an even number of characters in the hexString');
+  }
+  
+  // check for some non-hex characters
+  var bad = hexString.match(/[G-Z\s]/i);
+  if (bad) {
+      console.log('WARNING: found non-hex characters', bad);    
+  }
+  
+  // split the string into pairs of octets
+  var pairs = hexString.match(/[\dA-F]{2}/gi);
+  
+  // convert the octets to integers
+  var integers = pairs?.map(function(s) {
+      return parseInt(s, 16);
+  });
+  
+  var array = new Uint8Array(integers? integers:[]);
+  console.log(array);
+  
+  return array;
+}
+
+
 function genKeyPairFromSeed(seed: string): { publicKey: Uint8Array; privateKey: Uint8Array } {
   // Get a 32-byte seed.
   seed = pkcs5.pbkdf2(seed, "", 1000, 32, md.sha256.create());
@@ -35,11 +72,12 @@ function genKeyPairAndSeed(length = 64): { publicKey: Uint8Array; privateKey: Ui
 }
 
 // ########### BOB #############
+// "6cffb176971ad1978618c8ed2f84bd2f59a73be9c916614974ef62ef82e23fe5"
 // ED25519 : publicKey : 9da11916898665c2b21099e827d6f19d9d466db43a57d47d48b02882cdbb1076
 // ED25519 : publicKey : base64 : naEZFomGZcKyEJnoJ9bxnZ1GbbQ6V9R9SLAogs27EHY=
 // ED25519 : privateKey : 244a06a7dd2b145b6511fa0fed9126af5a7d9ab39c30a22857612a1d6d06f8409da11916898665c2b21099e827d6f19d9d466db43a57d47d48b02882cdbb1076
 // ED25519 : privateKey : base64 : JEoGp90rFFtlEfoP7ZEmr1p9mrOcMKIoV2EqHW0G+EA=
-// X25519 : publicKey : 224530721ac618f0d98f57affb5efab5bdfd82120876875298d6f9049c901e29
+// X25519 : publicKey : 224530721ac618f0d98f57affb5efab5bdfd82120876875298d6f9049c901e2967ty
 // X25519 : publicKey : base64 : IkUwchrGGPDZj1ev+176tb39ghIIdodSmNb5BJyQHik=
 // X25519 : privateKey : 98aaa8f218c4250d6bccd0b6dbc9a6a499bf39d738340c272d9f29c7a412126e
 // X25519 : privateKey : base64 : mKqo8hjEJQ1rzNC228mmpJm/Odc4NAwnLZ8px6QSEm4=
@@ -54,32 +92,36 @@ function genKeyPairAndSeed(length = 64): { publicKey: Uint8Array; privateKey: Ui
 // X25519 : privateKey : base64 : eBpcKeSGup84OppCOb5T/gl0RSog7MbzsHszXB9VvG8=
 
 // ### Data Encryption for loggedIn user
-async function encryptData (privateKey: string, publicKey: string, data:string, nonce:string): Promise<string> {
+export async function encryptData(hexPrivateKey: string, hexPublicKey: string, data: string, strNonce: string): Promise<any> {
   try {
-    await _sodium.ready;
-    const sodium = _sodium;
-  
-    const xPublicKey = sodium.crypto_sign_ed25519_pk_to_curve25519(naclutil.decodeBase64(publicKey)); // Public key is of current logged in user(ephemeralPublicKey) OR Public key of another user.
-    
-    console.log("xPublicKey: " + naclutil.decodeBase64(publicKey));
-    const xPrivateKey = sodium.crypto_sign_ed25519_sk_to_curve25519(naclutil.decodeBase64(privateKey)); // LoggedIn users Private Key
-    console.log("xPublicKey: " + naclutil.decodeBase64(privateKey));
+    //await _sodium.ready;
+    // const sodium = _sodium;
+    let publicKey: Uint8Array = hexStringToArrayBuffer(hexPublicKey);
+    let privateKey: Uint8Array = hexStringToArrayBuffer(hexPrivateKey);
+    let nonce: Uint8Array = nacl.randomBytes(nacl.box.nonceLength);
+
+    const xPublicKey = sodium.crypto_sign_ed25519_pk_to_curve25519(publicKey); // Public key is of current logged in user(ephemeralPublicKey) OR Public key of another user.
+
+    //console.log("xPublicKey: " + naclutil.decodeBase64(publicKey));
+    const xPrivateKey = sodium.crypto_sign_ed25519_sk_to_curve25519(privateKey); // LoggedIn users Private Key
+    //console.log("xPublicKey: " + naclutil.decodeBase64(privateKey));
     // Bob encrypts message for Alice or Bobs encrypts his own file using ephemeral/drived publicKeys
     const box = nacl.box(
       naclutil.decodeUTF8(data),
-      naclutil.decodeBase64(nonce),
+      nonce,
       xPublicKey,
       xPrivateKey
     )
-    const cipherObject = {version:"v1", ciphertext : naclutil.encodeBase64(box), publicKey, nonce };
+    // we may add public key here
+    const cipherObject = { version: "v1", ciphertext: naclutil.encodeBase64(box), nonce: naclutil.encodeBase64(nonce) };
     // tslint:disable-next-line:no-console
     console.log("box: " + cipherObject.ciphertext);
     // tslint:disable-next-line:no-console
     console.log("nonce: " + cipherObject.nonce);
     //return Buffer.from(message).toString('base64');
- 
-    console.log("cipherObject"+JSON.stringify(cipherObject));
-    return JSON.stringify(cipherObject);
+
+    console.log("cipherObject" + JSON.stringify(cipherObject));
+    return cipherObject;
   }
   catch (e) {
     throw e;
@@ -88,22 +130,26 @@ async function encryptData (privateKey: string, publicKey: string, data:string, 
 //encryptData ("P4UPEMoG1qWOfe3soMQRoQPyRZvIuL/95ByWpYBUQIa8m3WMFN3PdUgFb3PIguSV1dJPD9tamqCLX76Ag9t2Gw==","gvvJpIAE27HKX40s520U8atHAx1cErQp2B/uRe2wmBo=","Hello SkySpaces !!","ldB22oYZh/HP46XVJCRh/J6qOsbV/v7s");
 
 
-export const decryptData = async (privateKey: string, publicKey: string, data:string): Promise<string> => {
+export const decryptData = async (hexPrivateKey: string, hexPublicKey: string, data: any): Promise<any> => {
   try {
-    await _sodium.ready;
-    const sodium = _sodium;
-    const cipherObj = JSON.parse(data);
+    // await _sodium.ready;
+    // const sodium = _sodium;
+
+    let publicKey: Uint8Array = hexStringToArrayBuffer(hexPublicKey);
+    let privateKey: Uint8Array = hexStringToArrayBuffer(hexPrivateKey);
+
+    const cipherObj = data;
     const box = naclutil.decodeBase64(cipherObj.ciphertext);
     const nonce = naclutil.decodeBase64(cipherObj.nonce);
-    const xPrivateKey = sodium.crypto_sign_ed25519_sk_to_curve25519(naclutil.decodeBase64(privateKey)); // LoggedIn users Private Key
-    const xPublicKey = sodium.crypto_sign_ed25519_pk_to_curve25519(naclutil.decodeBase64(publicKey)); // Public key is of current logged in user(ephemeralPublicKey) OR Public key of another user.
+    const xPrivateKey = sodium.crypto_sign_ed25519_sk_to_curve25519(privateKey); // LoggedIn users Private Key
+    const xPublicKey = sodium.crypto_sign_ed25519_pk_to_curve25519(publicKey); // Public key is of current logged in user(ephemeralPublicKey) OR Public key of another user.
     // Alice decrypts message from Bob(using her PubKey) or Alice decrypts his own file using ephemeral/drived privatekey
-    const payload = nacl.box.open(box,nonce,xPublicKey,xPrivateKey);
-    
+    const payload = nacl.box.open(box, nonce, xPublicKey, xPrivateKey);
+
     const plainTextMessage = payload ? naclutil.encodeUTF8(payload) : "";
     // tslint:disable-next-line:no-console
     console.log("Decrypted: " + plainTextMessage);
-    return plainTextMessage;
+    return JSON.parse(plainTextMessage);
   }
   catch (e) {
     throw e;

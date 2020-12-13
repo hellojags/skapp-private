@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./sn.landing-upload-disclaimer.css";
+import { red } from '@material-ui/core/colors';
 
 function SnLandingUploadDisclaimer(props) {
   return (
@@ -8,11 +9,11 @@ function SnLandingUploadDisclaimer(props) {
       <div className="c2-main-div">
         <div className="icon-c2-main-div">
           <svg
-            width="5em"
-            height="5em"
+            width="3em"
+            height="3em"
             viewBox="0 0 16 16"
             class="bi bi-exclamation-circle"
-            fill="lightgray"
+            fill="rgb(235, 42, 42)"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -23,7 +24,7 @@ function SnLandingUploadDisclaimer(props) {
           </svg>
         </div>
         <div className="desc-c2-div">
-          Content Uploaded using SkySpaces is not enxrypted
+          Content Uploaded using SkySpaces is not encrypted yet. (Its work in-progress feature)
         </div>
       </div>
     </div>

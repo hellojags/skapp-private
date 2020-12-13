@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import useStyles from "./sn.cards.styles";
+import "./sn.cards.styles.css";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined";
 import GamesOutlinedIcon from "@material-ui/icons/GamesOutlined";
@@ -21,6 +22,7 @@ import AppsIcon from "@material-ui/icons/Apps";
 import ReorderIcon from "@material-ui/icons/Reorder";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputBase from "@material-ui/core/InputBase";
+import SnConfirmationModal from "../modals/sn.confirmation.modal";
 import LowPriorityIcon from "@material-ui/icons/LowPriority";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import PublishIcon from "@material-ui/icons/Publish";
@@ -31,7 +33,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { SkynetClient, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject, getEmptySkylinkObject } from "../new/sn.new.constants";
 import BlockIcon from '@material-ui/icons/Block';
-import { Button, FormControlLabel, Switch, Typography } from "@material-ui/core";
+import { Button, FormControlLabel, Hidden, Switch, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import FormControl from "@material-ui/core/FormControl";
@@ -49,7 +51,7 @@ import {
   DEFAULT_PORTAL,
   PUBLIC_SHARE_BASE_URL,
   PUBLIC_SHARE_ROUTE,
-  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME
+  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME, UPLOAD
 } from "../../sn.constants";
 import {
   CATEGORY_OBJ,
@@ -57,7 +59,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppListV2, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -66,6 +68,8 @@ import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../..
 import AudioPlayer from "../categories/audio/sn.audio-player";
 import SnFooter from "../footer/sn.footer";
 import SnViewMore from "../tools/sn.view-more";
+import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
+import { async } from "rxjs";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -97,6 +101,7 @@ class SnCards extends React.Component {
       senderId: null,
       loadingAllSpacesInfo: true,
       showAddToSkyspace: false,
+      showMoveToSkyspace: false,
       skyappId: "",
       apps: [],
       allSpacesObj: null,
@@ -117,8 +122,10 @@ class SnCards extends React.Component {
       arrSelectedAps: [],
       hash: null,
       showInfoModal: false,
+      showConfirmModal: false,
       infoModalContent: null,
       isDir: false,
+      portalHost: "siasky.net",
 
 
 
@@ -126,7 +133,7 @@ class SnCards extends React.Component {
       activeStep: 0,
       filterSelection: "emp",
       isTrue: false,
-      GridUi: true
+      GridUi: false
 
       //new UI END
 
@@ -137,7 +144,6 @@ class SnCards extends React.Component {
     this.getFilteredApps = this.getFilteredApps.bind(this);
     this.uploadEleRef = React.createRef();
   }
-
   //new ui start
   setActiveStep = (activeStep) => this.setState({ activeStep });
   setFilterSelection = (filterSelection) => this.setState({ filterSelection });
@@ -252,10 +258,12 @@ class SnCards extends React.Component {
 
   getCategoryWiseCount = () => {
     const categoryCountObj = {};
-    this.props.snApps.forEach((app) => {
-      categoryCountObj[app.type] = categoryCountObj[app.type]
-        ? categoryCountObj[app.type] + 1
-        : 1;
+    this.props.snApps?.length > 0 && this.props.snApps.forEach((app) => {
+      if (app) {
+        categoryCountObj[app.type] = categoryCountObj[app.type]
+          ? categoryCountObj[app.type] + 1
+          : 1;
+      }
     });
     return categoryCountObj;
   };
@@ -266,7 +274,7 @@ class SnCards extends React.Component {
     if (skyspace != null) {
       if (senderId != null) {
         this.props.setLoaderDisplay(true);
-        const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
+        const appListFromSharedSpace = await bsGetSharedSpaceAppListV2(this.props.userSession, decodeURIComponent(senderId), skyspace);
         this.props.setLoaderDisplay(false);
         this.props.setApps(appListFromSharedSpace);
       } else {
@@ -302,27 +310,43 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?content=") > -1 ? this.props.location.search.replace("?content=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
+    const portalHost = this.props.snUserSetting ? this.getLocation(this.props.snUserSetting.setting.portal).host : "siasky.net";
     this.setState({
       skyspace,
       category,
       fetchAllSkylinks: fetchAllSkylinks,
       page: 1,
       hash,
-      senderId
+      senderId,
+      portalHost
     });
     this.props.fetchSkyspaceDetail();
     this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+  }
+
+  getLocation(href) {
+    var match = href.match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/);
+    return match && {
+        href: href,
+        protocol: match[1],
+        host: match[2],
+        hostname: match[3],
+        port: match[4],
+        pathname: match[5],
+        search: match[6],
+        hash: match[7]
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?content=") > -1 ? this.props.location.search.replace("?content=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
     if (
@@ -341,6 +365,8 @@ class SnCards extends React.Component {
         hash,
         fetchAllSkylinks: fetchAllSkylinks,
         category,
+        arrSelectedAps: [],
+        isSelect: false,
         page: 1,
         senderId
       });
@@ -350,7 +376,7 @@ class SnCards extends React.Component {
   }
 
   tagFilter = (app) => {
-    if (this.state.filterCriteria.tagFilterList.length !== 0) {
+    if (app && this.state.filterCriteria.tagFilterList.length !== 0) {
       const appTagList = getCompatibleTags(app.type);
       return (
         appTagList.filter(
@@ -453,7 +479,8 @@ class SnCards extends React.Component {
             this.state.skyspace,
             this.state.fetchAllSkylinks
           ),
-        this.state.senderId
+        this.state.senderId,
+        this.state.GridUi
       );
     } else {
       return (
@@ -469,6 +496,7 @@ class SnCards extends React.Component {
                 <SnAppCard
                   key={i}
                   app={app}
+                  GridUi={this.state.GridUi}
                   hash={this.state.hash}
                   isSelect={this.state.isSelect}
                   arrSelectedAps={this.state.arrSelectedAps}
@@ -561,7 +589,8 @@ class SnCards extends React.Component {
       this.setState({
         showInfoModal: true,
         onInfoModalClose: () => this.setState({ showInfoModal: false }),
-        infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
+        // infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
+        infoModalContent: `https://skyspace.hns.${this.state.portalHost}/skapp/index.html#/${PUBLIC_SHARE_ROUTE}?content=${uploadedContent.skylink}`
       })
       this.props.setLoaderDisplay(false);
     }
@@ -582,10 +611,30 @@ class SnCards extends React.Component {
     const app = { ...getEmptySkylinkObject(), ...uploadObj };
     setTypeFromFile(app.contentType, app)
     app.skhubId = uuidv4();
-    console.log(" upload complete ", app);
     const inMemObj = this.props.snPublicInMemory;
     inMemObj.addedSkapps = [...new Set([app, ...inMemObj.addedSkapps])];
     this.props.setApps(getAllPublicApps(this.props.snApps, inMemObj.addedSkapps, inMemObj.deletedSkapps));
+  }
+
+  onUpload = async (uploadObj) => {
+    if (this.state.hash != null) {
+      this.onPublicUpload(uploadObj)
+    } else {
+      const app = { ...getEmptySkylinkObject(), ...uploadObj };
+      app.skyspaceList = [this.state.skyspace];
+      setTypeFromFile(app.contentType, app)
+      const skhubId = await bsAddSkylink(this.props.userSession, app, this.props.snPerson);
+      await bsAddSkylinkFromSkyspaceList(this.props.userSession, skhubId, [this.state.skyspace]);
+      this.getAppList(this.state.category, this.state.skyspace, this.state.fetchAllSkylinks, this.state.hash, this.state.senderId);
+      this.props.fetchSkyspaceAppCount();
+      let historyObj = { ...getEmptyHistoryObject(), ...app };
+      historyObj.fileName = app.name;
+      historyObj.action = UPLOAD;
+      historyObj.skyspaces = app.skyspaceList;
+      historyObj.savedToSkySpaces = true;
+      historyObj.skhubId = skhubId;
+      await bsAddToHistory(this.props.userSession, historyObj);
+    }
   }
 
   addPublicSpaceToAccount = async (evt) => {
@@ -596,7 +645,7 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
     const redirectToRoute = "/login" + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
     if (process.env.NODE_ENV === 'production') {
-      document.location.href = SKYSPACE_HOSTNAME + "/#" + redirectToRoute;
+      document.location.href = SKYSPACE_HOSTNAME + "#" + redirectToRoute;
     } else {
       this.props.setPublicHash(null);
       this.props.history.push(redirectToRoute);
@@ -644,6 +693,73 @@ class SnCards extends React.Component {
   publicSelect = (evt) => {
     evt.preventDefault();
     this.setState({ isSelect: true, arrSelectedAps: [] });
+  }
+
+  addSelectedAppsToSpaces = async (selectedApps, skyspaceList) => {
+    this.props.setLoaderDisplay(true);
+    for (const app of selectedApps) {
+      await bsAddSkylinkFromSkyspaceList(
+        this.props.userSession,
+        app.skhubId,
+        skyspaceList
+      );
+    }
+    this.props.fetchSkyspaceAppCount();
+    this.setState({ showAddToSkyspace: false });
+    this.props.setLoaderDisplay(false);
+  };
+
+  deleteSelectedApps = async (selectedApps) => {
+    this.props.setLoaderDisplay(true);
+    for (const app of selectedApps) {
+      const spaceListForApp = (await bsGetSkyspaceNamesforSkhubId(this.props.userSession, app.skhubId)).skyspaceForSkhubIdList;
+      await bsRemoveSkylinkFromSkyspaceList(this.props.userSession, app.skhubId, spaceListForApp);
+      await bsDeleteSkylink(this.props.userSession, app.skhubId);
+    }
+    this.setState({
+      arrSelectedAps: []
+    });
+    const { skyspace, category, fetchAllSkylinks, page, hash, senderId } = this.state;
+    await this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+    this.props.fetchSkyspaceAppCount();
+    this.setState({ showConfirmModal: false })
+    this.props.setLoaderDisplay(false);
+  }
+
+  //TODO: modify code to perform task in single loop of selectedApps
+  moveSelectedAppsToSpaces = async (selectedApps, skyspaceList) => {
+    this.props.setLoaderDisplay(true);
+    for (const app of selectedApps) {
+      await bsRemoveSkappFromSpace(
+        this.props.userSession,
+        this.state.skyspace,
+        app.skhubId
+      )
+    }
+    this.props.setLoaderDisplay(false);
+    await this.addSelectedAppsToSpaces(selectedApps, skyspaceList);
+    this.props.setLoaderDisplay(true);
+    const { skyspace, category, fetchAllSkylinks, page, hash, senderId } = this.state;
+    await this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+    this.setState({
+      showMoveToSkyspace: false,
+      arrSelectedAps: []
+    });
+    this.props.setLoaderDisplay(false);
+  }
+
+  isUploadProgress = () => {
+    const isProgress = false;
+    for (const uploadItem of this.props.snUploadList) {
+      if (uploadItem.status !== 'complete') {
+        return true;
+      }
+    }
+    return isProgress;
+  }
+
+  totalProgress = () => {
+
   }
 
   render() {
@@ -704,14 +820,14 @@ class SnCards extends React.Component {
                 md={10}
                 sm={12}
                 xs={12}
-                className={`${classes.gallery_title_btns_grid
+                className={`filter-grid ${classes.gallery_title_btns_grid 
                   } ${"most_main_grid_gallery_style"}`}
               >
                 {/*  All */}
                 <Typography
                   onClick={() => this.updateTagFilterList([])}
                   variant="span"
-                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext}`}
+                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext} ${this.state.filterCriteria?.tagFilterList?.length===0 && "active"}`}
                   style={
                     this.state.filterCriteria != null &&
                       this.state.filterCriteria.tagFilterList.length === 0
@@ -727,12 +843,12 @@ class SnCards extends React.Component {
                 </Typography>
                 {Object.keys(getCategoryObjWithoutAll())
                   .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                  .map((key, idx) => idx < 3 && (
+                  .map((key, idx) => idx < 4 && (
                     <Typography
                       onClick={() => this.updateTagFilterList([key])}
                       variant="span"
                       key={idx}
-                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
+                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text} ${this.state.filterCriteria?.tagFilterList && this.state.filterCriteria?.tagFilterList[0]===key && "active"}`}
                     >
                       {/* <CameraAltOutlinedIcon style={{ fontSize: "20px" }} /> */}
                       <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
@@ -753,7 +869,7 @@ class SnCards extends React.Component {
 
                     {Object.keys(getCategoryObjWithoutAll())
                       .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                      .map((key, idx) => idx >= 3 && (
+                      .map((key, idx) => idx >= 4 && (
                         <div
                           style={{
                             paddingTop: 10,
@@ -814,6 +930,7 @@ class SnCards extends React.Component {
                         <Button
                           variant="contained"
                           color="secondary"
+                          onClick={() => this.state.arrSelectedAps.length > 0 && this.setState({ showConfirmModal: true })}
                           className={classes.button}
                           startIcon={
                             <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
@@ -833,7 +950,7 @@ class SnCards extends React.Component {
                           variant="contained"
                           color="secondary"
                           className={classes.button}
-                          onClick={() => this.createSkylinkPublicShare()}
+                          onClick={() => this.state.arrSelectedAps.length > 0 && this.createSkylinkPublicShare()}
                           startIcon={
                             <ShareOutlinedIcon style={{ color: "#1ed660" }} />
                           }
@@ -845,11 +962,32 @@ class SnCards extends React.Component {
                             marginLeft: "15px",
                           }}
                         >
-                          Share
+                          Public Share
+                      </Button>
+
+                      <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => { alert('Try Private-Share from left navigation,\n This feature will be enabled on this icon soon')}}
+                          startIcon={
+                            // <ShareOutlinedIcon style={{ color: "#1ed660" }} />
+                            <i class="fas fa-people-arrows icon_private_share"></i>
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Private Share
                       </Button>
 
                         <Button
                           variant="contained"
+                          onClick={() => this.state.arrSelectedAps.length > 0 && this.setState({ showMoveToSkyspace: true })}
                           color="secondary"
                           className={classes.button}
                           startIcon={
@@ -870,6 +1008,7 @@ class SnCards extends React.Component {
                           variant="contained"
                           color="secondary"
                           className={classes.button}
+                          onClick={() => this.state.arrSelectedAps.length > 0 && this.setState({ showAddToSkyspace: true })}
                           startIcon={
                             <PlaylistAddOutlinedIcon
                               style={{ color: "#1ed660" }}
@@ -887,7 +1026,7 @@ class SnCards extends React.Component {
                       </Button>
                       </div>
 
-                      <div style={{ textAlign: "right" }}>
+                      <div style={{ textAlign: "right" }} className={classes.selected_count}>
                         {this.state.arrSelectedAps.length} Selected
                       <ClearOutlinedIcon
                           onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
@@ -921,9 +1060,33 @@ class SnCards extends React.Component {
                     multiple
                     type="file"
                   />
+                  <div className="d-none">
+                    <SnUpload
+                      name="files"
+                      ref={this.uploadEleRef}
+                      directoryMode={this.state.isDir}
+                      onUpload={this.onUpload}
+                      portal={getPortalFromUserSetting(this.props.snUserSetting)}
+                    />
+                  </div>
+                  {this.state.hash == null &&
+                  <label htmlFor="contained-button-file">
+                    <Button
+                    onClick={(evt) => evt.preventDefault() || evt.stopPropagation() || this.uploadEleRef.current.gridRef.current.click()}
+                    variant="contained"
+                    color="primary"
+                    style={{ color: "white", borderRadius: 10 }}
+                    component="span"
+                    type="button"
+                    startIcon={<PublishIcon style={{ color: "white" }} />}
+                  >
+                    Upload
+              </Button>
+              </label>
+                  }
                   {this.state.hash != null && filteredApps.length > 0 &&
                     (
-                      <label htmlFor="contained-button-file">
+                      <label htmlFor="contained-button-file" className="public-btn">
                         <Button
                           onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                           variant="contained"
@@ -946,37 +1109,7 @@ class SnCards extends React.Component {
                         >
                           Add To Skyspaces
                 </Button>
-                        <div className="d-none">
-                          <SnUpload
-                            name="files"
-                            ref={this.uploadEleRef}
-                            directoryMode={this.state.isDir}
-                            onUpload={this.onPublicUpload}
-                            portal={getPortalFromUserSetting(this.props.snUserSetting)}
-                          />
-                        </div>
-                        <Button
-                          variant="contained"
-                          type="button"
-                          onClick={this.savePublicSpace}
-                          color="primary"
-                          style={{ color: "white", borderRadius: 10 }}
-                          component="span"
-                          startIcon={<PublishIcon style={{ color: "white" }} />}
-                        >
-                          Save
-                </Button>
-                        <Button
-                          variant="contained"
-                          type="button"
-                          onClick={this.deleteFromPublic}
-                          color="primary"
-                          style={{ color: "white", borderRadius: 10 }}
-                          component="span"
-                          startIcon={<PublishIcon style={{ color: "white" }} />}
-                        >
-                          Delete
-                </Button>
+                        
                         <Button
                           variant="contained"
                           onClick={(evt) => this.selectPublicAll(evt, filteredApps)}
@@ -1006,19 +1139,47 @@ class SnCards extends React.Component {
                           component="span"
                           startIcon={<PublishIcon style={{ color: "white" }} />}
                         >
-                          Cancel
+                          Cancel Select
+                        </Button>)}
+                        
+                        <Button
+                          variant="contained"
+                          type="button"
+                          disabled={(this.props.snPublicInMemory?.addedSkapps?.length===0 && this.props.snPublicInMemory?.deletedSkapps?.length===0)}
+                          onClick={this.savePublicSpace}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Save
+                        </Button>
+                        {this.state.isSelect && (<Button
+                          variant="contained"
+                          type="button"
+                          onClick={this.deleteFromPublic}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Delete
                         </Button>)}
                       </label>
                     )
                   }
-                  {/* <span style={{ marginLeft: 20 }}></span>
-                  <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
+                  {filteredApps.length > 0 && <Hidden xsDown>
+                  <span style={{ marginLeft: 20 }}></span>
+                  <IconButton aria-label="delete" 
+                    onClick={() => this.setGridUi(true)}
+                    style={this.state.hash ? {"margin-left":"auto"}: {}}>
                     <AppsIcon className={classes.appsIcon} />
                   </IconButton>
 
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(false)}>
                     <ReorderIcon className={classes.reOrdered} />
-                  </IconButton> */}
+                  </IconButton>
+                  </Hidden>}
                 </Grid>
 
                 <Grid
@@ -1077,7 +1238,7 @@ class SnCards extends React.Component {
 
           {/* {this.GridUi ? this.getStepContent(this.state.activeStep) : this.getStepContentForList(this.state.activeStep)} */}
           {this.renderCards(filteredApps, page, cardCount, skyspace)}
-          <Grid item xs={12} style={{display: "flex"}}>
+          <Grid item xs={12} style={{ display: "flex" }}>
             {false && filterCriteria === 'audio' ?
               <AudioPlayer /> :
               <SnPagination
@@ -1086,12 +1247,19 @@ class SnCards extends React.Component {
                 onChange={this.udpdatePage}
               />}
           </Grid>
-          <Grid item xs={12} style={{display: "flex"}}>
-            {filterCriteria === 'audio' && 
-              <AudioPlayer /> 
+          <Grid item xs={12} style={{ display: "flex" }}>
+            {filterCriteria === 'audio' &&
+              <AudioPlayer />
             }
           </Grid>
         </div>
+        <SnConfirmationModal
+          title={"Confirm Delete Skapps"}
+          content={"Are you sure you want to permanently delete the Skapps and remove it from all Skyspace?"}
+          open={this.state.showConfirmModal}
+          onNo={() => this.setState({ showConfirmModal: false })}
+          onYes={() => this.deleteSelectedApps(this.state.arrSelectedAps)}
+        />
         <SnInfoModal
           open={this.state.showInfoModal}
           onClose={this.state.onInfoModalClose}
@@ -1099,7 +1267,27 @@ class SnCards extends React.Component {
           type="public-share"
           content={this.state.infoModalContent}
         />
+        <SnAddToSkyspaceModal
+          userSession={this.props.userSession}
+          open={this.state.showAddToSkyspace}
+          availableSkyspaces={this.props.snSkyspaceList?.filter(skyspace => skyspace !== this.state.skyspace)}
+          onClose={() => this.setState({ showAddToSkyspace: false })}
+          onSave={(skyspaceList) =>
+            this.addSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
+          }
+        />
+        <SnAddToSkyspaceModal
+          userSession={this.props.userSession}
+          title={"Select Skyspaces To Move To"}
+          open={this.state.showMoveToSkyspace}
+          availableSkyspaces={this.props.snSkyspaceList?.filter(skyspace => skyspace !== this.state.skyspace)}
+          onClose={() => this.setState({ showMoveToSkyspace: false })}
+          onSave={(skyspaceList) =>
+            this.moveSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
+          }
+        />
         <div>
+          <UploadProgress />
           <SnFooter />
         </div>
       </main>

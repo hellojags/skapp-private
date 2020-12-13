@@ -4,11 +4,12 @@ import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
 import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
-import {IDB_IS_OUT_OF_SYNC} from "../blockstack/constants"
+import { IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
 import { getJSONfromDB, setJSONinDB } from "../db/indexedDB";
-import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
+import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action";
+import { encryptData, decryptData } from "./encryption"
 const pwa = true;
 
 export const getSkylinkHeader = (skylinkUrl) => ajax({
@@ -108,7 +109,17 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
       //     fileData = tempFileData.push(fileData);
       // }
       //console.log("Final JSON "+JSON.stringify(fileData));
-      let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData); //<-- update Key Value pair for that specific pubKey
+      let status = false;
+      // encrypt it
+      if (options?.encrypt == true) {
+        let cypherfileData = await encryptData(privateKey, publicKey, JSON.stringify(fileData));
+        status = await skynetClient.db.setJSON(privateKey, fileKey, cypherfileData);
+      }
+      else {
+        status = await skynetClient.db.setJSON(privateKey, fileKey, fileData);
+      }
+      //let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData);
+      //let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData); //<-- update Key Value pair for that specific pubKey
     }
     catch (error) {
       //setErrorMessage(error.message);
@@ -124,11 +135,13 @@ export const snSerializeSkydbPublicKey = (publicKey) => publicKey;
 
 export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr;
 
-export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
+export const getJSONFile = async (privateKey, publicKey, fileKey, encrypted, options) => {
   try {
     if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
       try {
         const result = await getJSONfromDB(fileKey);
+        // decrypt it
+
         console.log("result" + result);
         return result;
       }
@@ -149,7 +162,16 @@ export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
         if (options.getEntry) {
           return entry;
         }
-        return entry.data;
+        // decrypt it
+        if (privateKey && options?.decrypt == true) {
+          // decrypt it
+          let fileData = await decryptData(privateKey, publicKey, entry.data);
+          //return entry.data;
+          return fileData;
+        }
+        else {
+          return entry.data;
+        }
       }
     }
   }

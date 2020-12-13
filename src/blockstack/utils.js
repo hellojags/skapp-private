@@ -56,8 +56,9 @@ export async function decryptContent(session, content, options) {
   return await promise;
 }
 export const getFileUsingPublicKeyStr = async (publicKeyStr, FILE_PATH )=> {
-  const result = await getJSONFile(publicKeyStr,FILE_PATH,null,{skydb:true});
-  return JSON.parse(result);
+  const result = await getJSONFile(null,publicKeyStr,FILE_PATH,null,{skydb:true});
+  //return JSON.parse(result);
+  return result;
 };
 
 export function getFile(session, FILE_PATH, param) {
@@ -68,7 +69,7 @@ export function getFile(session, FILE_PATH, param) {
       if(param?.publicKey) //if we need to use any other public key
       {
         // pull profile using master public Key
-        promise = getJSONFile(param.publicKey,FILE_PATH,null,param)
+        promise = getJSONFile(null,param.publicKey,FILE_PATH,null,param)
         .then((content) => {
           if (content) {
             //return JSON.parse(content);
@@ -78,7 +79,7 @@ export function getFile(session, FILE_PATH, param) {
       }
       else
       {
-        promise = getJSONFile(session?.person?.appPublicKey,FILE_PATH,null,param)
+        promise = getJSONFile(session?.person?.appPrivateKey, session?.person?.appPublicKey,FILE_PATH,null,param)
         .then((content) => {
           if (content) {
             //return JSON.parse(content);
@@ -88,8 +89,8 @@ export function getFile(session, FILE_PATH, param) {
       };
       break;
     case ID_PROVIDER_SKYDB:
-      const { publicKey } =   snKeyPairFromSeed(session.skydbseed);
-      promise = getJSONFile(publicKey,FILE_PATH,null,{})
+      const { publicKey, privateKey } =   snKeyPairFromSeed(session.skydbseed);
+      promise = getJSONFile(privateKey,publicKey,FILE_PATH,null,{})
             .then((content) => {
               if (content) {
                 //return JSON.parse(content);

@@ -92,7 +92,7 @@ export const getAllItemsFromIDB = async (storeName) => {
             result.push({[key] :value})
             keys.push(key)
             recordCount = iterationNumber;
-            console.log([key, value]);
+            //console.log([key, value]);
         }).then(function() {
             //console.log('Iteration has completed');
         }).catch(function(err) {

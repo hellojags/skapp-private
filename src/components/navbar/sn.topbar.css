@@ -73,6 +73,16 @@
   color: #1dd65f;
   cursor: pointer;
 }
+.icon_private_share {
+  font-size: 24px;
+  color: #1dd65f;
+  cursor: pointer;
+}
+.icon_private_share_menu {
+  font-size: 15px;
+  color: lightgrey;
+  cursor: pointer;
+}
 .icon-th-nvbar {
   font-size: 32px;
   color: #d2d2d2;

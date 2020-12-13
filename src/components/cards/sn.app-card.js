@@ -33,7 +33,7 @@ import SnAppCardActionBtnGrp from "./sn.app-card-action-btn-grp";
 import {
   bsGetSkyspaceNamesforSkhubId,
   bsAddSkylinkFromSkyspaceList,
-  bsRemoveFromSkySpaceList,
+  bsRemoveSkappFromSpace,
   bsRemoveSkylinkFromSkyspaceList,
   bsAddToHistory,
 } from "../../blockstack/blockstack-api";
@@ -102,7 +102,7 @@ class SnAppCard extends React.Component {
     //below condition means , this page is accessed from specific SkySpace
     if (typeof this.props.skyspace != "undefined" && this.props.skyspace) {
       // delete from specific skyspace JSON
-      await bsRemoveFromSkySpaceList(
+      await bsRemoveSkappFromSpace(
         this.props.userSession,
         this.props.skyspace,
         skhubId
@@ -232,7 +232,7 @@ class SnAppCard extends React.Component {
 
     return (
       <>
-        <Grid item xs={12} style={{ marginTop: 10 }}>
+        <Grid item xs={12} sm={this.props.GridUi ? 6 : 12} style={{ marginTop: 10 }}>
           <Paper className={classes.paperStyling}>
             <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
               <Grid item xs={12}>
@@ -291,7 +291,8 @@ class SnAppCard extends React.Component {
                           )}
                 </div>
                 <div className={classes.createAtTime, classes.skylink}>
-                  {app.skylink} <Tooltip title="Copy Skylink to clipboard" arrow>
+                <Typography variant="span" className={classes.createAtTime}>{app.skylink}</Typography>
+                   <Tooltip title="Copy Skylink to clipboard" arrow>
                     <FileCopyOutlinedIcon
                       onClick={this.copyToClipboard}
                       className="cursor-pointer"
