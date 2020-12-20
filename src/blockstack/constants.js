@@ -13,7 +13,7 @@ import { UserSession, AppConfig } from "blockstack";
 
 export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
 export const SKYID_PROFILE_PATH = "profile";
-export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
+export const SKAPP_PROFILE_PATH = "skhub/skapp/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
 export const FOLLOWING_PATH = "skhub/following.json"; // will contain array of public key[array of Users]. this key will be set by app specific pub key/User 
 export const FOLLOWER_PATH = "skhub/follower.json";// will contain array of public key[array of Users]. this key will be set by app specific pub key/User
 export const PUBLIC_KEY_PATH = "skhub/key/publicKey.json";
@@ -32,7 +32,7 @@ export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json";
 
 // IndexedDB specific fields
 export const IDB_NAME = "SkyDB";
-export const IDB_STORE_NAME = "SkySpaces";
+export const IDB_STORE_NAME = "skapp";
 
 //IndexedDB metadataKey to maintain local state (not required in SkyDB)
 export const IDB_LAST_SYNC_REVISION_NO = "skhub/skyspaces/idb/lastSyncRevNo";
@@ -62,6 +62,23 @@ export const appDetails = {
 };
 const appConfig = new AppConfig(["store_write", "publish_data"]);
 export const userSession = new UserSession({ appConfig: appConfig });
+
+
+export const createUserProfileObject = () => {
+  return {
+    version: "v1",
+    createTS: new Date(),
+    lastUpdateTS: new Date(),
+    // avatar:"https://siasky.net/vAFBYRw1s7WmWhYoXOiF2HDX2_2hEJXtLiLQA1YDeB6WOA",
+    // username: "Test User",
+    // aboutme:"Sample Text",
+    // git:"https://github.com",
+    devName: "",
+    devGitId: "", //GitHub or GitLab handle  
+    devInfo: "",
+    devGitRepo:"",
+  };
+};
 
 export const createPersonObject = () => {
   return {

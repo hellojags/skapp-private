@@ -36,7 +36,20 @@ const SnNewButton = (props) => {
 
 
         )}
-        {(props.isRegister || props.edit || true) && props.isAppOwner && (
+        {/* {(props.isRegister|| props.edit) && props.isAppOwner && ( */}
+         {(props.isRegister) && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          type="submit"
+          className={`${classes.button}  ${classes.ef_saveBtn}`}
+        >
+          <i class="fas fa-bullhorn fa-lg" style={{paddingRight: "5px"}}></i>
+          Publish App
+        </Button>
+        )}
+        {(!props.isRegister && props.edit) && props.isAppOwner && (
 
           <Button
             variant="contained"

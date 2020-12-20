@@ -37,6 +37,16 @@ import SnUploadListReducer from "./sn.upload-list.reducer";
 import SnDarkMode from "./sn.dark-mode.reducer";
 import SnAudioPlayerReducer from "./sn.audio-player.reducer";
 import { composeWithDevTools } from 'redux-devtools-extension';
+import SnUserProfile from "./sn.userprofile.reducer";
+import {snUserProfileEpic} from "./sn.userprofile.epic";
+import SnUserMasterProfile from "./sn.usermasterprofile.reducer";
+import {snUserMasterProfileEpic} from "./sn.usermasterprofile.epic";
+
+import SnMyFollowers from "./sn.myFollowers.reducer";
+import SnMyFollowings from "./sn.myFollowings.reducer";
+import {snMyFollowersEpic} from "./sn.myFollowers.epic";
+import {snMyFollowingsEpic} from "./sn.myFollowings.epic";
+
 const redux = require("redux");
 
 const { createEpicMiddleware } = require("redux-observable");
@@ -65,7 +75,11 @@ const allReducers = combineReducers({
   snUploadList: SnUploadListReducer,
   SnAudioPlayer: SnAudioPlayerReducer,
   snImportedSpace: SnImportedSpace,
-  snDarkMode: SnDarkMode
+  snDarkMode: SnDarkMode,
+  snUserProfile: SnUserProfile,
+  snUserMasterProfile : SnUserMasterProfile,
+  snMyFollowers: SnMyFollowers,
+  snMyFollowings: SnMyFollowings
 });
 
 const rootEpic = combineEpics(
@@ -84,7 +98,11 @@ const rootEpic = combineEpics(
   allSkylinksEpic,
   snSkyspaceAppCountEpic,
   snSetSkypaceDetailEpic,
-  publicAppsEpic
+  publicAppsEpic,
+  snUserProfileEpic,
+  snUserMasterProfileEpic,
+  snMyFollowersEpic,
+  snMyFollowingsEpic
 );
 
 const observableMiddleware = createEpicMiddleware();

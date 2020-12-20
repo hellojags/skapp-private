@@ -2,11 +2,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding-top: 10px;
+    padding-top: 30px;
   }
   .desc-c2-div {
     padding-top: 20px;
-    color: rgb(235, 42, 42);
+    font-size : 17px;
+    color: gray;
     text-align: center;
   }
   

@@ -42,7 +42,19 @@ import SnInfoModal from "../modals/sn.info.modal";
 import { launchSkyLink, readableBytes } from "../../sn.util";
 import Tooltip from "@material-ui/core/Tooltip";
 import { APP_BG_COLOR } from "../../sn.constants";
-
+import clsx from 'clsx';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import skapplogo from "../../static/images/skapp_logo.png";
+import randomColor from 'randomcolor';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -53,6 +65,10 @@ class SnAppCard extends React.Component {
     super(props);
     this.state = {
       expanded: false,
+      //   randomColor: randomColor({
+      //     luminosity: 'light',
+      //     format: 'hsla' // e.g. 'hsla(27, 88.99%, 81.83%, 0.6450211517512798)'
+      //  }),
       openCopySuccess: false,
       showAddToSkyspace: false,
       isSelected: false,
@@ -79,7 +95,9 @@ class SnAppCard extends React.Component {
       this.setState({ isSelected: false });
     }
   }
-
+  getRandomColor() {
+    return randomColor();
+  }
   trimDescription(strValue, maxLength) {
     if (strValue && strValue.length > maxLength) {
       return strValue.slice(0, maxLength - 3) + "...";
@@ -87,6 +105,9 @@ class SnAppCard extends React.Component {
       return strValue;
     }
   }
+  handleExpandClick = () => {
+    this.setState({ expanded: !this.state.expanded });
+  };
 
   openSkyApp(skapp) {
     this.props.onOpenSkyApp(skapp);
@@ -226,16 +247,29 @@ class SnAppCard extends React.Component {
     }
   }
 
+  onFavorite = () =>
+  {
+
+  }
+
+  onShare = () =>
+  {
+    
+  }
+
+  onView = () =>
+  {
+    
+  }
+  
   render() {
     const { app, classes } = this.props;
-
-
     return (
       <>
-        <Grid item xs={12} sm={this.props.GridUi ? 6 : 12} style={{ marginTop: 10 }}>
-          <Paper className={classes.paperStyling}>
-            <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
-              <Grid item xs={12}>
+        <Grid item xs={12} sm={this.props.GridUi ? 6 : 12} md={this.props.GridUi ? 6 : 12} lg={this.props.GridUi ? 4 : 12} xl={this.props.GridUi ? 3 : 12} style={{ marginTop: 10}}> 
+          <Paper hover className={classes.paperStyling}>
+            <Grid container spacing={3} style={{ width: "100%",margin: "auto"}}>
+              <Grid item xs={10}>
                 <div
                   style={{
                     display: "flex",
@@ -243,24 +277,19 @@ class SnAppCard extends React.Component {
                     flexWrap: "wrap",
                   }}
                 >
-                  <div>
-                    {app.type != null &&
-                      getCompatibleTags(app.type).map((category, idx) => {
-                        return CATEGORY_OBJ[category] != null ? (
-                          CATEGORY_OBJ[category].getLogo(classes.spaceIcons)
-                        ) : (<></>)
-                      })
-                    }
-                  </div>
-                  <div style={{ paddingLeft: 20, cursor: "pointer" }}
+                  <div style={{ paddingLeft: 10, cursor: "pointer" }}
                     onClick={() => {
                       this.download(app);
                     }}>
                     <Typography variant="span" className={classes.spaceName}>
-                      {cliTruncate(app.name, 100, { position: "middle" })}
+                      {cliTruncate(app.name, 25, { position: "middle" })}
                     </Typography>
+                   
                   </div>
-                  <div style={{ paddingLeft: 30 }}>
+                  <div style={{paddingLeft: "5px"}}>
+                  <Chip variant="outlined" size="small" label="v1.0"/>
+                  </div>
+                  {/* <div style={{ paddingLeft: 30 }}>
                     <Typography variant="span" className={classes.createAtTime}>
                       {app.contentType}
                     </Typography>
@@ -269,15 +298,9 @@ class SnAppCard extends React.Component {
                     <Typography variant="span" className={classes.createAtTime}>
                       {readableBytes(app.contentLength)}
                     </Typography>
-                  </div>
-                  <div style={{ paddingLeft: 30 }}>
-                    <Typography variant="span" className={classes.createAtTime}>
-                      {moment(app.createTS).format(
-                        "MM/DD/YYYY h:mm:ss a"
-                      )}
-                    </Typography>
-                  </div>
-                  {this.props.isSelect && (
+                  </div> */}
+                  
+                  {/* {this.props.isSelect && (
                             <div style={{marginLeft: "auto"}}>
                               {this.props.arrSelectedAps.indexOf(app) === -1 && (
                                 <RadioButtonUncheckedIcon className={classes.tagEditIcon}
@@ -288,9 +311,9 @@ class SnAppCard extends React.Component {
                                   onClick={() => this.props.onSelection(app, true)} />
                               )}
                             </div>
-                          )}
+                          )} */}
                 </div>
-                <div className={classes.createAtTime, classes.skylink}>
+                {/* <div className={classes.createAtTime, classes.skylink}>
                 <Typography variant="span" className={classes.createAtTime}>{app.skylink}</Typography>
                    <Tooltip title="Copy Skylink to clipboard" arrow>
                     <FileCopyOutlinedIcon
@@ -299,18 +322,43 @@ class SnAppCard extends React.Component {
                       style={{ color: APP_BG_COLOR, paddingLeft: 5 }}
                     />
                   </Tooltip>
-                </div>
+                </div> */}
+              </Grid>
+              <Grid item xs={2} style={{ paddingRight: 22}}>
+              <Avatar alt="Skapp" src={skapplogo} className={classes.small} variant="rounded"/>
               </Grid>
               <Grid item xs={12} style={{ paddingTop: 0 }}>
-                <div style={{ paddingLeft: 62 }}>
+              <div style={{ paddingLeft: 10 }}>
+                    <Typography variant="span" className={classes.createAtTime}>
+                      Published on: {moment(app.createTS).format(
+                      "MM/DD/YYYY h:mm:ss a"
+                    )}
+                    </Typography>
+                  </div>
+                  <Divider variant="middle"  />
+              </Grid>
+              <Grid item xs={12} style={{ paddingTop: 0 }}>
+                <div style={{ paddingLeft: 10 }}>
                   {this.trimDescription(app.description, 200)}
-                  {this.renderOtherSpaces()}
+                  {/* {this.renderOtherSpaces()} */}
+                </div>
+              </Grid>
+              <Grid item xs={12} style={{ paddingLeft: 10}}>
+                <div style={{ paddingLeft: 10, display: "flex", flexWrap: "wrap" }}>
+                  {app.tags.map((tag, idx) => (
+                    // <Typography variant="span" className={classes.tagsBg} key={idx}>
+                    <Typography variant="span" key={idx} style={{ paddingRight: "3px" }}>
+                      #{tag}
+                    </Typography>
+                  ))}
                 </div>
               </Grid>
               <Grid item xs={12} style={{ paddingTop: 0, paddingBottom: 0 }}>
                 <SnAppCardActionBtnGrp
                   app={app}
                   hash={this.props.hash}
+                  displayEditBtn={this.props.displayEditBtn}
+                  displayInfoBtn={this.props.displayInfoBtn}
                   hideDelete={this.props.senderId != null}
                   hideAdd={this.props.senderId != null}
                   onAdd={() => this.handleSkyspaceAdd(app)}
@@ -320,6 +368,8 @@ class SnAppCard extends React.Component {
                   onDownload={() => this.download(app)}
                 />
               </Grid>
+
+
             </Grid>
           </Paper>
         </Grid>
@@ -351,132 +401,132 @@ class SnAppCard extends React.Component {
       </>
     );
 
-    return (
-      <>
-        <Grid item xs={12} className="side-padding-0">
-          <Card className="card">
-            <CardHeader
-              className="no-padding-b"
-              title={
-                <div>
-                  {app.type != null &&
-                    getCompatibleTags(app.type).map((category, idx) => {
-                      return CATEGORY_OBJ[category] != null ? (
-                        <div key={idx}>
-                          <span
-                            style={{ color: APP_BG_COLOR }}
-                            className="pr-2"
-                          >
-                            {CATEGORY_OBJ[category].getLogo()}
-                          </span>
-                          <Link
-                            variant="inherit"
-                            className="font-weight-bold cursor-pointer h5"
-                            color="black"
-                            onClick={() => {
-                              this.download(app);
-                            }}
-                          >
-                            {cliTruncate(app.name, 100, { position: "middle" })}
-                          </Link>
-                          <span className="display-5 skyspaceCardTime">
-                            | Create Time:{" "}
-                            {moment(app.createTS).format(
-                              "MM/DD/YYYY h:mm:ss a"
-                            )}
-                          </span>
-                          {this.props.isSelect && (
-                            <>
-                              {this.props.arrSelectedAps.indexOf(app) === -1 && (
-                                <RadioButtonUncheckedIcon className="selection-radio"
-                                  onClick={() => this.props.onSelection(app)} />
-                              )}
-                              {this.props.arrSelectedAps.indexOf(app) > -1 && (
-                                <RadioButtonCheckedIcon className="selection-radio"
-                                  onClick={() => this.props.onSelection(app, true)} />
-                              )}
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                          <Link
-                            variant="inherit"
-                            className="font-weight-bold cursor-pointer h5"
-                            color="black"
-                            onClick={() => {
-                              this.download(app);
-                            }}
-                          >
-                            {cliTruncate(app.name, 100, { position: "middle" })}
-                          </Link>
-                        );
-                    })}
-                </div>
-              }
-              subheader={
-                <>
-                  <span>{app.skylink}</span>
-                  <Tooltip title="Copy Skylink to clipboard" arrow>
-                    <FileCopyOutlinedIcon
-                      onClick={this.copyToClipboard}
-                      className="cursor-pointer"
-                      style={{ color: APP_BG_COLOR, paddingLeft: 5 }}
-                    />
-                  </Tooltip>
-                  <br />
-                  Content-Type: <font color="primary">{app.contentType}</font> |
-                  Content-Size:{" "}
-                  <font color="primary">{readableBytes(app.contentLength)} </font>
-                </>
-              }
-              subheaderTypographyProps={{ variant: "h9" }}
-            />
-            <CardContent className="no-padding-b">
-              {this.trimDescription(app.description, 200)} <br />
-              {this.renderOtherSpaces()}
-            </CardContent>
-            <div>
-              <SnAppCardActionBtnGrp
-                app={app}
-                hash={this.props.hash}
-                hideDelete={this.props.senderId != null}
-                hideAdd={this.props.senderId != null}
-                onAdd={() => this.handleSkyspaceAdd(app)}
-                onEdit={() => this.openSkyApp(app)}
-                onLaunch={() => this.launchSkyLink(app.skylink)}
-                onDelete={() => this.removeFromSkyspace()}
-                onDownload={() => this.download(app)}
-              />
-            </div>
-          </Card>
-        </Grid>
-        <SnAddToSkyspaceModal
-          userSession={this.props.userSession}
-          open={this.state.showAddToSkyspace}
-          availableSkyspaces={this.state.availableSkyspaces}
-          onClose={() => this.setState({ showAddToSkyspace: false })}
-          onSave={(skyspaceList) =>
-            this.saveAddToSkyspaceChanges(app, skyspaceList)
-          }
-        />
-        <SnInfoModal
-          open={this.state.snInfoModal.open}
-          onClose={this.state.snInfoModal.onClose}
-          title={this.state.snInfoModal.title}
-          content={this.state.snInfoModal.description}
-        />
+    // return (
+    //   <>
+    //     <Grid item xs={12} className="side-padding-0">
+    //       <Card className="card">
+    //         <CardHeader
+    //           className="no-padding-b"
+    //           title={
+    //             <div>
+    //               {app.type != null &&
+    //                 getCompatibleTags(app.type).map((category, idx) => {
+    //                   return CATEGORY_OBJ[category] != null ? (
+    //                     <div key={idx}>
+    //                       <span
+    //                         style={{ color: APP_BG_COLOR }}
+    //                         className="pr-2"
+    //                       >
+    //                         {CATEGORY_OBJ[category].getLogo()}
+    //                       </span>
+    //                       <Link
+    //                         variant="inherit"
+    //                         className="font-weight-bold cursor-pointer h5"
+    //                         color="black"
+    //                         onClick={() => {
+    //                           this.download(app);
+    //                         }}
+    //                       >
+    //                         {cliTruncate(app.name, 100, { position: "middle" })}
+    //                       </Link>
+    //                       <span className="display-5 skyspaceCardTime">
+    //                         | Create Time:{" "}
+    //                         {moment(app.createTS).format(
+    //                           "MM/DD/YYYY h:mm:ss a"
+    //                         )}
+    //                       </span>
+    //                       {this.props.isSelect && (
+    //                         <>
+    //                           {this.props.arrSelectedAps.indexOf(app) === -1 && (
+    //                             <RadioButtonUncheckedIcon className="selection-radio"
+    //                               onClick={() => this.props.onSelection(app)} />
+    //                           )}
+    //                           {this.props.arrSelectedAps.indexOf(app) > -1 && (
+    //                             <RadioButtonCheckedIcon className="selection-radio"
+    //                               onClick={() => this.props.onSelection(app, true)} />
+    //                           )}
+    //                         </>
+    //                       )}
+    //                     </div>
+    //                   ) : (
+    //                       <Link
+    //                         variant="inherit"
+    //                         className="font-weight-bold cursor-pointer h5"
+    //                         color="black"
+    //                         onClick={() => {
+    //                           this.download(app);
+    //                         }}
+    //                       >
+    //                         {cliTruncate(app.name, 100, { position: "middle" })}
+    //                       </Link>
+    //                     );
+    //                 })}
+    //             </div>
+    //           }
+    //           subheader={
+    //             <>
+    //               <span>{app.skylink}</span>
+    //               <Tooltip title="Copy Skylink to clipboard" arrow>
+    //                 <FileCopyOutlinedIcon
+    //                   onClick={this.copyToClipboard}
+    //                   className="cursor-pointer"
+    //                   style={{ color: APP_BG_COLOR, paddingLeft: 5 }}
+    //                 />
+    //               </Tooltip>
+    //               <br />
+    //               Content-Type: <font color="primary">{app.contentType}</font> |
+    //               Content-Size:{" "}
+    //               <font color="primary">{readableBytes(app.contentLength)} </font>
+    //             </>
+    //           }
+    //           subheaderTypographyProps={{ variant: "h9" }}
+    //         />
+    //         <CardContent className="no-padding-b">
+    //           {this.trimDescription(app.description, 200)} <br />
+    //           {this.renderOtherSpaces()}
+    //         </CardContent>
+    //         <div>
+    //           <SnAppCardActionBtnGrp
+    //             app={app}
+    //             hash={this.props.hash}
+    //             hideDelete={this.props.senderId != null}
+    //             hideAdd={this.props.senderId != null}
+    //             onAdd={() => this.handleSkyspaceAdd(app)}
+    //             onEdit={() => this.openSkyApp(app)}
+    //             onLaunch={() => this.launchSkyLink(app.skylink)}
+    //             onDelete={() => this.removeFromSkyspace()}
+    //             onDownload={() => this.download(app)}
+    //           />
+    //         </div>
+    //       </Card>
+    //     </Grid>
+    //     <SnAddToSkyspaceModal
+    //       userSession={this.props.userSession}
+    //       open={this.state.showAddToSkyspace}
+    //       availableSkyspaces={this.state.availableSkyspaces}
+    //       onClose={() => this.setState({ showAddToSkyspace: false })}
+    //       onSave={(skyspaceList) =>
+    //         this.saveAddToSkyspaceChanges(app, skyspaceList)
+    //       }
+    //     />
+    //     <SnInfoModal
+    //       open={this.state.snInfoModal.open}
+    //       onClose={this.state.snInfoModal.onClose}
+    //       title={this.state.snInfoModal.title}
+    //       content={this.state.snInfoModal.description}
+    //     />
 
-        <Snackbar
-          open={this.state.openCopySuccess}
-          autoHideDuration={3000}
-          onClose={this.closeCopySucess}
-        >
-          <Alert onClose={this.closeCopySucess} severity="success">
-            Skylink successfully copied to clipboard!
-          </Alert>
-        </Snackbar>
-      </>
-    );
+    //     <Snackbar
+    //       open={this.state.openCopySuccess}
+    //       autoHideDuration={3000}
+    //       onClose={this.closeCopySucess}
+    //     >
+    //       <Alert onClose={this.closeCopySucess} severity="success">
+    //         Skylink successfully copied to clipboard!
+    //       </Alert>
+    //     </Snackbar>
+    //   </>
+    // );
   }
 }
 

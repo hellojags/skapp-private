@@ -29,7 +29,7 @@ function SnLandingUpload(props) {
     const stPerson = useSelector((state) => state.person);
 
     useEffect(() => {
-        stPerson!=null && history.push("/upload")
+        stPerson!=null && history.push("/appstore")
     }, [])
     const handleImage = (files) => {
         if (files.length) {

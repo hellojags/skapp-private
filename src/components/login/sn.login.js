@@ -37,12 +37,13 @@ class snLogin extends React.Component {
             this.props.setDesktopMenuState(true);
         }
         if (this.props.person) {
-            this.props.history.push("/upload");
+            this.props.history.push("/appstore");
         }
+        this.props.setPublicHash(null); // this is done for Skapp. Setting public Hash to null for correct button display in Menu.
     }
     componentDidUpdate() {
         if (this.props.person) {
-            this.props.history.push("/upload");
+            this.props.history.push("/appstore");
         }
     }
     handleSeedChange = (evt) => {
@@ -51,7 +52,7 @@ class snLogin extends React.Component {
         });
     }
     initializeSkyId = (opts) => {
-        this.setState({ skyid: new SkyID('SkySpaces', this.skyidEventCallback, opts) });
+        this.setState({ skyid: new SkyID('Skapp', this.skyidEventCallback, opts) });
     }
     loginSkyID = async () => {
         this.state.skyid.sessionStart();
@@ -84,6 +85,13 @@ class snLogin extends React.Component {
             const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
             userSession = { ...userSession, person: personObj };
             this.props.setUserSession(userSession);
+            // get app profile
+            this.props.getUserProfileAction(userSession);
+            this.props.getUserMasterProfileAction(userSession?.person?.masterPublicKey);
+            // get userFollowers
+            this.props.getMyFollowersAction(null);
+            // get userFollowings
+            this.props.getMyFollowingsAction(null);
             // For first time user only 
             let isFirstTime = await firstTimeUserSetup(userSession);
             if (!isFirstTime)//if not firsttime call data sync 
@@ -94,7 +102,7 @@ class snLogin extends React.Component {
             this.props.setPersonGetOtherData(personObj);
             this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
             this.props.setLoaderDisplay(false);
-            this.props.history.push("/upload" + this.props.location.search);
+            this.props.history.push("/appstore" + this.props.location.search);
         }
         catch (error) {
             console.log("Error during login process. login failed");
@@ -116,7 +124,7 @@ class snLogin extends React.Component {
             this.props.setPersonGetOtherData(personObj);
             this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
             this.props.setLoaderDisplay(false);
-            this.props.history.push("/upload" + this.props.location.search);
+            this.props.history.push("/appstore" + this.props.location.search);
         } else {
             console.log("no seed");
         }
@@ -245,7 +253,7 @@ class snLogin extends React.Component {
                                                     required
                                                 /> */}
                                                 <Typography style={{ color: "#1DD65F", fontWeight: "600", fontSize: 30 }}>
-                                                    Own Your Space
+                                                    Own Your App
                                                 </Typography>
                                                 <TextField
                                                     className={`${classes.margin} ${classes.password_textfield} d-none`}
@@ -285,29 +293,29 @@ class snLogin extends React.Component {
                                     )}
                             </Grid>
                         </Paper>
-                        <Grid container spacing={3}>
+                        {/* <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
                                 <span style={{ fontWeight: "400" }}>
                                     Note: This update of SkySpaces introduces breaking changes,<br />
                             Old version of app is available at - <Link rel="noopener noreferrer" target="_blank" href="https://skyspaces.io">https://skyspaces.io</Link>
-                            <br/>
+                                    <br />
                             We will provide in-app data migration option soon...<br />
                                 </span>
                             </Grid>
-                        </Grid>
+                        </Grid> */}
 
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
-                                Registring to SkySpaces,you accept our{" "}
+                                Registring to Skapp,you accept our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
                                     <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Terms.pdf">Terms of use</Link>
                                 </span>{" "}and our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
                                     <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Privacy Notice.pdf">Privacy policy</Link>
                                 </span>
-                                <br/>
+                                <br />
                                 <span>
-                                <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span class="fa fa-envelope"></span> hello@skyspaces.io</Link>
+                                    <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span class="fa fa-envelope"></span> hello@skyspaces.io</Link>
                                 </span>
                             </Grid>
                         </Grid>

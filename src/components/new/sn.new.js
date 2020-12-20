@@ -25,7 +25,7 @@ import { mapStateToProps, matchDispatcherToProps } from "./sn.new.container";
 import SnNewButton from "./sn.new.button";
 import SnInfoModal from "../modals/sn.info.modal";
 import SnCarousalMenu from "../tools/sn.carousal-menu";
-import { ID_PROVIDER } from "../../blockstack/constants";
+import { ID_PROVIDER,SKYLINK_PATH } from "../../blockstack/constants";
 import { map } from "rxjs/operators";
 import { getSkylinkHeader } from "../../skynet/sn.api.skynet";
 import { parseSkylink } from "skynet-js";
@@ -48,6 +48,7 @@ import {
   bsAddToHistory,
   getSkyLinkIndex,
   bsGetSharedSkappListFromSender,
+  getFileFromSkyDBFolder
 } from "../../blockstack/blockstack-api";
 import { generateSkyhubId } from "../../blockstack/utils";
 import SnFooter from "../footer/sn.footer";
@@ -136,39 +137,15 @@ class SnNew extends React.Component {
     });
   }
 
-  componentDidMount() {
-    const path = this.props.match.path;
-    if (path === "/register") {
-      this.setState({
-        isRegister: true,
-        isAppOwner: true,
-      });
-      this.props.setAppSkyspces({
-        skyspaceForSkhubIdList: [],
-        isAppOwner: true,
-      });
-    } else {
-      const id = decodeURIComponent(this.props.match.params.id);
-      let { sender } = this.props.match.params;
-      sender = sender && decodeURIComponent(sender);
-      appId = id;
-      this.setState({
-        isRegister: false,
-      });
-      this.getSkyAppDetails(id, sender);
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.fetchEmptyApp();
-    // this.props.setAppSkyspces([]);
-  }
-
   async getSkyAppDetails(skyAppId, sender) {
+    // "sender" is Pubkey of remote user
     if (sender) {
       this.props.setLoaderDisplay(true);
-      const skappList = await bsGetSharedSkappListFromSender(this.props.userSession, sender, [skyAppId]);
-      skappList && skappList.length > 0 && this.props.setAppDetail(skappList[0]);
+      //const skappList = await bsGetSharedSkappListFromSender(this.props.userSession, sender, [skyAppId]);
+      const skyapp_datakey = SKYLINK_PATH + skyAppId + ".json";
+      const skappKeyValue = await getFileFromSkyDBFolder(this.props.userSession, sender,skyapp_datakey);
+      const skappJSON = Object.values(skappKeyValue[0])[0];
+      skappKeyValue && skappKeyValue.length > 0 && this.props.setAppDetail(skappJSON);
       this.props.setLoaderDisplay(false);
       return;
     }
@@ -186,11 +163,6 @@ class SnNew extends React.Component {
       })
       .then(() => {
         const locationSearchStr = this.props.location.search;
-        console.log(
-          "tester",
-          this.props.snAppSkyspaces != null &&
-          this.props.snAppSkyspaces.isAppOwner
-        );
         this.props.fetchSkyspaceAppDetail({
           skyAppId,
           session: this.props.userSession,
@@ -198,13 +170,80 @@ class SnNew extends React.Component {
       });
   }
 
+  componentDidMount() {
+    if (this.props.location.pathname.indexOf("/publishapp") > -1) { // New Skapp
+      this.setState({
+        isRegister: true,
+        isAppOwner: true,
+        edit: true,
+      });
+      this.props.setAppSkyspces({
+        skyspaceForSkhubIdList: [],
+        isAppOwner: true,
+      });
+    } 
+    else if (this.props.location.pathname.indexOf("/providerskyapps") > -1)  
+    {
+      const id = decodeURIComponent(this.props.match.params.id);
+      //let { publickey } = this.props.match.params;
+      // Skapp owners pubkey, it can be different thn loggedin user
+      let publickey =(new URLSearchParams(this.props.location.search)).get("publickey");
+      publickey = publickey && decodeURIComponent(publickey);
+      appId = id;
+      this.setState({
+        isRegister: false,
+        isAppOwner: false,
+        edit: false
+      });
+      this.getSkyAppDetails(id, publickey);
+    }
+    else if (this.props.location.pathname.indexOf("/myskyapps") > -1)  
+    {
+
+      const id = decodeURIComponent(this.props.match.params.id);
+      //let { publickey } = this.props.match.params;
+      // Skapp owners pubkey, it can be different thn loggedin user
+      let publickey =(new URLSearchParams(this.props.location.search)).get("publickey");
+      publickey = publickey && decodeURIComponent(publickey);
+      appId = id;
+      this.setState({
+        isRegister: false,
+        isAppOwner: false,
+        edit: false
+      });
+      this.getSkyAppDetails(id, publickey);
+    }
+    else
+    {
+      const id = decodeURIComponent(this.props.match.params.id);
+      //let { publickey } = this.props.match.params;
+      // Skapp owners pubkey, it can be different thn loggedin user
+      let publickey =(new URLSearchParams(this.props.location.search)).get("publickey");
+      publickey = publickey && decodeURIComponent(publickey);
+      appId = id;
+      this.setState({
+        isRegister: false,
+        edit: true
+      });
+      this.getSkyAppDetails(id, publickey);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.fetchEmptyApp();
+    this.setState({
+      isRegister: false,
+    });
+    // this.props.setAppSkyspces([]);
+  }
+  
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const path = this.props.match.path;
-    if (path === "/register") {
+    if (this.props.location.pathname.indexOf("/publishapp") > -1) {
       if (!this.state.isRegister) {
         this.setState({
           isRegister: true,
           isAppOwner: true,
+          edit: true,
         });
         this.props.setAppSkyspces({
           skyspaceForSkhubIdList: [],
@@ -215,12 +254,40 @@ class SnNew extends React.Component {
       }
       return;
     }
-    const { id, sender } = this.props.match.params;
-    appId = id;
-    if (this.state.isRegister) {
-      this.setState({
-        isRegister: false,
-      });
+    else if (this.props.location.pathname.indexOf("/providerskyapps") > -1)  
+    {
+      const { id, sender } = this.props.match.params;
+      appId = id;
+      if (this.state.isRegister) {
+        this.setState({
+          isRegister: false,
+          edit: false,
+          isAppOwner: false,
+        });
+      }
+    }
+    else if (this.props.location.pathname.indexOf("/myskyapps") > -1)  
+    {
+      const { id, sender } = this.props.match.params;
+      appId = id;
+      if (this.state.isRegister) {
+        this.setState({
+          isRegister: false,
+          edit: false,
+          isAppOwner: false,
+        });
+      }
+    }
+    else
+    {
+      const { id, sender } = this.props.match.params;
+      appId = id;
+      if (this.state.isRegister) {
+        this.setState({
+          isRegister: false,
+          edit: true
+        });
+      }
     }
   }
 
@@ -243,7 +310,7 @@ class SnNew extends React.Component {
     const snInfoModal = {
       open: true,
       title: "Status : Success",
-      description: "Skylink has been " + action + " Successfully.",
+      description: "App is " + action + " Successfully.",
       onClose: this.handleInfoModalClose,
     };
     this.setState({ snInfoModal });
@@ -295,6 +362,7 @@ class SnNew extends React.Component {
 
   // This is main method to handle submits
   handleSubmit = async (evt, param) => {
+    this.props.skyapp["skyspaceList"] = this.getSelectedSpaceForCarousalMenu();
     evt.preventDefault();
     let isError = false;
     for (const key in this.props.skyapp) {
@@ -532,13 +600,20 @@ class SnNew extends React.Component {
 
   handleChange = (evt, options) => {
     const { skyapp } = this.props;
+    // if (
+    //   this.props.snAppSkyspaces != null &&
+    //   (this.props.snAppSkyspaces.isAppOwner == null ||
+    //     this.props.snAppSkyspaces.isAppOwner === false)
+    // ) {
+    //   return;
+    // }
     if (
       this.props.snAppSkyspaces != null &&
-      (this.props.snAppSkyspaces.isAppOwner == null ||
-        this.props.snAppSkyspaces.isAppOwner === false)
+      (this.state.isAppOwner === false)
     ) {
       return;
     }
+
     let fieldName = "";
     if (options != null) {
       fieldName = options.key;
@@ -644,6 +719,17 @@ class SnNew extends React.Component {
     }
   };
 
+  getSelectedSpaceForCarousalMenu = () => {
+    let selectedSpaceList = [];
+    if (this.props.location.pathname.indexOf("/publishapp") > -1) {
+      selectedSpaceList = ["publishedapps"];
+    }
+    else if (this.props.snAppSkyspacesToChange != null && this.props.snAppSkyspacesToChange.skyspaceForSkhubIdList != null) {
+      selectedSpaceList = this.props.snAppSkyspacesToChange.skyspaceForSkhubIdList;
+    }
+    return selectedSpaceList;
+  };
+
   setTypeAutoCompleteValue = () => {
     const selectedObj = getCategoryObjWithoutAllAsArray().filter(
       (obj) => obj.key === this.props.skyapp.type
@@ -652,6 +738,41 @@ class SnNew extends React.Component {
       ? selectedObj[0]
       : null;
   };
+  pageTitle = () => {
+    let title = "Skynet App Store";
+    if (this.props.location.pathname.indexOf("/publishapp") > -1) {
+      title = "Publish App";
+    }
+    else{
+      title = "App Details";
+    }
+    // if (this.props.location.pathname.indexOf("/appstore") > -1) {
+    //   title = "Skynet App Store";
+    // }
+    // if (this.props.location.pathname.indexOf("/publishedapps") > -1) {
+    //   title = "My Published Apps";
+    // }
+    // if (this.props.location.pathname.indexOf("/hosting") > -1) {
+    //   title = "Web Hosting (Coming soon...)";
+    // }
+    return title;
+  }
+  pageSubTitle = () => {
+    let title = "";
+    if (this.props.location.pathname.indexOf("/publishapp") == -1) {
+      title = "(Read Only View)";
+    }
+    // if (this.props.location.pathname.indexOf("/appstore") > -1) {
+    //   title = "Skynet App Store";
+    // }
+    // if (this.props.location.pathname.indexOf("/publishedapps") > -1) {
+    //   title = "My Published Apps";
+    // }
+    // if (this.props.location.pathname.indexOf("/hosting") > -1) {
+    //   title = "Web Hosting (Coming soon...)";
+    // }
+    return title;
+  }
 
   render() {
     const { classes } = this.props;
@@ -663,11 +784,19 @@ class SnNew extends React.Component {
       errorObj,
     } = this.state;
     const { skyapp } = this.props;
-    const isAppOwner =
-      this.props.snAppSkyspaces != null && this.props.snAppSkyspaces.isAppOwner;
+    //const isAppOwner = this.props.snAppSkyspaces != null && this.props.snAppSkyspaces.isAppOwner;
+    const {isAppOwner} = this.state;
 
     if (redirectToAllApps) {
-      return <Redirect to="/history" />;
+      let route = "/skyspace/publishedapps";
+      if (this.props.location.pathname.indexOf("/providerskyapps") > -1) {
+        route = "/appstore";
+      }
+      else if(this.props.location.pathname.indexOf("/myskyapps") > -1) {
+        route = "/myappstore";
+      }
+      return <Redirect to={route} />;
+
     }
 
     if (!showLoader) {
@@ -684,12 +813,44 @@ class SnNew extends React.Component {
                 <Grid item xs={12} className={classes.main_grid_ef}>
                   <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
                     <Paper className={classes.tabsPaper_ef}>
-                      <Typography className={classes.title1_ef}> Add File/Folder in a Space </Typography>
+                      <Typography className={classes.title1_ef}> {this.pageTitle()}</Typography>
+                      <Typography className={classes.gallery_subTitle}>{this.pageSubTitle()} </Typography>
                       <ValidatorForm
                         ref="form"
                         onSubmit={this.handleSubmit}
                         onError={(errors) => console.log(errors)}
                       >
+                        <br/>
+                        <Grid item xs={12} >
+                          <TextField
+                            id="name"
+                            name="name"
+                            label={
+                              "Enter App name" +
+                              (skyapp.bookmark || skyapp.permission ? "*" : "")
+                            }
+                            fullWidth
+                            error={errorObj.name}
+                            value={skyapp.name}
+                            autoComplete="off"
+                            onChange={this.handleChange}
+                            helperText={
+                              errorObj.name
+                                ? "App Name is a mandatory field."
+                                : "Max 200 characters " +
+                                (skyapp.bookmark || skyapp.permission
+                                  ? "This is a mandatory field."
+                                  : "")
+                            }
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 200);
+                            }}
+                            InputProps={{
+                              readOnly: !isAppOwner,
+                            }}
+                          />
+                        </Grid>
+
                         <Grid container spacing={1}>
                           <video
                             src=""
@@ -705,13 +866,13 @@ class SnNew extends React.Component {
                             <TextField
                               id="skylink"
                               name="skylink"
-                              label="Skylink URL"
+                              label="Enter App link/url"
                               error={errorObj.skylink}
                               fullWidth
                               value={skyapp.skylink}
                               autoComplete="off"
                               helperText={
-                                "Please provide 46 character skylink." +
+                                "Please provide your App url here " +
                                 (errorObj.skylink && errorObj["skylink.errorMsg"] !== ""
                                   ? "Details:" + errorObj["skylink.errorMsg"]
                                   : "")
@@ -720,33 +881,6 @@ class SnNew extends React.Component {
                                 e.target.value = e.target.value.slice(0, 200);
                               }}
                               onChange={this.handleChange}
-                            />
-                          </Grid>
-
-                          <Grid item xs={12} >
-                            <TextField
-                              id="name"
-                              name="name"
-                              label={
-                                "File Name" +
-                                (skyapp.bookmark || skyapp.permission ? "*" : "")
-                              }
-                              fullWidth
-                              error={errorObj.name}
-                              value={skyapp.name}
-                              autoComplete="off"
-                              onChange={this.handleChange}
-                              helperText={
-                                errorObj.name
-                                  ? "File name is a mandatory field."
-                                  : "Max 200 characters. " +
-                                  (skyapp.bookmark || skyapp.permission
-                                    ? "This is a mandatory field."
-                                    : "")
-                              }
-                              onInput={(e) => {
-                                e.target.value = e.target.value.slice(0, 200);
-                              }}
                             />
                           </Grid>
 
@@ -763,22 +897,22 @@ class SnNew extends React.Component {
                                 placeholder="Description..."
                                 variant="outlined"
                                 value={skyapp.description}
-                                label="Description*"
+                                label="Enter details about your App functionalities, features, release notes..etc"
                                 autoComplete="off"
                                 name="description"
                                 id="mui-theme-provider-outlined-input"
                                 onInput={(e) => {
-                                  e.target.value = e.target.value.slice(0, 500);
+                                  e.target.value = e.target.value.slice(0, 2000);
                                 }}
                                 onChange={this.handleChange}
                               />
                               <FormHelperText>
-                                {"Max 500 characters. " +
+                                {"Max 2000 characters. " +
                                   (errorObj.name ? "This is a mandatory field." : "")}
                               </FormHelperText>
                             </FormControl>
                           </Grid>
-                          <Grid item xs={12} className="select-grid">
+                          <Grid item xs={12} className="select-grid" style={{ display: "none" }}>
                             <FormControl
                               className={classes.formControl}
                               error={errorObj.skyspaceList}
@@ -794,14 +928,7 @@ class SnNew extends React.Component {
                                   {this.props.snSkyspaceList != null &&
                                     this.props.snSkyspaceList.length > 0 ? (
                                       <SnCarousalMenu
-                                        selectedItems={
-                                          this.props.snAppSkyspacesToChange != null &&
-                                            this.props.snAppSkyspacesToChange
-                                              .skyspaceForSkhubIdList != null
-                                            ? this.props.snAppSkyspacesToChange
-                                              .skyspaceForSkhubIdList
-                                            : []
-                                        }
+                                        selectedItems={this.getSelectedSpaceForCarousalMenu()}
                                         itemsObj={this.getSkyspaceListForCarousalMenu()}
                                         labelKey={"label"}
                                         onUpdate={(evt) =>
@@ -831,35 +958,6 @@ class SnNew extends React.Component {
 
                             </FormControl>
                           </Grid>
-                          {
-                            <Grid item xs={12} className="select-grid">
-                              <FormControl
-                                className={classes.formControl}
-                                error={errorObj.tags}
-                              >
-                                <ChipInput
-                                  value={skyapp.tags}
-                                  onAdd={(chip) =>
-                                    this.handleChange(chip, { key: "tags", isArray: true })
-                                  }
-                                  onDelete={(chip, index) => {
-                                    this.handleChange(chip, {
-                                      key: "tags",
-                                      isCallback: true,
-                                      callback: (currVal, index) => {
-                                        currVal.splice(index, 1);
-                                        return currVal;
-                                      },
-                                    });
-                                  }}
-                                />
-                                <FormHelperText>
-                                  {"Please select tags. " +
-                                    (skyapp.permission ? "This is a mandatory field." : "")}
-                                </FormHelperText>
-                              </FormControl>
-                            </Grid>
-                          }
                           <Grid item xs={12} className="select-grid">
                             <FormControl
                               className={classes.formControl}
@@ -876,11 +974,39 @@ class SnNew extends React.Component {
                                   });
                                 }}
                                 renderInput={(params) => (
-                                  <TextField {...params} label="Category" margin="normal" />
+                                  <TextField {...params} label="App Category" margin="normal" />
                                 )}
+                               disabled={!isAppOwner}
                               />
                               <FormHelperText>
-                                {"Please select category. This is a mandatory field."}
+                                {"Please select App Category. This is a mandatory field."}
+                              </FormHelperText>
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12} className="select-grid">
+                            <FormControl
+                              className={classes.formControl}
+                              error={errorObj.tags}
+                            >
+                              <ChipInput
+                                value={skyapp.tags}
+                                onAdd={(chip) =>
+                                  this.handleChange(chip, { key: "tags", isArray: true })
+                                }
+                                onDelete={(chip, index) => {
+                                  this.handleChange(chip, {
+                                    key: "tags",
+                                    isCallback: true,
+                                    callback: (currVal, index) => {
+                                      currVal.splice(index, 1);
+                                      return currVal;
+                                    },
+                                  });
+                                }}
+                              />
+                              <FormHelperText>
+                                {"Please enter Tags here. This will show on App card (Think of it as HashTag). Example: hackathon, Alpha,Beta, Live..etc " +
+                                  (skyapp.permission ? "This is a mandatory field." : "")}
                               </FormHelperText>
                             </FormControl>
                           </Grid>
@@ -952,10 +1078,11 @@ class SnNew extends React.Component {
                           >
                             <SnNewButton
                               isRegister={isRegister}
-                              isAppOwner={
-                                this.props.snAppSkyspaces != null &&
-                                this.props.snAppSkyspaces.isAppOwner
-                              }
+                              // isAppOwner={
+                              //   this.props.snAppSkyspaces != null &&
+                              //   this.props.snAppSkyspaces.isAppOwner
+                              // }
+                              isAppOwner={isAppOwner}
                               edit={edit}
                               onDelete={this.handleSubmit}
                               onEdit={this.handleEditBtn}
@@ -970,8 +1097,8 @@ class SnNew extends React.Component {
               </Grid>
             </div>
             <div>
-        <SnFooter />
-      </div>
+              <SnFooter />
+            </div>
           </main>
           <SnInfoModal
             open={this.state.snInfoModal.open}
@@ -988,307 +1115,6 @@ class SnNew extends React.Component {
             type={this.state.skyspaceModal.type}
           />
         </>
-      );
-
-
-      return (
-        <div className="container-fluid register-container">
-          <ValidatorForm
-            ref="form"
-            onSubmit={this.handleSubmit}
-            onError={(errors) => console.log(errors)}
-          >
-            <Grid container spacing={1}>
-              <video
-                src=""
-                muted
-                controls
-                crossOrigin="anonymous"
-                loop
-                className="d-none"
-                id="hidden-upload-video"
-              ></video>
-
-              <Grid item xs={12} sm={10}>
-                <TextField
-                  id="skylink"
-                  name="skylink"
-                  label="Skylink URL"
-                  error={errorObj.skylink}
-                  fullWidth
-                  value={skyapp.skylink}
-                  autoComplete="off"
-                  helperText={
-                    "Please provide 46 character skylink." +
-                    (errorObj.skylink && errorObj["skylink.errorMsg"] !== ""
-                      ? "Details:" + errorObj["skylink.errorMsg"]
-                      : "")
-                  }
-                  onInput={(e) => {
-                    e.target.value = e.target.value.slice(0, 200);
-                  }}
-                  onChange={this.handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={10}>
-                <TextField
-                  id="name"
-                  name="name"
-                  label={
-                    "File Name" +
-                    (skyapp.bookmark || skyapp.permission ? "*" : "")
-                  }
-                  fullWidth
-                  error={errorObj.name}
-                  value={skyapp.name}
-                  autoComplete="off"
-                  onChange={this.handleChange}
-                  helperText={
-                    errorObj.name
-                      ? "File name is a mandatory field."
-                      : "Max 200 characters. " +
-                      (skyapp.bookmark || skyapp.permission
-                        ? "This is a mandatory field."
-                        : "")
-                  }
-                  onInput={(e) => {
-                    e.target.value = e.target.value.slice(0, 200);
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={10}>
-                <FormControl
-                  className="full-width"
-                  error={errorObj.description}
-                >
-                  <TextareaAutosize
-                    rowsMin={4}
-                    aria-label="maximum height"
-                    name="description"
-                    label="Description*"
-                    placeholder="Description"
-                    value={skyapp.description}
-                    autoComplete="off"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.slice(0, 500);
-                    }}
-                    onChange={this.handleChange}
-                  />
-                  <FormHelperText>
-                    {"Max 500 characters. " +
-                      (errorObj.name ? "This is a mandatory field." : "")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={10} className="select-grid">
-                <FormControl
-                  className={classes.formControl}
-                  error={errorObj.skyspaceList}
-                >
-                  <InputLabel className="carousal-label">
-                    {"SkySpace" +
-                      (skyapp.bookmark || skyapp.permission ? "*" : "")}
-                  </InputLabel>
-                  <div className="skapp-skyspace-ctrl">
-                    {this.props.snSkyspaceList != null &&
-                      this.props.snSkyspaceList.length > 0 ? (
-                        <SnCarousalMenu
-                          selectedItems={
-                            this.props.snAppSkyspacesToChange != null &&
-                              this.props.snAppSkyspacesToChange
-                                .skyspaceForSkhubIdList != null
-                              ? this.props.snAppSkyspacesToChange
-                                .skyspaceForSkhubIdList
-                              : []
-                          }
-                          itemsObj={this.getSkyspaceListForCarousalMenu()}
-                          labelKey={"label"}
-                          onUpdate={(evt) =>
-                            this.handleChange(evt, { key: "skyspaceList" })
-                          }
-                        />
-                      ) : (
-                        <Grid item xs={12} sm={10} justify="flex-start">
-                          <Tooltip title="Create New Space" arrow>
-                            <IconButton
-                              onClick={this.addSkyspace}
-                              justify="flex-start"
-                            >
-                              <AddCircleOutlineOutlinedIcon
-                                style={{ color: APP_BG_COLOR, fontSize: 25 }}
-                              />
-                            </IconButton>
-                          </Tooltip>
-                        </Grid>
-                      )}
-                  </div>
-                  <FormHelperText>
-                    {"Please select atleast one Space (mandatory field)" +
-                      (skyapp.permission ? "This is a mandatory field." : "")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              {
-                <Grid item xs={12} sm={10} className="select-grid">
-                  <FormControl
-                    className={classes.formControl}
-                    error={errorObj.tags}
-                  >
-                    {/* <InputLabel id="demo-simple-select-label">
-                      {"Tag" + (skyapp.permission ? "*" : "")}
-                    </InputLabel> */}
-                    {/* <SnCarousalMenu
-                      selectedItems={skyapp.tags}
-                      itemsObj={getCategoryObjWithoutAll()}
-                      labelKey={"heading"}
-                      onUpdate={(evt) =>
-                        this.handleChange(evt, { key: "tags" })
-                      }
-                    /> */}
-                    <ChipInput
-                      value={skyapp.tags}
-                      onAdd={(chip) =>
-                        this.handleChange(chip, { key: "tags", isArray: true })
-                      }
-                      onDelete={(chip, index) => {
-                        this.handleChange(chip, {
-                          key: "tags",
-                          isCallback: true,
-                          callback: (currVal, index) => {
-                            currVal.splice(index, 1);
-                            return currVal;
-                          },
-                        });
-                      }}
-                    />
-                    <FormHelperText>
-                      {"Please select tags. " +
-                        (skyapp.permission ? "This is a mandatory field." : "")}
-                    </FormHelperText>
-                  </FormControl>
-                </Grid>
-              }
-              <Grid item xs={12} sm={10} className="select-grid">
-                <FormControl
-                  className={classes.formControl}
-                  error={errorObj.type}
-                >
-                  <Autocomplete
-                    options={getCategoryObjWithoutAllAsArray()}
-                    getOptionLabel={(option) => option.label}
-                    value={this.setTypeAutoCompleteValue()}
-                    name="type"
-                    onChange={(evt, value) => {
-                      this.handleChange(value == null ? null : value.key, {
-                        key: "type",
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Category" margin="normal" />
-                    )}
-                  />
-                  <FormHelperText>
-                    {"Please select category. This is a mandatory field."}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              {skyapp.category === SKYLINK_TYPE_SKYLINK && (
-                <>
-                  <Grid item xs={12} sm={10}>
-                    <TextField
-                      id="git_url"
-                      name="git_url"
-                      label="Github/GitLab URL"
-                      fullWidth
-                      value={skyapp.git_url}
-                      autoComplete="off"
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={10}>
-                    <TextField
-                      id="demo_url"
-                      name="demo_url"
-                      label="Demo URL"
-                      fullWidth
-                      value={skyapp.demo_url}
-                      autoComplete="off"
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={10}>
-                    <TextField
-                      id="developer"
-                      name="developer"
-                      label="Developed By"
-                      fullWidth
-                      value={skyapp.developer}
-                      autoComplete="off"
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={10}>
-                    <TextField
-                      id="appStatus"
-                      name="appStatus"
-                      label="App Status"
-                      fullWidth
-                      value={skyapp.appStatus}
-                      autoComplete="off"
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={10}>
-                    <TextField
-                      id="support"
-                      name="support"
-                      label="Support"
-                      fullWidth
-                      value={skyapp.support}
-                      autoComplete="off"
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                </>
-              )}
-              <Grid
-                item
-                xs={12}
-                sm={10}
-                className={classNames({
-                  "button-grid": true,
-                })}
-              >
-                <SnNewButton
-                  isRegister={isRegister}
-                  isAppOwner={
-                    this.props.snAppSkyspaces != null &&
-                    this.props.snAppSkyspaces.isAppOwner
-                  }
-                  edit={edit}
-                  onDelete={this.handleSubmit}
-                  onEdit={this.handleEditBtn}
-                  onDone={this.handleDoneBtn}
-                />
-              </Grid>
-            </Grid>
-          </ValidatorForm>
-          <SnInfoModal
-            open={this.state.snInfoModal.open}
-            onClose={this.state.snInfoModal.onClose}
-            title={this.state.snInfoModal.title}
-            content={this.state.snInfoModal.description}
-          />
-          <SnAddSkyspaceModal
-            open={this.state.showAddSkyspace}
-            title={this.state.skyspaceModal.title}
-            skyspaceName={this.state.skyspaceModal.skyspaceName}
-            handleClickOpen={this.handleAddSpaceOpen}
-            handleClose={this.handleAddSpaceClose}
-            type={this.state.skyspaceModal.type}
-          />
-        </div>
       );
     } else {
       return <div className="loader"></div>;

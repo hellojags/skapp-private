@@ -5,11 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-chrome",
+            "type": "firefox",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
+            "reAttach": true,
+            "name": "Launch localhost",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Launch index.html",
+            "file": "${workspaceFolder}/index.html"
+        },
+        {
+            "type": "firefox",
+            "request": "attach",
+            "name": "Attach",
+            "pathMappings": [
+                {
+                    "url": "file:///Users/freya/MySpace/git/github/skynethubio/skapp-private-newUI/skapp-private/src",
+                    "path": "${workspaceFolder}/src"
+                }
+            ]
         }
     ]
 }

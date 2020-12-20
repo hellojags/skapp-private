@@ -18,86 +18,38 @@ export const CATEGORY_OBJ = {
     getLogo: () => <AllInclusiveIcon />,
     heading: "All",
   },
+  social: {
+    getLogo: (className) => <PermDeviceInformationOutlinedIcon className={className ? className : ""} />,
+    heading: "Social",
+  },
   video: {
-    fileTypeList: ["video/x-msvideo", "video/mpeg", "video/ogg", "video/webm", "video/3gpp", "video/3gpp2",
-      "video/mp4"],
     getLogo: (className) => <FontAwesomeIcon icon="video" className={className ? className : ""}></FontAwesomeIcon>,
     heading: "Videos",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
-      <SnVideo
-        filteredApps={filteredApps}
-        page={page}
-        skyspace={skyspace}
-        itemsPerPage={itemsPerPage}
-        openSkyApp={openSkyApp}
-        onDelete={funcOnDelete}
-        onSelection={onSelection}
-        isSelect={isSelect}
-        arrSelectedAps={arrSelectedAps}
-        hash={hash}
-        senderId={senderId}
-      />
-    )
+    
   },
   pictures: {
-    fileTypeList: ["image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml",
-      "image/tiff"],
     getLogo: (className) => <CameraAltOutlinedIcon className={className ? className : ""} />,
-    heading: "Images",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId, GridUi) => (
-      <SnImages
-        filteredApps={filteredApps}
-        page={page}
-        skyspace={skyspace}
-        itemsPerPage={itemsPerPage}
-        openSkyApp={openSkyApp}
-        onDelete={funcOnDelete}
-        onSelection={onSelection}
-        isSelect={isSelect}
-        arrSelectedAps={arrSelectedAps}
-        hash={hash}
-        senderId={senderId}
-      />
-    )
+    heading: "Pictures",
   },
-  audio: {
-    fileTypeList: ["audio/aac", "audio/mpeg"],
+  music: {
     getLogo: (className) => <FontAwesomeIcon icon="headphones" className={className ? className : ""}></FontAwesomeIcon>,
-    heading: "Audio",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId, GridUi) => (
-      <SnAudio
-        filteredApps={filteredApps}
-        page={page}
-        skyspace={skyspace}
-        itemsPerPage={itemsPerPage}
-        openSkyApp={openSkyApp}
-        onDelete={funcOnDelete}
-        onSelection={onSelection}
-        isSelect={isSelect}
-        arrSelectedAps={arrSelectedAps}
-        hash={hash}
-        senderId={senderId}
-        GridUi={GridUi}
-      />
-    )
+    heading: "Music",
   },
-  documents: {
-    fileTypeList: ["application/x-abiword", "application/x-freearc", "application/vnd.amazon.ebook", "application/msword",
-      "text/html", "text/plain", "application/pdf"],
+  productivity: {
     getLogo: (className) => <DescriptionOutlinedIcon className={className ? className : ""} />,
-    heading: "Documents",
+    heading: "Productivity",
+  },
+  utilities: {
+    getLogo: (className) => <BusinessCenterOutlinedIcon className={className ? className : ""} />,
+    heading: "Utilities",
   },
   games: {
     getLogo: (className) => <SportsEsportsOutlinedIcon className={className ? className : ""} />,
     heading: "Games",
   },
-  blog: {
+  blogs: {
     getLogo: (className) => <FontAwesomeIcon icon="blog" className={className ? className : ""}></FontAwesomeIcon>,
     heading: "Blogs",
-  },
-  utilities: {
-    getLogo: (className) => <BusinessCenterOutlinedIcon className={className ? className : ""} />,
-    heading: "Utilities",
   },
   software: {
     getLogo: (className) => <CasinoOutlinedIcon className={className ? className : ""} />,
@@ -111,9 +63,17 @@ export const CATEGORY_OBJ = {
     getLogo: (className) => <MenuBookTwoToneIcon className={className ? className : ""} />,
     heading: "Books",
   },
-  data: {
+  marketplace: {
     getLogo: (className) => <PermDeviceInformationOutlinedIcon className={className ? className : ""} />,
-    heading: "Data",
+    heading: "Marketplace",
+  },
+  finance: {
+    getLogo: (className) => <PermDeviceInformationOutlinedIcon className={className ? className : ""} />,
+    heading: "Finance",
+  },
+  portal: {
+    getLogo: (className) => <PermDeviceInformationOutlinedIcon className={className ? className : ""} />,
+    heading: "Skynet Portal",
   },
 };
 

@@ -10,7 +10,11 @@ import { fetchBlockstackPerson,
     setPersonGetOtherData } from "../../reducers/actions/sn.person.action";
 import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-
+import {getUserMasterProfileAction} from "../../reducers/actions/sn.usermasterprofile.action";
+import {getUserProfileAction} from "../../reducers/actions/sn.userprofile.action";
+import {getMyFollowersAction} from "../../reducers/actions/sn.myFollower.action";
+import {getMyFollowingsAction} from "../../reducers/actions/sn.myFollowing.action";
+import {setPublicHash} from "../../reducers/actions/sn.public-hash.action";
     
 export function matchDispatcherToProps(dispatcher){
     return bindActionCreators({ 
@@ -21,8 +25,13 @@ export function matchDispatcherToProps(dispatcher){
         setPerson,
         setPersonGetOtherData,
         setImportedSpace,
+        setPublicHash,
         toggleDesktopMenuDisplay,
-        setDesktopMenuState
+        setDesktopMenuState,
+        getUserProfileAction,
+        getMyFollowersAction,
+        getMyFollowingsAction,
+        getUserMasterProfileAction
     }, dispatcher);
 }
 
@@ -31,6 +40,7 @@ export function mapStateToProps(state) {
         showMobileMenu: state.snShowMobileMenu,
         showDesktopMenu: state.snShowDesktopMenu,
         userSession: state.userSession,
-        person: state.person
+        person: state.person,
+        userProfile : state.snUserProfile
     };
 }  

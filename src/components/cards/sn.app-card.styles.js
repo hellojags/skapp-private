@@ -7,11 +7,12 @@ const useStyles = (theme) => ({
         fontWeight: 400,
     },
     spaceName: {
+        fontSize: 25,
         color: theme.palette.primary.main,
         fontWeight: 500,
     },
     skylink: {
-        paddingLeft : "62px",
+        paddingLeft: "62px",
         [theme.breakpoints.down('xs')]: {
             paddingLeft: "0px !important"
         }
@@ -48,8 +49,21 @@ const useStyles = (theme) => ({
         // boxShadow: "0px 0px 5px 8px rgba(50, 50, 50, 0.14)",
         boxShadow: "0 0 10px rgba(0,0,0,.4)",
         borderRadius: "10px",
-        backgroundColor: theme.palette.headerBgColor
+        height: "100%",
+        backgroundColor: theme.palette.headerBgColor,
+        "&:hover": {
+            backgroundColor: theme.palette.lightGreen,
+            cursor: "default",
+        }
     },
+    small: {
+        width: theme.spacing(4),
+        height: theme.spacing(4),
+        backgroundColor:"black",
+      },
+      dividerColor: {
+        backgroundColor: theme.palette.primary.main,
+      },
 });
 
 

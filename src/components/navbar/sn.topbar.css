@@ -1,3 +1,11 @@
+
+.skapp-logo {
+    border-radius: 5px;
+    background:black;
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+}
 .main-container {
   padding: 0;
   width: 100%;
@@ -107,20 +115,37 @@
 }
 .butn-out-login-nvbr {
   border-radius: 7px;
+  font-size: 18px;
+  font-weight: 500;
   background-color: #1dd65f;
   border: none;
   color: white;
-  padding: 7px 15px 7px 15px;
+  padding: 7px 20px 7px 20px;
 }
-.butn-out-login-nvbr:focus {
+
+.butn-out-login-nvbr:hover {
+  background-color: #1dd65f;
+  cursor: "pointer",
+}
+
+/* .butn-out-login-nvbr:focus {
   box-shadow: none !important;
+} */
+
+.butn-out-signup:hover {
+  background:#1ed660;
+	color:#FFFFFF;
+  cursor: "pointer",
 }
+
 .butn-out-signup {
   border-radius: 7px;
+  font-size: 18px;
+  font-weight: 500;
   background-color: white;
   color: #1dd65f;
   border: 1x solid #1dd65f;
-  padding: 7px 15px 7px 15px;
+  padding: 7px 20px 7px 20px;
 }
 .th_btn_nvbar:focus {
   box-shadow: none;

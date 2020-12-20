@@ -49,8 +49,16 @@ const useStyles = (theme) => ({
     },
     title1_ef: {
         textAlign: "left",
-        color: `${theme.palette.linksColor}`,
+        color: `${theme.palette.primary.main}`,
+        textAlign: "left",
+        fontWeight: "500",
+        fontSize: "20px",
     },
+    gallery_subTitle: {
+        color: `${theme.palette.mediumGray}`,
+        textAlign: "left",
+        fontSize: "14px",
+      },
     titleOng_ef: {
         textAlign: "left",
         color: `${theme.palette.primary.main}`,

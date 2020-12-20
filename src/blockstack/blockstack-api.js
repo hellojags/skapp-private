@@ -8,6 +8,7 @@ import {
     SKYSPACE_IDX_FILEPATH,
     ID_PROVIDER,
     createSkylinkIdxObject,
+    createUserProfileObject,
     INITIAL_SETTINGS_OBJ,
     INITIAL_PORTALS_OBJ,
     INITIAL_DATASYNC_PREF_OBJ,
@@ -24,7 +25,12 @@ import {
     CONFLICT,
     IDB_STORE_NAME,
     IDB_LAST_SYNC_REVISION_NO,
-    IDB_IS_OUT_OF_SYNC
+    IDB_IS_OUT_OF_SYNC,
+    APP_STORE_PROVIDER_FILEPATH,
+    INITIAL_APPSTORE_PROVIDER_OBJ,
+    SKAPP_PROFILE_PATH,
+    FOLLOWER_PATH,
+    FOLLOWING_PATH
 } from './constants'
 import { lookupProfile } from "blockstack";
 import {
@@ -38,13 +44,267 @@ import {
     putFileForShared,
     getFileUsingPublicKeyStr
 } from './utils';
-import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID, BROWSER_STORAGE, STORAGE_USER_SESSION_KEY} from '../sn.constants';
+import { BLOCKSTACK_CORE_NAMES, BROWSER_STORAGE, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID, STORAGE_USER_SESSION_KEY } from '../sn.constants';
 import { getUserSessionType } from '../sn.util';
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey, getRegistry } from '../skynet/sn.api.skynet';
+import { getUsersCacheInfo } from '../api/sn.api';
 import { getAllItemsFromIDB, getJSONfromDB, setJSONinDB, setAllinDB } from "../db/indexedDB";
 import { getInitialDataJSON } from '../db/data/masterdata';
 import store from "../reducers";
 import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action";
+
+//** Fetch all users */
+// Example API response
+// {
+//     "publickey": "a3e99a13a249a9eda1df815ba174abb0eabc3b56461a468f349b7f8a1a4c32b0",
+//     "datakeys": [
+//         "skyx/skyusers/pubkeys.json"
+//     ]
+// }
+
+// export const fetchUserDataByPubKey_SkyFeed = async (publicKey) => {
+//     let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+//     let userData = {};
+//     try {
+//         // RedSolver
+//         // https://skyfeed-beta.hns.siasky.net/#/user/d448f1562c20dbafa42badd9f88560cd1adb2f177b30f0aa048cb243e55d37bd/posts/3/10
+//         // Data Key: profile
+//         let userProfile = await getFile(session, "profile", { publicKey: publicKey, skydb: true });
+//         // SkyFeed App PublicKey
+//         let appPublicKey_SkyFeed = userProfile?.dapps?.skyfeed?.publicKey;
+//         // SkyFeed App PublicKey
+//         if (appPublicKey_SkyFeed) {
+//             userProfile = { avatar: userProfile.avatar, username: userProfile.username, aboutme: userProfile.aboutme, location: userProfile.location };
+//             let followersJSON = await getFile(session, "skyfeed-followers", { publicKey: appPublicKey_SkyFeed, skydb: true }); // setfile in IDB with revision number
+//             let followers = (typeof followersJSON !== 'undefined') ? Object.keys(followersJSON) : [];
+//             let followingsJSON = await getFile(session, "skyfeed-following", { publicKey: appPublicKey_SkyFeed, skydb: true,});// setfile in IDB with revision number
+//             let followings = (typeof followingsJSON !== 'undefined') ? Object.keys(followingsJSON) : [];
+//             let connections = [...new Set([...followers, ...followings])];
+
+//             userData = { [appPublicKey_SkyFeed+"#following"] : followings, [appPublicKey_SkyFeed+"#followers"] : followers}
+//         }
+//     }
+//     catch (e) {
+//         console.log(e);
+//     }
+//     return userData;
+
+// }
+
+export const fetchAllUsersPubKeys = async () => {
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    let result = [];
+    let usersPubKeyList = [];
+
+    try {
+        let usersPubKeyCache = []
+        // Step1: get UserCache PublicKey and DataKey
+        let cacheKeyValueJSON = await getUsersCacheInfo();
+        if (cacheKeyValueJSON.publickey && cacheKeyValueJSON.datakeys[0]) {
+            // Step2: Fetch all PublicKeys from Cache
+            usersPubKeyCache = await getFile(session, cacheKeyValueJSON.datakeys[0], { publicKey: cacheKeyValueJSON.publickey, skydb: true });
+            usersPubKeyList = (typeof usersPubKeyCache !== 'undefined') ? usersPubKeyCache.publickeys : [];
+        }
+        // Pull
+        // Fetch follower.json keys
+        // Fetch following.json keys
+        let followersJSON = await getFile(session, FOLLOWER_PATH);
+        let followersPublicKeyList = (typeof followersJSON !== 'undefined') ? followersJSON.publicKeyList : [];
+        let followingsJSON = await getFile(session, FOLLOWING_PATH);
+        let followingsPublicKeyList = (typeof followingsJSON !== 'undefined') ? followingsJSON.publicKeyList : [];
+        //Merge all PublicKey. 
+        result = [...new Set([...usersPubKeyList, ...followersPublicKeyList, ...followingsPublicKeyList])];
+        const index = result.indexOf(session?.person?.appPublicKey);
+        if (index > -1) {
+            result.splice(index, 1);
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+    return result;
+}
+
+export const fetchUserDataByPubKey = async (publicKey) => {
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    // If PubKey is valid fetch users Profile.json, follower.json, following.json.
+    // Use loggedIn user's follower list to populate followerFlag
+    // Prepare Data for table.
+    let userData = {};
+    try {
+        if (session && publicKey && publicKey.length == 64) {
+            // fetch users database from SkyDB
+            let userSkyDB = await getFileFromSkyDBFolder(session, publicKey, null);
+
+            //get user Profile
+            //const userProfile = await getFile(session, SKAPP_PROFILE_PATH, { publicKey: publicKey, skydb: true });
+            const userProfile = userSkyDB[SKAPP_PROFILE_PATH];
+            if (userProfile) {
+                userData = { avatar: userProfile.avatar, username: userProfile.username, aboutme: userProfile.aboutme, git: userProfile.git, publicKey };
+                //get user Follower
+                //const userFollowers = await getFile(session, FOLLOWER_PATH, { publicKey: publicKey, skydb: true });
+                const userFollowers = userSkyDB[FOLLOWER_PATH];
+                if (userFollowers) {
+                    userData.noOffollowers = userFollowers.publicKeyList.length;
+                    userData.followers = userFollowers.publicKeyList;
+                }
+                //get user Following
+                //const userFollowings = await getFile(session, FOLLOWING_PATH, { publicKey: publicKey, skydb: true });
+                const userFollowings = userSkyDB[FOLLOWING_PATH];
+                if (userFollowings) {
+                    userData.noOffollowings = userFollowings.publicKeyList.length;
+                    userData.followings = userFollowings.publicKeyList;
+                }
+                //get Published Apps
+                //const userPublishedApps = await getFile(session, SKYSPACE_PATH + "publishedapps.json", { publicKey: publicKey, skydb: true });
+                const userPublishedApps = userSkyDB[SKYSPACE_PATH + "publishedapps.json"];
+                if (userPublishedApps) {
+                    userData.noOfPublishedApps = userPublishedApps.skhubIdList.length;
+                    // need to add logic here to get list of apps from skylink
+                }
+            }
+            else {
+                userData = null;
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
+        userData = null;
+    }
+    return userData;
+}
+
+export const getFollowersJSON = async (publicKey) => {
+    let followersJSON = [];
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    try {
+        if (publicKey) {
+            followersJSON = await getFile(session, FOLLOWER_PATH, { publicKey: publicKey, skydb: true });
+        }
+        else {
+            followersJSON = await getFile(session, FOLLOWER_PATH);
+        }
+    }
+    catch (e) {
+    }
+    return (typeof followersJSON !== 'undefined') ? followersJSON : { publicKeyList: [] };;
+}
+
+export const getFollowingsJSON = async (publicKey) => {
+    let followingsJSON = { publicKeyList: [] };
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    try {
+
+        if (publicKey) {
+            followingsJSON = await getFile(session, FOLLOWING_PATH, { publicKey: publicKey, skydb: true });
+        }
+        else {
+            followingsJSON = await getFile(session, FOLLOWING_PATH);
+        }
+
+    }
+    catch (e) {
+    }
+    return (typeof followingsJSON !== 'undefined') ? followingsJSON : { publicKeyList: [] };
+}
+export const setFollowersJSON = async (followersJSON, options) => {
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    try {
+        if (followersJSON) {
+            await putFile(session, FOLLOWER_PATH, followersJSON, options);
+        }
+    }
+    catch (e) {
+        return e;
+    }
+    return "";
+}
+
+export const setFollowingsJSON = async (followingsJSON, options) => {
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    try {
+        if (followingsJSON) {
+            await putFile(session, FOLLOWING_PATH, followingsJSON, options);
+        }
+    }
+    catch (e) {
+        return e;
+    }
+    return "";
+}
+
+export const getFileFromSkyDBFolder = async (session, publicKey, fileName) => {
+    // if fileName is null, It will return entire User DB.
+    //TODO, need to change this to Directory so that I dont need to pull entire IDB data
+    let resultJSON = {};
+    let skydbJSON = await getFile(session, DK_IDB_SKYSPACES, { publicKey: publicKey, skydb: true });
+
+    if (skydbJSON && skydbJSON != 'undefined' && skydbJSON.db) {
+        if (fileName) {
+            resultJSON = skydbJSON.db.filter((item) => (Object.keys(item)[0] === fileName))
+        }
+        else {
+            await skydbJSON.db.forEach((item) => {
+                let key = Object.keys(item)[0];
+                let value = item[key];
+                //2. update IndexedDB Store
+                resultJSON[key] = value;
+            });
+        }
+    }
+    return resultJSON;
+}
+
+// get app list of all users you are following.
+export const bsfetchDefaultAppStore = async (publicKey) => {
+    const skylinkArr = [];
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    //TODO, need to change this to Directory so that I dont need to pull entire IDB data
+    let appsProviderIDB = await getFileFromSkyDBFolder(session, publicKey, null);
+    const skyspaceObj = appsProviderIDB[SKYSPACE_PATH + "appstore.json"];
+    const loop = skyspaceObj?.skhubIdList.map(skhubId => {
+        let skylinkFilePath = SKYLINK_PATH + skhubId + ".json";
+        let skylinkObj = appsProviderIDB[skylinkFilePath];
+        skylinkArr.push(skylinkObj);
+
+    });
+    return skylinkArr;
+}
+// get app list of all users you are following.
+export const bsfetchPublisherAppList = async () => {
+    const promises = [];
+    const skylinkArr = [];
+    let session = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY);
+    let followingsJSON = await getFile(session, FOLLOWING_PATH);
+    if (followingsJSON && followingsJSON.publicKeyList) {
+        let publicKeyList = followingsJSON.publicKeyList;
+        // fetch Published app list for each developer/pubKey
+        for (let publicKey of publicKeyList) {
+            //TODO, need to change this to Directory so that I dont need to pull entire IDB data
+            let appPublisherIDB = await getFileFromSkyDBFolder(session, publicKey, null);
+            // let skydbJSON = await getFile(session, DK_IDB_SKYSPACES, { publicKey: publicKey, skydb: true });
+            // if (skydbJSON && skydbJSON != 'undefined' && skydbJSON.db) {
+            //     await skydbJSON.db.forEach((item) => {
+            //         let key = Object.keys(item)[0];
+            //         let value = item[key];
+            //         //2. update IndexedDB Store
+            //         appPublisherIDB[key] = value;
+            //     });
+            // }
+            //
+            const skyspaceObj = appPublisherIDB[SKYSPACE_PATH + "publishedapps.json"];
+            const loop = skyspaceObj?.skhubIdList.map(skhubId => {
+                let skylinkFilePath = SKYLINK_PATH + skhubId + ".json";
+                let skylinkObj = appPublisherIDB[skylinkFilePath];
+                skylinkObj.publicKey = publicKey;
+                skylinkArr.push(skylinkObj);
+
+            });
+        };
+    }
+    return skylinkArr;
+}
 
 export const firstTimeUserSetup = async (session) => {
     try {
@@ -75,8 +335,9 @@ export const firstTimeUserSetup = async (session) => {
 
                 // Step1: load Initial data from InitialData.json to IndexedDB.  Metadata files (appstore, myapps, hosting)
                 await setAllinDB(dataJSON.data);
-                // Step2: Metadata File for "Provider" 
-
+                // Step2: Create Initial entry for follower and following 
+                await setFollowersJSON({ publicKeyList: [] });
+                await setFollowingsJSON({ publicKeyList: [] });
                 // Step3: update revision number to 1
                 await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, { revision: "1" });
                 // Sync Data with SkyDB
@@ -252,27 +513,29 @@ export const getSkylinkIdxObject = (session) => {
 }
 
 export const getAllSkylinks = (session) => {
-    const skapps = [];
-    return getFile(session, SKYLINK_IDX_FILEPATH)
-        .then(skylinkIdxObj => {
-            if (skylinkIdxObj && skylinkIdxObj.skhubIdList && skylinkIdxObj.skhubIdList.length > 0) {
-                const promises = [];
-                skylinkIdxObj.skhubIdList.forEach(skhubId => {
-                    promises.push(
-                        getSkylink(session, skhubId)
-                            .then(skapp => {
-                                skapps.push(skapp)
-                            }))
-                });
-                return Promise.all(promises)
-                    .then(() => {
-                        return skapps;
-                    });
-            } else {
-                return [];
-            }
-        })
-        .catch(err => []);
+    // TODO: its temp solution, need to apply proper logic. We can directly use Apps Array in SnCards and may not require this call.
+    return bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+    // const skapps = [];
+    // return getFile(session, SKYLINK_IDX_FILEPATH)
+    //     .then(skylinkIdxObj => {
+    //         if (skylinkIdxObj && skylinkIdxObj.skhubIdList && skylinkIdxObj.skhubIdList.length > 0) {
+    //             const promises = [];
+    //             skylinkIdxObj.skhubIdList.forEach(skhubId => {
+    //                 promises.push(
+    //                     getSkylink(session, skhubId)
+    //                         .then(skapp => {
+    //                             skapps.push(skapp)
+    //                         }))
+    //             });
+    //             return Promise.all(promises)
+    //                 .then(() => {
+    //                     return skapps;
+    //                 });
+    //         } else {
+    //             return [];
+    //         }
+    //     })
+    //     .catch(err => []);
 }
 
 export const bsDeleteSkylink = (session, skhubId) => {
@@ -528,7 +791,7 @@ export const bsGetSkyspaceNamesforSkhubId = (session, skhuId) => {
                 })
         })
 }
-
+// fetch all Skylinks in a Space
 export const getSkyspaceApps = (session, skyspaceName) => {
     const skapps = [];
     return getSkySpace(session, skyspaceName)
@@ -703,6 +966,50 @@ export const bsGetSkyIDProfile = async (session) => {
     }
     return personObj;
 }
+// This user profile is appspecific profile
+export const bsGetUserMasterProfile = async (publicKey) => {
+    let userProfileObj = {};
+    try {
+        const response = await getFile(null, "profile",{publicKey: publicKey, skydb: true });
+        // Profile found in SkyDB
+        if (response && response !== '' && response !== 'undefined') { // file not found
+            userProfileObj = response;
+
+        } 
+    }
+    catch (error) {
+        console.error("bsGetUserMasterProfile:" + error);
+    }
+    return userProfileObj;
+}
+// This user profile is appspecific profile
+export const bsGetUserAppProfile = async (session) => {
+    let userProfileObj = null;
+    try {
+        const response = await getFile(session, SKAPP_PROFILE_PATH);
+        // Profile found in SkyDB
+        if (response && response !== '' && response !== 'undefined') { // file not found
+            userProfileObj = response;
+
+        } else { // Profile not found, Initialize with default values
+            userProfileObj = createUserProfileObject();
+            console.log('Profile not found;, please check your connection and retry')
+
+        }
+    }
+    catch (error) {
+        console.error("bsGetUserAppProfile:" + error);
+        userProfileObj = createUserProfileObject();
+    }
+    return userProfileObj;
+}
+
+// This user profile is appspecific profile
+export const bsSetUserAppProfile = async (session, appProfile) => {
+    let userProfileObj = null;
+    await putFile(session, SKAPP_PROFILE_PATH, appProfile);
+}
+
 
 export const bsGetPortalsList = async (session) => {
     let portalsJSON = await getFile(session, SKYNET_PORTALS_FILEPATH);
@@ -948,6 +1255,7 @@ export const bsGetSpacesFromUserListV2 = async (session, senderIdList, opt) => {
         senderToSpacesMap
     };
 }
+
 //Sharing functionality: This method is fetching "all SHARED skylink JSON objects" from sender storage.
 // For SkyDB, we will only need "Public Key" of "sender" and "DataKey" of shared Object
 //1. NO STORAGE ID logic required for skyDB, Since we just need "public Key" and "dataKey" of sender to fetch data
@@ -958,6 +1266,7 @@ export const bsGetSpacesFromUserListV2 = async (session, senderIdList, opt) => {
 // OR
 
 // You can use Public key instead of stoarge ID.
+
 
 export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     //for skyDB we can do IF consition here
@@ -1098,7 +1407,7 @@ export const getSharedMasterJSONFromSkyDB = async (publicKey) => {
             return {};
         }
     }
-    return  masterSharedFileJSON;
+    return masterSharedFileJSON;
 }
 
 export const bsGetShrdSkyspaceIdxFromSenderV2 = async (session, senderPublicKey, loggedInUserPublicKey) => {
@@ -1124,15 +1433,13 @@ export const bsGetShrdSkyspaceIdxFromSenderV2 = async (session, senderPublicKey,
     return null;
 }
 
-
-
-// do we need this method?
 export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdList) => {
     let { senderStorage, loggedInUserStorageId } = await getStorageIds(session, senderId);
     const skappList = [];
     const promises = [];
     skhubIdList.forEach(skhubId => {
-        const SHARED_SKYLINK_PATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        // const SHARED_SKYLINK_PATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        const SHARED_SKYLINK_PATH = SKYLINK_PATH + skhubId + ".json";
         promises.push(getEncDataFromSenderStorage(session, SHARED_SKYLINK_PATH, senderStorage)
             .then(encSharedSkapp => decryptContent(session, JSON.stringify(encSharedSkapp)))
             .then(sharedSkappStr => {
@@ -1191,7 +1498,7 @@ export const bsSetSharedSkylinkIdxV2 = async (session, recipientId, skylinkList,
         publicKey
     });
     //await putFileForShared(session, SKYLINK_IDX_FILEPATH, encSharedSkylinkIdxObj);
-    return [ SKYLINK_IDX_FILEPATH,  encSharedSkylinkIdxObj ]
+    return [SKYLINK_IDX_FILEPATH, encSharedSkylinkIdxObj]
 }
 
 export const bsGetProfileInfo = (profile) => {

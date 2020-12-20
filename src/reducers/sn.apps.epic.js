@@ -12,7 +12,7 @@ import {
   fetchAppsSuccess,
   fetchSkyspaceAppsSuccess,
 } from "./actions/sn.apps.action";
-import { getSkyspaceApps, getAllSkylinks } from "../blockstack/blockstack-api";
+import { getSkyspaceApps, getAllSkylinks, bsfetchDefaultAppStore} from "../blockstack/blockstack-api";
 import { getPublicApps } from "../skynet/sn.api.skynet";
 
 export const appsEpic = (action$) =>
@@ -31,8 +31,9 @@ export const appsEpic = (action$) =>
 export const publicAppsEpic = (action$) =>
   action$.pipe(
     ofType(ACT_TY_FETCH_PUBLIC_APPS),
-    switchMap((action) => getPublicApps(action.payload)
-        .then(res=>fetchAppsSuccess(res.data))
+    //switchMap((action) => getPublicApps(action.payload)
+    switchMap((action) => bsfetchDefaultAppStore(action.payload)
+        .then(res=>fetchAppsSuccess(res))
       )
   );
 

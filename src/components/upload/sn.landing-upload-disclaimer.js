@@ -13,7 +13,7 @@ function SnLandingUploadDisclaimer(props) {
             height="3em"
             viewBox="0 0 16 16"
             class="bi bi-exclamation-circle"
-            fill="rgb(235, 42, 42)"
+            fill="darkgray"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -24,7 +24,7 @@ function SnLandingUploadDisclaimer(props) {
           </svg>
         </div>
         <div className="desc-c2-div">
-          Content Uploaded using SkySpaces is not encrypted yet. (Its work in-progress feature)
+          Content uploaded using Skapp is not encrypted yet.
         </div>
       </div>
     </div>

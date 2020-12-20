@@ -11,7 +11,7 @@ const styles = (theme) => ({
     color: theme.palette.text.secondary,
   },
   most_main_grid_auth: {
-    padding: "60px 0px 0px 0px",
+    padding: "40px 0px 0px 0px",
     width: "100%",
     margin: "0px",
   },

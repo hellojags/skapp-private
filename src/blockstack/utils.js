@@ -5,8 +5,10 @@ import { getUserSessionType } from '../sn.util';
 import { ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID} from '../sn.constants';
 
 export function generateSkyhubId(inputStr) {
-  return crypto.createHash('sha256').update(inputStr + (new Date())).digest('base64').replace("/", "+");
+  //return crypto.createHash('sha256').update(inputStr + (new Date())).digest('base64').replace("/", "+");
+  return crypto.createHash('sha256').update(inputStr + (new Date())).digest('hex');
 }
+
 export async function listFiles(session) {
   const pathList = [];
   await session.listFiles((res) => {
@@ -63,55 +65,56 @@ export const getFileUsingPublicKeyStr = async (publicKeyStr, FILE_PATH )=> {
 
 export function getFile(session, FILE_PATH, param) {
   let promise;
-  const sessionType = getUserSessionType(session);
-  switch(sessionType){
-    case ID_PROVIDER_SKYID:
-      if(param?.publicKey) //if we need to use any other public key
-      {
-        // pull profile using master public Key
-        promise = getJSONFile(null,param.publicKey,FILE_PATH,null,param)
-        .then((content) => {
-          if (content) {
-            //return JSON.parse(content);
-            return content;
-          }
-        })
-      }
-      else
-      {
-        promise = getJSONFile(session?.person?.appPrivateKey, session?.person?.appPublicKey,FILE_PATH,null,param)
-        .then((content) => {
-          if (content) {
-            //return JSON.parse(content);
-            return content;
-          }
-        })
-      };
-      break;
-    case ID_PROVIDER_SKYDB:
-      const { publicKey, privateKey } =   snKeyPairFromSeed(session.skydbseed);
-      promise = getJSONFile(privateKey,publicKey,FILE_PATH,null,{})
-            .then((content) => {
-              if (content) {
-                //return JSON.parse(content);
-                return content;
-              }
-            });
-      break;
-    case ID_PROVIDER_BLOCKSTACK:
-    default:
-      const options = { decrypt: param?.decrypt ?? true };
-      promise =  session.getFile(FILE_PATH, options)
-      .then(res=>JSON.parse(res));
-  }
-  return promise
-    .catch(err => {
-      if (err.code === "does_not_exist") {
-        return null;
-      } else {
-        return err;
+  if(param?.publicKey) //if we need to use any other public key
+  {
+    // pull profile using master public Key
+    promise = getJSONFile(null,param.publicKey,FILE_PATH,null,param)
+    .then((content) => {
+      if (content) {
+        //return JSON.parse(content);
+        return content;
       }
     })
+  }
+  else
+  {
+    // If publicKey provided,It wont come here.
+    const sessionType = getUserSessionType(session);
+    switch(sessionType){
+      case ID_PROVIDER_SKYID:
+          promise = getJSONFile(session?.person?.appPrivateKey, session?.person?.appPublicKey,FILE_PATH,null,param)
+          .then((content) => {
+            if (content) {
+              //return JSON.parse(content);
+              return content;
+            }
+          })
+        break;
+      case ID_PROVIDER_SKYDB:
+        const { publicKey, privateKey } =   snKeyPairFromSeed(session.skydbseed);
+        promise = getJSONFile(privateKey,publicKey,FILE_PATH,null,{})
+              .then((content) => {
+                if (content) {
+                  //return JSON.parse(content);
+                  return content;
+                }
+              });
+        break;
+      case ID_PROVIDER_BLOCKSTACK:
+      default:
+        const options = { decrypt: param?.decrypt ?? true };
+        promise =  session.getFile(FILE_PATH, options)
+        .then(res=>JSON.parse(res));
+    }
+  }
+  return promise
+      .catch(err => {
+        if (err.code === "does_not_exist") {
+          return null;
+        } else {
+          return err;
+        }
+      })
 }
 // Replace file content with new "content"
 export function putFile(session, FILE_PATH, content, param) {

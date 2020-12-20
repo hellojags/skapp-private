@@ -5,7 +5,8 @@ import skyapplogo from "../../SkySpaces_g.png";
 import FormControl from '@material-ui/core/FormControl';
 import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
 import AppsIcon from "@material-ui/icons/Apps";
-import SmallLogo from "./images/smLogo.png";
+import skappLogo from "./images/skapp_logo.png";
+import skappLogoTXT from "./images/skapp_logo_txt.png";
 import SnLeftMenu from "./sn.left-menu";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -37,6 +38,7 @@ import { parseSkylink, SkynetClient } from "skynet-js";
 import {
   getSkylinkIdxObject,
   getSkylink,
+  bsfetchDefaultAppStore
 } from "../../blockstack/blockstack-api";
 import SnSignin from "./sn.signin";
 import { connect } from "react-redux";
@@ -181,95 +183,95 @@ export default function SnTopBar(props) {
   //   }
   // }, 30000);
 
-  
+
   // const postSync = async () => {
   //   dispatch(setIsDataOutOfSync(true)); 
   // }
-    // Data is out of sync. Update "State" so that components show correct status on UI
-    // setSyncStatus("syncing");
-    // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
-    // //let status = await firstTimeUserSetup(userSession, null, null);
-    // //alert("Success " + status);
-    // if (status == SUCCESS) {
-    //   setSyncStatus("synced");
-    // }
-    // else {
-    //   setSyncStatus(null);
-    // }
-    // alert("postSync clicked !!");
-    // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
+  // Data is out of sync. Update "State" so that components show correct status on UI
+  // setSyncStatus("syncing");
+  // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+  // //let status = await firstTimeUserSetup(userSession, null, null);
+  // //alert("Success " + status);
+  // if (status == SUCCESS) {
+  //   setSyncStatus("synced");
+  // }
+  // else {
+  //   setSyncStatus(null);
+  // }
+  // alert("postSync clicked !!");
+  // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
 
-    // const status = await navigator.permissions.query({
-    //   name: 'periodic-background-sync',
-    // });
-    // if (status.state === 'granted') {
-    //   // Periodic background sync can be used.
-    //   alert("periodic sync can be used !!");
-    // } else {
-    //   // Periodic background sync cannot be used.
-    //   alert("periodic sync can NOT be used !!");
-    //   navigator.serviceWorker.ready.then(function(registration) {
-    //     registration.periodicSync.permissionState().then(function(state) {
-    //       if (state == 'prompt') 
-    //       alert("showSyncRegisterUI here for permission");
-    //     });
-    //   });
-    // }
+  // const status = await navigator.permissions.query({
+  //   name: 'periodic-background-sync',
+  // });
+  // if (status.state === 'granted') {
+  //   // Periodic background sync can be used.
+  //   alert("periodic sync can be used !!");
+  // } else {
+  //   // Periodic background sync cannot be used.
+  //   alert("periodic sync can NOT be used !!");
+  //   navigator.serviceWorker.ready.then(function(registration) {
+  //     registration.periodicSync.permissionState().then(function(state) {
+  //       if (state == 'prompt') 
+  //       alert("showSyncRegisterUI here for permission");
+  //     });
+  //   });
+  // }
 
-    // Periodic Sync Check
-    // https://web.dev/periodic-background-sync/
-    // https://github.com/WICG/background-sync/tree/master/explainers
-    // const registration = await navigator.serviceWorker.ready;
-    // if ('periodicSync' in registration) {
-    //   try {
-    //     await registration.periodicSync.register('content-sync', {
-    //       // An interval of one day.
-    //       // minInterval: 24 * 60 * 60 * 1000,
-    //       minInterval: 30000,
-    //     });
-    //     alert("content Synched");
-    //   } catch (error) {
-    //     // Periodic background sync cannot be used.
-    //     alert("Error Synching content" + error);
-    //   }
-    // }
+  // Periodic Sync Check
+  // https://web.dev/periodic-background-sync/
+  // https://github.com/WICG/background-sync/tree/master/explainers
+  // const registration = await navigator.serviceWorker.ready;
+  // if ('periodicSync' in registration) {
+  //   try {
+  //     await registration.periodicSync.register('content-sync', {
+  //       // An interval of one day.
+  //       // minInterval: 24 * 60 * 60 * 1000,
+  //       minInterval: 30000,
+  //     });
+  //     alert("content Synched");
+  //   } catch (error) {
+  //     // Periodic background sync cannot be used.
+  //     alert("Error Synching content" + error);
+  //   }
+  // }
 
-    // Periodic Sync Registration
-    // navigator.serviceWorker.ready.then(function (registration) {
-    //   registration.periodicSync.register({
-    //     tag: 'post-data-periodic',         // default: ''
-    //     minPeriod: 12 * 60 * 60 * 1000, // default: 0
-    //     powerState: 'avoid-draining',   // default: 'auto'
-    //     networkState: 'avoid-cellular'  // default: 'online'
-    //   }).then(function (periodicSyncReg) {
-    //     alert("periodicSync success");
-    //   }, function () {
-    //     // failure
-    //     alert("periodicSync failure");
-    //   })
-    // });
+  // Periodic Sync Registration
+  // navigator.serviceWorker.ready.then(function (registration) {
+  //   registration.periodicSync.register({
+  //     tag: 'post-data-periodic',         // default: ''
+  //     minPeriod: 12 * 60 * 60 * 1000, // default: 0
+  //     powerState: 'avoid-draining',   // default: 'auto'
+  //     networkState: 'avoid-cellular'  // default: 'online'
+  //   }).then(function (periodicSyncReg) {
+  //     alert("periodicSync success");
+  //   }, function () {
+  //     // failure
+  //     alert("periodicSync failure");
+  //   })
+  // });
 
-    // // Example: unregister all periodic syncs, except "get-latest-news":
-    // navigator.serviceWorker.ready.then(function (registration) {
-    //   registration.periodicSync.getRegistrations().then(function (syncRegs) {
-    //     syncRegs.filter(function (reg) {
-    //       return reg.tag != 'post-data-periodic';
-    //     }).forEach(function (reg) {
-    //       reg.unregister();
-    //     });
-    //   });
-    // });
+  // // Example: unregister all periodic syncs, except "get-latest-news":
+  // navigator.serviceWorker.ready.then(function (registration) {
+  //   registration.periodicSync.getRegistrations().then(function (syncRegs) {
+  //     syncRegs.filter(function (reg) {
+  //       return reg.tag != 'post-data-periodic';
+  //     }).forEach(function (reg) {
+  //       reg.unregister();
+  //     });
+  //   });
+  // });
 
-    // getting pending sync details
-    // navigator.serviceWorker.ready.then(function(registration) {
-    //   registration.periodicSync.getRegistrations().then(function(syncRegs) {
-    //     syncRegs.filter(function(reg) {
-    //       return reg.tag != 'get-latest-news';
-    //     }).forEach(function(reg) {
-    //       reg.unregister();
-    //     });
-    //   });
-    // });
+  // getting pending sync details
+  // navigator.serviceWorker.ready.then(function(registration) {
+  //   registration.periodicSync.getRegistrations().then(function(syncRegs) {
+  //     syncRegs.filter(function(reg) {
+  //       return reg.tag != 'get-latest-news';
+  //     }).forEach(function(reg) {
+  //       reg.unregister();
+  //     });
+  //   });
+  // });
 
   // useEffect(() => {
   //   if(snIsDataOutOfSync == true) // data is out of sync and update UI status to re-render
@@ -301,36 +303,37 @@ export default function SnTopBar(props) {
     evt.preventDefault();
     evt.stopPropagation();
     if (snPublicHash != null) {
-      if (searchStr == null || searchStr.trim() === "") {
-        const allPublicApps = await getPublicApps(snPublicHash);
-        dispatch(setApps(getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)));
+              if (searchStr == null || searchStr.trim() === "") {
+                const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+                dispatch(setApps(allPublicApps));
 
-      } else {
-        dispatch(setLoaderDisplay(true));
-        const allPublicApps = await getPublicApps(snPublicHash);
-        const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
-          .filter((app) => {
-            if (searchStr && searchStr.trim() !== "") {
-              for (const skyAppKey in app) {
-                if (
-                  app.hasOwnProperty(skyAppKey) &&
-                  skyAppKey !== "category" &&
-                  app[skyAppKey] != null &&
-                  app[skyAppKey]
-                    .toString()
-                    .toLowerCase()
-                    .indexOf(searchStr.toLowerCase()) > -1
-                ) {
-                  return app;
-                }
+              } else {
+                dispatch(setLoaderDisplay(true));
+                //const allPublicApps = await getPublicApps(snPublicHash);
+                //const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
+                //const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+                const filteredApps = snApps.filter((app) => {
+                    if (searchStr && searchStr.trim() !== "") {
+                      for (const skyAppKey in app) {
+                        if (
+                          app.hasOwnProperty(skyAppKey) &&
+                          skyAppKey !== "category" &&
+                          app[skyAppKey] != null &&
+                          app[skyAppKey]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(searchStr.toLowerCase()) > -1
+                        ) {
+                          return app;
+                        }
+                      }
+                    } else {
+                      return app;
+                    }
+                    return "";
+                  });
+                dispatch(fetchAppsSuccess(filteredApps));
               }
-            } else {
-              return app;
-            }
-            return "";
-          });
-        dispatch(fetchAppsSuccess(filteredApps));
-      }
     } else {
       history.push(
         "/skylinks?query=" + encodeURIComponent(searchStr)
@@ -360,6 +363,11 @@ export default function SnTopBar(props) {
   const handleLogoClick = (evt) => {
     snPublicHash && evt.preventDefault();
   }
+
+  const redirectToLogin = () => {
+    history.push("/login");
+  }
+
 
   const renderChangePortal = (value) => <FormControl className={classes.portalFormControl}>
     <Select
@@ -423,19 +431,30 @@ export default function SnTopBar(props) {
                 } ${person == null && "logoAlignMent"}`}
             >
               {/* logo */}
+              <div style={{paddingRight: "10px",paddingLeft: "40px" }}>
+              <img
+                style={{ cursor: "pointer"}}
+                onClick={handleLogoClick}
+                src={skappLogo}
+                width="40"
+                height="40"
+                className="d-inline-block align-top skapp-logo"
+                alt=""
+                loading="lazy"
+              />
+              </div>
+              <div style={{paddingTop: "15px" }}>
               <img
                 style={{ cursor: "pointer" }}
                 onClick={handleLogoClick}
-                src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
-                width="30"
-                height="30"
+                src={skappLogoTXT}
+                width="120"
+                height="20"
                 className="d-inline-block align-top"
                 alt=""
                 loading="lazy"
-                height="40"
-                width="170"
               />
-
+              </div>
               {/* search input */}
               {(person != null || snPublicHash) && (
                 <>
@@ -454,21 +473,21 @@ export default function SnTopBar(props) {
                             }`,
                         }}
                         type="search"
-                        placeholder="Search in SkySpaces or download Skylink"
+                        placeholder="Search your favorite app"
                         aria-label="Search"
                         onChange={(evt) =>
                           setSearchStr(evt.target.value)
                         }
                       />
                       {/* search inside nav-brand */}
-                      <div className="srch_btn_main_div">
+                      {/* <div className="srch_btn_main_div">
                         <button className="btn srch_btn_nvbar" type="button" onClick={onDownload}>
                           <label for="hidden-search-inpt">
                             <i className="fa fa-download icon_download_nvbar"></i>
                           </label>
                         </button>
                         <input type="file" id="hidden-search-inpt" />
-                      </div>
+                      </div> */}
                     </div>
 
                   </form>
@@ -481,7 +500,7 @@ export default function SnTopBar(props) {
               <img
                 style={{ cursor: "pointer" }}
                 onClick={handleLogoClick}
-                src={SmallLogo}
+                src={skappLogo}
                 width="30"
                 height="30"
                 className=" smallLogo_header"
@@ -542,27 +561,36 @@ export default function SnTopBar(props) {
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-            {/* {(person != null || snPublicHash) && (
+            {(snPublicHash != null) && (
+              <>
               <div className="signUp-butn-main-out-div">
-                <Grid item>
-                  <SnDataSync syncStatus={uiSyncStatus}></SnDataSync>
-                </Grid>
                 <button
+                   onClick={redirectToLogin}
                   style={{ border: "1px solid #1ed660" }}
                   type="button"
                   class="btn  btn-sm butn-out-signup"
-                  onClick={() => postSync()}
                 >
-                  Sync Now - {"" + snIsDataOutOfSync}
-                </button>
-              </div>)} */}
+                 Publish App
+              </button>
+              </div>
+
+              <div className="login-butn-main-out-div">
+                <button
+                  onClick={redirectToLogin}
+                  type="button"
+                  style={{ border: "1px solid #1ed660" }}
+                  class="btn btn-sm butn-out-login-nvbr">
+                  Login
+              </button>
+              </div>
+            </>
+              )}
             <div
               className="btn-icons-nvbr-div"
               style={{ display: "flex", alignItems: "center" }}
             >
               {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
-              <div className="butn-th-main-div">
-                {/* <button className="btn th_btn_nvbar"> */}
+              {/* <div className="butn-th-main-div">
                 <a href="https://skyapps.hns.siasky.net" target="_blank"
                         rel="noopener noreferrer">
                   <Tooltip title="Skynet AppStore" arrow>
@@ -571,11 +599,10 @@ export default function SnTopBar(props) {
                   />
                   </Tooltip>
                   </a>
-                {/* </button> */}
               </div>
               {snPublicHash && (
                 renderChangePortal("Change Portal")
-              )}
+              )} */}
               {snShowDesktopMenu && snPublicHash == null && (
                 // TODO: need to create a reducer for signin component display
                 <SnSignin />

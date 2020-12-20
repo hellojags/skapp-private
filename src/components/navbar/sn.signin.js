@@ -162,6 +162,7 @@ class SnSignin extends React.Component {
             userMenu={this.state.userMenu}
             setUserMenu={(evt) => this.setState({ userMenu: evt })}
             onShowSkyDbPublicKey={this.showSkydbPublicKey} />}
+
         {this.props.person == null && (
           <>
             <div className="login-butn-main-out-div">

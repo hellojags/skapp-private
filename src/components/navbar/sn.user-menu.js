@@ -162,7 +162,7 @@ function UserMenu(props) {
                 </div>
               </div>
             </Link>
-            <div className={classes.menuListContainers} onClick={userMenuClose}>
+            {/* <div className={classes.menuListContainers} onClick={userMenuClose}>
               <BackupIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
                 <Typography variant="span">Backup</Typography>
@@ -194,7 +194,7 @@ function UserMenu(props) {
                   inputProps={{ "aria-label": "secondary checkbox" }}
                 />
               </div>
-            </div>
+            </div> */}
             <div className={classes.menuListContainers}
               onClick={showPublicKey}>
               <VisibilityIcon style={{ fontSize: 18 }} />

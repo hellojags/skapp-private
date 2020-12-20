@@ -208,7 +208,7 @@ class SnHistory extends React.Component {
     let { columns } = this.state;
     const { classes } = this.props;
     if (this.state.saveToSkyspace) {
-      return <Redirect to="/register" />;
+      return <Redirect to="/publishapp" />;
     }
     return (
       <main className={classes.content}>

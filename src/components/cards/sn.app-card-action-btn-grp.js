@@ -13,9 +13,13 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { APP_BG_COLOR } from "../../sn.constants";
 import { Typography } from "@material-ui/core";
-
+import { getCompatibleTags, DOWNLOAD } from "../../sn.constants";
+import { CATEGORY_OBJ } from "../../sn.category-constants";
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import ShareOutlinedIcon from '@material-ui/icons/ShareOutlined';
 class SnAppCardActionBtnGrp extends React.Component {
-  render() {
+
+ render() {
     const { app, classes, source } = this.props;
     return (
       <>
@@ -29,28 +33,31 @@ class SnAppCardActionBtnGrp extends React.Component {
         >
           {(this.props.hideTags == null || !this.props.hideTags) && app.tags?.length > 0 && (
             <>
-              <div style={{ paddingLeft: 62 }}>
+              {/* <div style={{ paddingLeft: 10 }}>
                 <Typography variant="span" className={classes.status}>
                   Tags
                   </Typography>
-              </div>
+              </div> */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+                  paddingLeft: 10
                 }}
               >
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {app.tags.map((tag, idx) => (
-                    <Typography variant="span" className={classes.tagsBg} key={idx}>
-                      {tag}
-                    </Typography>
-                  ))}
+                <div>
+                    {app.type != null &&
+                      getCompatibleTags(app.type).map((category, idx) => {
+                        return CATEGORY_OBJ[category] != null ? (
+                          <Chip label={category} size="small" />
+                          // CATEGORY_OBJ[category].getLogo(classes.spaceIcons)
+                        ) : (<></>)
+                      })
+                    }
                 </div>
               </div>
             </>
           )}
-
           {this.props.hash == null && <div style={{ marginLeft: "auto" }}>
             {false && (this.props.hideAdd == null || this.props.hideAdd === false) && (
               <Tooltip title="Add to other Spaces" arrow>
@@ -61,13 +68,39 @@ class SnAppCardActionBtnGrp extends React.Component {
                 </IconButton>
               </Tooltip>
             )}
-            <Tooltip title="Edit Skylink" arrow>
+
+            <Tooltip title="Mark Favorite" arrow>
+              <IconButton
+                onClick={this.props.onEdit}
+              >
+                <FavoriteBorderIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Share with others" arrow>
+              <IconButton
+                onClick={this.props.onEdit}
+              >
+                <ShareOutlinedIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            {(this.props.displayInfoBtn) && (
+            <Tooltip title="View Details" arrow>
+              <IconButton
+                onClick={this.props.onEdit}
+              >
+                <InfoOutlinedIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            )}
+            {(this.props.displayEditBtn) && (
+            <Tooltip title="Edit Skapp" arrow>
               <IconButton
                 onClick={this.props.onEdit}
               >
                 <EditOutlinedIcon className={classes.tagEditIcon} />
               </IconButton>
             </Tooltip>
+             )}
             {this.props.hideDelete === false && false && (
               <Tooltip title="Remove from this Space" arrow>
                 <IconButton onClick={this.props.onDelete} color="secondary">

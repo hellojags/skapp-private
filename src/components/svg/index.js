@@ -21,6 +21,7 @@ import Built from "./Built";
 import DownArrow from "./DownArrow";
 import Folder from "./Folder";
 
+
 import Deco1 from "./Deco1";
 import Deco2 from "./Deco2";
 import Deco3 from "./Deco3";
@@ -29,6 +30,7 @@ import Deco5 from "./Deco5";
 import Deco6 from "./Deco6";
 import Deco7 from "./Deco7";
 import Deco8 from "./Deco8";
+
 
 export {
   Logo,

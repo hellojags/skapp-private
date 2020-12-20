@@ -83,13 +83,14 @@ const useStyles = (theme) => ({
     backgroundColor: theme.palette.whiteBgColor,
   },
   gallery_title: {
-    color: theme.palette.linksColor,
+    //color: theme.palette.linksColor,
+    color: `${theme.palette.primary.main}`,
     textAlign: "left",
     fontWeight: "500",
     fontSize: "20px",
   },
   gallery_subTitle: {
-    color: theme.palette.primary.main,
+    color: `${theme.palette.mediumGray}`,
     textAlign: "left",
     fontSize: "14px",
   },
