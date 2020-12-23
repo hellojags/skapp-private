@@ -1,15 +1,15 @@
-import { bindActionCreators } from "redux";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { bindActionCreators } from "redux"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
 import {
   fetchAppDetail,
   fetchEmptyApp,
   createSkapp,
   fetchSkyspaceAppDetail,
-} from "../../reducers/actions/sn.app-detail.action";
-import { setAppSkyspces } from "../../reducers/actions/sn.app-skyspacelist.action";
-import { setInfoModalState } from "../../reducers/actions/sn.info.modal.action";
-import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action";
-import { setAppDetail } from "../../reducers/actions/sn.app-detail.action";
+  setAppDetail,
+} from "../../reducers/actions/sn.app-detail.action"
+import { setAppSkyspces } from "../../reducers/actions/sn.app-skyspacelist.action"
+import { setInfoModalState } from "../../reducers/actions/sn.info.modal.action"
+import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action"
 
 export function matchDispatcherToProps(dispatcher) {
   return bindActionCreators(
@@ -22,10 +22,10 @@ export function matchDispatcherToProps(dispatcher) {
       setInfoModalState,
       setAppSkyspces,
       fetchSkyspaceAppCount,
-      setAppDetail
+      setAppDetail,
     },
     dispatcher
-  );
+  )
 }
 
 export function mapStateToProps(state) {
@@ -39,5 +39,5 @@ export function mapStateToProps(state) {
     snAppSkyspaces: state.snAppSkyspaceList,
     snUserSetting: state.snUserSetting,
     snAppSkyspacesToChange: JSON.parse(JSON.stringify(state.snAppSkyspaceList)),
-  };
+  }
 }

@@ -1,33 +1,22 @@
-import React from "react";
-import { useTheme } from "@material-ui/core/styles";
-import Popover from "@material-ui/core/Popover";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
-import IconButton from "@material-ui/core/IconButton";
-import useStyles from "./sn.view-more.styles";
-
-// const useStyles = makeStyles((theme) => ({
-//   typography: {
-//     padding: theme.spacing(2),
-//   },
-// }));
+import React from "react"
+import { useTheme } from "@material-ui/core/styles"
+import Popover from "@material-ui/core/Popover"
+import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined"
+import useStyles from "./sn.view-more.styles"
 
 export default function SnViewMore(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? "simple-popover" : undefined
 
   return (
     <div className="most_main_grid_gallery">
@@ -54,5 +43,5 @@ export default function SnViewMore(props) {
         {props.children}
       </Popover>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function Built(props) {
   return (
@@ -19,5 +19,5 @@ export default function Built(props) {
         </g>
       </g>
     </svg>
-  );
+  )
 }

@@ -1,79 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
-import "./sn.topbar.css";
-import skyapplogo from "../../SkySpaces_g.png";
-import FormControl from '@material-ui/core/FormControl';
-import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
-import AppsIcon from "@material-ui/icons/Apps";
-import skappLogo from "./images/skapp_logo.png";
-import skappLogoTXT from "./images/skapp_logo_txt.png";
-import SnLeftMenu from "./sn.left-menu";
-import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
-import InputLabel from '@material-ui/core/InputLabel';
-import Link from '@material-ui/core/Link';
-import MuiAlert from "@material-ui/lab/Alert";
-import Select from '@material-ui/core/Select';
-import MenuItem from "@material-ui/core/MenuItem";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import Tooltip from "@material-ui/core/Tooltip";
-import AppBar from "@material-ui/core/AppBar";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Toolbar from "@material-ui/core/Toolbar";
-import clsx from "clsx";
-import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
-import Grid from "@material-ui/core/Grid";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import Search from "@material-ui/icons/Search";
-import MenuIcon from "@material-ui/icons/Menu";
-import { APP_BG_COLOR, DEFAULT_PORTAL, PUBLIC_SHARE_APP_HASH, PUBLIC_SHARE_ROUTE } from "../../sn.constants";
-import { NavLink } from "react-router-dom";
-import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
-import { getAllPublicApps, launchSkyLink, subtractSkapps } from "../../sn.util";
-import { parseSkylink, SkynetClient } from "skynet-js";
-import {
-  getSkylinkIdxObject,
-  getSkylink,
-  bsfetchDefaultAppStore
-} from "../../blockstack/blockstack-api";
-import SnSignin from "./sn.signin";
-import { connect } from "react-redux";
-import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
-import SnInfoModal from "../modals/sn.info.modal";
-import { Drawer } from "@material-ui/core";
-import {
-  syncData, firstTimeUserSetup
-} from "../../blockstack/blockstack-api";
-import SnDataSync from '../datasync/sn.datasync';
-import { SUCCESS } from '../../blockstack/constants';
-import { useSelector, useDispatch } from "react-redux";
+import { Drawer } from "@material-ui/core"
+import FormControl from "@material-ui/core/FormControl"
+import IconButton from "@material-ui/core/IconButton"
+import MenuItem from "@material-ui/core/MenuItem"
+import Select from "@material-ui/core/Select"
+import Snackbar from "@material-ui/core/Snackbar"
+import { makeStyles } from "@material-ui/core/styles"
+import MenuIcon from "@material-ui/icons/Menu"
+import MuiAlert from "@material-ui/lab/Alert"
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useHistory } from "react-router-dom"
+import { parseSkylink } from "skynet-js"
+import { bsfetchDefaultAppStore, getSkylink } from "../../blockstack/blockstack-api"
+import { fetchAppsSuccess, setApps } from "../../reducers/actions/sn.apps.action"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
 // Actions
-import {
-  setMobileMenuDisplay,
-  toggleMobileMenuDisplay
-} from "../../reducers/actions/sn.mobile-menu.action";
-//import {setIsDataOutOfSync} from "../../reducers/actions/sn.isDataOutOfSync.action";
-import {
-  fetchBlockstackPerson,
-  logoutPerson, setPerson,
-  setPersonGetOtherData
-} from "../../reducers/actions/sn.person.action";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
-import { fetchPublicApps, setApps } from "../../reducers/actions/sn.apps.action";
-import { setUserSession } from "../../reducers/actions/sn.user-session.action"
-import { fetchAppsSuccess } from "../../reducers/actions/sn.apps.action";
-import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
-import { makeStyles } from "@material-ui/core/styles";
-import useInterval from 'react-useinterval';
-import { getJSONfromDB } from "../../db/indexedDB";
-import {APPSTORE_PROVIDER_MASTER_PUBKEY} from "../../sn.constants";
+import { setMobileMenuDisplay } from "../../reducers/actions/sn.mobile-menu.action"
+import { APPSTORE_PROVIDER_MASTER_PUBKEY, DEFAULT_PORTAL } from "../../sn.constants"
+import { launchSkyLink } from "../../sn.util"
+import SnInfoModal from "../modals/sn.info.modal"
+import skappLogo from "./images/skapp_logo.png"
+import skappLogoTXT from "./images/skapp_logo_txt.png"
+import SnLeftMenu from "./sn.left-menu"
+import SnSignin from "./sn.signin"
+import "./sn.topbar.css"
 
-const drawerWidth = 240;
+const drawerWidth = 240
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -86,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     // border:"none"
   },
   portalFormControl: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -110,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchBarForm: {
     width: "100%",
-    display: "flex"
+    display: "flex",
   },
   appLogo: {
     color: theme.palette.mediumGray,
@@ -118,10 +70,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
   },
   toolbar: theme.mixins.toolbar,
-}));
+}))
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 export default function SnTopBar(props) {
@@ -130,47 +82,46 @@ export default function SnTopBar(props) {
   //   location: PropTypes.object.isRequired,
   //   history: PropTypes.object.isRequired,
   // };
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const history = useHistory()
 
   // local
-  const [searchStr, setSearchStr] = useState("");
-  const [invalidSkylink, setInvalidSkylink] = useState(false);
-  const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoModalContent, setInfoModalContent] = useState("");
-  //const [uiSyncStatus, setUiSyncStatus] = useState(null);
-  const [anchor, setAnchor] = useState("");
-  const [isTrue, setIsTrue] = useState(false);
-  const [activeDarkBck, setActiveDarkBck] = useState(false);
+  const [searchStr, setSearchStr] = useState("")
+  const [invalidSkylink, setInvalidSkylink] = useState(false)
+  const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL)
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [infoModalContent, setInfoModalContent] = useState("")
+  // const [uiSyncStatus, setUiSyncStatus] = useState(null);
+  const [anchor, setAnchor] = useState("")
+  const [isTrue, setIsTrue] = useState(false)
+  const [activeDarkBck, setActiveDarkBck] = useState(false)
 
-  //isMaxWidth950: window.matchMedia("(max-width:950px)").matches;
+  // isMaxWidth950: window.matchMedia("(max-width:950px)").matches;
 
   const onInfoModalClose = () => {
-    setShowInfoModal(false);
+    setShowInfoModal(false)
   }
 
   // Store
-  const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
-  const userSession = useSelector((state) => state.userSession);
-  const snPortalsList = useSelector((state) => state.snPortalsList);
-  const snApps = useSelector((state) => state.snApps);
-  const person = useSelector((state) => state.person);
-  const triggerSignIn = useSelector((state) => state.snTriggerSignin);
-  const snUserSetting = useSelector((state) => state.snUserSetting);
-  const snTopbarDisplay = useSelector((state) => state.snTopbarDisplay);
-  const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
-  const snPublicHash = useSelector((state) => state.snPublicHash);
-  const snPublicInMemory = useSelector((state) => state.snPublicInMemory);
-  //const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
-
+  const showMobileMenu = useSelector((state) => state.snShowMobileMenu)
+  const userSession = useSelector((state) => state.userSession)
+  const snPortalsList = useSelector((state) => state.snPortalsList)
+  const snApps = useSelector((state) => state.snApps)
+  const person = useSelector((state) => state.person)
+  const triggerSignIn = useSelector((state) => state.snTriggerSignin)
+  const snUserSetting = useSelector((state) => state.snUserSetting)
+  const snTopbarDisplay = useSelector((state) => state.snTopbarDisplay)
+  const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu)
+  const snPublicHash = useSelector((state) => state.snPublicHash)
+  const snPublicInMemory = useSelector((state) => state.snPublicInMemory)
+  // const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
 
   // useInterval(async () => {
   //   // Your custom logic here
   //   if (snIsDataOutOfSync) {
   //     setUiSyncStatus("syncing");
-  //     let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+  //     let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted
   //     //let status = await firstTimeUserSetup(userSession, null, null);
   //     //alert("Success " + status);
   //     if (status == SUCCESS) {
@@ -184,13 +135,12 @@ export default function SnTopBar(props) {
   //   }
   // }, 30000);
 
-
   // const postSync = async () => {
-  //   dispatch(setIsDataOutOfSync(true)); 
+  //   dispatch(setIsDataOutOfSync(true));
   // }
   // Data is out of sync. Update "State" so that components show correct status on UI
   // setSyncStatus("syncing");
-  // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+  // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted
   // //let status = await firstTimeUserSetup(userSession, null, null);
   // //alert("Success " + status);
   // if (status == SUCCESS) {
@@ -213,7 +163,7 @@ export default function SnTopBar(props) {
   //   alert("periodic sync can NOT be used !!");
   //   navigator.serviceWorker.ready.then(function(registration) {
   //     registration.periodicSync.permissionState().then(function(state) {
-  //       if (state == 'prompt') 
+  //       if (state == 'prompt')
   //       alert("showSyncRegisterUI here for permission");
   //     });
   //   });
@@ -282,133 +232,138 @@ export default function SnTopBar(props) {
   // }, [snIsDataOutOfSync]);
 
   useEffect(() => {
-    let getMode = localStorage.getItem("darkMode");
+    const getMode = localStorage.getItem("darkMode")
     if (getMode === "true") {
-      setActiveDarkBck(true);
+      setActiveDarkBck(true)
     } else {
-      setActiveDarkBck(false);
+      setActiveDarkBck(false)
     }
-  }, []);
+  }, [])
 
   const getSkylinkIdxObject = (evt) => {
-    evt.preventDefault();
-    evt.stopPropagation();
+    evt.preventDefault()
+    evt.stopPropagation()
     getSkylinkIdxObject(userSession).then((skyLinkIdxObject) => {
-      getSkylink(userSession, skyLinkIdxObject.skhubIdList[1]);
-    });
-  };
+      getSkylink(userSession, skyLinkIdxObject.skhubIdList[1])
+    })
+  }
 
   const triggerSearch = async (evt) => {
-    console.log("on trigger search");
+    console.log("on trigger search")
 
-    evt.preventDefault();
-    evt.stopPropagation();
+    evt.preventDefault()
+    evt.stopPropagation()
     if (snPublicHash != null) {
-              if (searchStr == null || searchStr.trim() === "") {
-                //const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
-                const allPublicApps = await bsfetchDefaultAppStore(APPSTORE_PROVIDER_MASTER_PUBKEY);
-                
-                dispatch(setApps(allPublicApps));
+      if (searchStr == null || searchStr.trim() === "") {
+        // const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+        const allPublicApps = await bsfetchDefaultAppStore(
+          APPSTORE_PROVIDER_MASTER_PUBKEY
+        )
 
-              } else {
-                dispatch(setLoaderDisplay(true));
-                //const allPublicApps = await getPublicApps(snPublicHash);
-                //const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
-                //const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
-                const filteredApps = snApps.filter((app) => {
-                    if (searchStr && searchStr.trim() !== "") {
-                      for (const skyAppKey in app) {
-                        if (
-                          app.hasOwnProperty(skyAppKey) &&
-                          skyAppKey !== "category" &&
-                          app[skyAppKey] != null &&
-                          app[skyAppKey]
-                            .toString()
-                            .toLowerCase()
-                            .indexOf(searchStr.toLowerCase()) > -1
-                        ) {
-                          return app;
-                        }
-                      }
-                    } else {
-                      return app;
-                    }
-                    return "";
-                  });
-                dispatch(fetchAppsSuccess(filteredApps));
+        dispatch(setApps(allPublicApps))
+      } else {
+        dispatch(setLoaderDisplay(true))
+        // const allPublicApps = await getPublicApps(snPublicHash);
+        // const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
+        // const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+        const filteredApps = snApps.filter((app) => {
+          if (searchStr && searchStr.trim() !== "") {
+            for (const skyAppKey in app) {
+              if (
+                app.hasOwnProperty(skyAppKey) &&
+                skyAppKey !== "category" &&
+                app[skyAppKey] != null &&
+                app[skyAppKey]
+                  .toString()
+                  .toLowerCase()
+                  .indexOf(searchStr.toLowerCase()) > -1
+              ) {
+                return app
               }
+            }
+          } else {
+            return app
+          }
+          return ""
+        })
+        dispatch(fetchAppsSuccess(filteredApps))
+      }
     } else {
-      history.push(
-        "/skylinks?query=" + encodeURIComponent(searchStr)
-      );
+      history.push(`/skylinks?query=${encodeURIComponent(searchStr)}`)
     }
-  };
+  }
 
   const onDownload = () => {
-    console.log("ondownload");
+    console.log("ondownload")
     try {
-      let skylink = parseSkylink(searchStr)
-      //alert("skylink" + skylink)
-      launchSkyLink(skylink, snUserSetting);
+      const skylink = parseSkylink(searchStr)
+      // alert("skylink" + skylink)
+      launchSkyLink(skylink, snUserSetting)
+    } catch (e) {
+      setInvalidSkylink(true)
     }
-    catch (e) {
-      setInvalidSkylink(true);
-    }
-  };
+  }
 
   const changePublicPortal = (portal) => {
     document.location.href = document.location.href.replace(
       document.location.origin,
-      (new URL(portal)).origin
-    );
+      new URL(portal).origin
+    )
   }
 
   const handleLogoClick = (evt) => {
-    snPublicHash && evt.preventDefault();
+    snPublicHash && evt.preventDefault()
   }
 
   const redirectToLogin = () => {
-    history.push("/login");
+    history.push("/login")
   }
 
-
-  const renderChangePortal = (value) => <FormControl className={classes.portalFormControl}>
-    <Select
-      labelId="demo-simple-select-label"
-      id="pulic-share-portal"
-      value={value}
-      onChange={(evt) => changePublicPortal(evt.target.value)}
-    >
-      <MenuItem className="d-none" value={value}>
-        Change Portal
-                        </MenuItem>
-      {document.location.origin.indexOf("localhost") > -1 && (
-        <MenuItem value={document.location.origin}>
-          {document.location.origin}
+  const renderChangePortal = (value) => (
+    <FormControl className={classes.portalFormControl}>
+      <Select
+        labelId="demo-simple-select-label"
+        id="pulic-share-portal"
+        value={value}
+        onChange={(evt) => changePublicPortal(evt.target.value)}
+      >
+        <MenuItem className="d-none" value={value}>
+          Change Portal
         </MenuItem>
-      )}
-      {snPortalsList &&
-        snPortalsList.portals.map((obj, index) => (
-          <MenuItem key={index} value={obj.url}>
-            {obj.name}
+        {document.location.origin.indexOf("localhost") > -1 && (
+          <MenuItem value={document.location.origin}>
+            {document.location.origin}
           </MenuItem>
-        ))}
-    </Select>
-  </FormControl>
-
+        )}
+        {snPortalsList &&
+          snPortalsList.portals.map((obj, index) => (
+            <MenuItem key={index} value={obj.url}>
+              {obj.name}
+            </MenuItem>
+          ))}
+      </Select>
+    </FormControl>
+  )
 
   return (
     <>
-      {snTopbarDisplay && <div>
-        <div className="container-fluid main-container">
-          <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
-            {person != null && (
-              <Drawer anchor={"left"} open={showMobileMenu} onClose={() => dispatch(setMobileMenuDisplay(false))} >
-                <SnLeftMenu />
-              </Drawer>
-            )}
+      {snTopbarDisplay && (
+        <div>
+          <div className="container-fluid main-container">
+            <nav
+              className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}
+            >
+              {person != null && (
+                <Drawer
+                  anchor="left"
+                  open={showMobileMenu}
+                  onClose={() => dispatch(setMobileMenuDisplay(false))}
+                >
+                  <SnLeftMenu />
+                </Drawer>
+              )}
 
-            {/* {person!=null && <button
+              {/* {person!=null && <button
                 className="navbar-toggler togl-btn-navbr"
                 type="button"
                 data-toggle="collapse"
@@ -419,71 +374,83 @@ export default function SnTopBar(props) {
               >
                 <span className="navbar-toggler-icon"></span>
               </button>} */}
-            {person != null && <IconButton
-              id="toggle-menu-icon"
-              className="menu-button-styling"
-              onClick={() => dispatch(setMobileMenuDisplay(true))}>
-              <MenuIcon />
-            </IconButton>}
-            {(person != null || snPublicHash) && (
-              <div className="ribbon"><span>ALPHA</span></div>
-            )}
-            {(person == null) ? <div className="ribbonMiddle"><span>ALPHA</span></div> : ""}
-            <a
-              className={`${"navbar-brand"} ${person == null ? "auth-navi-brand" : "navi-brnd"
-                } ${person == null && "logoAlignMent"}`}
-            >
-              {/* logo */}
-              <div style={{paddingRight: "10px",paddingLeft: "40px" }}>
-              <img
-                style={{ cursor: "pointer"}}
-                onClick={handleLogoClick}
-                src={skappLogo}
-                width="40"
-                height="40"
-                className="d-inline-block align-top skapp-logo"
-                alt=""
-                loading="lazy"
-              />
-              </div>
-              <div style={{paddingTop: "15px" }}>
-              <img
-                style={{ cursor: "pointer" }}
-                onClick={handleLogoClick}
-                src={skappLogoTXT}
-                width="120"
-                height="20"
-                className="d-inline-block align-top"
-                alt=""
-                loading="lazy"
-              />
-              </div>
-              {/* search input */}
+              {person != null && (
+                <IconButton
+                  id="toggle-menu-icon"
+                  className="menu-button-styling"
+                  onClick={() => dispatch(setMobileMenuDisplay(true))}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
               {(person != null || snPublicHash) && (
-                <>
-                  <form onSubmit={triggerSearch} className={classes.searchBarForm}>
-                    <div className="search_main_div" style={{ marginLeft: "auto" }}>
-                      <span>
-                        <i className="fas fa-search srch-icon-inside-field-input"></i>
-                      </span>
+                <div className="ribbon">
+                  <span>ALPHA</span>
+                </div>
+              )}
+              {person == null ? (
+                <div className="ribbonMiddle">
+                  <span>ALPHA</span>
+                </div>
+              ) : (
+                ""
+              )}
+              <a
+                className={`${"navbar-brand"} ${
+                  person == null ? "auth-navi-brand" : "navi-brnd"
+                } ${person == null && "logoAlignMent"}`}
+              >
+                {/* logo */}
+                <div style={{ paddingRight: "10px", paddingLeft: "40px" }}>
+                  <img
+                    style={{ cursor: "pointer" }}
+                    onClick={handleLogoClick}
+                    src={skappLogo}
+                    width="40"
+                    height="40"
+                    className="d-inline-block align-top skapp-logo"
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                <div style={{ paddingTop: "15px" }}>
+                  <img
+                    style={{ cursor: "pointer" }}
+                    onClick={handleLogoClick}
+                    src={skappLogoTXT}
+                    width="120"
+                    height="20"
+                    className="d-inline-block align-top"
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                {/* search input */}
+                {(person != null || snPublicHash) && (
+                  <>
+                    <form onSubmit={triggerSearch} className={classes.searchBarForm}>
+                      <div
+                        className="search_main_div"
+                        style={{ marginLeft: "auto" }}
+                      >
+                        <span>
+                          <i className="fas fa-search srch-icon-inside-field-input" />
+                        </span>
 
-                      <input
-                        className={`form-control mr-sm-2 srch_inpt ${classes.searchBarBg}`}
-                        style={{
-                          border: `${activeDarkBck === true
-                            ? "none"
-                            : "1px solid lightgray"
+                        <input
+                          className={`form-control mr-sm-2 srch_inpt ${classes.searchBarBg}`}
+                          style={{
+                            border: `${
+                              activeDarkBck === true ? "none" : "1px solid lightgray"
                             }`,
-                        }}
-                        type="search"
-                        placeholder="Search your favorite app"
-                        aria-label="Search"
-                        onChange={(evt) =>
-                          setSearchStr(evt.target.value)
-                        }
-                      />
-                      {/* search inside nav-brand */}
-                      {/* <div className="srch_btn_main_div">
+                          }}
+                          type="search"
+                          placeholder="Search your favorite app"
+                          aria-label="Search"
+                          onChange={(evt) => setSearchStr(evt.target.value)}
+                        />
+                        {/* search inside nav-brand */}
+                        {/* <div className="srch_btn_main_div">
                         <button className="btn srch_btn_nvbar" type="button" onClick={onDownload}>
                           <label for="hidden-search-inpt">
                             <i className="fa fa-download icon_download_nvbar"></i>
@@ -491,41 +458,40 @@ export default function SnTopBar(props) {
                         </button>
                         <input type="file" id="hidden-search-inpt" />
                       </div> */}
-                    </div>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </a>
 
-                  </form>
-                </>
+              <a className="small_logo_nvbrnd">
+                {/* small logo */}
+                <img
+                  style={{ cursor: "pointer" }}
+                  onClick={handleLogoClick}
+                  src={skappLogo}
+                  width="30"
+                  height="30"
+                  className=" smallLogo_header"
+                  alt=""
+                  loading="lazy"
+                  height="35"
+                  width="35"
+                />
+              </a>
+
+              {person != null && (
+                <div className="srch_btn_out_main_div">
+                  <button className="btn srch_btn_nvbar">
+                    <label htmlFor="hidden-search-inpt">
+                      <i className="fa fa-download icon_download_nvbar" />
+                    </label>
+                  </button>
+                  <input type="file" id="hidden-search-inpt" />
+                </div>
               )}
-            </a>
 
-            <a className="small_logo_nvbrnd">
-              {/* small logo */}
-              <img
-                style={{ cursor: "pointer" }}
-                onClick={handleLogoClick}
-                src={skappLogo}
-                width="30"
-                height="30"
-                className=" smallLogo_header"
-                alt=""
-                loading="lazy"
-                height="35"
-                width="35"
-              />
-            </a>
-
-            {person != null && (
-              <div className="srch_btn_out_main_div">
-                <button className="btn srch_btn_nvbar">
-                  <label for="hidden-search-inpt">
-                    <i className="fa fa-download icon_download_nvbar"></i>
-                  </label>
-                </button>
-                <input type="file" id="hidden-search-inpt" />
-              </div>
-            )}
-
-            {/*(person != null || snPublicHash) && (
+              {/* (person != null || snPublicHash) && (
                 <>
                   <Grid item xs={7} sm={7} className="topbar-srch-grid">
                     <div className="float-center">
@@ -557,40 +523,41 @@ export default function SnTopBar(props) {
                     </Tooltip>
                   </Grid>
                 </>
-                        )*/}
+                        ) */}
 
-            {/* <Grid
+              {/* <Grid
                 item
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-            {(snPublicHash != null) && (
-              <>
-              <div className="signUp-butn-main-out-div">
-                <button
-                   onClick={redirectToLogin}
-                  style={{ border: "1px solid #1ed660", margin: "10px" }}
-                  type="button"
-                  class="btn btn-sm butn-out-signup"
-                >
-                 Publish App
-              </button>
-              <button
-                  onClick={redirectToLogin}
-                  type="button"
-                  style={{ border: "1px solid #1ed660" }}
-                  class="btn btn-sm butn-out-login-nvbr">
-                  Login
-              </button>
-              </div>
-            </>
+              {snPublicHash != null && (
+                <>
+                  <div className="signUp-butn-main-out-div">
+                    <button
+                      onClick={redirectToLogin}
+                      style={{ border: "1px solid #1ed660", margin: "10px" }}
+                      type="button"
+                      className="btn btn-sm butn-out-signup"
+                    >
+                      Publish App
+                    </button>
+                    <button
+                      onClick={redirectToLogin}
+                      type="button"
+                      style={{ border: "1px solid #1ed660" }}
+                      className="btn btn-sm butn-out-login-nvbr"
+                    >
+                      Login
+                    </button>
+                  </div>
+                </>
               )}
-            <div
-              className="btn-icons-nvbr-div"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
-              {/* <div className="butn-th-main-div">
+              <div
+                className="btn-icons-nvbr-div"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
+                {/* <div className="butn-th-main-div">
                 <a href="https://skyapps.hns.siasky.net" target="_blank"
                         rel="noopener noreferrer">
                   <Tooltip title="Skynet AppStore" arrow>
@@ -603,13 +570,13 @@ export default function SnTopBar(props) {
               {snPublicHash && (
                 renderChangePortal("Change Portal")
               )} */}
-              {snShowDesktopMenu && snPublicHash == null && (
-                // TODO: need to create a reducer for signin component display
-                <SnSignin />
-              )}
-            </div>
-            {/* </Grid> */}
-            {/* <Grid
+                {snShowDesktopMenu && snPublicHash == null && (
+                  // TODO: need to create a reducer for signin component display
+                  <SnSignin />
+                )}
+              </div>
+              {/* </Grid> */}
+              {/* <Grid
                 item
                 xs={(person != null || snPublicHash != null) ? 2 : 10}
                 className="hidden-sm-up"
@@ -622,20 +589,20 @@ export default function SnTopBar(props) {
                   {snPublicHash && renderChangePortal("")}
                 </div>
               </Grid> */}
-          </nav>
+            </nav>
+          </div>
         </div>
-      </div>
-      }
+      )}
       <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={invalidSkylink}
         autoHideDuration={3000}
         onClose={() => setInvalidSkylink(false)}
-        TransitionComponent={"Fade"}
+        TransitionComponent="Fade"
       >
         <Alert onClose={() => setInvalidSkylink(false)} severity="error">
           Invalid Skylink ! Please enter valid 46 character skylink to Download.
-      </Alert>
+        </Alert>
       </Snackbar>
       <SnInfoModal
         open={showInfoModal}
@@ -645,5 +612,5 @@ export default function SnTopBar(props) {
         content={infoModalContent}
       />
     </>
-  );
-};
+  )
+}

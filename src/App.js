@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import "./App.css"
+import { library } from "@fortawesome/fontawesome-svg-core"
 import {
   faEnvelope,
   faFan,
@@ -12,18 +11,16 @@ import {
   faBlog,
   faWifi,
   faHeadphones,
-  faEllipsisV
-} from "@fortawesome/free-solid-svg-icons";
-import SnLoader from "./components/tools/sn.loader";
-import SnRouter from "./router/sn.router";
-import SnFooter from "./components/footer/sn.footer";
-import { Connect } from '@blockstack/connect';
-import { authOrigin, appDetails, userSession } from "./blockstack/constants";
-import { createMuiTheme } from "@material-ui/core";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { ThemeProvider } from "react-bootstrap";
-import { STORAGE_DARK_MODE_KEY, MUI_THEME_LIGHT, MUI_THEME_DARK } from "./sn.constants";
-import { useSelector } from "react-redux";
+  faEllipsisV,
+} from "@fortawesome/free-solid-svg-icons"
+import { createMuiTheme } from "@material-ui/core"
+import { MuiThemeProvider } from "@material-ui/core/styles"
+import { useSelector } from "react-redux"
+import SnLoader from "./components/tools/sn.loader"
+import SnRouter from "./router/sn.router"
+import { authOrigin, appDetails, userSession } from "./blockstack/constants"
+import { MUI_THEME_LIGHT, MUI_THEME_DARK } from "./sn.constants"
+
 library.add(
   faEnvelope,
   faFan,
@@ -35,18 +32,18 @@ library.add(
   faWifi,
   faHeadphones,
   faEllipsisV
-);
+)
 
 const authOptions = {
-  redirectTo: '/',
-  manifestPath: '/manifest.json',
+  redirectTo: "/",
+  manifestPath: "/manifest.json",
   authOrigin,
   userSession,
   finished: ({ userSession }) => {
-    console.log(userSession.loadUserData());
+    console.log(userSession.loadUserData())
   },
-  appDetails: appDetails,
-};
+  appDetails,
+}
 
 // // Track when page is loaded
 // const FathomTrack = () => {
@@ -68,28 +65,26 @@ const authOptions = {
 // });
 
 const App = () => {
-  const [forLightGray, setforLightGray] = useState("#f7f7f7");
-  const [forLinkColors, setForLinksColor] = useState("#656d70");
-  const [whiteBgColorTheme, setwhiteBgColorTheme] = useState("#ffffff");
-  const [activeDark, setActiveDark] = useState(false);
+  const [forLightGray, setforLightGray] = useState("#f7f7f7")
+  const [forLinkColors, setForLinksColor] = useState("#656d70")
+  const [whiteBgColorTheme, setwhiteBgColorTheme] = useState("#ffffff")
+  const [activeDark, setActiveDark] = useState(false)
 
-  const stDarkMode = useSelector((state) => state.snDarkMode);
-
+  const stDarkMode = useSelector((state) => state.snDarkMode)
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
-      console.log = function () { };
+    if (process.env.NODE_ENV === "production") {
+      console.log = function () {}
     }
-  }, []);
+  }, [])
 
   React.useEffect(() => {
-    setActiveDark(stDarkMode);
-  }, [stDarkMode]);
+    setActiveDark(stDarkMode)
+  }, [stDarkMode])
 
   const handleDarkMode = (val) => {
-    setActiveDark(val);
-  };
-
+    setActiveDark(val)
+  }
 
   /*
 
@@ -106,7 +101,7 @@ const App = () => {
 
     */
 
-  const pallete = {};
+  const pallete = {}
   pallete[MUI_THEME_LIGHT] = {
     primary: {
       main: "#1ed660",
@@ -125,7 +120,7 @@ const App = () => {
     mediumGray: "#c5c5c5",
     lightGreen: "#daffe7",
     spacesTabsCount: "#EAEAEA",
-  };
+  }
   pallete[MUI_THEME_DARK] = {
     primary: {
       main: "#1ed660",
@@ -144,61 +139,61 @@ const App = () => {
     lightGray: "#1a1b1d",
     mediumGray: "#c5c5c5",
     lightGreen: "#daffe7",
-  };
+  }
 
   const lightTheme = createMuiTheme({
     palette: pallete[MUI_THEME_LIGHT],
-  });
+  })
 
   const darkTheme = createMuiTheme({
     overrides: {
       MuiDrawer: {
         root: {
-          backgroundColor: pallete[MUI_THEME_DARK].whiteBgColor
-        }
+          backgroundColor: pallete[MUI_THEME_DARK].whiteBgColor,
+        },
       },
       MuiPaper: {
         root: {
-          backgroundColor: pallete[MUI_THEME_DARK].headerBgColor
-        }
+          backgroundColor: pallete[MUI_THEME_DARK].headerBgColor,
+        },
       },
       MuiTypography: {
         root: {
-          color: "#ffffff78 !important"
-        }
+          color: "#ffffff78 !important",
+        },
       },
       MuiFormLabel: {
         root: {
-          color: "#ffffff78"
-        }
+          color: "#ffffff78",
+        },
       },
       MuiInput: {
         underline: {
-          '&:before': {
-            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`
-          }
-        }
+          "&:before": {
+            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`,
+          },
+        },
       },
       WAMuiChipInput: {
         underline: {
-          '&:before': {
-            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`
-          }
-        }
+          "&:before": {
+            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`,
+          },
+        },
       },
       MuiInputBase: {
         input: {
-          color: pallete[MUI_THEME_DARK].linksColor
-        }
+          color: pallete[MUI_THEME_DARK].linksColor,
+        },
       },
       MuiFormHelperText: {
         root: {
-          color: pallete[MUI_THEME_DARK].linksColor
-        }
-      }
+          color: pallete[MUI_THEME_DARK].linksColor,
+        },
+      },
     },
     palette: pallete[MUI_THEME_DARK],
-  });
+  })
 
   return (
     <MuiThemeProvider theme={activeDark ? darkTheme : lightTheme}>
@@ -207,7 +202,7 @@ const App = () => {
         <SnRouter handleDarkMode={handleDarkMode} />
       </div>
     </MuiThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App

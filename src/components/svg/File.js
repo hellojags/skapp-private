@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function File(props) {
   return (
@@ -12,5 +12,5 @@ export default function File(props) {
         <path d="M20 1l15 15H22a2 2 0 01-2-2V1z" fill="#C5CEC7" />
       </g>
     </svg>
-  );
+  )
 }

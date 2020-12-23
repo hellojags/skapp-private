@@ -1,7 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
-
 const leftMenuStyles = (theme) => ({
-
   dividerColor: {
     backgroundColor: theme.palette.primary.main,
   },
@@ -58,9 +55,9 @@ const leftMenuStyles = (theme) => ({
   },
   list: {
     width: 295,
-    [theme.breakpoints.up('sm')]: {
-      display: "none !important"
-    }
+    [theme.breakpoints.up("sm")]: {
+      display: "none !important",
+    },
   },
   fullList: {
     width: "auto",
@@ -91,7 +88,7 @@ const leftMenuStyles = (theme) => ({
     paddingTop: 10,
     paddingBottom: 10,
     fontSize: "16px",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   sideNavContainer: {
     paddingTop: 100,
@@ -162,7 +159,6 @@ const leftMenuStyles = (theme) => ({
     display: "flex",
     justifyContent: "center",
   },
-});
+})
 
-
-export default leftMenuStyles;
+export default leftMenuStyles

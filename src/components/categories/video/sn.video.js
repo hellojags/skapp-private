@@ -1,8 +1,8 @@
-import React from "react";
-import SnVideosDefault from "./sn.videos-default";
+import React from "react"
+import SnVideosDefault from "./sn.videos-default"
 
 export default function SnVideo(props) {
-  const TagName = SnVideosDefault;
+  const TagName = SnVideosDefault
 
   return (
     <TagName
@@ -18,5 +18,5 @@ export default function SnVideo(props) {
       hash={props.hash}
       senderId={props.senderId}
     />
-  );
+  )
 }

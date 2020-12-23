@@ -1,13 +1,14 @@
-import { DEFAULT_PORTAL, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from "./sn.constants";
-import imageCompression from "browser-image-compression";
-import { getCategoryObjWithoutAll } from "./sn.category-constants";
+import imageCompression from "browser-image-compression"
+import { DEFAULT_PORTAL, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from "./sn.constants"
+import { getCategoryObjWithoutAll } from "./sn.category-constants"
+
 export const toBase64 = (file) =>
   new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = (error) => reject(error)
+  })
 
 export const getPortalFromUserSetting = (userSetting) => {
   if (
@@ -16,124 +17,135 @@ export const getPortalFromUserSetting = (userSetting) => {
     userSetting.setting.portal != null &&
     userSetting.setting.portal.trim() !== ""
   ) {
-    return userSetting.setting.portal;
-  } else {
-    return DEFAULT_PORTAL;
+    return userSetting.setting.portal
   }
-};
+  return DEFAULT_PORTAL
+}
 
 export const skylinkToUrl = (skyLink, userSetting) => {
-  let link = "";
+  let link = ""
   if (skyLink.indexOf("http://") === 0 || skyLink.indexOf("https://") === 0) {
-    link = skyLink;
+    link = skyLink
   } else if (skyLink.indexOf("sia://") === 0) {
-    link = skyLink.replace("sia://", getPortalFromUserSetting(userSetting));
+    link = skyLink.replace("sia://", getPortalFromUserSetting(userSetting))
   } else if (skyLink.length === 46) {
-    link = getPortalFromUserSetting(userSetting) + skyLink;
+    link = getPortalFromUserSetting(userSetting) + skyLink
   }
-  return link;
-};
+  return link
+}
 
 export const launchSkyLink = (skyLink, userSetting) => {
-  const link = skylinkToUrl(skyLink, userSetting);
+  const link = skylinkToUrl(skyLink, userSetting)
   if (link !== "") {
-    window.open(link, "_blank");
+    window.open(link, "_blank")
   }
-};
+}
 
 /**
  * Generates thumbnail image file out of the first frame of the video file.
- * 
+ *
  * @param {Object} Object
  * @param {string?} Object.url - The video source Url.
- * @param {string?} Object.file - Optional video file object reference. If the Url s not provided, 
+ * @param {string?} Object.file - Optional video file object reference. If the Url s not provided,
  * then this property must have a value. If the url does have a valu then this property will be ignored.
  */
 
-export const generateThumbnailFromVideo = async ({file, url}) => {
-  let videoResolve = null;
+export const generateThumbnailFromVideo = async ({ file, url }) => {
+  let videoResolve = null
   const videoPromise = new Promise((resolve) => {
-    videoResolve = resolve;
-  });
-  let video = document.createElement('video');
-  video.crossOrigin = "anonymous";
-  video.src = url ? url :  URL.createObjectURL(file);
-  console.log("video.src", video.src);
-  video.onloadeddata = videoResolve;
-  video.load();
-  await videoPromise;
-  const videoThumbnail = await videoToImg(video);
-  return videoThumbnail;
-};
+    videoResolve = resolve
+  })
+  const video = document.createElement("video")
+  video.crossOrigin = "anonymous"
+  video.src = url || URL.createObjectURL(file)
+  console.log("video.src", video.src)
+  video.onloadeddata = videoResolve
+  video.load()
+  await videoPromise
+  const videoThumbnail = await videoToImg(video)
+  return videoThumbnail
+}
 
 /**
  * Takes a video element and that has image already loaded and returns an image file which is a thumbnail
- * generated out of the first frame of the video 
- * 
+ * generated out of the first frame of the video
+ *
  * @param {Element} video Video Element.
  */
 
 export const videoToImg = async (video) => {
-  let canvas = document.createElement("canvas");
-  let w = video.videoWidth;
-  let h = video.videoHeight;
-  canvas.width = w;
-  canvas.height = h;
-  let ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0, w, h);
-  let file = await imageCompression.canvasToFile(canvas, "image/jpeg");
-  return file;
-};
+  const canvas = document.createElement("canvas")
+  const w = video.videoWidth
+  const h = video.videoHeight
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext("2d")
+  ctx.drawImage(video, 0, 0, w, h)
+  const file = await imageCompression.canvasToFile(canvas, "image/jpeg")
+  return file
+}
 
 /**
  * Converts a long string of bytes into a readable format e.g KB, MB, GB, TB, YB
- * 
+ *
  * @param {Int} num The number of bytes.
  */
-export const readableBytes= (bytes)=>{
-  if (bytes==null || isNaN(bytes)){
-    return;
+export const readableBytes = (bytes) => {
+  if (bytes == null || isNaN(bytes)) {
+    return
   }
-  var i = Math.floor(Math.log(bytes) / Math.log(1024)),
-  sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
 
-  return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + sizes[i];
+  return `${(bytes / Math.pow(1024, i)).toFixed(2) * 1} ${sizes[i]}`
 }
 
 /**
  * Compresses Image file to Skyspace params
- * 
+ *
  * @param {File} originalFile Original File.
  */
-export const getCompressedImageFile = async(originalFile) => await imageCompression(originalFile, {
+export const getCompressedImageFile = async (originalFile) =>
+  await imageCompression(originalFile, {
     maxSizeMB: 1,
     maxWidthOrHeight: 256,
     useWebWorker: true,
-  });
+  })
 
-  export const subtractSkapps = (superList, sublist) => {
-  const skhubIdFrmSubList = [];
-  sublist.map((skapp)=>skhubIdFrmSubList.push(skapp.skhubId));
-  return superList.filter((el)=> !skhubIdFrmSubList.includes(el.skhubId));
-};
-
-export const setTypeFromFile = (fileType, app)=>{
-  const categoryObj = getCategoryObjWithoutAll();
-  const category = Object.keys(categoryObj).find(category=>categoryObj[category].fileTypeList && categoryObj[category].fileTypeList.indexOf(fileType)>-1);
-  category && (app.type=category);
+export const subtractSkapps = (superList, sublist) => {
+  const skhubIdFrmSubList = []
+  sublist.map((skapp) => skhubIdFrmSubList.push(skapp.skhubId))
+  return superList.filter((el) => !skhubIdFrmSubList.includes(el.skhubId))
 }
 
-export const getAllPublicApps = (appsFromHash, inMemoryAddedApps, inMemoryDeletedApps) => 
-  subtractSkapps( [...new Set([...inMemoryAddedApps, ...appsFromHash])] , inMemoryDeletedApps);
+export const setTypeFromFile = (fileType, app) => {
+  const categoryObj = getCategoryObjWithoutAll()
+  const category = Object.keys(categoryObj).find(
+    (category) =>
+      categoryObj[category].fileTypeList &&
+      categoryObj[category].fileTypeList.indexOf(fileType) > -1
+  )
+  category && (app.type = category)
+}
+
+export const getAllPublicApps = (
+  appsFromHash,
+  inMemoryAddedApps,
+  inMemoryDeletedApps
+) =>
+  subtractSkapps(
+    [...new Set([...inMemoryAddedApps, ...appsFromHash])],
+    inMemoryDeletedApps
+  )
 
 // I think we can use idp field in session object for this
 export const getUserSessionType = (userSession) => {
-  let idType = ID_PROVIDER_SKYID;
-  //ID_PROVIDER_BLOCKSTACK;
+  let idType = ID_PROVIDER_SKYID
+  // ID_PROVIDER_BLOCKSTACK;
   if (userSession.skydbseed) {
-    idType = ID_PROVIDER_SKYDB; 
-  }else if (userSession.skyid) {
-    idType = ID_PROVIDER_SKYID; 
+    idType = ID_PROVIDER_SKYDB
+  } else if (userSession.skyid) {
+    idType = ID_PROVIDER_SKYID
   }
-  return idType;
+  return idType
 }

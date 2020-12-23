@@ -1,16 +1,15 @@
-import React from "react";
-import Dialog from "@material-ui/core/Dialog";
-import ImageGallery from "react-image-gallery";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DoneIcon from "@material-ui/icons/Done";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { Button } from "@material-ui/core";
-import Slide from "@material-ui/core/Slide";
+import React from "react"
+import Dialog from "@material-ui/core/Dialog"
+import ImageGallery from "react-image-gallery"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DoneIcon from "@material-ui/icons/Done"
+import { Button } from "@material-ui/core"
+import Slide from "@material-ui/core/Slide"
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="up" ref={ref} {...props} />
+))
 
 export default function SnCarousalModal(props) {
   return (
@@ -42,5 +41,5 @@ export default function SnCarousalModal(props) {
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }

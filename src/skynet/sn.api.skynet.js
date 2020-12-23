@@ -1,105 +1,131 @@
-import { ajax } from 'rxjs/ajax';
-import { map, catchError } from 'rxjs/operators';
-import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
-import { of } from 'rxjs';
-import prettyBytes from 'pretty-bytes';
-import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
+import { ajax } from "rxjs/ajax"
+import { map, catchError } from "rxjs/operators"
+import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js"
+import { of } from "rxjs"
+import prettyBytes from "pretty-bytes"
+import { DEFAULT_PORTAL } from "../sn.constants"
 import { IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
-import { getAllPublicApps } from '../sn.util';
-import store from "../reducers";
-import { getJSONfromDB, setJSONinDB } from "../db/indexedDB";
-import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action";
+import { getAllPublicApps } from "../sn.util"
+import store from "../reducers"
+import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
+import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
 import { encryptData, decryptData } from "./encryption"
-const pwa = true;
 
-export const getSkylinkHeader = (skylinkUrl) => ajax({
-  url: skylinkUrl + "?format=concat",
-  method: "HEAD",
-  responseType: "",
-}).pipe(
-  map((res) => {
-    let headerMap = {};
-    let contentType = res.xhr.getResponseHeader('content-type');
-    headerMap["contentType"] = contentType;
-    console.log("contentType:" + contentType);
-    let contentLength = res.xhr.getResponseHeader('content-length');
-    headerMap["contentLength"] = contentLength ? prettyBytes(Number(contentLength)) : "";
-    console.log("contentLength:" + contentLength);
-    let skynetFileMetadata = res.xhr.getResponseHeader('Skynet-File-Metadata');
-    headerMap["skynetFileMetadata"] = skynetFileMetadata;
-    //console.log("skynetFileMetadata:"+skynetFileMetadata);
-    //let headerParams = res.xhr.getAllResponseHeaders();
-    //console.log("headerParams"+headerParams);
-    //console.log("headerMap: "+headerMap);
-    return headerMap;
-  }),
-  catchError(error => {
-    console.log('getSkylinkHeader::error: ', error);
-    return of(error);
-  })
-);
+const pwa = true
 
+export const getSkylinkHeader = (skylinkUrl) =>
+  ajax({
+    url: `${skylinkUrl}?format=concat`,
+    method: "HEAD",
+    responseType: "",
+  }).pipe(
+    map((res) => {
+      const headerMap = {}
+      const contentType = res.xhr.getResponseHeader("content-type")
+      headerMap.contentType = contentType
+      console.log(`contentType:${contentType}`)
+      const contentLength = res.xhr.getResponseHeader("content-length")
+      headerMap.contentLength = contentLength
+        ? prettyBytes(Number(contentLength))
+        : ""
+      console.log(`contentLength:${contentLength}`)
+      const skynetFileMetadata = res.xhr.getResponseHeader("Skynet-File-Metadata")
+      headerMap.skynetFileMetadata = skynetFileMetadata
+      // console.log("skynetFileMetadata:"+skynetFileMetadata);
+      // let headerParams = res.xhr.getAllResponseHeaders();
+      // console.log("headerParams"+headerParams);
+      // console.log("headerMap: "+headerMap);
+      return headerMap
+    }),
+    catchError((error) => {
+      console.log("getSkylinkHeader::error: ", error)
+      return of(error)
+    })
+  )
 
-export const uploadToSkynet = async (file, skynetClient) => await skynetClient.uploadFile(file);
+export const uploadToSkynet = async (file, skynetClient) =>
+  await skynetClient.uploadFile(file)
 
-export const getPublicApps = async (hash) => await fetch((document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL) + "/" + hash).then(res => res.json());
+export const getPublicApps = async (hash) =>
+  await fetch(
+    `${
+      document.location.origin.indexOf("localhost") === -1
+        ? document.location.origin
+        : DEFAULT_PORTAL
+    }/${hash}`
+  ).then((res) => res.json())
 
 export const getSkylinkPublicShareFile = (arrApps) => {
-  const strArrApps = JSON.stringify(arrApps);
-  return new File([strArrApps], "public" + new Date() + ".txt", { type: "text/plain", lastModified: new Date() });
+  const strArrApps = JSON.stringify(arrApps)
+  return new File([strArrApps], `public${new Date()}.txt`, {
+    type: "text/plain",
+    lastModified: new Date(),
+  })
 }
 
 export const savePublicSpace = async (publicHash, inMemObj) => {
-  const publicHashData = await getPublicApps(publicHash);
-  const skappListToSave = getAllPublicApps(publicHashData.data, inMemObj.addedSkapps, inMemObj.deletedSkapps);
-  publicHashData.history[publicHashData.history.length - 1].skylink = publicHash;
+  const publicHashData = await getPublicApps(publicHash)
+  const skappListToSave = getAllPublicApps(
+    publicHashData.data,
+    inMemObj.addedSkapps,
+    inMemObj.deletedSkapps
+  )
+  publicHashData.history[publicHashData.history.length - 1].skylink = publicHash
   publicHashData.history.push({
-    creationDate: new Date()
-  });
-  publicHashData.data = skappListToSave;
-  const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
-  const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+    creationDate: new Date(),
+  })
+  publicHashData.data = skappListToSave
+  const skylinkListFile = getSkylinkPublicShareFile(publicHashData)
+  const portal =
+    document.location.origin.indexOf("localhost") === -1
+      ? document.location.origin
+      : DEFAULT_PORTAL
+  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile)
   if (uploadedContent) {
     return {
-      skylink: parseSkylink(uploadedContent)
-    };
+      skylink: parseSkylink(uploadedContent),
+    }
   }
-  return null;
-};
-
-/** Start : Skynet Methods **/
-const getPortal = () => {
-  let skynetPortal = store.getState().snUserSetting?.setting?.portal;
-  skynetPortal = (skynetPortal && skynetPortal.trim() !== "") ? skynetPortal : DEFAULT_PORTAL;
-  return skynetPortal;
+  return null
 }
 
-export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, options) => {
+/** Start : Skynet Methods * */
+const getPortal = () => {
+  let skynetPortal = store.getState().snUserSetting?.setting?.portal
+  skynetPortal =
+    skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
+  return skynetPortal
+}
+
+export const setJSONFile = async (
+  publicKey,
+  privateKey,
+  fileKey,
+  fileData,
+  options
+) => {
   if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
     try {
-      await setJSONinDB(fileKey, fileData);
-      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
-      store.dispatch(setIsDataOutOfSync(true)); // set value is store
-      return true;
+      await setJSONinDB(fileKey, fileData)
+      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true)
+      store.dispatch(setIsDataOutOfSync(true)) // set value is store
+      return true
+    } catch (error) {
+      // setErrorMessage(error.message);
+      return false
     }
-    catch (error) {
-      //setErrorMessage(error.message);
-      return false;
-    }
-  }
-  else {
+  } else {
     try {
-      const skynetClient = new SkynetClient(getPortal());
+      const skynetClient = new SkynetClient(getPortal())
       if (publicKey == null || privateKey == null) {
-        throw new Error("Invalid Keys");
+        throw new Error("Invalid Keys")
       }
-      const registryEntry = await getRegistry(publicKey, fileKey); // I think we dont neeed to do this. SDK is doing it for us.
-      let revision = (registryEntry ? registryEntry.revision : 0) + 1;
+      const registryEntry = await getRegistry(publicKey, fileKey) // I think we dont neeed to do this. SDK is doing it for us.
+      const revision = (registryEntry ? registryEntry.revision : 0) + 1
       // create linked list to track history
       if (options.historyflag == true) {
-        let skylink = registryEntry ? registryEntry.data : null;
-        fileData.prevSkylink = skylink;
+        const skylink = registryEntry ? registryEntry.data : null
+        fileData.prevSkylink = skylink
       }
       // // change below call to registery only
       // //const jsonObj = await getJSONFile(publicKey, fileKey, null, { getEntry: true });
@@ -108,95 +134,98 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
       //   if (fileData != null && tempFileData != null)
       //     fileData = tempFileData.push(fileData);
       // }
-      //console.log("Final JSON "+JSON.stringify(fileData));
-      let status = false;
+      // console.log("Final JSON "+JSON.stringify(fileData));
+      let status = false
       // encrypt it
       if (options?.encrypt == true) {
-        let cypherfileData = await encryptData(privateKey, publicKey, JSON.stringify(fileData));
-        status = await skynetClient.db.setJSON(privateKey, fileKey, cypherfileData);
+        const cypherfileData = await encryptData(
+          privateKey,
+          publicKey,
+          JSON.stringify(fileData)
+        )
+        status = await skynetClient.db.setJSON(privateKey, fileKey, cypherfileData)
+      } else {
+        status = await skynetClient.db.setJSON(privateKey, fileKey, fileData)
       }
-      else {
-        status = await skynetClient.db.setJSON(privateKey, fileKey, fileData);
-      }
-      //let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData);
-      //let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData); //<-- update Key Value pair for that specific pubKey
+      // let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData);
+      // let status = await skynetClient.db.setJSON(privateKey, fileKey,fileData); //<-- update Key Value pair for that specific pubKey
+    } catch (error) {
+      // setErrorMessage(error.message);
+      return false
     }
-    catch (error) {
-      //setErrorMessage(error.message);
-      return false;
-    }
-    return true;
+    return true
   }
 }
 
-export const snKeyPairFromSeed = (userSeed) => genKeyPairFromSeed(userSeed);
+export const snKeyPairFromSeed = (userSeed) => genKeyPairFromSeed(userSeed)
 
-export const snSerializeSkydbPublicKey = (publicKey) => publicKey;
+export const snSerializeSkydbPublicKey = (publicKey) => publicKey
 
-export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr;
+export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr
 
-export const getJSONFile = async (privateKey, publicKey, fileKey, encrypted, options) => {
+export const getJSONFile = async (
+  privateKey,
+  publicKey,
+  fileKey,
+  encrypted,
+  options
+) => {
   try {
     if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
       try {
-        const result = await getJSONfromDB(fileKey);
+        const result = await getJSONfromDB(fileKey)
         // decrypt it
 
-        console.log("result" + result);
-        return result;
+        console.log(`result${result}`)
+        return result
+      } catch (error) {
+        // setErrorMessage(error.message);
+        console.log(`error.message ${error.message}`)
+        return null
       }
-      catch (error) {
-        //setErrorMessage(error.message);
-        console.log("error.message " + error.message);
-        return null;
-      }
-    }
-    else {
-      const skynetClient = new SkynetClient(getPortal());
-      //Get User Public Key
+    } else {
+      const skynetClient = new SkynetClient(getPortal())
+      // Get User Public Key
       if (publicKey == null) {
-        throw new Error("Invalid Keys");
+        throw new Error("Invalid Keys")
       }
-      const entry = await skynetClient.db.getJSON(publicKey, fileKey);
+      const entry = await skynetClient.db.getJSON(publicKey, fileKey)
       if (entry) {
         if (options.getEntry) {
-          return entry;
+          return entry
         }
         // decrypt it
         if (privateKey && options?.decrypt == true) {
           // decrypt it
-          let fileData = await decryptData(privateKey, publicKey, entry.data);
-          //return entry.data;
-          return fileData;
+          const fileData = await decryptData(privateKey, publicKey, entry.data)
+          // return entry.data;
+          return fileData
         }
-        else {
-          return entry.data;
-        }
+
+        return entry.data
       }
     }
+  } catch (error) {
+    // setErrorMessage(error.message);
+    console.log(`error.message ${error.message}`)
+    return null
   }
-  catch (error) {
-    //setErrorMessage(error.message);
-    console.log("error.message " + error.message);
-    return null;
-  }
-  return null;
+  return null
 }
 
 export const getRegistry = async (publicKey, fileKey, options) => {
   try {
-    const skynetClient = new SkynetClient(getPortal());
-    //Get User Public Key
+    const skynetClient = new SkynetClient(getPortal())
+    // Get User Public Key
     if (publicKey == null) {
-      throw new Error("Invalid Keys");
+      throw new Error("Invalid Keys")
     }
-    const { entry } = await skynetClient.registry.getEntry(publicKey, fileKey);
-    return entry;
+    const { entry } = await skynetClient.registry.getEntry(publicKey, fileKey)
+    return entry
+  } catch (error) {
+    // setErrorMessage(error.message);
+    console.log(`error.message ${error.message}`)
+    return null
   }
-  catch (error) {
-    //setErrorMessage(error.message);
-    console.log("error.message " + error.message);
-    return null;
-  }
-  return null;
+  return null
 }

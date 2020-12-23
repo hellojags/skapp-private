@@ -1,84 +1,84 @@
-import { Grid, TextField } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import useStyles from "./sn.profile.style";
-import SnFooter from "../footer/sn.footer";
-import { Paper, Typography, Button, Avatar, Snackbar } from "@material-ui/core";
-import MuiAlert from '@material-ui/lab/Alert';
-import { setUserProfileAction } from "../../reducers/actions/sn.userprofile.action";
-import { getUserMasterProfileAction } from "../../reducers/actions/sn.usermasterprofile.action";
-import { getUserProfileAction } from "../../reducers/actions/sn.userprofile.action";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-import { bsSetUserAppProfile, bsGetUserMasterProfile } from "../../blockstack/blockstack-api"
-import { createEmptyErrObj } from "../new/sn.new.constants";
-import classNames from "classnames/bind";
-import SaveIcon from "@material-ui/icons/Save";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import { useForm, Controller } from "react-hook-form";
-import { addUserPubKeyInCache } from "../../api/sn.api";
-import { DEFAULT_PORTAL } from "../../sn.constants";
+import {
+  Grid,
+  TextField,
+  Paper,
+  Typography,
+  Button,
+  Avatar,
+  Snackbar,
+} from "@material-ui/core"
+import React, { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import MuiAlert from "@material-ui/lab/Alert"
+import classNames from "classnames/bind"
+import SaveIcon from "@material-ui/icons/Save"
+import { useForm, Controller } from "react-hook-form"
+import useStyles from "./sn.profile.style"
+import SnFooter from "../footer/sn.footer"
 
-const defaultValues = {
-  devName: "",
-  devGitId: "",
-  devGitRepo: "",
-  devInfo: "",
-};
+import { setUserProfileAction } from "../../reducers/actions/sn.userprofile.action"
+
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
+import { bsSetUserAppProfile } from "../../blockstack/blockstack-api"
+import { createEmptyErrObj } from "../new/sn.new.constants"
+import { addUserPubKeyInCache } from "../../api/sn.api"
+import { DEFAULT_PORTAL } from "../../sn.constants"
+
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 export default function SnProfile(props) {
   // Hooks
-  const { handleSubmit, register, reset, control, watch, errors } = useForm();
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  //const history = useHistory();
+  const { handleSubmit, register, control, errors } = useForm()
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  // const history = useHistory();
 
   // States
-  //const [userProfile, setUserProfile] = useState(null);
-  const [errorObj, setErrorObj] = useState(createEmptyErrObj());
-  //const [data, setData] = useState();
+  // const [userProfile, setUserProfile] = useState(null);
+  const [errorObj, setErrorObj] = useState(createEmptyErrObj())
+  // const [data, setData] = useState();
   // const [masterProfile, setMasterProfile] = useState({});
   const [state, setState] = React.useState({
     open: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
+    vertical: "top",
+    horizontal: "center",
+  })
 
-  const { vertical, horizontal, open } = state;
+  const { vertical, horizontal, open } = state
 
   // Store
-  const userProfile = useSelector((state) => state.snUserProfile);
-  const userMasterProfile = useSelector((state) => state.snUserMasterProfile);
-  const userSession = useSelector((state) => state.userSession);
+  const userProfile = useSelector((state) => state.snUserProfile)
+  const userMasterProfile = useSelector((state) => state.snUserMasterProfile)
+  const userSession = useSelector((state) => state.userSession)
 
   // Effects
-   useEffect(() => {
-  //   //setData(defaultValues);
-  //   // fetchProfile JSON
-  //   // If not found Initialize it and show on UI
-  //   //dispatch(getUserMasterProfileAction(userSession));
-  //   //dispatch(getUserProfileAction(userSession));
-   },[userProfile,userMasterProfile]);
+  useEffect(() => {
+    //   //setData(defaultValues);
+    //   // fetchProfile JSON
+    //   // If not found Initialize it and show on UI
+    //   //dispatch(getUserMasterProfileAction(userSession));
+    //   //dispatch(getUserProfileAction(userSession));
+  }, [userProfile, userMasterProfile])
 
   const handleClick = (newState) => () => {
-    setState({ open: true, ...newState });
-  };
+    setState({ open: true, ...newState })
+  }
 
   const handleClose = () => {
-    setState({ ...state, open: false });
-  };
+    setState({ ...state, open: false })
+  }
 
   const onSubmit = async (data) => {
-    dispatch(setLoaderDisplay(true));
-    let updatedData = { ...userProfile, ...data,lastUpdateTS: new Date()};
-    dispatch(setUserProfileAction(updatedData));
-    await bsSetUserAppProfile(userSession, updatedData);
-    await addUserPubKeyInCache({ publickey: userSession?.person?.masterPublicKey });
-    dispatch(setLoaderDisplay(false));
-    setState({ ...state, open: true});
+    dispatch(setLoaderDisplay(true))
+    const updatedData = { ...userProfile, ...data, lastUpdateTS: new Date() }
+    dispatch(setUserProfileAction(updatedData))
+    await bsSetUserAppProfile(userSession, updatedData)
+    await addUserPubKeyInCache({ publickey: userSession?.person?.masterPublicKey })
+    dispatch(setLoaderDisplay(false))
+    setState({ ...state, open: true })
     // call action to Update data
-  };
+  }
 
   return (
     <main className={classes.content}>
@@ -91,28 +91,63 @@ export default function SnProfile(props) {
           <Grid item xs={12} className={classes.main_grid_ef}>
             <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
               <Paper className={classes.tabsPaper_ef}>
-                <Typography className={classes.title1_ef}> Main Profile (Sky-ID) </Typography>
-                <Grid container spacing={2} justify="flex-start" alignItems="center" style={{ paddingTop: "15px" }}>
+                <Typography className={classes.title1_ef}>
+                  {" "}
+                  Main Profile (Sky-ID){" "}
+                </Typography>
+                <Grid
+                  container
+                  spacing={2}
+                  justify="flex-start"
+                  alignItems="center"
+                  style={{ paddingTop: "15px" }}
+                >
                   <Grid item xs={2} sm={2} md={1} lg={1}>
-                    <Avatar alt={userMasterProfile?.username} src={(DEFAULT_PORTAL + "/" + userMasterProfile.avatar)} className={classes.large} />
+                    <Avatar
+                      alt={userMasterProfile?.username}
+                      src={`${DEFAULT_PORTAL}/${userMasterProfile.avatar}`}
+                      className={classes.large}
+                    />
                   </Grid>
                   <Grid item xs={10} sm={5} md={3} lg={2}>
-                    <TextField disabled id="standard-basic" label="username" defaultValue={userMasterProfile?.username} fullWidth />
+                    <TextField
+                      disabled
+                      id="standard-basic"
+                      label="username"
+                      defaultValue={userMasterProfile?.username}
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={12} sm={5} md={3} lg={2}>
-                    <TextField disabled id="standard-basic" label="location" defaultValue={userMasterProfile?.location} fullWidth />
+                    <TextField
+                      disabled
+                      id="standard-basic"
+                      label="location"
+                      defaultValue={userMasterProfile?.location}
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={12} sm={12} md={5} lg={7}>
-                    <TextField disabled id="standard-basic" label="Aboutme" defaultValue={userMasterProfile?.aboutMe} fullWidth />
+                    <TextField
+                      disabled
+                      id="standard-basic"
+                      label="Aboutme"
+                      defaultValue={userMasterProfile?.aboutMe}
+                      fullWidth
+                    />
                   </Grid>
                 </Grid>
                 <br />
                 {/* <Divider variant="middle"/> */}
-                <Typography className={classes.title1_ef}> Developer Profile</Typography>
-                <form onSubmit={handleSubmit(onSubmit)} >
-                  <Grid container spacing={1} >
-                    <Grid item xs={12} style={{ paddingTop: "15px" }} >
-                      <Controller as={TextField}
+                <Typography className={classes.title1_ef}>
+                  {" "}
+                  Developer Profile
+                </Typography>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} style={{ paddingTop: "15px" }}>
+                      <Controller
+                        as={TextField}
                         required
                         name="devName"
                         label="Developer Name"
@@ -124,7 +159,8 @@ export default function SnProfile(props) {
                       {errors.devName && <span>This field is required</span>}
                     </Grid>
                     <Grid item xs={12}>
-                      <Controller as={TextField}
+                      <Controller
+                        as={TextField}
                         required
                         name="devGitId"
                         label="GitHub/GitLab ID"
@@ -136,7 +172,8 @@ export default function SnProfile(props) {
                       {errors.aboutme && <span>This field is required</span>}
                     </Grid>
                     <Grid item xs={12}>
-                      <Controller as={TextField}
+                      <Controller
+                        as={TextField}
                         required
                         name="devGitRepo"
                         label="Git Repository URL"
@@ -147,8 +184,9 @@ export default function SnProfile(props) {
                       />
                       {errors.git && <span>This field is required</span>}
                     </Grid>
-                    <Grid item xs={12} style ={{paddingTop: "15px"}}>
-                      <Controller as={TextField}
+                    <Grid item xs={12} style={{ paddingTop: "15px" }}>
+                      <Controller
+                        as={TextField}
                         required
                         name="devInfo"
                         label="Developer AboutMe"
@@ -157,7 +195,7 @@ export default function SnProfile(props) {
                         fullWidth
                         defaultValue={userProfile.devInfo}
                         control={control}
-                        variant ="outlined"
+                        variant="outlined"
                         inputRef={register({ required: true })}
                       />
                       {errors.git && <span>This field is required</span>}
@@ -173,7 +211,11 @@ export default function SnProfile(props) {
                         <Grid
                           item
                           xs={12}
-                          style={{ display: "flex", justifyContent: "flex-end", paddingTop: "30PX" }}
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            paddingTop: "30PX",
+                          }}
                         >
                           <Button
                             variant="contained"
@@ -207,8 +249,13 @@ export default function SnProfile(props) {
           </Grid>
         </Grid>
       </div>
-      
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={open} autoHideDuration={5000} onClose={handleClose}>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="success">
           Profile saved Successfully.
         </Alert>
@@ -222,6 +269,5 @@ export default function SnProfile(props) {
         <SnFooter />
       </div>
     </main>
-  );
+  )
 }
-

@@ -1,6 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
-
-
 const useStyles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -14,7 +11,7 @@ const useStyles = (theme) => ({
     padding: theme.spacing(3),
   },
   categoryFilterLogo: {
-    fontSize: "20px"
+    fontSize: "20px",
   },
   publicContent: {
     [theme.breakpoints.up("sm")]: {
@@ -83,7 +80,7 @@ const useStyles = (theme) => ({
     backgroundColor: theme.palette.whiteBgColor,
   },
   gallery_title: {
-    //color: theme.palette.linksColor,
+    // color: theme.palette.linksColor,
     color: `${theme.palette.primary.main}`,
     textAlign: "left",
     fontWeight: "500",
@@ -161,7 +158,6 @@ const useStyles = (theme) => ({
     marginBottom: "20px",
     background: `${theme.palette.lightGray}`,
   },
-});
+})
 
-
-export default useStyles;
+export default useStyles

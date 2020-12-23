@@ -1,26 +1,21 @@
-import React from "react";
-import CardActions from "@material-ui/core/CardActions";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import clsx from "clsx";
-import useStyles from "./sn.app-card.styles";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { withStyles } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
-import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
-import { green } from "@material-ui/core/colors";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import { APP_BG_COLOR } from "../../sn.constants";
-import { Typography } from "@material-ui/core";
-import { getCompatibleTags, DOWNLOAD } from "../../sn.constants";
-import { CATEGORY_OBJ } from "../../sn.category-constants";
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import ShareOutlinedIcon from '@material-ui/icons/ShareOutlined';
-class SnAppCardActionBtnGrp extends React.Component {
+import Chip from "@material-ui/core/Chip"
+import IconButton from "@material-ui/core/IconButton"
+import { withStyles } from "@material-ui/core/styles"
+import Tooltip from "@material-ui/core/Tooltip"
+import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined"
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline"
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined"
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder"
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined"
+import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined"
+import React from "react"
+import { CATEGORY_OBJ } from "../../sn.category-constants"
+import { getCompatibleTags } from "../../sn.constants"
+import useStyles from "./sn.app-card.styles"
 
- render() {
-    const { app, classes, source } = this.props;
+class SnAppCardActionBtnGrp extends React.Component {
+  render() {
+    const { app, classes } = this.props
     return (
       <>
         <div
@@ -31,207 +26,100 @@ class SnAppCardActionBtnGrp extends React.Component {
             flexDirection: "row",
           }}
         >
-          {(this.props.hideTags == null || !this.props.hideTags) && app.tags?.length > 0 && (
-            <>
-              {/* <div style={{ paddingLeft: 10 }}>
-                <Typography variant="span" className={classes.status}>
-                  Tags
-                  </Typography>
-              </div> */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingLeft: 10
-                }}
-              >
-                <div>
+          {(this.props.hideTags == null || !this.props.hideTags) &&
+            app.tags?.length > 0 && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingLeft: 10,
+                  }}
+                >
+                  <div>
                     {app.type != null &&
-                      getCompatibleTags(app.type).map((category, idx) => {
-                        return CATEGORY_OBJ[category] != null ? (
+                      getCompatibleTags(app.type).map((category, idx) =>
+                        CATEGORY_OBJ[category] != null ? (
                           <Chip label={category} size="small" />
-                          // CATEGORY_OBJ[category].getLogo(classes.spaceIcons)
-                        ) : (<></>)
-                      })
-                    }
+                        ) : (
+                          <></>
+                        )
+                      )}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-          {this.props.hash == null && <div style={{ marginLeft: "auto" }}>
-            {false && (this.props.hideAdd == null || this.props.hideAdd === false) && (
-              <Tooltip title="Add to other Spaces" arrow>
-                <IconButton
-                  onClick={this.props.onAdd}
-                >
-                  <AddCircleOutlineOutlinedIcon className={classes.tagEditIcon} />
-                </IconButton>
-              </Tooltip>
+              </>
             )}
-
-            <Tooltip title="Mark Favorite" arrow>
-              <IconButton
-                onClick={this.props.onFavorite}
-              >
-                <FavoriteBorderIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Share with others" arrow>
-              <IconButton
-                onClick={this.props.onShare}
-              >
-                <ShareOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            {(this.props.displayInfoBtn) && (
-            <Tooltip title="View Details" arrow>
-              <IconButton
-                onClick={this.props.onEdit}
-              >
-                <InfoOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            )}
-            {(this.props.displayEditBtn) && (
-            <Tooltip title="Edit Skapp" arrow>
-              <IconButton
-                onClick={this.props.onEdit}
-              >
-                <EditOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-             )}
-            {this.props.hideDelete === false && false && (
-              <Tooltip title="Remove from this Space" arrow>
-                <IconButton onClick={this.props.onDelete} color="secondary">
-                  <DeleteOutlineIcon className={classes.tagEditIcon} />
-                </IconButton>
-              </Tooltip>
-            )}
-
-
-
-
-          </div>}
-          {this.props.hash != null && <div style={{ marginLeft: "auto" }}>
-            {/* {false && (this.props.hideAdd == null || this.props.hideAdd === false) && (
-              <Tooltip title="Add to other Spaces" arrow>
-                <IconButton
-                  onClick={this.props.onAdd}
-                >
-                  <AddCircleOutlineOutlinedIcon className={classes.tagEditIcon} />
-                </IconButton>
-              </Tooltip>
-            )} */}
-
-            <Tooltip title="Mark Favorite" arrow>
-              <IconButton
-                onClick={this.props.onFavorite}
-              >
-                <FavoriteBorderIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Share with others" arrow>
-              <IconButton
-                onClick={this.props.onShare}
-              >
-                <ShareOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            {(this.props.displayInfoBtn) && (
-            <Tooltip title="View Details" arrow>
-              <IconButton
-                onClick={this.props.onEdit}
-              >
-                <InfoOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-            )}
-            {/* {(this.props.displayEditBtn) && (
-            <Tooltip title="Edit Skapp" arrow>
-              <IconButton
-                onClick={this.props.onEdit}
-              >
-                <EditOutlinedIcon className={classes.tagEditIcon} />
-              </IconButton>
-            </Tooltip>
-             )} */}
-            {/* {this.props.hideDelete === false && false && (
-              <Tooltip title="Remove from this Space" arrow>
-                <IconButton onClick={this.props.onDelete} color="secondary">
-                  <DeleteOutlineIcon className={classes.tagEditIcon} />
-                </IconButton>
-              </Tooltip>
-            )} */}
-          </div>}
-        </div>
-        {/* <div
-          className={clsx({
-            "card-btn-container": true,
-            "margin-auto": source === "img",
-          })}
-        >
-          {(this.props.hideTags == null || !this.props.hideTags) && app.tags?.length > 0 && (
-            <div className="card-tag-parent">
-              <div className="card-tag-container pl-20">
-                <span className="pr-2 pl-2">
-                  <b>Tags:</b>
-                </span>{" "}
-                {app.tags.map((tag, idx) => (
-                  <Chip
-                    key={idx}
-                    label={tag}
-                    variant="outlined"
-                    size="small"
-                  ></Chip>
-                ))}
-              </div>
-            </div>
-          )}
           {this.props.hash == null && (
-
-
-            <CardActions
-              disableSpacing
-              className={clsx({
-                "full-width": true,
-                "no-padding-b": source !== "img",
-                "vertical-padding-0": source === "img",
-              })}
-            >
-              <div className="margin-l-auto">
-                {(this.props.hideAdd == null || this.props.hideAdd === false) && (
+            <div style={{ marginLeft: "auto" }}>
+              {false &&
+                (this.props.hideAdd == null || this.props.hideAdd === false) && (
                   <Tooltip title="Add to other Spaces" arrow>
-                    <IconButton
-                      onClick={this.props.onAdd}
-                      style={{ color: APP_BG_COLOR }}
-                    >
-                      <AddCircleOutlineOutlinedIcon />
+                    <IconButton onClick={this.props.onAdd}>
+                      <AddCircleOutlineOutlinedIcon
+                        className={classes.tagEditIcon}
+                      />
                     </IconButton>
                   </Tooltip>
                 )}
-                <Tooltip title="Edit Skylink" arrow>
-                  <IconButton
-                    onClick={this.props.onEdit}
-                    style={{ color: APP_BG_COLOR }}
-                  >
-                    <EditOutlinedIcon />
+
+              <Tooltip title="Mark Favorite" arrow>
+                <IconButton onClick={this.props.onFavorite}>
+                  <FavoriteBorderIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share with others" arrow>
+                <IconButton onClick={this.props.onShare}>
+                  <ShareOutlinedIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+              {this.props.displayInfoBtn && (
+                <Tooltip title="View Details" arrow>
+                  <IconButton onClick={this.props.onEdit}>
+                    <InfoOutlinedIcon className={classes.tagEditIcon} />
                   </IconButton>
                 </Tooltip>
-                {this.props.hideDelete === false && (
-                  <Tooltip title="Remove from this Space" arrow>
-                    <IconButton onClick={this.props.onDelete} color="secondary">
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </div>
-            </CardActions>
+              )}
+              {this.props.displayEditBtn && (
+                <Tooltip title="Edit Skapp" arrow>
+                  <IconButton onClick={this.props.onEdit}>
+                    <EditOutlinedIcon className={classes.tagEditIcon} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {this.props.hideDelete === false && false && (
+                <Tooltip title="Remove from this Space" arrow>
+                  <IconButton onClick={this.props.onDelete} color="secondary">
+                    <DeleteOutlineIcon className={classes.tagEditIcon} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
           )}
-        </div> */}
+          {this.props.hash != null && (
+            <div style={{ marginLeft: "auto" }}>
+              <Tooltip title="Mark Favorite" arrow>
+                <IconButton onClick={this.props.onFavorite}>
+                  <FavoriteBorderIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share with others" arrow>
+                <IconButton onClick={this.props.onShare}>
+                  <ShareOutlinedIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+              {this.props.displayInfoBtn && (
+                <Tooltip title="View Details" arrow>
+                  <IconButton onClick={this.props.onEdit}>
+                    <InfoOutlinedIcon className={classes.tagEditIcon} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
+          )}
+        </div>
       </>
-    );
+    )
   }
 }
 
-export default withStyles(useStyles)(SnAppCardActionBtnGrp);
+export default withStyles(useStyles)(SnAppCardActionBtnGrp)

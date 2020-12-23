@@ -1,135 +1,100 @@
+import React, { useState, useEffect } from "react"
+import leftMenuStyles from "./sn.left-menu.styles"
+import Hidden from "@material-ui/core/Hidden"
+import { useTheme, makeStyles } from "@material-ui/core/styles"
+import Drawer from "@material-ui/core/Drawer"
+import Link from "@material-ui/core/Link"
+import List from "@material-ui/core/List"
+import Grid from "@material-ui/core/Grid"
+import AddToPhotosOutlinedIcon from "@material-ui/icons/AddToPhotosOutlined"
+import ListItem from "@material-ui/core/ListItem"
+import HistoryOutlinedIcon from "@material-ui/icons/HistoryOutlined"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import skyapplogo from "../../SkySpaces_logo.png"
+import ListItemText from "@material-ui/core/ListItemText"
+import BackupOutlinedIcon from "@material-ui/icons/BackupOutlined"
+import SnSkySpaceMenu from "./sn.skyspace-menu"
+import { NavLink, useHistory } from "react-router-dom"
 
-import React, { useState, useEffect } from "react";
-import leftMenuStyles from "./sn.left-menu.styles";
-import { AiOutlineUpload } from "react-icons/ai";
-import clsx from "clsx";
-import editDocIcon from "./images/writing.png";
-import { BiCoinStack } from "react-icons/bi";
-import { ImTree } from "react-icons/im";
-import { FaShareSquare } from "react-icons/fa";
-import BackupIcon from "@material-ui/icons/Backup";
-import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import VerticalSplitOutlinedIcon from "@material-ui/icons/VerticalSplitOutlined";
-import BookmarkIcon from "@material-ui/icons/Bookmark";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import ScreenShareIcon from "@material-ui/icons/ScreenShare";
-import WifiIcon from "@material-ui/icons/Wifi";
-import Hidden from "@material-ui/core/Hidden";
-import { withStyles, useTheme } from "@material-ui/core/styles";
-import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
-import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
-import Drawer from "@material-ui/core/Drawer";
-import { DEFAULT_PORTAL } from "../../sn.constants";
-import Link from "@material-ui/core/Link";
-import List from "@material-ui/core/List";
-import Grid from "@material-ui/core/Grid";
-import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
-import ListItem from "@material-ui/core/ListItem";
-import HistoryOutlinedIcon from "@material-ui/icons/HistoryOutlined";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import skyapplogo from "../../SkySpaces_logo.png";
-import ListItemText from "@material-ui/core/ListItemText";
-import BackupOutlinedIcon from "@material-ui/icons/BackupOutlined";
-import SnSkySpaceMenu from "./sn.skyspace-menu";
-import { NavLink } from "react-router-dom";
-import { APP_BG_COLOR } from "../../sn.constants";
-import { connect } from "react-redux";
-import builtWithSiaLogo from '../../Sia.svg';
-import {
-  mapStateToProps,
-  matchDispatcherToProps,
-} from "./sn.left-menu.container";
-import { Typography } from "@material-ui/core";
-import InnerIcon from "./images/icon.jpeg";
+import { useSelector, useDispatch } from "react-redux"
+import builtWithSiaLogo from "../../Sia.svg"
+
+import { Typography } from "@material-ui/core"
 import {
   setMobileMenuDisplay,
-  toggleMobileMenuDisplay
-} from "../../reducers/actions/sn.mobile-menu.action";
-import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
-import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
-import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
-import "./sn.topbar.css";
-import { setIsDataOutOfSync } from "../../reducers/actions/sn.isDataOutOfSync.action";
-import {
-  syncData, firstTimeUserSetup
-} from "../../blockstack/blockstack-api";
-import SnDataSync from '../datasync/sn.datasync';
-import { SUCCESS } from '../../blockstack/constants';
-import useInterval from 'react-useinterval';
-import { getJSONfromDB } from "../../db/indexedDB";
-import { IDB_IS_OUT_OF_SYNC } from '../../blockstack/constants';
-import Divider from '@material-ui/core/Divider';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import LanguageOutlinedIcon from '@material-ui/icons/LanguageOutlined';
+  toggleMobileMenuDisplay,
+} from "../../reducers/actions/sn.mobile-menu.action"
 
+import "./sn.topbar.css"
+import useInterval from "react-useinterval"
+import Divider from "@material-ui/core/Divider"
+import { APP_BG_COLOR } from "../../sn.constants"
+import { IDB_IS_OUT_OF_SYNC, SUCCESS } from "../../blockstack/constants"
+import { getJSONfromDB } from "../../db/indexedDB"
 
-const drawerWidth = 300;
+import SnDataSync from "../datasync/sn.datasync"
+import { syncData } from "../../blockstack/blockstack-api"
+import { setIsDataOutOfSync } from "../../reducers/actions/sn.isDataOutOfSync.action"
 
-const useStyles = makeStyles(leftMenuStyles);
+const drawerWidth = 300
+
+const useStyles = makeStyles(leftMenuStyles)
 
 export default function SnLeftMenu(props) {
-
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const theme = useTheme();
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const theme = useTheme()
 
   // local state
-  const [uiSyncStatus, setUiSyncStatus] = useState(null);
-  const [hideSpaceMenu, setHideSpaceMenu] = useState(true);
+  const [uiSyncStatus, setUiSyncStatus] = useState(null)
+  const [hideSpaceMenu, setHideSpaceMenu] = useState(true)
 
   // redux store state
-  const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
-  const showDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
-  const userSession = useSelector((state) => state.userSession);
-  const skyspaceList = useSelector((state) => state.snSkyspaceList);
-  const person = useSelector((state) => state.person);
-  const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
-  const snSkyspaceAppCount = useSelector((state) => state.snSkyspaceAppCount);
-  
+  const showMobileMenu = useSelector((state) => state.snShowMobileMenu)
+  const showDesktopMenu = useSelector((state) => state.snShowDesktopMenu)
+  const userSession = useSelector((state) => state.userSession)
+  const skyspaceList = useSelector((state) => state.snSkyspaceList)
+  const person = useSelector((state) => state.person)
+  const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync)
+  const snSkyspaceAppCount = useSelector((state) => state.snSkyspaceAppCount)
 
   useEffect(() => {
-    //alert("snIsDataOutOfSync "+snIsDataOutOfSync);
-    if (snIsDataOutOfSync == true) // data is out of sync and update UI status to re-render
-    {
-      setUiSyncStatus(null);//UI STatus -> 'Sync Now'
+    // alert("snIsDataOutOfSync "+snIsDataOutOfSync);
+    if (snIsDataOutOfSync == true) {
+      // data is out of sync and update UI status to re-render
+      setUiSyncStatus(null) // UI STatus -> 'Sync Now'
+    } else {
+      setUiSyncStatus("synced") // UI STatus -> 'Sync Now'
     }
-    else {
-      setUiSyncStatus('synced');//UI STatus -> 'Sync Now'
-    }
-  }, [snIsDataOutOfSync]);
+  }, [snIsDataOutOfSync])
 
   useInterval(async () => {
-    //console.log("Inside useInterval");
-    let isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC);
-    //console.log("isOutofSync "+isOutofSync);
+    // console.log("Inside useInterval");
+    const isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC)
+    // console.log("isOutofSync "+isOutofSync);
     // Your custom logic here
-    //if (false) {
+    // if (false) {
     if (snIsDataOutOfSync || isOutofSync === undefined || isOutofSync === null) {
-      setUiSyncStatus("syncing");
-      let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
-      //let status = await firstTimeUserSetup(userSession, null, null);
-      //alert("Success " + status);
-      //alert("wait")
+      setUiSyncStatus("syncing")
+      const status = await syncData(userSession, null, null) // for now skydb datakey and idb StoreName is abstracted
+      // let status = await firstTimeUserSetup(userSession, null, null);
+      // alert("Success " + status);
+      // alert("wait")
       if (status == SUCCESS) {
-        setUiSyncStatus("synced"); // Data is in sync. Update State so that components show correct status on UI
-        dispatch(setIsDataOutOfSync(false));// Data is in sync. set flag in store.
-      }
-      else {
-        setUiSyncStatus(null);
-        dispatch(setIsDataOutOfSync(true));
+        setUiSyncStatus("synced") // Data is in sync. Update State so that components show correct status on UI
+        dispatch(setIsDataOutOfSync(false)) // Data is in sync. set flag in store.
+      } else {
+        setUiSyncStatus(null)
+        dispatch(setIsDataOutOfSync(true))
       }
     }
-  }, 30000);
+  }, 30000)
 
   const postSync = async () => {
-    dispatch(setIsDataOutOfSync(true)); // Data is out of sync. Update "State" so that components show correct status on UI
+    dispatch(setIsDataOutOfSync(true)) // Data is out of sync. Update "State" so that components show correct status on UI
     // setSyncStatus("syncing");
-    // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted
     // //let status = await firstTimeUserSetup(userSession, null, null);
     // //alert("Success " + status);
     // if (status == SUCCESS) {
@@ -152,7 +117,7 @@ export default function SnLeftMenu(props) {
     //   alert("periodic sync can NOT be used !!");
     //   navigator.serviceWorker.ready.then(function(registration) {
     //     registration.periodicSync.permissionState().then(function(state) {
-    //       if (state == 'prompt') 
+    //       if (state == 'prompt')
     //       alert("showSyncRegisterUI here for permission");
     //     });
     //   });
@@ -214,28 +179,36 @@ export default function SnLeftMenu(props) {
     // });
   }
 
-  const menuBar = (isMobile) => {
-    return (
-      <React.Fragment>
-        <div className={classes.toolbar}>
-          <div className="banner-text hidden-sm-up">
-            <div className="ribbon  hidden-xs-dn"><span>ALPHA</span></div>
-            <img
-              src={skyapplogo}
-              alt="SkySpaces"
-              className="cursor-pointer hidden-sm-up center"
-              height="40"
-              width="170"
-            ></img>
+  const menuBar = (isMobile) => (
+    <>
+      <div className={classes.toolbar}>
+        <div className="banner-text hidden-sm-up">
+          <div className="ribbon  hidden-xs-dn">
+            <span>ALPHA</span>
           </div>
+          <img
+            src={skyapplogo}
+            alt="SkySpaces"
+            className="cursor-pointer hidden-sm-up center"
+            height="40"
+            width="170"
+          />
         </div>
-        <List className="left-menu-list-root">
-          <ListItem className="appstore-mobile-link hidden-sm-up">
-            <ListItemText>
-              <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
-            </ListItemText>
-          </ListItem>
-          {/* <ListItem
+      </div>
+      <List className="left-menu-list-root">
+        <ListItem className="appstore-mobile-link hidden-sm-up">
+          <ListItemText>
+            <Link
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://blog.sia.tech/own-your-space-eae33a2dbbbc"
+              style={{ color: APP_BG_COLOR }}
+            >
+              Blog
+            </Link>
+          </ListItemText>
+        </ListItem>
+        {/* <ListItem
             button
             className="appstore-mobile-link hidden-sm-up"
             onClick={() => {
@@ -252,138 +225,132 @@ export default function SnLeftMenu(props) {
             />
           </ListItem> */}
 
-          {person != null && (
-            // Mobile Left Menu
-            <>
-
-              <NavLink
-                activeClassName="active"
-                className="nav-link"
-                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
-                to="/upload"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: APP_BG_COLOR }}
-                    primary="Upload"
-                  />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                activeClassName="active"
-                className="nav-link"
-                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
-                to="/publishapp"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <AddToPhotosOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: APP_BG_COLOR }}
-                    primary="Add Skylink"
-                  />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                activeClassName="active"
-                className="nav-link"
-                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
-                to="/history"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <HistoryOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: APP_BG_COLOR }}
-                    primary="Activity History"
-                  />
-                </ListItem>
-              </NavLink>
-            </>
-          )}
+        {person != null && (
+          // Mobile Left Menu
           <>
-            {person != null && (
-              <SnSkySpaceMenu
-                isMobile={isMobile}
-                toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
-              />
-            )}
+            <NavLink
+              activeClassName="active"
+              className="nav-link"
+              onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
+              to="/upload"
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <BackupOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                </ListItemIcon>
+                <ListItemText style={{ color: APP_BG_COLOR }} primary="Upload" />
+              </ListItem>
+            </NavLink>
+            <NavLink
+              activeClassName="active"
+              className="nav-link"
+              onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
+              to="/publishapp"
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <AddToPhotosOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                </ListItemIcon>
+                <ListItemText
+                  style={{ color: APP_BG_COLOR }}
+                  primary="Add Skylink"
+                />
+              </ListItem>
+            </NavLink>
+            <NavLink
+              activeClassName="active"
+              className="nav-link"
+              onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
+              to="/history"
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <HistoryOutlinedIcon style={{ color: APP_BG_COLOR }} />
+                </ListItemIcon>
+                <ListItemText
+                  style={{ color: APP_BG_COLOR }}
+                  primary="Activity History"
+                />
+              </ListItem>
+            </NavLink>
           </>
-        </List>
-        <div className="fixfooter">
-          <div className={classes.FooterText}>
-            &copy; 2020 SkySpaces
-                            {/* <a 
-                            href="https://github.com/skynethubio/SkySpaces" 
+        )}
+        <>
+          {person != null && (
+            <SnSkySpaceMenu
+              isMobile={isMobile}
+              toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
+            />
+          )}
+        </>
+      </List>
+      <div className="fixfooter">
+        <div className={classes.FooterText}>
+          &copy; 2020 SkySpaces
+          {/* <a
+                            href="https://github.com/skynethubio/SkySpaces"
                             target="_blank"
                             rel="noopener noreferrer">
                                 <FontAwesomeIcon icon={faGithub} />
                             </a> */}
-          </div>
-          <a href="https://sia.tech/" target="_blank"
-            rel="noopener noreferrer">
-            <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
-          </a>
         </div>
-      </React.Fragment>
-    );
-  }
+        <a href="https://sia.tech/" target="_blank" rel="noopener noreferrer">
+          <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
+        </a>
+      </div>
+    </>
+  )
 
-  const drawer = (isMobile) => {
-    return (
-      <>
-        {/* <Header /> */}
-        {/* <div className="main-example">
+  const drawer = (isMobile) => (
+    <>
+      {/* <Header /> */}
+      {/* <div className="main-example">
         <div className={classes.sideNavContainer}> */}
-        {/* for section one */}
-        {isMobile && showMobileMenu && <div>
+      {/* for section one */}
+      {isMobile && showMobileMenu && (
+        <div>
           <img
             src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
             style={{ width: 200, height: 50, marginBottom: 15 }}
           />
-        </div>}
-        <div className={classes.linksStyles}>
-        <i class="fas fa-th fa-lg"></i>
-          <NavLink to="/appstore"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Skynet App Store
-            </Typography>
-          </NavLink>
         </div>
-        <div className={classes.linksStyles}>
-        <i class="fas fa-th-large fa-lg"></i>
-          <NavLink to="/myappstore"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              My App Store
-            </Typography>
-          </NavLink>
-        </div>
-      
-        <div className={classes.linksStyles}>
-        <i class="fas fa-user-plus fa-lg"></i>
-          <NavLink to="/userdiscovery"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Discover/Follow Devs
-            </Typography>
-          </NavLink>
-        </div>
+      )}
+      <div className={classes.linksStyles}>
+        <i className="fas fa-th fa-lg" />
+        <NavLink
+          to="/appstore"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Skynet App Store</Typography>
+        </NavLink>
+      </div>
+      <div className={classes.linksStyles}>
+        <i className="fas fa-th-large fa-lg" />
+        <NavLink
+          to="/myappstore"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">My App Store</Typography>
+        </NavLink>
+      </div>
 
+      <div className={classes.linksStyles}>
+        <i className="fas fa-user-plus fa-lg" />
+        <NavLink
+          to="/userdiscovery"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Discover/Follow Devs</Typography>
+        </NavLink>
+      </div>
 
-        {/* <div className={classes.linksStyles}>
+      {/* <div className={classes.linksStyles}>
           <AiOutlineUpload className={classes.iconStyling} />
           <NavLink to="/upload"
             activeClassName="active"
@@ -394,63 +361,67 @@ export default function SnLeftMenu(props) {
             </Typography>
           </NavLink>
         </div> */}
-        {/* <br/>
+      {/* <br/>
        <Divider classes={{ root: classes.dividerColor }} /> */}
-        <br/>
-        <div className={classes.linksStyles}>
-          <span>
-            <Typography className={classes.developerTitle} variant="span" style={{ paddingLeft: "25px", fontSize:"18px" , fontWeight: "500" }}>
-              Developer's Section
-              </Typography>
-          </span>
-        </div>
-        <div className={classes.linksStyles}>
-          {/* <PersonOutlineIcon className={classes.iconStyling} /> */}
-          <i class="far fa-address-card fa-lg"></i>
-          <NavLink to="/profile"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Profile
-            </Typography>
-          </NavLink>
-        </div>
-        <div className={classes.linksStyles}>
-          <i class="fas fa-bullhorn fa-lg"></i>
-          <NavLink to="/publishapp"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Publish App
-            </Typography>
-          </NavLink>
-        </div>
-        <div className={classes.linksStyles}>
-        <i class="fas fa-th-list fa-lg"></i>
-          <NavLink to="/skyspace/publishedapps"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Manage Published Apps
-            </Typography>
-          </NavLink>
-        </div>
-        <div className={classes.linksStyles}>
-        <i class="fas fa-globe fa-lg"></i>
-          <NavLink to="/skyspace/hosting"
-            activeClassName="active"
-            onClick={() => isMobile && setMobileMenuDisplay(false)}
-            className={classes.linkName}>
-            <Typography variant="span">
-              Web Hosting
-            </Typography>
-          </NavLink>
-        </div>
+      <br />
+      <div className={classes.linksStyles}>
+        <span>
+          <Typography
+            className={classes.developerTitle}
+            variant="span"
+            style={{ paddingLeft: "25px", fontSize: "18px", fontWeight: "500" }}
+          >
+            Developer's Section
+          </Typography>
+        </span>
+      </div>
+      <div className={classes.linksStyles}>
+        {/* <PersonOutlineIcon className={classes.iconStyling} /> */}
+        <i className="far fa-address-card fa-lg" />
+        <NavLink
+          to="/profile"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Profile</Typography>
+        </NavLink>
+      </div>
+      <div className={classes.linksStyles}>
+        <i className="fas fa-bullhorn fa-lg" />
+        <NavLink
+          to="/publishapp"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Publish App</Typography>
+        </NavLink>
+      </div>
+      <div className={classes.linksStyles}>
+        <i className="fas fa-th-list fa-lg" />
+        <NavLink
+          to="/skyspace/publishedapps"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Manage Published Apps</Typography>
+        </NavLink>
+      </div>
+      <div className={classes.linksStyles}>
+        <i className="fas fa-globe fa-lg" />
+        <NavLink
+          to="/skyspace/hosting"
+          activeClassName="active"
+          onClick={() => isMobile && setMobileMenuDisplay(false)}
+          className={classes.linkName}
+        >
+          <Typography variant="span">Web Hosting</Typography>
+        </NavLink>
+      </div>
 
-        {/* <div className={classes.linksStyles}>
+      {/* <div className={classes.linksStyles}>
           <AddBoxOutlinedIcon className={classes.iconStyling} />
           <NavLink to="/userdiscovery"
             activeClassName="active"
@@ -461,7 +432,7 @@ export default function SnLeftMenu(props) {
             </Typography>
           </NavLink>
         </div> */}
-        {/* <div className={classes.linksStyles}>
+      {/* <div className={classes.linksStyles}>
           <AddBoxOutlinedIcon className={classes.iconStyling} />
           <NavLink to="/myappstore"
             activeClassName="active"
@@ -472,15 +443,13 @@ export default function SnLeftMenu(props) {
             </Typography>
           </NavLink>
         </div> */}
-        <br/>
-          <Divider />
-       <br/>
-        <div>
-        <Typography variant="span">
-          AutoSync Check Every 30 Seconds
-          </Typography>
+      <br />
+      <Divider />
+      <br />
+      <div>
+        <Typography variant="span">AutoSync Check Every 30 Seconds</Typography>
         <Grid container>
-          <SnDataSync syncStatus={uiSyncStatus}></SnDataSync>
+          <SnDataSync syncStatus={uiSyncStatus} />
           {/* <button
                   style={{ border: "1px solid #1ed660" }}
                   type="button"
@@ -490,8 +459,8 @@ export default function SnLeftMenu(props) {
                   Sync Now - {"" + snIsDataOutOfSync}
                 </button> */}
         </Grid>
-        </div>
-        {/*  <div className={classes.linksStyles}>
+      </div>
+      {/*  <div className={classes.linksStyles}>
             <img
               src={editDocIcon}
               className={classes.iconStyling}
@@ -502,65 +471,66 @@ export default function SnLeftMenu(props) {
             </Typography>
           </div> */}
 
-        <>
-          {person != null && hideSpaceMenu != true &&(
-            <SnSkySpaceMenu
-              isMobile={isMobile}
-              toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
-            />
-          )}
-        </>
-        <div style={{ paddingTop: "40px" }}>
-          <div className={classes.image_logo_sideBarfooter}>
-            <img
-              src="https://skyspaces.io/static/media/Sia.7dd07c88.svg"
-              height="60"
-              width="60"
-            />
-          </div>
-        </div>
-        {/* </div>
-      </div> */}
+      <>
+        {person != null && hideSpaceMenu != true && (
+          <SnSkySpaceMenu
+            isMobile={isMobile}
+            toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
+          />
+        )}
       </>
-    )
-  };
+      <div style={{ paddingTop: "40px" }}>
+        <div className={classes.image_logo_sideBarfooter}>
+          <img
+            src="https://skyspaces.io/static/media/Sia.7dd07c88.svg"
+            height="60"
+            width="60"
+          />
+        </div>
+      </div>
+      {/* </div>
+      </div> */}
+    </>
+  )
 
   return (
-    showDesktopMenu && person &&
-    <nav className={classes.drawer} aria-label="mailbox folders">
-      {/* matches */true ? (
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="permanent"
-            open
-          >
-            <div className="main-example">
-              <div className={classes.sideNavContainer}>
-                {drawer()}
+    showDesktopMenu &&
+    person && (
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {
+          /* matches */ true ? (
+            <Hidden xsDown implementation="css">
+              <Drawer
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                variant="permanent"
+                open
+              >
+                <div className="main-example">
+                  <div className={classes.sideNavContainer}>{drawer()}</div>
+                </div>
+              </Drawer>
+            </Hidden>
+          ) : null
+        }
+        <Hidden smUp implementation="css">
+          {showMobileMenu && (
+            <div className={classes.list} role="presentation">
+              <div
+                id="mobile-menu"
+                className={`main-example ${classes.mainExampleDrawer}`}
+              >
+                <div className={classes.sideNavContainerForDrawer}>
+                  {drawer(true)}
+                </div>
               </div>
             </div>
-          </Drawer>
+          )}
         </Hidden>
-      ) : null}
-      <Hidden smUp implementation="css">
-        {showMobileMenu && <div
-          className={classes.list}
-          role="presentation"
-        // onClick={toggleDrawer(anchor, false)}
-        // onKeyDown={toggleDrawer(anchor, false)}
-        >
-          <div id="mobile-menu" className={`main-example ${classes.mainExampleDrawer}`}>
-            <div className={classes.sideNavContainerForDrawer}>
-              {drawer(true)}
-            </div>
-          </div>
-        </div>}
-      </Hidden>
-    </nav>
-  );
+      </nav>
+    )
+  )
 
   // return (
   //   <React.Fragment>
@@ -598,7 +568,7 @@ export default function SnLeftMenu(props) {
   //     )}
   //   </React.Fragment>
   // );
-};
+}
 
 // export default withStyles(leftMenuStyles, { withTheme: true })(
 //   connect(mapStateToProps, matchDispatcherToProps)(SnLeftMenu)

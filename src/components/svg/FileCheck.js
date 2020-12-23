@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function FileCheck(props) {
   return (
@@ -13,5 +13,5 @@ export default function FileCheck(props) {
         <path d="M21 2l15 15H23a2 2 0 01-2-2V2z" fill="#57B560" />
       </g>
     </svg>
-  );
+  )
 }

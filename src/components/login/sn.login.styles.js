@@ -1,6 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { BorderBottom } from "@material-ui/icons";
-
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -85,12 +82,12 @@ const styles = (theme) => ({
   },
   description_auth: {
     paddingTop: "35px !important",
-    color: `darkgray`,
+    color: "darkgray",
     margin: "auto",
     textAlign: "center",
     fontSize: "13px",
     fontFamily: "Arial, Helvetica, sans-serif",
   },
-});
+})
 
-export default styles;
+export default styles

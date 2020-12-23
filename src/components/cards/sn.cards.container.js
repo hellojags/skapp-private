@@ -1,25 +1,25 @@
-import { bindActionCreators } from "redux";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { bindActionCreators } from "redux"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
 import {
   fetchApps,
   fetchSkyspaceApps,
   fetchAllSkylinks,
   fetchPublicApps,
-  setApps
-} from "../../reducers/actions/sn.apps.action";
-import { fetchSkyspaceDetail } from "../../reducers/actions/sn.skyspace-detail.action";
-import { setPublicHash } from "../../reducers/actions/sn.public-hash.action";
-import { setDesktopMenuState } from "../../reducers/actions/sn.desktop-menu.action";
-import { setPortalsListAction } from "../../reducers/actions/sn.portals.action";
-import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
-import { setPublicInMemory } from "../../reducers/actions/sn.public-in-memory.action";
-import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action";
+  setApps,
+} from "../../reducers/actions/sn.apps.action"
+import { fetchSkyspaceDetail } from "../../reducers/actions/sn.skyspace-detail.action"
+import { setPublicHash } from "../../reducers/actions/sn.public-hash.action"
+import { setDesktopMenuState } from "../../reducers/actions/sn.desktop-menu.action"
+import { setPortalsListAction } from "../../reducers/actions/sn.portals.action"
+import { setUploadList } from "../../reducers/actions/sn.upload-list.action"
+import { setPublicInMemory } from "../../reducers/actions/sn.public-in-memory.action"
+import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action"
 
 export function matchDispatcherToProps(dispatcher) {
   return bindActionCreators(
     {
       setLoaderDisplay,
-      fetchApps: fetchApps,
+      fetchApps,
       fetchSkyspaceApps,
       fetchAllSkylinks,
       fetchSkyspaceDetail,
@@ -30,10 +30,10 @@ export function matchDispatcherToProps(dispatcher) {
       setPublicInMemory,
       setApps,
       fetchSkyspaceAppCount,
-      setUploadList
+      setUploadList,
     },
     dispatcher
-  );
+  )
 }
 
 export function mapStateToProps(state) {
@@ -46,6 +46,6 @@ export function mapStateToProps(state) {
     snSkyspaceDetail: state.snSkyspaceDetail,
     snUserSetting: state.snUserSetting,
     snPublicInMemory: state.snPublicInMemory,
-    snPerson: state.person
-  };
+    snPerson: state.person,
+  }
 }

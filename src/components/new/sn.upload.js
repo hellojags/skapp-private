@@ -1,132 +1,120 @@
-import React, { useState, useEffect, useImperativeHandle, useRef } from "react";
-import { BsFileEarmarkArrowUp } from "react-icons/bs";
-import HttpStatus from "http-status-codes";
-import bytes from "bytes";
-import Grid from "@material-ui/core/Grid";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import classNames from "classnames";
-import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
-import imageCompression from "browser-image-compression";
-import path from "path-browserify";
-import Snackbar from "@material-ui/core/Snackbar";
-import { useDropzone } from "react-dropzone";
-import { DEFAULT_PORTAL } from "../../sn.constants";
-import { getCompressedImageFile, generateThumbnailFromVideo } from "../../sn.util";
-import "./sn.upload.scss";
-import MuiAlert from "@material-ui/lab/Alert";
-import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
-import { SkynetClient, parseSkylink } from "skynet-js";
-import UploadFile from "./UploadFile";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useImperativeHandle, useRef } from "react"
+import { BsFileEarmarkArrowUp } from "react-icons/bs"
+import HttpStatus from "http-status-codes"
+import bytes from "bytes"
+import Grid from "@material-ui/core/Grid"
+import imageCompression from "browser-image-compression"
+import path from "path-browserify"
+import Snackbar from "@material-ui/core/Snackbar"
+import { useDropzone } from "react-dropzone"
+import "./sn.upload.scss"
+import MuiAlert from "@material-ui/lab/Alert"
+import { SkynetClient, parseSkylink } from "skynet-js"
+import { useDispatch } from "react-redux"
+import { getCompressedImageFile, generateThumbnailFromVideo } from "../../sn.util"
+import { DEFAULT_PORTAL } from "../../sn.constants"
+import UploadFile from "./UploadFile"
+import { setUploadList } from "../../reducers/actions/sn.upload-list.action"
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 const SnUpload = React.forwardRef((props, ref) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const [files, setFiles] = useState([]);
-  const [uploadErr, setUploadErr] = useState(false);
-  const [isDir, setIsDir] = useState(false);
-  const apiUrl = props.portal != null ? props.portal : DEFAULT_PORTAL;
-  const gridRef = useRef();
-  const client = new SkynetClient(apiUrl);
+  const [files, setFiles] = useState([])
+  const [uploadErr, setUploadErr] = useState(false)
+  const [isDir, setIsDir] = useState(false)
+  const apiUrl = props.portal != null ? props.portal : DEFAULT_PORTAL
+  const gridRef = useRef()
+  const client = new SkynetClient(apiUrl)
 
   useEffect(() => {
-    dispatch(setUploadList(files));
-    props.onUploadProgress && props.onUploadProgress(files);
-  }, [files]);
+    dispatch(setUploadList(files))
+    props.onUploadProgress && props.onUploadProgress(files)
+  }, [files])
 
   useEffect(() => {
     if (props.directoryMode || isDir) {
-      inputRef.current.setAttribute("webkitdirectory", "true");
+      inputRef.current.setAttribute("webkitdirectory", "true")
     } else {
-      inputRef.current.removeAttribute("webkitdirectory");
+      inputRef.current.removeAttribute("webkitdirectory")
     }
-  }, [props.directoryMode, isDir]);
+  }, [props.directoryMode, isDir])
 
   const videoToImg = async (video) => {
-    let canvas = document.createElement("canvas");
-    let w = video.videoWidth;
-    let h = video.videoHeight;
-    canvas.width = w;
-    canvas.height = h;
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, w, h);
-    let file = await imageCompression.canvasToFile(canvas, "image/jpeg");
-    return file;
-  };
+    const canvas = document.createElement("canvas")
+    const w = video.videoWidth
+    const h = video.videoHeight
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext("2d")
+    ctx.drawImage(video, 0, 0, w, h)
+    const file = await imageCompression.canvasToFile(canvas, "image/jpeg")
+    return file
+  }
 
-  const getFilePath = (file) =>
-    file.webkitRelativePath || file.path || file.name;
+  const getFilePath = (file) => file.webkitRelativePath || file.path || file.name
 
   const getRelativeFilePath = (file) => {
-    const filePath = getFilePath(file);
-    const { root, dir, base } = path.parse(filePath);
-    const relative = path
-      .normalize(dir)
-      .slice(root.length)
-      .split(path.sep)
-      .slice(1);
+    const filePath = getFilePath(file)
+    const { root, dir, base } = path.parse(filePath)
+    const relative = path.normalize(dir).slice(root.length).split(path.sep).slice(1)
 
-    return path.join(...relative, base);
-  };
+    return path.join(...relative, base)
+  }
 
   const getRootDirectory = (file) => {
-    const filePath = getFilePath(file);
-    const { root, dir } = path.parse(filePath);
+    const filePath = getFilePath(file)
+    const { root, dir } = path.parse(filePath)
 
-    return path.normalize(dir).slice(root.length).split(path.sep)[0];
-  };
-
+    return path.normalize(dir).slice(root.length).split(path.sep)[0]
+  }
 
   const createUploadErrorMessage = (error) => {
     // The request was made and the server responded with a status code that falls out of the range of 2xx
     if (error.response) {
       if (error.response.data.message) {
-        return `Upload failed with error: ${error.response.data.message}`;
+        return `Upload failed with error: ${error.response.data.message}`
       }
 
-      const statusCode = error.response.status;
-      const statusText = HttpStatus.getStatusText(error.response.status);
+      const statusCode = error.response.status
+      const statusText = HttpStatus.getStatusText(error.response.status)
 
-      return `Upload failed, our server received your request but failed with status code: ${statusCode} ${statusText}`;
+      return `Upload failed, our server received your request but failed with status code: ${statusCode} ${statusText}`
     }
 
     // The request was made but no response was received. The best we can do is detect whether browser is online.
     // This will be triggered mostly if the server is offline or misconfigured and doesn't respond to valid request.
     if (error.request) {
       if (!navigator.onLine) {
-        return "You are offline, please connect to the internet and try again";
+        return "You are offline, please connect to the internet and try again"
       }
 
       // TODO: We should add a note "our team has been notified" and have some kind of notification with this error.
-      return "Server failed to respond to your request, please try again later.";
+      return "Server failed to respond to your request, please try again later."
     }
 
     // TODO: We should add a note "our team has been notified" and have some kind of notification with this error.
-    return `Critical error, please refresh the application and try again. ${error.message}`;
-  };
+    return `Critical error, please refresh the application and try again. ${error.message}`
+  }
 
   const handleDrop = async (acceptedFiles) => {
     if ((props.directoryMode || isDir) && acceptedFiles.length) {
-      const rootDir = getRootDirectory(acceptedFiles[0]); // get the file path from the first file
+      const rootDir = getRootDirectory(acceptedFiles[0]) // get the file path from the first file
 
-      acceptedFiles = [
-        { name: rootDir, directory: true, files: acceptedFiles },
-      ];
+      acceptedFiles = [{ name: rootDir, directory: true, files: acceptedFiles }]
     }
 
     setFiles((previousFiles) => [
       ...acceptedFiles.map((file) => ({ file, status: "uploading" })),
       ...previousFiles,
-    ]);
+    ])
 
     const onFileStateChange = (file, state) => {
       setFiles((previousFiles) => {
-        const index = previousFiles.findIndex((f) => f.file === file);
+        const index = previousFiles.findIndex((f) => f.file === file)
         return [
           ...previousFiles.slice(0, index),
           {
@@ -134,53 +122,53 @@ const SnUpload = React.forwardRef((props, ref) => {
             ...state,
           },
           ...previousFiles.slice(index + 1),
-        ];
-      });
-    };
+        ]
+      })
+    }
 
     await acceptedFiles.reduce(async (memo, file) => {
-      await memo;
+      await memo
       // Reject files larger than our hard limit of 1 GB with proper message
       if (file.size > bytes("1 GB")) {
         onFileStateChange(file, {
           status: "error",
           error: "This file size exceeds the maximum allowed size of 1 GB.",
-        });
+        })
 
-        return;
+        return
       }
-      props.onUploadStart && props.onUploadStart();
-      const fileType = file.type;
-      let resForCompressed;
+      props.onUploadStart && props.onUploadStart()
+      const fileType = file.type
+      let resForCompressed
       if (fileType && fileType.startsWith("image")) {
-        const compressedFile = await getCompressedImageFile(file);
-        resForCompressed = await client.uploadFile(compressedFile);
+        const compressedFile = await getCompressedImageFile(file)
+        resForCompressed = await client.uploadFile(compressedFile)
       }
       if (fileType && fileType.startsWith("video")) {
-        const videoThumbnail = await generateThumbnailFromVideo({ file });
-        resForCompressed = await client.uploadFile(videoThumbnail);
+        const videoThumbnail = await generateThumbnailFromVideo({ file })
+        resForCompressed = await client.uploadFile(videoThumbnail)
       }
       const onUploadProgress = (progress) => {
-        const status = progress === 1 ? "processing" : "uploading";
-        onFileStateChange(file, { status, progress });
-      };
+        const status = progress === 1 ? "processing" : "uploading"
+        onFileStateChange(file, { status, progress })
+      }
 
       const upload = async () => {
         try {
-          let response;
+          let response
           if (file.directory) {
             const directory = file.files.reduce(
               (acc, file) => ({ ...acc, [getRelativeFilePath(file)]: file }),
               {}
-            );
+            )
 
             response = await client.uploadDirectory(
               directory,
               encodeURIComponent(file.name),
               { onUploadProgress }
-            );
+            )
           } else {
-            response = await client.uploadFile(file, { onUploadProgress });
+            response = await client.uploadFile(file, { onUploadProgress })
           }
           await props.onUpload({
             skylink: parseSkylink(response),
@@ -189,49 +177,47 @@ const SnUpload = React.forwardRef((props, ref) => {
             thumbnail:
               resForCompressed != null ? parseSkylink(resForCompressed) : null,
             contentLength: file.size,
-          });
+          })
           onFileStateChange(file, {
             status: "complete",
             url: client.getSkylinkUrl(response),
-          });
-          props.onUploadEnd && props.onUploadEnd();
-          //send event to parent
+          })
+          props.onUploadEnd && props.onUploadEnd()
+          // send event to parent
         } catch (error) {
           if (
             error.response &&
             error.response.status === HttpStatus.TOO_MANY_REQUESTS
           ) {
-            onFileStateChange(file, { progress: -1 });
+            onFileStateChange(file, { progress: -1 })
 
             return new Promise((resolve) =>
               setTimeout(() => resolve(upload()), 3000)
-            );
+            )
           }
           onFileStateChange(file, {
             status: "error",
             error: createUploadErrorMessage(error),
-          });
-          setUploadErr(true);
-          props.onUploadEnd && props.onUploadEnd();
+          })
+          setUploadErr(true)
+          props.onUploadEnd && props.onUploadEnd()
         }
-      };
-      await upload();
-    }, undefined);
-  };
+      }
+      await upload()
+    }, undefined)
+  }
 
   useImperativeHandle(ref, () => ({
-
     handleDrop,
-    gridRef
-
-  }));
+    gridRef,
+  }))
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: handleDrop,
-  });
+  })
 
   return (
-    <React.Fragment>
+    <>
       <div className="">
         {/* <div
                className={classNames("home-upload-dropzone", {
@@ -245,10 +231,14 @@ const SnUpload = React.forwardRef((props, ref) => {
                   <CloudUploadOutlinedIcon /> Upload your {(props.directoryMode || isDir) ? "Directory" : "Files"}
                 </h3>
               </span> */}
-        <div container spacing={3} className="drpZone_main_grid"
+        <div
+          container
+          spacing={3}
+          className="drpZone_main_grid"
           {...getRootProps()}
-          ref={gridRef}>
-          <Grid item xs={12} className="MuiDropzoneArea-root" >
+          ref={gridRef}
+        >
+          <Grid item xs={12} className="MuiDropzoneArea-root">
             <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
               <div>
                 <BsFileEarmarkArrowUp
@@ -266,21 +256,22 @@ const SnUpload = React.forwardRef((props, ref) => {
                   color: "#c5c5c5",
                 }}
               >
-                Drop a {(props.directoryMode || isDir) ? "directory" : "file"} here or
-                        <span style={{ color: "#1ed660", marginLeft: "3px" }}>
+                Drop a {props.directoryMode || isDir ? "directory" : "file"} here or
+                <span style={{ color: "#1ed660", marginLeft: "3px" }}>
                   click here to upload
-                        </span>
+                </span>
               </span>
             </div>
-          </Grid></div>
+          </Grid>
+        </div>
         {/* </div> */}
         <input id="idInp" {...getInputProps()} className="offscreen" />
       </div>
       {files.length > 0 && (
         <div className="home-uploaded-files d-none">
-          {files.map((file, i) => {
-            return <UploadFile key={i} {...file} />;
-          })}
+          {files.map((file, i) => (
+            <UploadFile key={i} {...file} />
+          ))}
         </div>
       )}
       <Snackbar
@@ -292,9 +283,8 @@ const SnUpload = React.forwardRef((props, ref) => {
           Error on upload!
         </Alert>
       </Snackbar>
-    </React.Fragment>
-  );
+    </>
+  )
 })
 
-
-export default SnUpload;
+export default SnUpload

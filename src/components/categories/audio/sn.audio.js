@@ -1,10 +1,10 @@
-import React from "react";
-import SnAudioDefault from "./sn.audio-default";
-import "./Audio.css";
+import React from "react"
+import SnAudioDefault from "./sn.audio-default"
+import "./Audio.css"
 
 export default function SnAudio(props) {
-  const TagName = SnAudioDefault;
-  
+  const TagName = SnAudioDefault
+
   return (
     <TagName
       filteredApps={props.filteredApps}
@@ -20,5 +20,5 @@ export default function SnAudio(props) {
       senderId={props.senderId}
       GridUi={props.GridUi}
     />
-  );
+  )
 }

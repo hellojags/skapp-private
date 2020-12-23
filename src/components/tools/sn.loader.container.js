@@ -1,3 +1,3 @@
 export function mapStateToProps(state) {
-    return { isShowing: state.snLoader };
-} 
+  return { isShowing: state.snLoader }
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function Loading(props) {
   return (
@@ -12,5 +12,5 @@ export default function Loading(props) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

@@ -1,7 +1,8 @@
-import { bindActionCreators } from "redux";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-import { fetchHistory } from "../../reducers/actions/sn.history.action";
-import {setSkappDetail} from "../../reducers/actions/sn.app-detail.action";
+import { bindActionCreators } from "redux"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
+import { fetchHistory } from "../../reducers/actions/sn.history.action"
+import { setSkappDetail } from "../../reducers/actions/sn.app-detail.action"
+
 export function matchDispatcherToProps(dispatcher) {
   return bindActionCreators(
     {
@@ -10,7 +11,7 @@ export function matchDispatcherToProps(dispatcher) {
       setSkappDetail,
     },
     dispatcher
-  );
+  )
 }
 
 export function mapStateToProps(state) {
@@ -19,5 +20,5 @@ export function mapStateToProps(state) {
     history: state.snHistory,
     person: state.person,
     skyapp: state.snAppDetail,
-  };
+  }
 }

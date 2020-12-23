@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function Folder(props) {
   return (
@@ -11,5 +11,5 @@ export default function Folder(props) {
         fillRule="evenodd"
       />
     </svg>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default function Copy(props) {
   return (
@@ -12,5 +12,5 @@ export default function Copy(props) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import React from "react";
-import SnImagesDefault from "./sn.images-default";
+import React from "react"
+import SnImagesDefault from "./sn.images-default"
 
 export default function SnImages(props) {
-  const TagName = SnImagesDefault;
+  const TagName = SnImagesDefault
 
   return (
     <TagName
@@ -18,5 +18,5 @@ export default function SnImages(props) {
       hash={props.hash}
       senderId={props.senderId}
     />
-  );
+  )
 }

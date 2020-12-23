@@ -1,9 +1,9 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles"
 
 export default makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },  
+  },
   content: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${295}px)`,
@@ -40,9 +40,9 @@ export default makeStyles((theme) => ({
     borderRadius: "10px",
   },
   linkName: {
-    //paddingLeft: 30,
+    // paddingLeft: 30,
     color: theme.palette.linksColor,
-    //textDecoration: "none",
+    // textDecoration: "none",
   },
   tabsPaper_uc: {
     padding: "0px",
@@ -74,9 +74,9 @@ export default makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontSize: "35px",
     position: "relative",
-    //bottom: "2px",
+    // bottom: "2px",
     marginRight: "10px",
-    paddingTop: "5px"
+    paddingTop: "5px",
   },
   img_name_txt: {
     fontSize: "12px",
@@ -84,4 +84,4 @@ export default makeStyles((theme) => ({
     position: "relative",
     top: "3px",
   },
-}));
+}))

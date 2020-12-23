@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles"
 
 export default makeStyles((theme) => ({
   spaceIcons: {
@@ -42,6 +42,6 @@ export default makeStyles((theme) => ({
     // boxShadow: "0px 0px 5px 8px rgba(50, 50, 50, 0.14)",
     boxShadow: "0 0 10px rgba(0,0,0,.4)",
     borderRadius: "10px",
-    backgroundColor:theme.palette.headerBgColor
+    backgroundColor: theme.palette.headerBgColor,
   },
-}));
+}))

@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import React from "react"
+import PropTypes from "prop-types"
+import AppBar from "@material-ui/core/AppBar"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import Typography from "@material-ui/core/Typography"
+import Box from "@material-ui/core/Box"
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other } = props
 
   return (
     <Typography
@@ -20,20 +20,20 @@ function TabPanel(props) {
     >
       {value === index && <Box p={3}>{children}</Box>}
     </Typography>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};
+}
 
 function a11yProps(index) {
   return {
     id: `action-tab-${index}`,
     "aria-controls": `action-tabpanel-${index}`,
-  };
+  }
 }
 
 export default function SnTabMenu(props) {
@@ -46,17 +46,12 @@ export default function SnTabMenu(props) {
         indicatorColor={props.indicatorColor ? props.indicatorColor : "primary"}
         textColor={props.textColor ? props.textColor : "primary"}
         variant={props.variant ? props.variant : "fullWidth"}
-        aria-label="action tabs example">
-        {Object.keys(props.tablist).map((key) => {
-          return (
-            <Tab
-              key={key}
-              label={props.tablist[key].label}
-              {...a11yProps(key)}
-            />
-          );
-        })}
+        aria-label="action tabs example"
+      >
+        {Object.keys(props.tablist).map((key) => (
+          <Tab key={key} label={props.tablist[key].label} {...a11yProps(key)} />
+        ))}
       </Tabs>
     </AppBar>
-  );
+  )
 }

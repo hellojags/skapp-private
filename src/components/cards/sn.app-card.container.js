@@ -1,8 +1,8 @@
-import { bindActionCreators } from "redux";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-import { fetchAppDetail } from "../../reducers/actions/sn.app-detail.action";
-import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action";
-import { fetchSkyspaceDetail } from "../../reducers/actions/sn.skyspace-detail.action";
+import { bindActionCreators } from "redux"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
+import { fetchAppDetail } from "../../reducers/actions/sn.app-detail.action"
+import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action"
+import { fetchSkyspaceDetail } from "../../reducers/actions/sn.skyspace-detail.action"
 
 export function matchDispatcherToProps(dispatcher) {
   return bindActionCreators(
@@ -10,10 +10,10 @@ export function matchDispatcherToProps(dispatcher) {
       setLoaderDisplay,
       fetchAppDetail,
       fetchSkyspaceAppCount,
-      fetchSkyspaceDetail
+      fetchSkyspaceDetail,
     },
     dispatcher
-  );
+  )
 }
 
 export function mapStateToProps(state) {
@@ -23,5 +23,5 @@ export function mapStateToProps(state) {
     snUserSetting: state.snUserSetting,
     snSkyspaceList: state.snSkyspaceList,
     userSession: state.userSession,
-  };
+  }
 }

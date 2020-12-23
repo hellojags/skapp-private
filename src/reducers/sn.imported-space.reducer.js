@@ -1,10 +1,10 @@
-import { ACT_TY_SET_IMPORTED_SPACE } from "../reducers/actions/sn.action.constants";
+import { ACT_TY_SET_IMPORTED_SPACE } from "./actions/sn.action.constants"
 
 export default (state = null, action) => {
   switch (action.type) {
     case ACT_TY_SET_IMPORTED_SPACE:
-      return action.payload;
+      return action.payload
     default:
-      return state;
+      return state
   }
-};
+}

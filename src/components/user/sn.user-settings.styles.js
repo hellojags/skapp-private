@@ -1,5 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
-
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -8,7 +6,7 @@ const styles = (theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
-  },  
+  },
   content: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${295}px)`,
@@ -18,7 +16,7 @@ const styles = (theme) => ({
     padding: theme.spacing(3),
   },
   formControl: {
-      width: "100%"
+    width: "100%",
   },
   most_main_grid_settings: {
     padding: "0px",
@@ -35,13 +33,12 @@ const styles = (theme) => ({
     paddingBottom: "40px",
     // boxShadow: "5px 5px 9px 5px #E6E6E6",
     boxShadow: "none",
-    backgroundColor:theme.palette.whiteBgColor
+    backgroundColor: theme.palette.whiteBgColor,
   },
   tabsPaper_settings: {
     padding: "0px",
     boxShadow: "none",
-    backgroundColor:theme.palette.whiteBgColor
-
+    backgroundColor: theme.palette.whiteBgColor,
   },
   settings_title: {
     color: theme.palette.linksColor,
@@ -75,7 +72,7 @@ const styles = (theme) => ({
   skynetPortal_inpt: {
     width: "90%",
     textAlign: "left",
-    borderBottom:"1px solid white"
+    borderBottom: "1px solid white",
   },
   skynetPortal_MI: {
     color: `${theme.palette.primary.main}`,
@@ -85,6 +82,6 @@ const styles = (theme) => ({
       outline: "none !important",
     },
   },
-});
+})
 
-export default styles;
+export default styles

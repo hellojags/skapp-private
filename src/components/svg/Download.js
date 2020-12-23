@@ -1,9 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from "react"
+import PropTypes from "prop-types"
 
 export default function Download({ className }) {
   return (
-    <svg className={className} viewBox="0 0 34 46" width={34} height={46} xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 34 46"
+      width={34}
+      height={46}
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g fill="none" fillRule="evenodd">
         <path
           d="M5 33H3a2 2 0 01-2-2V3a2 2 0 012-2h16l14 14v16a2 2 0 01-2 2h-2 0"
@@ -20,9 +26,9 @@ export default function Download({ className }) {
         <path d="M19 1l14 14H21a2 2 0 01-2-2V1z" fill="#171917" />
       </g>
     </svg>
-  );
+  )
 }
 
 Download.propTypes = {
   className: PropTypes.string,
-};
+}

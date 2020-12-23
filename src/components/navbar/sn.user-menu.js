@@ -1,34 +1,22 @@
-import React, { useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Icon from "@material-ui/core/Icon";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
-import Popover from "@material-ui/core/Popover";
-import Typography from "@material-ui/core/Typography";
-import ArrowDropDownSharpIcon from "@material-ui/icons/ArrowDropDownSharp";
-// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { makeStyles } from "@material-ui/core/styles";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import Box from "@material-ui/core/Box";
-import CameraAltIcon from "@material-ui/icons/CameraAlt";
-import SettingsIcon from "@material-ui/icons/Settings";
-import BackupIcon from "@material-ui/icons/Backup";
-import HistoryIcon from "@material-ui/icons/History";
-import Brightness4Icon from "@material-ui/icons/Brightness4";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import Switch from "@material-ui/core/Switch";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutPerson } from "../../reducers/actions/sn.person.action";
-import { STORAGE_DARK_MODE_KEY,BROWSER_STORAGE } from "../../sn.constants";
-import { setDarkMode } from "../../reducers/actions/sn.dark-mode.action";
-import SkyID from "skyid";
-import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
-import { clearAllfromDB } from "../../db/indexedDB";
+import React from "react"
+import Popover from "@material-ui/core/Popover"
+import Typography from "@material-ui/core/Typography"
+
+import { makeStyles } from "@material-ui/core/styles"
+import VisibilityIcon from "@material-ui/icons/Visibility"
+import Box from "@material-ui/core/Box"
+import CameraAltIcon from "@material-ui/icons/CameraAlt"
+import SettingsIcon from "@material-ui/icons/Settings"
+import ExitToAppIcon from "@material-ui/icons/ExitToApp"
+import { useHistory, Link } from "react-router-dom"
+
+import { useDispatch, useSelector } from "react-redux"
+import SkyID from "skyid"
+import { logoutPerson } from "../../reducers/actions/sn.person.action"
+import { STORAGE_DARK_MODE_KEY } from "../../sn.constants"
+import { setDarkMode } from "../../reducers/actions/sn.dark-mode.action"
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
+import { clearAllfromDB } from "../../db/indexedDB"
 
 const useStyles = makeStyles((theme) => ({
   menuTop: {
@@ -86,69 +74,67 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.linksColor,
   },
   menuBackGroundColor: {
-    backgroundColor: theme.palette.headerBgColor
-  }
-}));
+    backgroundColor: theme.palette.headerBgColor,
+  },
+}))
 
 function UserMenu(props) {
-  const { userMenu, setUserMenu } = props;
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const stPerson = useSelector((state) => state.person);
-  const stUserSession = useSelector((state) => state.userSession);
-  const stDarkMode = useSelector(state => state.snDarkMode);
-
+  const { userMenu, setUserMenu } = props
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const stPerson = useSelector((state) => state.person)
+  const stUserSession = useSelector((state) => state.userSession)
+  const stDarkMode = useSelector((state) => state.snDarkMode)
 
   const userMenuClose = () => {
-    setUserMenu(null);
-  };
+    setUserMenu(null)
+  }
   const logout = () => {
-    dispatch(setLoaderDisplay(true));
-    const skyId = new SkyID('skapp', skyidEventCallback,{ devMode: process.env.NODE_ENV !== 'production' });
-    skyId.sessionDestroy("/");
-    
-    
+    dispatch(setLoaderDisplay(true))
+    const skyId = new SkyID("skapp", skyidEventCallback, {
+      devMode: process.env.NODE_ENV !== "production",
+    })
+    skyId.sessionDestroy("/")
   }
   const skyidEventCallback = (message) => {
     switch (message) {
-        case 'login_fail':
-            console.log('Login failed');
-            break;
-        case 'login_success':
-            console.log('Login succeed!');
-            break;
-        case 'destroy':
-            console.log('Logout succeed!');
-            onSkyIdLogout(message);
-            break;
-        default:
-            console.log(message)
-            break;
+      case "login_fail":
+        console.log("Login failed")
+        break
+      case "login_success":
+        console.log("Login succeed!")
+        break
+      case "destroy":
+        console.log("Logout succeed!")
+        onSkyIdLogout(message)
+        break
+      default:
+        console.log(message)
+        break
     }
-}
-const onSkyIdLogout = async (message) => {
-  try {
-      dispatch(logoutPerson(stUserSession));
-      clearAllfromDB();
-      dispatch(setLoaderDisplay(false));
-      window.location.href = window.location.origin;
   }
-  catch (e) {
-      console.log("Error during logout process.");
-      dispatch(setLoaderDisplay(false));
+  const onSkyIdLogout = async (message) => {
+    try {
+      dispatch(logoutPerson(stUserSession))
+      clearAllfromDB()
+      dispatch(setLoaderDisplay(false))
+      window.location.href = window.location.origin
+    } catch (e) {
+      console.log("Error during logout process.")
+      dispatch(setLoaderDisplay(false))
+    }
   }
-}
   const showPublicKey = () => {
-    userMenuClose();
-    props.onShowSkyDbPublicKey();
-  };
+    userMenuClose()
+    props.onShowSkyDbPublicKey()
+  }
 
   const toggleDarkMode = (evt) => {
-    const darkMode = evt.target.checked;
-    localStorage.setItem(STORAGE_DARK_MODE_KEY, darkMode);
-    dispatch(setDarkMode(darkMode));
-  };
+    const darkMode = evt.target.checked
+    localStorage.setItem(STORAGE_DARK_MODE_KEY, darkMode)
+    dispatch(setDarkMode(darkMode))
+  }
 
   return (
     <>
@@ -183,7 +169,7 @@ const onSkyIdLogout = async (message) => {
             <Typography className={classes.userIdStyle}>Welcome</Typography>
             <div>
               <Typography className={classes.userNameStyle}>
-              {stPerson?.profile?.username}
+                {stPerson?.profile?.username}
               </Typography>
             </div>
           </div>
@@ -230,15 +216,13 @@ const onSkyIdLogout = async (message) => {
                 />
               </div>
             </div> */}
-            <div className={classes.menuListContainers}
-              onClick={showPublicKey}>
+            <div className={classes.menuListContainers} onClick={showPublicKey}>
               <VisibilityIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
                 <Typography variant="span">Show Public Key</Typography>
               </div>
             </div>
-            <div className={classes.menuListContainers}
-              onClick={logout}>
+            <div className={classes.menuListContainers} onClick={logout}>
               <ExitToAppIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
                 <Typography variant="span">Sign out</Typography>
@@ -248,7 +232,7 @@ const onSkyIdLogout = async (message) => {
         </Box>
       </Popover>
     </>
-  );
+  )
 }
 
-export default UserMenu;
+export default UserMenu
