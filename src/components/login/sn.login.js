@@ -10,9 +10,10 @@ import {
 import { connect } from "react-redux";
 import { bsGetImportedSpacesObj, bsGetSkyIDProfile, syncData, firstTimeUserSetup } from '../../blockstack/blockstack-api';
 import SkyID from "skyid";
-import { ID_PROVIDER_SKYID } from "../../sn.constants";
+import { ID_PROVIDER_SKYID, BROWSER_STORAGE} from "../../sn.constants";
 import SnLandingUploadDisclaimer from "../upload/sn.landing-upload-disclaimer";
 
+const serialize = require("serialize-javascript");
 let devMode = false;
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
     devMode = true
@@ -52,7 +53,7 @@ class snLogin extends React.Component {
         });
     }
     initializeSkyId = (opts) => {
-        this.setState({ skyid: new SkyID('Skapp', this.skyidEventCallback, opts) });
+       this.setState({ skyid: new SkyID('skapp', this.skyidEventCallback, opts)});
     }
     loginSkyID = async () => {
         this.state.skyid.sessionStart();
@@ -69,8 +70,8 @@ class snLogin extends React.Component {
                 this.onSkyIdSuccess(message);
                 break;
             case 'destroy':
-                console.log('Logout succeed!')
-                this.props.setLoaderDisplay(false);
+                console.log('Logout succeed!');
+                this.onSkyIdLogout();
                 break;
             default:
                 console.log(message)
@@ -85,13 +86,6 @@ class snLogin extends React.Component {
             const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
             userSession = { ...userSession, person: personObj };
             this.props.setUserSession(userSession);
-            // get app profile
-            this.props.getUserProfileAction(userSession);
-            this.props.getUserMasterProfileAction(userSession?.person?.masterPublicKey);
-            // get userFollowers
-            this.props.getMyFollowersAction(null);
-            // get userFollowings
-            this.props.getMyFollowingsAction(null);
             // For first time user only 
             let isFirstTime = await firstTimeUserSetup(userSession);
             if (!isFirstTime)//if not firsttime call data sync 
@@ -101,8 +95,15 @@ class snLogin extends React.Component {
             }
             this.props.setPersonGetOtherData(personObj);
             this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
+            // get app profile
+            this.props.getUserProfileAction(userSession);
+            this.props.getUserMasterProfileAction(userSession);
+            // get userFollowers
+            this.props.getMyFollowersAction(null);
+            // get userFollowings
+            this.props.getMyFollowingsAction(null);
             this.props.setLoaderDisplay(false);
-            this.props.history.push("/appstore" + this.props.location.search);
+            this.props.history.push("/appstore");
         }
         catch (error) {
             console.log("Error during login process. login failed");

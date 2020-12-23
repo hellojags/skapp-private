@@ -23,6 +23,7 @@ export function matchDispatcherToProps(dispatcher){
         toggleMobileMenuDisplay,
         setUserSession,
         setPerson,
+        logoutPerson,
         setPersonGetOtherData,
         setImportedSpace,
         setPublicHash,

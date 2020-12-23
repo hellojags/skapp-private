@@ -24,8 +24,11 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutPerson } from "../../reducers/actions/sn.person.action";
-import { STORAGE_DARK_MODE_KEY } from "../../sn.constants";
+import { STORAGE_DARK_MODE_KEY,BROWSER_STORAGE } from "../../sn.constants";
 import { setDarkMode } from "../../reducers/actions/sn.dark-mode.action";
+import SkyID from "skyid";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { clearAllfromDB } from "../../db/indexedDB";
 
 const useStyles = makeStyles((theme) => ({
   menuTop: {
@@ -96,14 +99,46 @@ function UserMenu(props) {
   const stUserSession = useSelector((state) => state.userSession);
   const stDarkMode = useSelector(state => state.snDarkMode);
 
+
   const userMenuClose = () => {
     setUserMenu(null);
   };
-
   const logout = () => {
-    dispatch(logoutPerson(stUserSession));
+    dispatch(setLoaderDisplay(true));
+    const skyId = new SkyID('skapp', skyidEventCallback,{ devMode: process.env.NODE_ENV !== 'production' });
+    skyId.sessionDestroy("/");
+    
+    
   }
-
+  const skyidEventCallback = (message) => {
+    switch (message) {
+        case 'login_fail':
+            console.log('Login failed');
+            break;
+        case 'login_success':
+            console.log('Login succeed!');
+            break;
+        case 'destroy':
+            console.log('Logout succeed!');
+            onSkyIdLogout(message);
+            break;
+        default:
+            console.log(message)
+            break;
+    }
+}
+const onSkyIdLogout = async (message) => {
+  try {
+      dispatch(logoutPerson(stUserSession));
+      clearAllfromDB();
+      dispatch(setLoaderDisplay(false));
+      window.location.href = window.location.origin;
+  }
+  catch (e) {
+      console.log("Error during logout process.");
+      dispatch(setLoaderDisplay(false));
+  }
+}
   const showPublicKey = () => {
     userMenuClose();
     props.onShowSkyDbPublicKey();
@@ -199,7 +234,7 @@ function UserMenu(props) {
               onClick={showPublicKey}>
               <VisibilityIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
-                <Typography variant="span">Show App Public Key</Typography>
+                <Typography variant="span">Show Public Key</Typography>
               </div>
             </div>
             <div className={classes.menuListContainers}

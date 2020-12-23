@@ -71,6 +71,7 @@ import { setImportedSpace } from "../../reducers/actions/sn.imported-space.actio
 import { makeStyles } from "@material-ui/core/styles";
 import useInterval from 'react-useinterval';
 import { getJSONfromDB } from "../../db/indexedDB";
+import {APPSTORE_PROVIDER_MASTER_PUBKEY} from "../../sn.constants";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -304,7 +305,9 @@ export default function SnTopBar(props) {
     evt.stopPropagation();
     if (snPublicHash != null) {
               if (searchStr == null || searchStr.trim() === "") {
-                const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+                //const allPublicApps = await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+                const allPublicApps = await bsfetchDefaultAppStore(APPSTORE_PROVIDER_MASTER_PUBKEY);
+                
                 dispatch(setApps(allPublicApps));
 
               } else {
@@ -566,16 +569,13 @@ export default function SnTopBar(props) {
               <div className="signUp-butn-main-out-div">
                 <button
                    onClick={redirectToLogin}
-                  style={{ border: "1px solid #1ed660" }}
+                  style={{ border: "1px solid #1ed660", margin: "10px" }}
                   type="button"
-                  class="btn  btn-sm butn-out-signup"
+                  class="btn btn-sm butn-out-signup"
                 >
                  Publish App
               </button>
-              </div>
-
-              <div className="login-butn-main-out-div">
-                <button
+              <button
                   onClick={redirectToLogin}
                   type="button"
                   style={{ border: "1px solid #1ed660" }}

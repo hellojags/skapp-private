@@ -55,7 +55,19 @@ export default  makeStyles((theme) =>
         fontWeight: "500",
         fontSize: "20px",
     },
-    
+    follower_title: {
+        borderRadius: "5px",
+        background: `${theme.palette.primary.main}`,
+        padding: "10px 10px 10px 10px",
+        width: "150px",
+        height: "50px",
+        fontSize: "20px",
+        fontWeight: "600",
+        paddingBottom: "30px",
+        textAlign: "center",
+        margin: "auto",
+        width: "100%"
+    },
     titleOng_ef: {
         textAlign: "left",
         color: `${theme.palette.primary.main}`,

@@ -5,30 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch index.html",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
+            "file": "${workspaceFolder}"
+        },
+        {
             "name": "Launch localhost",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         },
         {
+            "name": "Attach",
+            "type": "firefox",
+            "request": "attach"
+        },
+        {
+            "name": "Launch WebExtension",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "name": "Launch index.html",
-            "file": "${workspaceFolder}/index.html"
-        },
-        {
-            "type": "firefox",
-            "request": "attach",
-            "name": "Attach",
-            "pathMappings": [
-                {
-                    "url": "file:///Users/freya/MySpace/git/github/skynethubio/skapp-private-newUI/skapp-private/src",
-                    "path": "${workspaceFolder}/src"
-                }
-            ]
+            "addonPath": "${workspaceFolder}"
         }
     ]
 }

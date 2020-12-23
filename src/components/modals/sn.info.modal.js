@@ -10,6 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import { APP_BG_COLOR } from "../../sn.constants";
+import Typography from "@material-ui/core/Typography";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -34,6 +35,35 @@ class SnInfoModal extends React.Component {
                   />
                 </Tooltip>
               </>
+            </DialogContentText>
+          </DialogContent>
+        );
+        case 'public-keys':
+        return (
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            <Typography style={{textAlign: "left",color: "#1ed660",textAlign: "left",fontWeight: "500",fontSize: "15px", }}> Master PublicKey(SkyID): </Typography> 
+            <Typography style={{textAlign: "left",color: "red",textAlign: "left",fontWeight: "400",fontSize: "12px", }}> Use this Key for Following users </Typography> 
+            {this.props.content[0]}
+              {this.props.showClipboardCopy && (
+                <Tooltip title={this.props.clipboardCopyTooltip || "Copy Skylink to clipboard"} arrow>
+                  <FileCopyOutlinedIcon
+                    onClick={() => navigator.clipboard.writeText(this.props.content[0])}
+                    className="cursor-pointer"
+                    style={{ color: APP_BG_COLOR, paddingLeft: 5 }}
+                  />
+                </Tooltip>)}
+                <br/>
+                <br/>
+                <Typography style={{textAlign: "left",color: "#1ed660",textAlign: "left",fontWeight: "500",fontSize: "15px", }}> App PublicKey(Skapp) : </Typography> {this.props.content[1]}
+              {this.props.showClipboardCopy && (
+                <Tooltip title={this.props.clipboardCopyTooltip || "Copy Skylink to clipboard"} arrow>
+                  <FileCopyOutlinedIcon
+                    onClick={() => navigator.clipboard.writeText(this.props.content[1])}
+                    className="cursor-pointer"
+                    style={{ color: APP_BG_COLOR, paddingLeft: 5 }}
+                  />
+                </Tooltip>)}
             </DialogContentText>
           </DialogContent>
         );

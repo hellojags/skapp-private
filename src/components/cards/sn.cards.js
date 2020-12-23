@@ -72,6 +72,8 @@ import SnViewMore from "../tools/sn.view-more";
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
 import { async } from "rxjs";
 import RecipeReviewCard from "./sn.new-app-card"
+import {APPSTORE_PROVIDER_MASTER_PUBKEY, APPSTORE_PROVIDER_APP_PUBKEY} from "../../sn.constants";
+
 
 const BootstrapInput = withStyles((theme) => ({
   input: {
@@ -246,14 +248,20 @@ class SnCards extends React.Component {
     let skyappPublicKey="";
     if (category != null && category.trim() !== "") {
       skyappId = skapp.id;
-      skyappPublicKey = skapp.publicKey;
+      skyappPublicKey = skapp.appPublicKey;
     } else if (
       (skyspace != null && skyspace.trim() !== "") ||
       this.state.fetchAllSkylinks
     ) {
       skyappId = skapp.skhubId;
-      skyappPublicKey = skapp.publicKey;
+      skyappPublicKey = skapp.appPublicKey;
     }
+    else
+    {
+      skyappId = skapp.skhubId;
+      skyappPublicKey = skapp.appPublicKey;
+    }
+
     this.setState({
       goToApp: true,
       skyappId: encodeURIComponent(skyappId),
@@ -294,9 +302,8 @@ class SnCards extends React.Component {
         {
           // Default AppProvider publickey hard coded.
           // appListFromSharedSpace =await bsfetchDefaultAppStore("a625dbfa6bcb973f49b366b5ef6dd1b745dc6c97971f0e80d6d69e6122a6e26e");
-          
-          appListFromSharedSpace =await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
-          
+          //appListFromSharedSpace =await bsfetchDefaultAppStore("f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08");
+          appListFromSharedSpace =await bsfetchDefaultAppStore(APPSTORE_PROVIDER_MASTER_PUBKEY);
         }
         this.props.setLoaderDisplay(false);
         this.props.setApps(appListFromSharedSpace);
@@ -328,11 +335,14 @@ class SnCards extends React.Component {
     if (this.props.location.pathname.indexOf("imported-spaces") > -1) {
       senderId = this.props.match.params.sender;
     }
-    if (this.props.location.pathname.indexOf("/myappstore") > -1) {
+    else if (this.props.location.pathname.indexOf("/myappstore") > -1) {
       senderId = "myappstore";
     }
-    if (this.props.location.pathname.indexOf("/appstore") > -1) {
+    else if (this.props.location.pathname.indexOf("/appstore") > -1) {
       senderId = "appstore";
+    }
+    else if (this.props.location.pathname.indexOf("/public-skapps") > -1) {
+      senderId = "public-skapps";
     }
     // /skyapps/
     return senderId;
@@ -840,7 +850,11 @@ class SnCards extends React.Component {
       }
       else if(this.state.senderId != null && this.state.senderId === "appstore")
       {
-        return <Redirect to={"/providerskyapps/" + skyappId + "?source=" + source +"&publickey=f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08" }  />;
+        return <Redirect to={"/providerskyapps/" + skyappId + "?source=" + source +"&publickey="+APPSTORE_PROVIDER_APP_PUBKEY }  />;
+      }
+      else if(this.state.senderId != null && this.state.senderId === "public-skapps")
+      {
+        return <Redirect to={"/public-skappinfo/" + skyappId + "?source=" + source +"&publickey="+APPSTORE_PROVIDER_APP_PUBKEY }  />;
       }
       else {
         return <Redirect to={"/skyapps/" + skyappId + "?source=" + source }  />;

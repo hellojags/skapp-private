@@ -7,6 +7,7 @@ import { Paper, Typography, Button, Avatar, Snackbar } from "@material-ui/core";
 import MuiAlert from '@material-ui/lab/Alert';
 import { setUserProfileAction } from "../../reducers/actions/sn.userprofile.action";
 import { getUserMasterProfileAction } from "../../reducers/actions/sn.usermasterprofile.action";
+import { getUserProfileAction } from "../../reducers/actions/sn.userprofile.action";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 import { bsSetUserAppProfile, bsGetUserMasterProfile } from "../../blockstack/blockstack-api"
 import { createEmptyErrObj } from "../new/sn.new.constants";
@@ -37,7 +38,7 @@ export default function SnProfile(props) {
   //const [userProfile, setUserProfile] = useState(null);
   const [errorObj, setErrorObj] = useState(createEmptyErrObj());
   //const [data, setData] = useState();
-  const [masterProfile, setMasterProfile] = useState({});
+  // const [masterProfile, setMasterProfile] = useState({});
   const [state, setState] = React.useState({
     open: false,
     vertical: 'top',
@@ -52,12 +53,13 @@ export default function SnProfile(props) {
   const userSession = useSelector((state) => state.userSession);
 
   // Effects
-  useEffect(() => {
-    //setData(defaultValues);
-    // fetchProfile JSON
-    // If not found Initialize it and show on UI
-    dispatch(getUserMasterProfileAction(userSession?.person?.masterPublicKey));
-  }, []);
+   useEffect(() => {
+  //   //setData(defaultValues);
+  //   // fetchProfile JSON
+  //   // If not found Initialize it and show on UI
+  //   //dispatch(getUserMasterProfileAction(userSession));
+  //   //dispatch(getUserProfileAction(userSession));
+   },[userProfile,userMasterProfile]);
 
   const handleClick = (newState) => () => {
     setState({ open: true, ...newState });
@@ -69,12 +71,12 @@ export default function SnProfile(props) {
 
   const onSubmit = async (data) => {
     dispatch(setLoaderDisplay(true));
-    let updatedData = { ...userProfile, ...data };
+    let updatedData = { ...userProfile, ...data,lastUpdateTS: new Date()};
     dispatch(setUserProfileAction(updatedData));
     await bsSetUserAppProfile(userSession, updatedData);
-    await addUserPubKeyInCache({ publickey: userSession?.person?.appPublicKey });
+    await addUserPubKeyInCache({ publickey: userSession?.person?.masterPublicKey });
     dispatch(setLoaderDisplay(false));
-    setState({ open: true});
+    setState({ ...state, open: true});
     // call action to Update data
   };
 
@@ -106,7 +108,7 @@ export default function SnProfile(props) {
                 </Grid>
                 <br />
                 {/* <Divider variant="middle"/> */}
-                <Typography className={classes.title1_ef}> Developer Profile </Typography>
+                <Typography className={classes.title1_ef}> Developer Profile</Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
                   <Grid container spacing={1} >
                     <Grid item xs={12} style={{ paddingTop: "15px" }} >

@@ -78,6 +78,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.2",
+    "serialize-javascript": "^5.0.1",
+    "serialize-to-js": "^3.1.1",
     "skyid": "0.0.4",
     "skynet-js": "2.9.0",
     "styled-components": "^5.2.1",

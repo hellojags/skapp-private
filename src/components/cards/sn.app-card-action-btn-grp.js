@@ -71,14 +71,14 @@ class SnAppCardActionBtnGrp extends React.Component {
 
             <Tooltip title="Mark Favorite" arrow>
               <IconButton
-                onClick={this.props.onEdit}
+                onClick={this.props.onFavorite}
               >
                 <FavoriteBorderIcon className={classes.tagEditIcon} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Share with others" arrow>
               <IconButton
-                onClick={this.props.onEdit}
+                onClick={this.props.onShare}
               >
                 <ShareOutlinedIcon className={classes.tagEditIcon} />
               </IconButton>
@@ -112,6 +112,57 @@ class SnAppCardActionBtnGrp extends React.Component {
 
 
 
+          </div>}
+          {this.props.hash != null && <div style={{ marginLeft: "auto" }}>
+            {/* {false && (this.props.hideAdd == null || this.props.hideAdd === false) && (
+              <Tooltip title="Add to other Spaces" arrow>
+                <IconButton
+                  onClick={this.props.onAdd}
+                >
+                  <AddCircleOutlineOutlinedIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+            )} */}
+
+            <Tooltip title="Mark Favorite" arrow>
+              <IconButton
+                onClick={this.props.onFavorite}
+              >
+                <FavoriteBorderIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Share with others" arrow>
+              <IconButton
+                onClick={this.props.onShare}
+              >
+                <ShareOutlinedIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            {(this.props.displayInfoBtn) && (
+            <Tooltip title="View Details" arrow>
+              <IconButton
+                onClick={this.props.onEdit}
+              >
+                <InfoOutlinedIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+            )}
+            {/* {(this.props.displayEditBtn) && (
+            <Tooltip title="Edit Skapp" arrow>
+              <IconButton
+                onClick={this.props.onEdit}
+              >
+                <EditOutlinedIcon className={classes.tagEditIcon} />
+              </IconButton>
+            </Tooltip>
+             )} */}
+            {/* {this.props.hideDelete === false && false && (
+              <Tooltip title="Remove from this Space" arrow>
+                <IconButton onClick={this.props.onDelete} color="secondary">
+                  <DeleteOutlineIcon className={classes.tagEditIcon} />
+                </IconButton>
+              </Tooltip>
+            )} */}
           </div>}
         </div>
         {/* <div

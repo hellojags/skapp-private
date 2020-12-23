@@ -249,17 +249,17 @@ class SnAppCard extends React.Component {
 
   onFavorite = () =>
   {
-
+    alert("Sorry, this feature is work in-progress. Try after few days");
   }
 
   onShare = () =>
   {
-    
+    alert("Sorry, this feature is work in-progress. Try after few days"); 
   }
 
   onView = () =>
   {
-    
+    alert("Sorry, this feature is work in-progress. Try after few days");
   }
   
   render() {
@@ -366,6 +366,8 @@ class SnAppCard extends React.Component {
                   onLaunch={() => this.launchSkyLink(app.skylink)}
                   onDelete={() => this.removeFromSkyspace()}
                   onDownload={() => this.download(app)}
+                  onFavorite={() => this.onFavorite(app)}
+                  onShare={() => this.onShare(app)}
                 />
               </Grid>
 

@@ -22,6 +22,7 @@ import SnProfile from "../components/user/sn.profile";
 import SnLandingUpload from "../components/upload/sn.landing-upload";
 import SnUserDiscovery from "../components/user/sn.user-discovery";
 import SnFooter from "../components/footer/sn.footer";
+import {APPSTORE_PROVIDER_MASTER_PUBKEY} from "../sn.constants";
 
 const useStyles = (theme) => ({
   root: {
@@ -42,7 +43,7 @@ const SnRouter = (props) => {
       <SnLeftMenu />
       <Switch>
         <Route exact path="/">
-          <Redirect to="/public-skapps/?provider=f9ab764658a422c061020ca0f15048634636c6000f7f884b16fafe5552d2de08" />
+          <Redirect to= {"/public-skapps/?provider="+APPSTORE_PROVIDER_MASTER_PUBKEY} />
         </Route>
         {/* <Route path="/upload" component={SnMultiUpload} /> */}
         {/* <Route path="/public-upload" component={SnLandingUpload} /> */}
@@ -62,6 +63,7 @@ const SnRouter = (props) => {
         <Route path="/history" component={SnHistory} />
         <Route path="/profile" component={SnProfile} />
         <Route path="/public-skapps" component={SnCards} />
+        <Route path="/public-skappinfo/:id" component={SnNew} />
         <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
         <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
         <Route path="/cardtest" component={RecipeReviewCard} />

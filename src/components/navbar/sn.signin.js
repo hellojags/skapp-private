@@ -149,7 +149,7 @@ class SnSignin extends React.Component {
     this.setState({
       showInfoModal: true,
       //infoModalContent: snSerializeSkydbPublicKey(snKeyPairFromSeed(this.props.userSession.skydbseed).publicKey)
-      infoModalContent: this.props.person.appPublicKey
+      infoModalContent: [this.props.person.masterPublicKey,this.props.person.appPublicKey]
     });
   };
 
@@ -224,9 +224,10 @@ class SnSignin extends React.Component {
           </>
         )}
         <SnInfoModal
+          type="public-keys"
           open={this.state.showInfoModal}
           onClose={this.state.onInfoModalClose}
-          title="Skydb Public Key"
+          title="Users Public Key"
           showClipboardCopy={true}
           clipboardCopyTooltip="Copy Public Key To Clipboard"
           content={this.state.infoModalContent}

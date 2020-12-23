@@ -31,7 +31,7 @@ import { getSkylinkHeader } from "../../skynet/sn.api.skynet";
 import { parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject } from "../new/sn.new.constants";
 import SnAddSkyspaceModal from "../modals/sn.add-skyspace.modal";
-import { APP_BG_COLOR, ADD_SKYSPACE } from "../../sn.constants";
+import { APP_BG_COLOR, ADD_SKYSPACE, APPSTORE_PROVIDER_MASTER_PUBKEY} from "../../sn.constants";
 import {
   createEmptyErrObj,
   SKYLINK_TYPE_SKYLINK,
@@ -181,7 +181,22 @@ class SnNew extends React.Component {
         skyspaceForSkhubIdList: [],
         isAppOwner: true,
       });
-    } 
+    }
+    else if (this.props.location.pathname.indexOf("/public-skappinfo") > -1)  
+    {
+      const id = decodeURIComponent(this.props.match.params.id);
+      //let { publickey } = this.props.match.params;
+      // Skapp owners pubkey, it can be different thn loggedin user
+      let publickey =(new URLSearchParams(this.props.location.search)).get("publickey");
+      publickey = publickey && decodeURIComponent(publickey);
+      appId = id;
+      this.setState({
+        isRegister: false,
+        isAppOwner: false,
+        edit: false
+      });
+      this.getSkyAppDetails(id, publickey);
+    }
     else if (this.props.location.pathname.indexOf("/providerskyapps") > -1)  
     {
       const id = decodeURIComponent(this.props.match.params.id);
@@ -254,7 +269,19 @@ class SnNew extends React.Component {
       }
       return;
     }
-    else if (this.props.location.pathname.indexOf("/providerskyapps") > -1)  
+    if (this.props.location.pathname.indexOf("/public-skappinfo") > -1)  
+    {
+      const { id, sender } = this.props.match.params;
+      appId = id;
+      if (this.state.isRegister) {
+        this.setState({
+          isRegister: false,
+          edit: false,
+          isAppOwner: false,
+        });
+      }
+    }
+    if (this.props.location.pathname.indexOf("/providerskyapps") > -1)  
     {
       const { id, sender } = this.props.match.params;
       appId = id;
@@ -789,6 +816,9 @@ class SnNew extends React.Component {
 
     if (redirectToAllApps) {
       let route = "/skyspace/publishedapps";
+      if (this.props.location.pathname.indexOf("/public-skappinfo") > -1) {
+        route = "/public-skapps/?provider="+APPSTORE_PROVIDER_MASTER_PUBKEY;
+      }
       if (this.props.location.pathname.indexOf("/providerskyapps") > -1) {
         route = "/appstore";
       }
@@ -796,7 +826,6 @@ class SnNew extends React.Component {
         route = "/myappstore";
       }
       return <Redirect to={route} />;
-
     }
 
     if (!showLoader) {

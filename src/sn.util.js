@@ -1,7 +1,6 @@
 import { DEFAULT_PORTAL, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from "./sn.constants";
 import imageCompression from "browser-image-compression";
 import { getCategoryObjWithoutAll } from "./sn.category-constants";
-
 export const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();

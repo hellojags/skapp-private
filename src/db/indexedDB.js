@@ -23,7 +23,7 @@ localforage.config({
     description : 'Skynet App Store'
 });
 
-let IndexedDB4SkyDB = localforage.createInstance({storeName : IDB_STORE_NAME});
+let IndexedDB4SkyDB = localforage.createInstance({name : IDB_NAME, storeName : IDB_STORE_NAME});
 
 export const setJSONinDB = async (key,value) => {
     let result = null;
@@ -113,13 +113,19 @@ export const getAllItemsFromIDB = async (storeName) => {
     return {recordCount, keys, result};
 }
 
-export const clearAllfromDB = () => {
-    IndexedDB4SkyDB.clear().then(function() {
-        // Run this code once the database has been entirely deleted.
-        console.log('Database is now empty.');
-    }).catch(function(err) {
-        // This code runs if there were any errors
-        console.log(err);
-    });
-   
+export const clearAllfromDB = async () => {
+    await IndexedDB4SkyDB.dropInstance({
+        name        : IDB_NAME,
+        storeName : IDB_STORE_NAME,
+      }).then(function() {
+        console.log('Dropped otherStore');
+      });
+
+    // await IndexedDB4SkyDB.clear().then(function() {
+    //     // Run this code once the database has been entirely deleted.
+    //     console.log('Database is now empty.');
+    // }).catch(function(err) {
+    //     // This code runs if there were any errors
+    //     console.log(err);
+    // });
 }

@@ -3,14 +3,15 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useStyles from "./sn.profile.style";
 import SnFooter from "../footer/sn.footer";
-import { Paper, Typography, Button } from "@material-ui/core";
+import { Paper, Typography, Button,Avatar } from "@material-ui/core";
 import { setUserProfileAction } from "../../reducers/actions/sn.userprofile.action";
 import { setMyFollowersAction, getMyFollowersAction } from "../../reducers/actions/sn.myFollower.action";
 import { setMyFollowingsAction,getMyFollowingsAction } from "../../reducers/actions/sn.myFollowing.action";
 import { bsSetUserAppProfile, fetchAllUsersPubKeys, fetchUserDataByPubKey, getFollowersJSON, getFollowingsJSON, setFollowingsJSON, setFollowersJSON } from "../../blockstack/blockstack-api"
 import { createEmptyErrObj } from "../new/sn.new.constants";
 import classNames from "classnames/bind";
-import SaveIcon from "@material-ui/icons/Save";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useForm, Controller } from "react-hook-form";
 import MaterialTable from "material-table";
@@ -37,6 +38,7 @@ import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import cliTruncate from "cli-truncate";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 
 const tableIcons = {
   Add: React.forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -88,6 +90,7 @@ export default function SnUserDiscovery(props) {
   
   // fetch all users data
   const fetchUsersMasterData = async () => {
+    dispatch(setLoaderDisplay(true));
     dispatch(getMyFollowersAction(null));
     dispatch(getMyFollowingsAction(null));
     // Fetch all PublicKeys from Cache
@@ -97,21 +100,22 @@ export default function SnUserDiscovery(props) {
     // [masterKey, masterProfile, followers, followings] for all users connected with Julian at three level in tree
     // combine data and show
     
-    let userPubKeys = await fetchAllUsersPubKeys();
+    let userMasterPubKeys = await fetchAllUsersPubKeys(); //SkyID PublicKey
 
     // If PubKey is valid fetch users Profile.json, follower.json, following.json.
     let userMasterData = []
     let myFollowersPKList = (await getFollowersJSON(null)).publicKeyList;
     let myFollowingPKList = (await getFollowingsJSON(null)).publicKeyList;
-    for (let userPubKey of userPubKeys) {
-      if (userPubKey && userPubKey.length == 64) {
-        let tempUserData = await fetchUserDataByPubKey(userPubKey);
+    for (let userMasterPubKey of userMasterPubKeys) {
+      if (userMasterPubKey && userMasterPubKey.length == 64) {
+        let tempUserData = await fetchUserDataByPubKey(userMasterPubKey);
+        // tempUserData should inlcude master and app profile data combined.
         if (tempUserData)
         {
-          if (myFollowersPKList.includes(userPubKey)) {
+          if (myFollowersPKList.includes(userMasterPubKey)) {
             tempUserData.followerFlag = true;
           }
-          if (myFollowingPKList.includes(userPubKey)) {
+          if (myFollowingPKList.includes(userMasterPubKey)) {
             tempUserData.followingFlag = true;
           }
           userMasterData.push(tempUserData);
@@ -122,6 +126,7 @@ export default function SnUserDiscovery(props) {
     //console.log("userMasterData"+userMasterData);
     // Use loggedIn user's follower list to populate followerFlag
     // Prepare Data for table.
+    dispatch(setLoaderDisplay(false));
   }
 
   const fetchUsersDataBySelection = async (row) => {
@@ -155,8 +160,8 @@ export default function SnUserDiscovery(props) {
     //alert("Inside follow user" + row.publicKey);
     let newFollowings = myFollowings ? Object.assign({},myFollowings) : {publicKeyList : []};
     let newFollowingsPKList = newFollowings?.publicKeyList;
-    if (!newFollowingsPKList.includes(row.publicKey)) {
-      newFollowingsPKList.push(row.publicKey);
+    if (!newFollowingsPKList.includes(row.masterPublicKey)) {
+      newFollowingsPKList.push(row.masterPublicKey);
       await setFollowingsJSON({publicKeyList : newFollowingsPKList}); // set updated avlue in IndexedDB
       dispatch(setMyFollowingsAction({publicKeyList : newFollowingsPKList})); // Update Store
       let newJSON = [...data]; // Update UI Table State Variable "Data" for rerendering
@@ -169,8 +174,8 @@ export default function SnUserDiscovery(props) {
     let newFollowings = myFollowings ? Object.assign({},myFollowings) : {publicKeyList : []};
     let newFollowingsPKList = newFollowings?.publicKeyList;
 
-    if (newFollowingsPKList.includes(row.publicKey)) {
-      const index = newFollowingsPKList.indexOf(row.publicKey);
+    if (newFollowingsPKList.includes(row.masterPublicKey)) {
+      const index = newFollowingsPKList.indexOf(row.masterPublicKey);
       if (index > -1) {
         newFollowingsPKList.splice(index, 1);
       }
@@ -185,17 +190,22 @@ export default function SnUserDiscovery(props) {
   //   { name: 'Mehmet', appscount: 10, follower: 3, following: 3, imageUrl: 'https://avatars0.githubusercontent.com/u/7895451?s=460&v=4', followingflag: true },
   //   { name: 'Zerya Betül', appscount: 3, follower: 6, following: 4, imageUrl: 'https://avatars0.githubusercontent.com/u/7895451?s=460&v=4', followingflag: false },
   // ];
-  
   const columns = [
     {
-      title: 'Avatar', field: 'avatar', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} />
+      //title: 'Avatar', field: 'avatar', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} />
+      title: 'Avatar', field: 'avatar', render: rowData =>  <Avatar alt={rowData.username} src= {"https://siasky.net/" + rowData.avatar} className={classes.large} />
+     
     },
-    { title: 'Name', field: 'username' },
-    { title: 'No of Apps', field: 'appscount' },
-    { title: 'AboutMe', field: 'aboutme' },
-    { title: 'Git', field: 'git' },
-    { title: 'Following', field: 'following', type: 'numeric' },
-    { title: 'Follower', field: 'follower', type: 'numeric' },
+    { title: 'SkyID Username', field: 'username' },
+    { title: 'Developer name', field: 'devName' },
+    { title: 'Location', field: 'location'},
+    { title: 'Git Id', field: 'devGitId' },
+    { title: 'No of Apps', field: 'noOfPublishedApps', type: 'numeric'},
+    { title: 'Following Count', field: 'following', type: 'numeric' },
+    
+
+    //{ title: 'AboutMe', field: 'aboutme' },
+    //{ title: 'Followers Count', field: 'follower', type: 'numeric' },
     {
       title: 'Action', field: 'useraction',
       render: (rowData) => loadAvailableAction(rowData)
@@ -209,12 +219,12 @@ export default function SnUserDiscovery(props) {
       <Tooltip title="Unfollow User" arrow>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           size="small"
           type="submit"
           className={`${classes.button}  ${classes.ef_saveBtn}`}
           onClick={() => unfollowUser(rowData)}
-          startIcon={<SaveIcon />}
+          startIcon={<RemoveCircleOutlineIcon />}
         >
           Unfollow
                           </Button>
@@ -229,7 +239,7 @@ export default function SnUserDiscovery(props) {
           type="submit"
           className={`${classes.button}  ${classes.ef_saveBtn}`}
           onClick={() => followUser(rowData)}
-          startIcon={<SaveIcon />}
+          startIcon={<AddCircleOutlineIcon />}
         >
           Follow
                           </Button>
@@ -272,8 +282,14 @@ export default function SnUserDiscovery(props) {
             <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
               <Paper className={classes.tabsPaper_ef}>
                 <Typography className={classes.title1_ef}> User Discovery </Typography> <br />
-                <Typography className={classes.title1_ef}> Followers : {myFollowers?.publicKeyList?.length}</Typography> <br />
-                <Typography className={classes.title1_ef}> Followings :{myFollowings?.publicKeyList?.length} </Typography>
+                <Grid container spacing={3} style={{width: "100%", margin:"auto"}} justify="flex-start">
+                {/* <Grid item >
+                <Typography className={classes.follower_title}> Followers : {myFollowers?.publicKeyList?.length}</Typography>
+                </Grid> */}
+                <Grid item>
+                <Typography className={classes.follower_title}> Followings : {myFollowings?.publicKeyList?.length} </Typography>
+                </Grid>
+                </Grid>
                 <div
                   style={{
                     display: "flex",

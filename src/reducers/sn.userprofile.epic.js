@@ -14,7 +14,7 @@ export const snUserProfileEpic = (action$) =>
       setLoaderDisplay(true);
       return from(bsGetUserAppProfile(action.payload)).pipe(
         map((res) => {
-          console.log(res);
+          console.log("User Profile:"+res);
           setLoaderDisplay(false);
           return setUserProfileAction(res);
         })
