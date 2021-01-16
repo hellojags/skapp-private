@@ -20,11 +20,11 @@
 
   person: {
     masterPublicKey: "c1a956eb2cc4fc9c2d34c9a48eae8dba7ad89c7a57d6f55f320c07f9c1eb8ea7",
-    appSeed: "e26283c753cf0fefb577ee1d3d999c104f897127841d71343d93c0366f6aa1c3",
+    appSeed: "e26283c753cf0fefb577ee1d3d999c104f897127841d71343d93c",
     appId: "SkySpaces",
     appImg: null,
     appPublicKey: "370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d04d07f04",
-    appPrivateKey: "153032780482d8de15d0cfea062e4327f16e5d55595416fc8610325fc8affe5a370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d04d07f04",
+    appPrivateKey: "153032780482d8de15d0cfea062e4c8610325fc8affe5a370a627bc1f86a58f9d4bce067e3f23540f9bc6281532532df0aae0d",
     profile: {
       username: "skyspaces",
       did: "skyspaces",
@@ -49,7 +49,7 @@ publicAppData = { 'url': document.referrer, 'publicKey': publicKey, 'img': null 
   opts: {
     devMode: true,
   },
-  seed: "e26283c753cf0fefb577ee1d3d999c104f897127841d71343d93c0366f6aa1c3",
+  seed: "e26283c753cf0fefb577ee1d3d999c104f897127841d71343d93c0366f6aa",
   userId: "c1a956eb2cc4fc9c2d34c9a48eae8dba7ad89c7a57d6f55f320c07f9c1eb8ea7",
   url: "http://localhost:3000/",
   appImg: null,
