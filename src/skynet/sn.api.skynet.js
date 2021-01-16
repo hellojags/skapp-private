@@ -7,7 +7,7 @@ import { DEFAULT_PORTAL } from "../sn.constants"
 import { IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
 import { getAllPublicApps } from "../sn.util"
 import store from "../reducers"
-import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
+import { getJSONfromDB, setJSONinDB, IDB_STORE_SKAPP } from "../db/indexedDB"
 import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
 import { encryptData, decryptData } from "./encryption"
 
@@ -106,8 +106,8 @@ export const setJSONFile = async (
 ) => {
   if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
     try {
-      await setJSONinDB(fileKey, fileData)
-      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true)
+      await setJSONinDB(fileKey, fileData, { store: IDB_STORE_SKAPP })
+      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true, { store: IDB_STORE_SKAPP })
       store.dispatch(setIsDataOutOfSync(true)) // set value is store
       return true
     } catch (error) {
@@ -173,7 +173,7 @@ export const getJSONFile = async (
   try {
     if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
       try {
-        const result = await getJSONfromDB(fileKey)
+        const result = await getJSONfromDB(fileKey, { store: IDB_STORE_SKAPP })
         // decrypt it
 
         console.log(`result${result}`)

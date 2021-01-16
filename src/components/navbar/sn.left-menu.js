@@ -30,7 +30,7 @@ import useInterval from "react-useinterval"
 import Divider from "@material-ui/core/Divider"
 import { APP_BG_COLOR } from "../../sn.constants"
 import { IDB_IS_OUT_OF_SYNC, SUCCESS } from "../../blockstack/constants"
-import { getJSONfromDB } from "../../db/indexedDB"
+import { getJSONfromDB, IDB_STORE_SKAPP } from "../../db/indexedDB"
 
 import SnDataSync from "../datasync/sn.datasync"
 import { syncData } from "../../blockstack/blockstack-api"
@@ -71,7 +71,9 @@ export default function SnLeftMenu(props) {
 
   useInterval(async () => {
     // console.log("Inside useInterval");
-    const isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC)
+    const isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC, {
+      store: IDB_STORE_SKAPP,
+    })
     // console.log("isOutofSync "+isOutofSync);
     // Your custom logic here
     // if (false) {

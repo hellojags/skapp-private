@@ -8,7 +8,7 @@ import {
 import { setPersonGetOtherData, setPerson } from "./actions/sn.person.action"
 import { fetchSkyspaceList } from "./actions/sn.skyspace-list.action"
 import { bsSavePublicKey } from "../blockstack/blockstack-api"
-import { clearAllfromDB } from "../db/indexedDB"
+import { clearAllfromDB, IDB_STORE_SKAPP } from "../db/indexedDB"
 
 export const snPersonEpic = (action$) =>
   action$.pipe(
@@ -29,6 +29,8 @@ export const logoutPersonEpic = (action$) =>
     ofType(ACT_TY_LOGOUT_BLOCKSTACK_USER),
     switchMap((action) =>
       // return from(action.payload.signUserOut(window.location.origin)).pipe(
-      from(clearAllfromDB()).pipe(map((res) => setPerson(null)))
+      from(clearAllfromDB({ store: IDB_STORE_SKAPP })).pipe(
+        map((res) => setPerson(null))
+      )
     )
   )

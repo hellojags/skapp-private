@@ -16,7 +16,7 @@ import { logoutPerson } from "../../reducers/actions/sn.person.action"
 import { STORAGE_DARK_MODE_KEY } from "../../sn.constants"
 import { setDarkMode } from "../../reducers/actions/sn.dark-mode.action"
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
-import { clearAllfromDB } from "../../db/indexedDB"
+import { clearAllfromDB, IDB_STORE_SKAPP } from "../../db/indexedDB"
 
 const useStyles = makeStyles((theme) => ({
   menuTop: {
@@ -117,7 +117,7 @@ function UserMenu(props) {
   const onSkyIdLogout = async (message) => {
     try {
       dispatch(logoutPerson(stUserSession))
-      clearAllfromDB()
+      clearAllfromDB({ store: IDB_STORE_SKAPP })
       dispatch(setLoaderDisplay(false))
       window.location.href = window.location.origin
     } catch (e) {

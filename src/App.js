@@ -204,5 +204,4 @@ const App = () => {
     </MuiThemeProvider>
   )
 }
-
 export default App

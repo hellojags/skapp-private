@@ -6,6 +6,7 @@ import {
   getJSONfromDB,
   setAllinDB,
   setJSONinDB,
+  IDB_STORE_SKAPP,
 } from "../db/indexedDB"
 import store from "../reducers"
 import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
@@ -38,7 +39,6 @@ import {
   HISTORY_FILEPATH,
   IDB_IS_OUT_OF_SYNC,
   IDB_LAST_SYNC_REVISION_NO,
-  IDB_STORE_NAME,
   ID_PROVIDER,
   IGNORE_PATH_IN_BACKUP,
   INITIAL_DATASYNC_PREF_OBJ,
@@ -428,7 +428,9 @@ export const bsfetchPublisherAppList = async () => {
 export const firstTimeUserSetup = async (session) => {
   try {
     // (check IndexedDB and registry for any data, if no data that means firsttime user) -->
-    let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO)
+    let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO, {
+      store: IDB_STORE_SKAPP,
+    })
     if (idbLastRegistryEntry && idbLastRegistryEntry != null) {
       // if entry is present in IndexedDB user is existing user.
       return false // not firsttime user
@@ -454,12 +456,16 @@ export const firstTimeUserSetup = async (session) => {
     // call dataSync
 
     // Step1: load Initial data from InitialData.json to IndexedDB.  Metadata files (appstore, myapps, hosting)
-    await setAllinDB(dataJSON.data)
+    await setAllinDB(dataJSON.data, { store: IDB_STORE_SKAPP })
     // Step2: Create Initial entry for follower and following
     await setFollowersJSON({ publicKeyList: [] })
     await setFollowingsJSON({ publicKeyList: [] })
     // Step3: update revision number to 1
-    await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, { revision: "1" })
+    await setJSONinDB(
+      IDB_LAST_SYNC_REVISION_NO,
+      { revision: "1" },
+      { store: IDB_STORE_SKAPP }
+    )
     // Sync Data with SkyDB
     await syncData(session)
     return true // Yes, firsttime user
@@ -479,8 +485,12 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
     // check revision number
     const skyDBRevisionNo =
       registryEntry && registryEntry != "undefined" ? registryEntry.revision : 0
-    const idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO)
-    const isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC)
+    const idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO, {
+      store: IDB_STORE_SKAPP,
+    })
+    const isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC, {
+      store: IDB_STORE_SKAPP,
+    })
     const idbRevisionNo = idbLastRegistryEntry ? idbLastRegistryEntry.revision : 0
 
     // IndexedDB Out-of-Sync Scenario: If revision number is larger in SkyDB, Fetch data from SkyDB and update IndexDB
@@ -495,21 +505,25 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
           const key = Object.keys(item)[0]
           const value = item[key]
           // 2. update IndexedDB Store
-          setJSONinDB(key, value)
+          setJSONinDB(key, value, { store: IDB_STORE_SKAPP })
         })
-        await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, skyDBRevisionNo)
+        await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, skyDBRevisionNo, {
+          store: IDB_STORE_SKAPP,
+        })
       } else {
         return FAILED
       }
       // or status = CONFLICT;
       // This must be last step
-      await setJSONinDB(IDB_IS_OUT_OF_SYNC, false) // Data is in sync. set flag in Indexed DB.
+      await setJSONinDB(IDB_IS_OUT_OF_SYNC, false, { store: IDB_STORE_SKAPP }) // Data is in sync. set flag in Indexed DB.
       store.dispatch(setIsDataOutOfSync(false)) // Data is in sync. set flag in store.
     }
     // SkyDB Out-of-Sync Scenario: If revision number is larger in IndexedDB, fetch data from IndexedDB and update SkyDB
     else if (isOutofSync || parseInt(skyDBRevisionNo) < parseInt(idbRevisionNo)) {
       // Get all IndexedDB data
-      const { recordCount, keys, result } = await getAllItemsFromIDB(IDB_STORE_NAME)
+      const { recordCount, keys, result } = await getAllItemsFromIDB({
+        store: IDB_STORE_SKAPP,
+      })
       // create SkyDB JSON
       const skydbJSON = INITIAL_SKYDB_OBJ()
       skydbJSON.db = result
@@ -526,9 +540,13 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
       }
       // let skyDBData = await getFile(session, DK_IDB_SKYSPACES, { skydb: true });
       // update IndexedDB with revision number
-      await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, { revision: skyDBRevisionNo + 1 }) // we are doing plus one since we uploaded file to Skynet and revision is incremented.
+      await setJSONinDB(
+        IDB_LAST_SYNC_REVISION_NO,
+        { revision: skyDBRevisionNo + 1 },
+        { store: IDB_STORE_SKAPP }
+      ) // we are doing plus one since we uploaded file to Skynet and revision is incremented.
       // This must be last step
-      await setJSONinDB(IDB_IS_OUT_OF_SYNC, false) // Data is in sync. set flag in IDB.
+      await setJSONinDB(IDB_IS_OUT_OF_SYNC, false, { store: IDB_STORE_SKAPP }) // Data is in sync. set flag in IDB.
       store.dispatch(setIsDataOutOfSync(false)) // Data is in sync. set flag in store.
     } else {
       console.log("Data is already in sync")

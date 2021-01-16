@@ -14,7 +14,6 @@ import { parseSkylink } from "skynet-js"
 import { bsfetchDefaultAppStore, getSkylink } from "../../blockstack/blockstack-api"
 import { fetchAppsSuccess, setApps } from "../../reducers/actions/sn.apps.action"
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
-// Actions
 import { setMobileMenuDisplay } from "../../reducers/actions/sn.mobile-menu.action"
 import { APPSTORE_PROVIDER_MASTER_PUBKEY, DEFAULT_PORTAL } from "../../sn.constants"
 import { launchSkyLink } from "../../sn.util"
