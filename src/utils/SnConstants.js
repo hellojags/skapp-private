@@ -59,7 +59,7 @@ export const MUI_THEME_DARK = "dark"
 
 // From Blockstack
 
-/ File names in GAIA Storage
+// File names in GAIA Storage
 // /skhub/skylink/data/{skhubId}.json // content of "skhub.json"
 // /skhub/skylink/skylinkIdx.json
 
