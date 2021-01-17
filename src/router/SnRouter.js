@@ -15,7 +15,9 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
+    Redirect,
 } from "react-router-dom";
+import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
 const SnRouter = (props) => (
     <Router>
         <Switch>
