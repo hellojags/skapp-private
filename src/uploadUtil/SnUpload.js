@@ -12,8 +12,8 @@ import path from "path-browserify";
 import Snackbar from "@material-ui/core/Snackbar";
 import { useDropzone } from "react-dropzone";
 import { DEFAULT_PORTAL } from "../utils/SnConstants";
-import { getCompressedImageFile, generateThumbnailFromVideo } from "../utils/SnUtility";
-import "./sn.upload.scss";
+import { getCompressedImageFile, generateThumbnailFromVideo, skylinkToUrl, hashFromSkylinkUploadResponse } from "../utils/SnUtility";
+// import "./sn.upload.scss";
 import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { SkynetClient, parseSkylink } from "skynet-js";
@@ -25,7 +25,7 @@ function Alert(props) {
 }
 
 const SnUpload = React.forwardRef((props, ref) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [files, setFiles] = useState([]);
   const [uploadErr, setUploadErr] = useState(false);
@@ -183,16 +183,16 @@ const SnUpload = React.forwardRef((props, ref) => {
             response = await client.uploadFile(file, { onUploadProgress });
           }
           await props.onUpload({
-            skylink: parseSkylink(response),
+            skylink: hashFromSkylinkUploadResponse(response),
             name: file.name,
             contentType: fileType,
             thumbnail:
-              resForCompressed != null ? parseSkylink(resForCompressed) : null,
+              resForCompressed != null ? hashFromSkylinkUploadResponse(resForCompressed) : null,
             contentLength: file.size,
           });
           onFileStateChange(file, {
             status: "complete",
-            url: client.getSkylinkUrl(response),
+            url: client.getSkylinkUrl(hashFromSkylinkUploadResponse(response)),
           });
           props.onUploadEnd && props.onUploadEnd();
           //send event to parent

@@ -1,18 +1,29 @@
-import React from 'react'
+import React, { createRef, useState } from 'react';
 import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem } from '@material-ui/core'
 
-import styles from '../../assets/jss/app-details/SubmitAppStyles'
+import styles from '../../assets/jss/app-details/SubmitAppStyles';
+import "./DeploySiteStyles.css";
 import Switch from './Switch'
 // img icon
+import { BsFileEarmarkArrowUp } from "react-icons/bs";
+import SnUpload from "../../uploadUtil/SnUpload";
 import DoneIcon from '@material-ui/icons/Done'
 import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-upload-outline.svg'
-import { ReactComponent as SettingIcon } from '../../assets/img/icons/settingIconGreen.svg'
-import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg'
+import { ReactComponent as SettingIcon } from '../../assets/img/icons/settingIconGreen.svg';
+import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg';
+import { DropzoneArea } from 'material-ui-dropzone';
 const useStyles = makeStyles(styles)
 
 const DeploySite = () => {
 
-    const classes = useStyles()
+    const classes = useStyles();
+
+    const uploadEleRef = createRef();
+    const dropZoneRef = createRef();
+
+    const [isDirUpload, setIsDirUpload] = useState(false);
+
+
     return (
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
@@ -123,24 +134,52 @@ const DeploySite = () => {
 
                 <div className={classes.OneRowInput}>
                     <div >
-                        <Switch />
+                        <Switch 
+                            onChange={(evt)=>()=>setIsDirUpload(evt.target.check)}/>
                     </div>
 
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Box>
+                                <div className="d-none">
+                                <SnUpload
+                                    name="files"
+                                    ref={uploadEleRef}
+                                    directoryMode={isDirUpload}
+                                    onUpload={(obj)=>console.log(obj)}
+                                />
+
+</div>
                                 <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
-                                    <div><UploadIcon /></div>
+                                    <DropzoneArea
+                                        showPreviewsInDropzone={false}
+                                        onDrop={(files) => {
+                                            uploadEleRef.current.handleDrop(files)
+                                        }}
+                                        //  className={classes.dropZonArea}
+                                        Icon={"none"}
+                                        inputProps={{ webkitdirectory: true, mozdirectory: true }}
+                                        ref={dropZoneRef}
+                                        webkitdirectory={true}
+                                        mozdirectory={true}
+                                        maxFileSize={210000000}
+                                        // onDelete={delImg}
+                                        filesLimit={100}
+                                        showAlerts={false}
+                                        dropzoneText={
+                                            <>
+                                                <div><UploadIcon /></div>
 
-                                    <div style={{ color: '#5C757D' }}>
-                                        Drag and drop files or folder here
+                                                <div style={{ color: '#5C757D' }}>
+                                                    Drag and drop files or folder here
                                     </div>
-                                    <Button className={classes.uploadBtn}>
-                                        Select Folder
+                                                <Button className={classes.uploadBtn}>
+                                                    Select {isDirUpload ? "Folder": "Files"}
                                     </Button>
+                                            </>
+                                        }
+                                    />
                                 </div>
-
-                                <input type="text" hidden />
                             </Box>
                         </Grid>
 
