@@ -1,5 +1,6 @@
 {
-    "$type": "publishedSkapp",
+    "$type": "skapp",
+    "$subType": "published",
     "id": "SKAPP_ID",
     "version": "1",
     "content": {
@@ -55,7 +56,7 @@
             "twitter": "",
             "email": "",
             "discord": ""
-        }
+        },
     },
     "ts": 1610328319
 }
