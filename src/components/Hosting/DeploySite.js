@@ -134,22 +134,22 @@ const DeploySite = () => {
 
                 <div className={classes.OneRowInput}>
                     <div >
-                        <Switch 
-                            onChange={(evt)=>()=>setIsDirUpload(evt.target.check)}/>
+                        <Switch
+                            onChange={(evt) => () => setIsDirUpload(evt.target.check)} />
                     </div>
 
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Box>
                                 <div className="d-none">
-                                <SnUpload
-                                    name="files"
-                                    ref={uploadEleRef}
-                                    directoryMode={isDirUpload}
-                                    onUpload={(obj)=>console.log(obj)}
-                                />
+                                    <SnUpload
+                                        name="files"
+                                        ref={uploadEleRef}
+                                        directoryMode={isDirUpload}
+                                        onUpload={(obj) => console.log(obj)}
+                                    />
 
-</div>
+                                </div>
                                 <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
                                     <DropzoneArea
                                         showPreviewsInDropzone={false}
@@ -174,8 +174,8 @@ const DeploySite = () => {
                                                     Drag and drop files or folder here
                                     </div>
                                                 <Button className={classes.uploadBtn}>
-                                                    Select {isDirUpload ? "Folder": "Files"}
-                                    </Button>
+                                                    Select {isDirUpload ? "Folder" : "Files"}
+                                                </Button>
                                             </>
                                         }
                                     />
