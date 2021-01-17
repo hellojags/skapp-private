@@ -3,6 +3,7 @@
     "$subType": "published",
     "id": "SKAPP_ID",
     "version": "1",
+    "prevSkylink":"",
     "content": {
         "skappLogo": "[46 Character SKYLINK]",
         "appname": "SkyFeed",
@@ -56,7 +57,7 @@
             "twitter": "",
             "email": "",
             "discord": ""
-        },
+        }
     },
     "ts": 1610328319
 }

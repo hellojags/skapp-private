@@ -1,0 +1,11 @@
+{
+    "$type": "skapp",
+    "$subType": "comments",
+    "id": "SKAPP_ID",
+    "version": "1",
+    "prevSkylink":"",
+    "content": {
+            "comments" : "[{timestamp : comment1},{timestamp : comment1}]" // list of comments
+    },
+    "ts": 1610328319
+}

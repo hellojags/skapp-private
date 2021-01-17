@@ -1,7 +1,9 @@
 {
-    "$type": "hostedSkapp",
+    "$type": "skapp",
+    "$subType": "hosted",
     "id": "SKAPP_ID",
     "version": "1",
+    "prevSkylink":"",
     "content": {
         "storageGateway": "skynetportalUrl",
         "hns": "skyfeed",

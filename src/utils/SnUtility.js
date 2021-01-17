@@ -28,3 +28,9 @@ const getPortal = () => {
     skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
   return skynetPortal
 }
+
+// It will generate base32 url for any Skapp
+const getbase32URlForSkapp = (skylink) => {
+  let base32URL = null;
+  return base32URL;
+}

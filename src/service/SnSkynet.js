@@ -15,7 +15,7 @@ import {
 } from "./SnIndexedDB"
 import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
 import { encryptData, decryptData } from "./SnEncryption"
-import {getPortal} from '../utils/SnUtility'
+import { getPortal } from '../utils/SnUtility'
 
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB
@@ -105,15 +105,15 @@ export const getFile = async (publicKey, dataKey, options) => {
       if (options?.publicKey) {
         let tempKey = publicKey + "#" + dataKey
         // fetch content from SkyDB
-        entryObj = getJSON(options?.publicKey, dataKey, {...options, contentOnly:false});
+        entryObj = getJSON(options?.publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
-      await setJSONinIDB(tempKey, result, {store: IDB_STORE_SKYDB_CACHE,})
+        await setJSONinIDB(tempKey, result, { store: IDB_STORE_SKYDB_CACHE, })
       }
       else {
         // fetching loggedin users data from SkyDB
-        entryObj = getJSON(publicKey, dataKey, {...options, contentOnly:false});
+        entryObj = getJSON(publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
-      await setJSONinIDB(dataKey, result, {store: IDB_STORE_SKAPP,})
+        await setJSONinIDB(dataKey, result, { store: IDB_STORE_SKAPP, })
       }
       // Return data
       return entryObj.data;
@@ -162,11 +162,35 @@ export const getJSON = (publicKey, dataKey, options) => {
 }
 
 // sets JSON file in SkyDB
-export const setFile = async () => {
+export const setFile = async (publicKey, dataKey, content, options) => {
   try {
-
-  } catch (e) { 
-
+    // TODO: we shall keep skynet client in localstorage
+    const skynetClient = new SkynetClient(getPortal())
+    // fetch private key from localstorage
+    const privateKey = "";
+    // get previous skylink 
+    // create linked list to track history
+    if (options.historyflag == true) {
+      const registryEntry = await getRegistry(publicKey, dataKey)
+      //const revision = (registryEntry ? registryEntry.revision : 0) + 1
+      const skylink = registryEntry ? registryEntry.data : null
+      content.prevSkylink = skylink
+    }
+    // set new data in SkyDB with
+    let status = false
+    // encrypt it
+    if (options?.encrypt == true) {
+      const cypherContent = await encryptData(privateKey,publicKey,JSON.stringify(content))
+      status = await skynetClient.db.setJSON(privateKey, dataKey, cypherContent)
+    } else {
+      status = await skynetClient.db.setJSON(privateKey, dataKey, content)
+    }
+    await setJSONinIDB(dataKey, content, { store: IDB_STORE_SKAPP })
+    return true
+  } catch (error) {
+    // setErrorMessage(error.message);
+    console.log(`error.message ${error.message}`)
+    return false
   }
 }
 

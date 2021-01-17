@@ -28,13 +28,20 @@ export const setFollwings = (publicKeys) => {}
 
 // get my all published apps. Returns List of JSONS. if appIds (List) is empty or null, return all apps JSON 
 export const getMyPublishedApps = (appIds) => {}
-
 //Update published app data
 export const setMyPublishedApp = (appJSON) => {}
+
+// ### Apps Stats and comments Functionality ###
+
 // get apps stats - 
 export const setAppStats = (statsJSON) => {}
 // pass list of appIds to get AppStats. Fav, Viewed, liked, accessed
 export const getAppStats = (appIds) => {}
+
+// get apps comments - 
+export const setAppComments = (commentsJSON) => {}
+// pass list of appIds to get App Comments.
+export const getAppComments = (appIds) => {}
 
 // ### AppStore Functionality ###
 
@@ -51,3 +58,9 @@ export const getMyHostedApps = (appIds) => {}
 
 //Update published app data
 export const setMyHostedApp = (appJSON) => {}
+
+//set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
+export const setHNSEntry = (hnsName,skylink) => {}
+
+//get HNS URL for TXT record
+export const getHNSSkyDBURL = (hnsName) => {}
