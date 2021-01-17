@@ -3,8 +3,6 @@ import { pki, pkcs5, md } from 'node-forge';
 import randomBytes from "randombytes";
 import nacl from 'tweetnacl';
 import naclutil from 'tweetnacl-util';
-import { deriveChildSeed } from 'skynet-js';
-import { deleteData } from '../skyhub/sn.api.skyhub';
 
 let sodium: any = null;
 

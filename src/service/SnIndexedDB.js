@@ -1,22 +1,15 @@
 import localforage from "localforage"
 import { extendPrototype } from "localforage-setitems"
-import store from "../reducers"
-import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
-import { IDB_IS_OUT_OF_SYNC } from "../utils/SnConstants"
-// const IndexedDB4SkyDB = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY) ? BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY)?.IndexedDB4SkyDB : null;
-// var IndexedDB4SkyDB = localforage.createInstance();
 
-// database design
-// Database Name: Skapp
+// Database design
+// Database Name: SkyDB
 // Store Names
-// Store1 --> SkyDB: This is database that will be synched with SkyDB. maintains application metadata
-// Store2 --> AppCache: this stores apps cache and can be deleted safely. Not required to maintain in SkyDB. Think of it as Local Storage
-// Store3 --> SkynetCache: This cache will be used to store Skynet File for caching. Variable in Size per user disk space.
+// skapp : this store will be used to store loggedin users data
+// skydb_cache: This store will be used to store other users data
 
 // IndexedDB specific fields
 export const IDB_NAME = "SkyDB"
 export const IDB_STORE_SKAPP = "skapp"
-export const IDB_STORE_SKYDB_CACHE = "revisions"
 export const IDB_STORE_SKYDB_CACHE = "skydb_cache" // this store containers other users data "pubkey#datakey -> [revision, content]"
 
 extendPrototype(localforage)
@@ -25,18 +18,13 @@ localforage.config({
   driver: localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
   name: IDB_NAME,
   version: 1.0,
-  description: "Skynet App Store",
+  description: "Skynet App Store and App Hosting",
 })
 
 const IndexedDB4SkyDB = localforage.createInstance({
   name: IDB_NAME,
   storeName: IDB_STORE_SKAPP,
 })
-
-// const skydbCacheDataStoreIDB = localforage.createInstance({
-//   name: IDB_NAME,
-//   storeName: IDB_STORE_SKYDB_CACHE,
-// })
 
 const skydbCacheDataStoreIDB = localforage.createInstance({
   name: IDB_NAME,
@@ -61,8 +49,6 @@ export const setJSONinIDB = async (key, value, opts) => {
 export const setAllinIDB = async (arrayOfJson, opts) => {
   const result = null
   try {
-    // await IndexedDB4SkyDB.setItems(arrayOfJson);
-
     await arrayOfJson.forEach((item) => {
       const key = Object.keys(item)[0]
       const value = item[key]
