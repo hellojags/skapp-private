@@ -5,8 +5,12 @@ import Sidebar from './components/Sidebar/Sidebar'
 import './index.css'
 import { skappTheme } from './theme/Theme'
 import SnRouter from './router/SnRouter'
+import {
+  BrowserRouter as Router
+} from "react-router-dom";
 function App() {
   return (
+    <Router>
       <ThemeProvider theme={skappTheme}>
         <div className="App">
           <Navbar />
@@ -15,11 +19,12 @@ function App() {
               <Sidebar />
             </aside>
             <main className="app-content">
-             <SnRouter/>
+              <SnRouter />
             </main>
           </section>
         </div>
       </ThemeProvider>
+    </Router>
   )
 }
 export default App

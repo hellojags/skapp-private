@@ -19,7 +19,7 @@ import {
 } from "react-router-dom";
 import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
 const SnRouter = (props) => (
-    <Router>
+   
         <Switch>
             <Route exact path="/">
                 <Redirect
@@ -72,6 +72,6 @@ const SnRouter = (props) => (
                 <Apps />
             </Route>
         </Switch>
-    </Router>
+  
 )
 export default SnRouter
