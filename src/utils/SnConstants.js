@@ -69,8 +69,8 @@ export const MUI_THEME_DARK = "dark"
 
 // /skhub/history/data/history.json
 // /skhub/usersettings.json
-import { UserSession, AppConfig } from "blockstack"
-import { DEFAULT_PORTAL } from "../sn.constants"
+// import { UserSession, AppConfig } from "blockstack"
+// import { DEFAULT_PORTAL } from "../sn.constants"
 
 export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub"
 export const SKYID_PROFILE_PATH = "profile"
