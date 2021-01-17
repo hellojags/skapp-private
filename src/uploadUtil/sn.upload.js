@@ -6,13 +6,13 @@ import Grid from "@material-ui/core/Grid";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import classNames from "classnames";
-import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
+// import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
 import imageCompression from "browser-image-compression";
 import path from "path-browserify";
 import Snackbar from "@material-ui/core/Snackbar";
 import { useDropzone } from "react-dropzone";
-import { DEFAULT_PORTAL } from "../../sn.constants";
-import { getCompressedImageFile, generateThumbnailFromVideo } from "../../sn.util";
+import { DEFAULT_PORTAL } from "../utils/SnConstants";
+import { getCompressedImageFile, generateThumbnailFromVideo } from "../utils/SnUtility";
 import "./sn.upload.scss";
 import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
@@ -35,7 +35,7 @@ const SnUpload = React.forwardRef((props, ref) => {
   const client = new SkynetClient(apiUrl);
 
   useEffect(() => {
-    dispatch(setUploadList(files));
+    // dispatch(setUploadList(files));
     props.onUploadProgress && props.onUploadProgress(files);
   }, [files]);
 
