@@ -4,7 +4,7 @@ import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
 import './index.css'
 import { skappTheme } from './theme/Theme'
-import SnRouter from './SnRouter'
+import SnRouter from './router/SnRouter'
 function App() {
   return (
       <ThemeProvider theme={skappTheme}>
