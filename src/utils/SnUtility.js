@@ -25,10 +25,10 @@ export const getCompatibleTags = (resCategory) => {
   }
 /** Start : Skynet Methods * */
 const getPortal = () => {
-  let skynetPortal = store.getState().snUserSetting?.setting?.portal
-  skynetPortal =
-    skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
-  return skynetPortal
+  // let skynetPortal = store.getState().snUserSetting?.setting?.portal
+  // skynetPortal =
+  //   skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
+  // return skynetPortal
 }
 
 // It will generate base32 url for any Skapp
