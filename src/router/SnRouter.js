@@ -12,7 +12,6 @@ import Settings from '../components/Setting/Settings'
 import AppDetailsPage from '../components/AppDetails/AppDetailsPage'
 import DeploySite from '../components/Hosting/DeploySite'
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Redirect,
