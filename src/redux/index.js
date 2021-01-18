@@ -12,6 +12,7 @@ import SnMyFollowers from "./sn.myFollowers.reducer"
 import { snMyFollowersEpic } from "./sn.myFollowers.epic"
 import SnMyFollowings from "./sn.myFollowings.reducer"
 import { snMyFollowingsEpic } from "./sn.myFollowings.epic"
+import SnUploadListReducer from "./SnUploadList.reducer";
 
 const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   snUserMasterProfile: SnUserMasterProfile,
   snMyFollowers: SnMyFollowers,
   snMyFollowings: SnMyFollowings,
-})
+  snUploadListStore: SnUploadListReducer
+});
 
 const rootEpic = combineEpics(
   // snPersonEpic,
