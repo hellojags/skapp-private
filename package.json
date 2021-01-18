@@ -43,6 +43,8 @@
     "react-scripts": "4.0.1",
     "react-select": "^3.1.1",
     "redux": "^4.0.5",
+    "redux-observable": "^1.2.0",
+    "rxjs": "^6.6.3",
     "skyid": "0.0.4",
     "skynet-js": "^3.0.0-beta",
     "tweetnacl": "^1.0.3",
@@ -72,5 +74,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.8"
   }
 }
