@@ -18,7 +18,7 @@ const { createEpicMiddleware } = require("redux-observable")
 
 const rootReducer = combineReducers({
   snLoader: SnLoaderReducer,
-  userSession: SnUserSessionReducer,
+  // userSession: SnUserSessionReducer,
   person: SnPerson,
   snUserProfile: SnUserProfile,
   snUserMasterProfile: SnUserMasterProfile,
@@ -27,8 +27,8 @@ const rootReducer = combineReducers({
 })
 
 const rootEpic = combineEpics(
-  snPersonEpic,
-  logoutPersonEpic,
+  // snPersonEpic,
+  // logoutPersonEpic,
   snUserProfileEpic,
   snUserMasterProfileEpic,
   snMyFollowersEpic,
