@@ -113,3 +113,4 @@ export const avatarFallbackImage =
 export const IGNORE_PATH_IN_BACKUP = [USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH]
 export const authOrigin = "" // browser.blockstack.org is authenticator
 // (process.env.APP_ENV === 'development') ? 'http://localhost:3000' : "https://skyspaces.io";
+export const UPLOAD_SOURCE_DEPLOY = "UPLOAD_SOURCE_DEPLOY";

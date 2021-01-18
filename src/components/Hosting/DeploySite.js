@@ -1,6 +1,6 @@
 import React, { createRef, useState } from 'react';
-import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem } from '@material-ui/core'
-
+import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem } from '@material-ui/core';
+import { useSelector, useDispatch } from "react-redux";
 import styles from '../../assets/jss/app-details/SubmitAppStyles';
 import "./DeploySiteStyles.css";
 import Switch from './Switch'
@@ -12,9 +12,10 @@ import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-uploa
 import { ReactComponent as SettingIcon } from '../../assets/img/icons/settingIconGreen.svg';
 import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg';
 import { DropzoneArea } from 'material-ui-dropzone';
+import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
 const useStyles = makeStyles(styles)
 
-const DeploySite = () => {
+const DeploySite = (props) => {
 
     const classes = useStyles();
 
@@ -22,6 +23,8 @@ const DeploySite = () => {
     const dropZoneRef = createRef();
 
     const [isDirUpload, setIsDirUpload] = useState(false);
+
+    const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
 
     return (
@@ -144,6 +147,7 @@ const DeploySite = () => {
                                 <div className="d-none">
                                     <SnUpload
                                         name="files"
+                                        source={UPLOAD_SOURCE_DEPLOY}
                                         ref={uploadEleRef}
                                         directoryMode={isDirUpload}
                                         onUpload={(obj) => console.log(obj)}
@@ -180,6 +184,9 @@ const DeploySite = () => {
                                         }
                                     />
                                 </div>
+                            </Box>
+                            <Box>
+                                {JSON.stringify(snUploadListStore)}
                             </Box>
                         </Grid>
 

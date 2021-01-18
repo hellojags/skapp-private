@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import classNames from "classnames";
-// import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
+import { setUploadList } from "../redux/action-reducers-epic/SnUploadListAction";
 import imageCompression from "browser-image-compression";
 import path from "path-browserify";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -18,24 +18,32 @@ import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { SkynetClient, parseSkylink } from "skynet-js";
 import UploadFile from "./UploadFile";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const SnUpload = React.forwardRef((props, ref) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [files, setFiles] = useState([]);
   const [uploadErr, setUploadErr] = useState(false);
   const [isDir, setIsDir] = useState(false);
+  const snUploadListStore = useSelector((state) => state.snUploadListStore);
   const apiUrl = props.portal != null ? props.portal : DEFAULT_PORTAL;
   const gridRef = useRef();
   const client = new SkynetClient(apiUrl);
 
+  const setFileToStore = ()=>{
+    if (props.source) {
+      snUploadListStore[props.source] =  files;
+      dispatch(setUploadList(snUploadListStore));
+    }
+  }
+
   useEffect(() => {
-    // dispatch(setUploadList(files));
+    setFileToStore();
     props.onUploadProgress && props.onUploadProgress(files);
   }, [files]);
 
