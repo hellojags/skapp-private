@@ -1,6 +1,8 @@
 import React, { createRef, useState } from 'react';
-import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem } from '@material-ui/core';
+import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem, Typography } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux";
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import DescriptionIcon from "@material-ui/icons/Description";
 import styles from '../../assets/jss/app-details/SubmitAppStyles';
 import "./DeploySiteStyles.css";
 import Switch from './Switch'
@@ -26,6 +28,9 @@ const DeploySite = (props) => {
 
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
+    const copyToClipboard = (url) => {
+        navigator.clipboard.writeText(url);
+    };
 
     return (
         <Box >
@@ -186,7 +191,54 @@ const DeploySite = (props) => {
                                 </div>
                             </Box>
                             <Box>
-                                {JSON.stringify(snUploadListStore)}
+                                {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_DEPLOY] && snUploadListStore[UPLOAD_SOURCE_DEPLOY].length > 0 && snUploadListStore[UPLOAD_SOURCE_DEPLOY]
+                                    .map((fileObj) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            className={classes.show_img_title_grid}
+                                            style={{ paddingTop: "20px", paddingBottom: "20px" }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    width: "100%",
+                                                }}
+                                            >
+                                                <div >
+
+                                                    <Typography className={classes.linkName}>
+                                                        <span>
+                                                            <DescriptionIcon className={classes.descIcon} />
+                                                        </span>
+                                                        {fileObj?.file?.path}
+                                                    </Typography>
+                                                    {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
+                                                        Skylink: {fileObj?.url}
+                                                    </Typography>)}
+                                                    {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
+                                                        {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
+                                                    </Typography>)}
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                    {/* <TiAttachment
+                      style={{
+                        fontSize: "18px",
+                        color: "#1ed660",
+                        marginRight: 10,
+                      }}
+                    /> */}
+                                                    {fileObj?.status === 'complete' && <FileCopyIcon
+                                                        className={classes.descIcon}
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() => copyToClipboard(fileObj?.url)}
+                                                    />}
+                                                </div>
+                                            </div>
+                                        </Grid>))}
                             </Box>
                         </Grid>
 
