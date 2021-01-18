@@ -5,7 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
 
-const IOSSwitch = withStyles((theme) => ({
+export const IOSSwitch = withStyles((theme) => ({
     root: {
         width: 42,
         height: 26,
@@ -59,7 +59,7 @@ const IOSSwitch = withStyles((theme) => ({
 })
 
 
-export default function CustomizedSwitches() {
+export default function CustomizedSwitches(props) {
     const [state, setState] = React.useState({
         checkedB: true,
     })

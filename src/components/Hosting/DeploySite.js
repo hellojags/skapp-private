@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem, Typography } from '@material-ui/core';
+import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem, Typography, FormGroup, FormControlLabel } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from "@material-ui/icons/Description";
@@ -15,6 +15,7 @@ import { ReactComponent as SettingIcon } from '../../assets/img/icons/settingIco
 import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
+import { IOSSwitch } from "./Switch";
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -24,13 +25,19 @@ const DeploySite = (props) => {
     const uploadEleRef = createRef();
     const dropZoneRef = createRef();
 
-    const [isDirUpload, setIsDirUpload] = useState(false);
+    const [isFileUpload, setIsFileUpload] = useState(false);
 
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
     const copyToClipboard = (url) => {
         navigator.clipboard.writeText(url);
     };
+
+    const handleDropZoneClick = (evt)=> {
+        evt.preventDefault();
+        evt.stopPropagation();
+        uploadEleRef.current.gridRef.current.click();
+    }
 
     return (
         <Box >
@@ -142,8 +149,15 @@ const DeploySite = (props) => {
 
                 <div className={classes.OneRowInput}>
                     <div >
-                        <Switch
-                            onChange={(evt) => () => setIsDirUpload(evt.target.check)} />
+                        <FormGroup>
+                            <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
+                                label="Upload File"
+                                control={<IOSSwitch 
+                                        onChange={(evt) => setIsFileUpload(evt.target.checked)} 
+                                        name="toggleFileUpload" />}
+
+                            />
+                        </FormGroup>
                     </div>
 
                     <Grid container spacing={2}>
@@ -154,7 +168,7 @@ const DeploySite = (props) => {
                                         name="files"
                                         source={UPLOAD_SOURCE_DEPLOY}
                                         ref={uploadEleRef}
-                                        directoryMode={isDirUpload}
+                                        directoryMode={!isFileUpload}
                                         onUpload={(obj) => console.log(obj)}
                                     />
 
@@ -176,16 +190,16 @@ const DeploySite = (props) => {
                                         filesLimit={100}
                                         showAlerts={false}
                                         dropzoneText={
-                                            <>
+                                            <div id="dropzone-text" onClick={handleDropZoneClick}>
                                                 <div><UploadIcon /></div>
 
                                                 <div style={{ color: '#5C757D' }}>
                                                     Drag and drop files or folder here
-                                    </div>
+                                                </div>
                                                 <Button className={classes.uploadBtn}>
-                                                    Select {isDirUpload ? "Folder" : "Files"}
+                                                    Select {isFileUpload ? "Files" : "Folder"}
                                                 </Button>
-                                            </>
+                                            </div>
                                         }
                                     />
                                 </div>
@@ -212,7 +226,7 @@ const DeploySite = (props) => {
                                                         <span>
                                                             <DescriptionIcon className={classes.descIcon} />
                                                         </span>
-                                                        {fileObj?.file?.path}
+                                                        {fileObj?.file?.path || fileObj?.file?.name}
                                                     </Typography>
                                                     {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                                                         Skylink: {fileObj?.url}
