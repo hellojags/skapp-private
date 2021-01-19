@@ -26,6 +26,7 @@
     "localforage-getitems": "^1.4.2",
     "localforage-setitems": "^1.4.0",
     "material-ui-dropzone": "^3.5.0",
+    "libsodium-wrappers-sumo": "^0.7.8",
     "moment": "^2.27.0",
     "node-fetch": "^2.6.0",
     "node-forge": "^0.10.0",

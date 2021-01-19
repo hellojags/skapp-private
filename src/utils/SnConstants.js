@@ -19,7 +19,6 @@ export const STORAGE_SKYAPP_DETAIL_KEY = "SKYAPP_DETAIL"
 export const STORAGE_SKYSPACE_DETAIL_KEY = "STORAGE_SKYSPACE_DETAIL_KEY"
 
 export const ID_PROVIDER_BLOCKSTACK = "BLOCKSTACK_ID"
-export const ID_PROVIDER_SKYDB = "SKYDB_ID"
 export const ID_PROVIDER_SKYID = "SKYID"
 export const ID_PROVIDER_CERAMIC = "CERAMIC_ID"
 
@@ -108,7 +107,7 @@ export const FAILED = "failed"
 export const CONFLICT = "conflict"
 export const FAILED_DECRYPT_ERR = "FailedDecryptionError"
 export const ID_PROVIDER = "BLOCKSTACK"
-export const avatarFallbackImage =
+export const AVATAR_IMAGE_DEFAULT =
   "https://s3.amazonaws.com/onename/avatar-placeholder.png"
 export const IGNORE_PATH_IN_BACKUP = [USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH]
 export const authOrigin = "" // browser.blockstack.org is authenticator

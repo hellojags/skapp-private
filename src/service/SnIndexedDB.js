@@ -53,7 +53,7 @@ export const setAllinIDB = async (arrayOfJson, opts) => {
       const key = Object.keys(item)[0]
       const value = item[key]
       console.log(`${key}:${value}`)
-      setJSONinDB(key, value, opts)
+      setJSONinIDB(key, value, opts)
     })
   } catch (err) {
     // This code runs if there were any errors.
@@ -87,8 +87,8 @@ export const removeJSONfromIDB = async (key, opts) => {
       await skydbCacheDataStoreIDB.removeItem(key)
     } else {
       await IndexedDB4SkyDB.removeItem(key)
-      await setJSONinDB(IDB_IS_OUT_OF_SYNC, true, opts)
-      store.dispatch(setIsDataOutOfSync(true)) // yes data is out of sync
+      //await setJSONinIDB(IDB_IS_OUT_OF_SYNC, true, opts)
+      //store.dispatch(setIsDataOutOfSync(true)) // yes data is out of sync
     }
   } catch (err) {
     // This code runs if there were any errors.
@@ -186,4 +186,3 @@ export const clearAllfromIDB = async (opts) => {
   //     console.log(err);
   // });
 }
-k

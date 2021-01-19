@@ -1,21 +1,16 @@
 import { ajax } from "rxjs/ajax"
 import { map, catchError } from "rxjs/operators"
-import { getRelativeFilePath, getRootDirectory, parseSkylink, SkynetClient } from "skynet-js"
+import { getRelativeFilePath, getRootDirectory, parseSkylink, SkynetClient,genKeyPairFromSeed } from "skynet-js"
 import { of } from "rxjs"
 import prettyBytes from "pretty-bytes"
-import { DEFAULT_PORTAL } from "../sn.constants"
-import { IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
-import { getAllPublicApps } from "../sn.util"
-import store from "../reducers"
 import {
   getJSONfromIDB,
   setJSONinIDB,
   IDB_STORE_SKAPP,
   IDB_STORE_SKYDB_CACHE,
 } from "./SnIndexedDB"
-import { setIsDataOutOfSync } from "../reducers/actions/sn.isDataOutOfSync.action"
 import { encryptData, decryptData } from "./SnEncryption"
-import { getPortal } from '../utils/SnUtility'
+import { getPortal} from '../utils/SnUtility'
 
 // ################################ SkyDB Methods ######################
 
@@ -44,7 +39,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         // Fetch value for key - [PubKey#DataKey] from IndexedDB
         let result = await getJSONfromIDB(tempKey, { store: IDB_STORE_SKYDB_CACHE })
         // get revision number using dataKey - getEntry method
-        let registryEntry = await getRegistry(options.publicKey, dataKey)
+        let registryEntry = await getRegistryEntry(options.publicKey, dataKey)
         const skyDBRevisionNo =
           registryEntry && registryEntry != "undefined"
             ? registryEntry.revision
@@ -79,7 +74,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         // Fetch value for [DataKey] from IndexedDB
         let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })
         // get revision number using dataKey - getEntry method
-        let registryEntry = await getRegistry(options.publicKey, dataKey)
+        let registryEntry = await getRegistryEntry(options.publicKey, dataKey)
         const skyDBRevisionNo =
           registryEntry && registryEntry != "undefined"
             ? registryEntry.revision
@@ -105,22 +100,23 @@ export const getFile = async (publicKey, dataKey, options) => {
       }
     } else { //If we need to fetch directly from SKyDB
       let result = null;
+      let entryObj = null;
       // Below condition means, we are fetching other user's data
       if (options?.publicKey) {
         let tempKey = publicKey + "#" + dataKey
         // fetch content from SkyDB
-        entryObj = getJSON(options?.publicKey, dataKey, { ...options, contentOnly: false });
+        entryObj = getFile(options?.publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
         await setJSONinIDB(tempKey, result, { store: IDB_STORE_SKYDB_CACHE, })
       }
       else {
         // fetching loggedin users data from SkyDB
-        entryObj = getContent(publicKey, dataKey, { ...options, contentOnly: false });
+        entryObj = await getContent(publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
         await setJSONinIDB(dataKey, result, { store: IDB_STORE_SKAPP, })
       }
       // Return data
-      return entryObj.data;
+      return entryObj?.data;
     }
   } catch (error) {
     // setErrorMessage(error.message);
@@ -129,10 +125,10 @@ export const getFile = async (publicKey, dataKey, options) => {
   }
 }
 
-export const getContent = (publicKey, dataKey, options) => {
+export const getContent = async (publicKey, dataKey, options) => {
+  //TODO - get privateKey from localstorage
+  const privateKey = "";
   try {
-    //TODO - get privateKey from localstorage
-    const privateKey = "";
     // Get User Public Key
     if (publicKey == null) {
       throw new Error("Invalid Keys")
@@ -165,14 +161,14 @@ export const getContent = (publicKey, dataKey, options) => {
 }
 
 // sets JSON file in SkyDB
-export const setFile = async (publicKey, dataKey, content, options) => {
+export const putFile = async (publicKey, dataKey, content, options) => {
+   // fetch private key from localstorage
+   const privateKey = "";
   try {
-    // fetch private key from localstorage
-    const privateKey = "";
     // get previous skylink 
     // create linked list to track history
     if (options.historyflag == true) {
-      const registryEntry = await getRegistry(publicKey, dataKey)
+      const registryEntry = await getRegistryEntry(publicKey, dataKey)
       //const revision = (registryEntry ? registryEntry.revision : 0) + 1
       const skylink = registryEntry ? registryEntry.data : null
       content.prevSkylink = skylink
@@ -211,11 +207,13 @@ export const getRegistryEntry = async (publicKey, dataKey, options) => {
 }
 
 export const setRegistryEntry = async (dataKey,content,options) => {
+   // fetch private key from localstorage
+   const privateKey = "";
   try {
     // TODO: get last revision number
     const revision = 0;
-    let entry = { datakey:dataKey, data: content, revision: BigInt(54)};
-    await client.registry.setEntry(privateKey, entry);
+    let entry = { datakey:dataKey, data: content, revision};
+    await skynetClient.registry.setEntry(privateKey, entry);
     return true
   } catch (error) {
     // setErrorMessage(error.message);
@@ -227,7 +225,7 @@ export const setRegistryEntry = async (dataKey,content,options) => {
 
 function getRegistryEntryURL(publicKey, dataKey) {
   try {
-    const url = client.registry.getEntryUrl(publicKey, dataKey);
+    const url = skynetClient.registry.getEntryUrl(publicKey, dataKey);
     return url;
   } catch (error) {
     console.log(error);
@@ -254,7 +252,7 @@ export const getSkylinkContent = (skylink, options) =>
     })
   )
 
-export const getSkylinkMetadata = (skylink) => {
+export const getSkylinkMetadata = async (skylink) => {
   try {
     const md = await skynetClient.getMetadata(skylink);
     return md;
@@ -266,6 +264,7 @@ export const getSkylinkMetadata = (skylink) => {
 // TODO: below method can be removed once all functionality is implemented. From getSkylinkMetadata we shall get all data.
 export const getSkylinkHeader = (skylink) => {
   //TODO: create URL from Skylink
+  const skylinkUrl = getPortal() + skylink;
   try {
     ajax({
       url: `${skylinkUrl}?format=concat`,
@@ -330,7 +329,7 @@ export const uploadDirectory = async (files) => {
     console.log(error);
   }
 }
-
+export const snKeyPairFromSeed = (userSeed) => genKeyPairFromSeed(userSeed)
 // export const getPublicApps = async (hash) =>
 //   await fetch(
 //     `${document.location.origin.indexOf("localhost") === -1

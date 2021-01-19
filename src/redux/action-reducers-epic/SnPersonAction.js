@@ -4,7 +4,7 @@ import {
   ACT_TY_LOGOUT_BLOCKSTACK_USER,
 } from "../SnActionConstants"
 import { STORAGE_USER_KEY, BROWSER_STORAGE } from "../../utils/SnConstants"
-import { setSkyspaceList, fetchSkyspaceList } from "./sn.skyspace-list.action"
+//import { setSkyspaceList, fetchSkyspaceList } from "./sn.skyspace-list.action"
 import store from ".."
 
 export const setPerson = (state) => {
@@ -20,7 +20,8 @@ export const setPerson = (state) => {
 }
 
 export const setPersonGetOtherData = (state) => {
-  store.dispatch(fetchSkyspaceList(null))
+  // TODO: fetch data thats required in Redux store on login
+  //store.dispatch(fetchSkyspaceList(null))
   return setPerson(state)
 }
 
@@ -31,7 +32,9 @@ export const fetchBlockstackPerson = (userSession) => ({
 
 export const logoutPerson = (userSession) => {
   BROWSER_STORAGE.clear()
-  store.dispatch(setSkyspaceList(null))
+  // TODO: Set all values to null
+  //store.dispatch(setSkyspaceList(null))
+
   // if (userSession.skydbseed) {
   //   window.location.href=window.location.origin;
   //   return setPerson(null);

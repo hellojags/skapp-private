@@ -1,5 +1,5 @@
 import imageCompression from "browser-image-compression";
-import { DEFAULT_PORTAL } from "./SnConstants";
+import { DEFAULT_PORTAL, ID_PROVIDER_SKYID} from "./SnConstants";
 
 export const getCompatibleTags = (resCategory) => {
     let category = []
@@ -25,7 +25,7 @@ export const getCompatibleTags = (resCategory) => {
     }
   }
 /** Start : Skynet Methods * */
-const getPortal = () => {
+export const getPortal = () => {
   // let skynetPortal = store.getState().snUserSetting?.setting?.portal
   // skynetPortal =
   //   skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
@@ -38,6 +38,17 @@ const getbase32URlForSkapp = (skylink) => {
   return base32URL;
 }
 
+// // I think we can use idp field in session object for this
+// export const getUserSessionType = (userSession) => {
+//   let idType = ID_PROVIDER_SKYID
+//   // ID_PROVIDER_BLOCKSTACK;
+//   if (userSession.skydbseed) {
+//     idType = ID_PROVIDER_SKYDB
+//   } else if (userSession.skyid) {
+//     idType = ID_PROVIDER_SKYID
+//   }
+//   return idType
+// }
 
 /**
  * Compresses Image file to Skyspace params

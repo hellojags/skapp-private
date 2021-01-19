@@ -11,6 +11,7 @@ import StorageGateway from '../components/Hosting/StorageGateway'
 import Settings from '../components/Setting/Settings'
 import AppDetailsPage from '../components/AppDetails/AppDetailsPage'
 import DeploySite from '../components/Hosting/DeploySite'
+import SnLogin from '../components/Login/SnLogin'
 import {
     Switch,
     Route,
@@ -21,9 +22,11 @@ const SnRouter = (props) => (
    
         <Switch>
             <Route exact path="/">
-                <Redirect
-                    to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}
-                />
+                <Redirect to={`/login`}/>
+                {/* <Redirect to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}/> */}
+            </Route>
+            <Route exact path='/login'>
+                <SnLogin />
             </Route>
             <Route exact path='/appdetail'>
                 <AppDetailsPage />
