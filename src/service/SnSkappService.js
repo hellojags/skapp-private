@@ -236,7 +236,7 @@ export const bsGetSpacesFromUserListV2 = async (session, senderIdList, opt) => {
         session?.person?.appPublicKey,
         { skydb: true }
       )
-     const promise = sharedSpaceIdxPromise
+      const promise = sharedSpaceIdxPromise
         .then((sharedSpaceIdxObj) => {
           senderToSpacesMap[senderId] = sharedSpaceIdxObj
           sharedByUserList.indexOf(senderId) === -1 &&
@@ -270,7 +270,7 @@ export const bsGetShrdSkyspaceIdxFromSenderV2 = async (
   try {
     const SHARED_FILEPATH = SHARED_PATH_PREFIX + loggedInUserPublicKey
     // read Shared encrypted file from sender SkyDB registry,  // get unencrypted file as JSON
-    const masterSharedFileJSON = await getFile(SHARED_FILEPATH,{publicKey:senderPublicKey,decrypt:true}) // await fetch(`${senderStorage}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
+    const masterSharedFileJSON = await getFile(SHARED_FILEPATH, { publicKey: senderPublicKey, decrypt: true }) // await fetch(`${senderStorage}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
     const skylinkObj = null
     // If valid JSON...
     if (masterSharedFileJSON && masterSharedFileJSON != "undefined") {
@@ -284,14 +284,11 @@ export const bsGetShrdSkyspaceIdxFromSenderV2 = async (
   return null
 }
 
-export const bsGetSkyIDProfile = async (session) => {
+export const getUserProfile = async (session) => {
   // let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
   let personObj = null
-  const response = await getFile(session, SKYID_PROFILE_PATH, {
-    publicKey: session.skyid.userId,
-    skydb: true,
-  })
-  if (response == "") {
+  const response = await getFile(session.skyid.userId, SKYID_PROFILE_PATH, { skydb: true, })
+  if (response == "" || response == "undefined" ) {
     // file not found
     console.log("Profile not found;, please check your connection and retry")
   } else {

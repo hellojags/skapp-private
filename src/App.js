@@ -2,6 +2,7 @@ import React from 'react'
 import { ThemeProvider } from '@material-ui/core'
 import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
+import SnLoader from "./components/Utils/SnLoader"
 import './index.css'
 import { skappTheme } from './theme/Theme'
 import SnRouter from './router/SnRouter'
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <ThemeProvider theme={skappTheme}>
+      <SnLoader/>
         <div className="App">
           <Navbar />
           <section className="main-content">

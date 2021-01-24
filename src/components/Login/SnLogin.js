@@ -3,17 +3,21 @@ import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Button, Link, Typography } from '@material-ui/core';
 import styles from "./SnLoginStyles";
 import { connect } from "react-redux";
-import { bsGetImportedSpacesObj, bsGetSkyIDProfile, syncData, firstTimeUserSetup, onSkyIdLogout } from '../../service/SnSkappService';
+import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup, onSkyIdLogout } from '../../service/SnSkappService';
 import SkyID from "skyid";
 import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import useStyles from "./SnLoginStyles"
 import { useHistory } from "react-router-dom"
-import {clearAllfromIDB, IDB_STORE_SKAPP} from "../../service/SnIndexedDB"
+import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
 // actions 
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction"
-import { logoutPerson } from "../../redux/action-reducers-epic/SnPersonAction"
-
+import { logoutPerson, setPersonGetOtherData } from "../../redux/action-reducers-epic/SnPersonAction"
+import { getUserProfileAction } from "../../redux/action-reducers-epic/SnUserProfileAction"
+import { getUserMasterProfileAction } from "../../redux/action-reducers-epic/SnUserMasterProfileAction"
+import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
+import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
+import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 
 let devMode = false;
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
@@ -26,33 +30,57 @@ export default function SnLogin(props) {
     const classes = useStyles()
     const dispatch = useDispatch()
     const history = useHistory()
-    const stPerson = useSelector((state) => state.person)
+    const person = useSelector((state) => state.person)
     const stUserSession = useSelector((state) => state.userSession)
 
     const [seed, setSeed] = useState('')
     const [value, setValue] = useState(1)
     const [isTemp, setIsTemp] = useState(true)
-    const [skyid, setSkyid] = useState(null)
+    const [skyid, setSkyid] = useState({})
 
     useEffect(() => {
-        initializeSkyId({ devMode: process.env.NODE_ENV !== 'production' });
-        if (props.showDesktopMenu === false) {
-            props.setDesktopMenuState(true);
-        }
-        if (props.person) {
-            props.history.push("/appstore");
-        }
-        //props.setPublicHash(null); // this is done for Skapp. Setting public Hash to null for correct button display in Menu.
-    })
+        const skyidObj = new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' });
+        setState(state => ({ ...state, a: props.a }));
+      }, [props.a]);
 
-    //componentDidUpdate() 
+    // Run Only Once
     useEffect(() => {
-        if (props.person) {
+        setSkyid();
+        console.log("skyid=" + skyid);
+    }, []);
+
+    // Run this code everytime on render
+    useEffect(() => {
+        //setSkyid(new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' }));
+        if (person) {
             props.history.push("/appstore");
         }
-    })
-
-    const onSkyIdLogout = async (message) => {
+    });
+    function skyidEventCallback(message) {
+        switch (message) {
+            case 'login_fail':
+                console.log('Login failed')
+                dispatch(setLoaderDisplay(false));
+                break;
+            case 'login_success':
+                console.log('Login succeed!')
+                onSkyIdSuccess();
+                break;
+            case 'destroy':
+                console.log('Logout succeed!');
+                onSkyIdLogout();
+                break;
+            default:
+                console.log(message)
+                dispatch(setLoaderDisplay(false));
+                break;
+        }
+    }
+    const loginSkyID = async () => {
+        skyid.sessionStart();
+        dispatch(setLoaderDisplay(true));
+    }
+    const onSkyIdLogout = async () => {
         try {
             dispatch(logoutPerson(stUserSession))
             clearAllfromIDB({ store: IDB_STORE_SKAPP })
@@ -63,44 +91,13 @@ export default function SnLogin(props) {
             dispatch(setLoaderDisplay(false))
         }
     }
-
-    const handleSeedChange = (evt) => {
-        setSeed(evt.target.value);
-    }
-    const initializeSkyId = (opts) => {
-        setSkyid(new SkyID('skapp', skyidEventCallback, opts));
-    }
-    const loginSkyID = async () => {
-        skyid.sessionStart();
-        props.setLoaderDisplay(true);
-    }
-    function skyidEventCallback(message) {
-        switch (message) {
-            case 'login_fail':
-                console.log('Login failed')
-                props.setLoaderDisplay(false);
-                break;
-            case 'login_success':
-                console.log('Login succeed!')
-                onSkyIdSuccess(message);
-                break;
-            case 'destroy':
-                console.log('Logout succeed!');
-                onSkyIdLogout();
-                break;
-            default:
-                console.log(message)
-                props.setLoaderDisplay(false);
-                break;
-        }
-    }
-    const onSkyIdSuccess = async (message) => {
+    const onSkyIdSuccess = async () => {
         try {
             // create userSession Object
             let userSession = { idp: ID_PROVIDER_SKYID, skyid: skyid };
-            const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
+            const personObj = await getUserProfile(userSession);// dont proceed without pulling profile
             userSession = { ...userSession, person: personObj };
-            props.setUserSession(userSession);
+            dispatch(setUserSession(userSession));
             // For first time user only 
             let isFirstTime = await firstTimeUserSetup(userSession);
             if (!isFirstTime)//if not firsttime call data sync 
@@ -108,41 +105,21 @@ export default function SnLogin(props) {
                 // call dataSync
                 await syncData(userSession);
             }
-            props.setPersonGetOtherData(personObj);
-            props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
+            dispatch(setPersonGetOtherData(personObj));
+            //dispatch(setImportedSpace(await bsGetImportedSpacesObj(userSession)));
             // get app profile
-            props.getUserProfileAction(userSession);
-            props.getUserMasterProfileAction(userSession);
+            dispatch(getUserProfileAction(userSession));
+            dispatch(getUserMasterProfileAction(userSession));
             // get userFollowers
-            props.getMyFollowersAction(null);
+            dispatch(getMyFollowersAction(null));
             // get userFollowings
-            props.getMyFollowingsAction(null);
-            props.setLoaderDisplay(false);
-            props.history.push("/appstore");
+            dispatch(getMyFollowingsAction(null));
+            dispatch(setLoaderDisplay(false));
+            props.history.push("/appdetail");
         }
         catch (error) {
             console.log("Error during login process. login failed");
-            props.setLoaderDisplay(false);
-        }
-    }
-    const login = async () => {
-        if (seed && seed.trim().length > 0) {
-
-            const personObj = {
-                username: seed,
-                profile: {
-                    decentralizedID: seed
-                }
-            }
-            props.setLoaderDisplay(true);
-            const userSession = { skydbseed: seed };
-            props.setUserSession(userSession);
-            props.setPersonGetOtherData(personObj);
-            props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
-            props.setLoaderDisplay(false);
-            props.history.push("/appstore" + props.location.search);
-        } else {
-            console.log("no seed");
+            dispatch(setLoaderDisplay(false));
         }
     }
     const handleChange = (event, newValue) => {

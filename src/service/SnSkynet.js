@@ -14,7 +14,8 @@ import { getPortal} from '../utils/SnUtility'
 
 // ################################ SkyDB Methods ######################
 
-const skynetClient = new SkynetClient(getPortal())
+// pick skynet portal
+const skynetClient = new SkynetClient("https://siasky.net")
 
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB
@@ -27,7 +28,7 @@ const skynetClient = new SkynetClient(getPortal())
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
   // Get User Public Key
-  if (publicKey == null || options?.publicKey == null) {
+  if (publicKey == null && options?.publicKey == null) {
     throw new Error("Invalid Keys")
   }
   try {
@@ -91,6 +92,14 @@ export const getFile = async (publicKey, dataKey, options) => {
           // If revision numbers are different, return Skylink content from SkyDB/Skynet
           // Fetch content fromSkynet
           let content = getSkylinkContent(registryEntry.data)
+          // TODO: convert array to JSOn object
+          // Example:
+          // {
+          //   data: {
+          //     example: "This is some example JSON data."
+          //   },
+          //   revision: 11
+          // }
           await setJSONinIDB(dataKey, [skyDBRevisionNo, content], {
             store: IDB_STORE_SKAPP,
           })
@@ -98,7 +107,7 @@ export const getFile = async (publicKey, dataKey, options) => {
           return content
         }
       }
-    } else { //If we need to fetch directly from SKyDB
+    } else { //If we need to fetch directly from SkyDB
       let result = null;
       let entryObj = null;
       // Below condition means, we are fetching other user's data
@@ -110,10 +119,11 @@ export const getFile = async (publicKey, dataKey, options) => {
         await setJSONinIDB(tempKey, result, { store: IDB_STORE_SKYDB_CACHE, })
       }
       else {
+        let registryEntry = await getRegistryEntry(publicKey, dataKey)
         // fetching loggedin users data from SkyDB
         entryObj = await getContent(publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
-        await setJSONinIDB(dataKey, result, { store: IDB_STORE_SKAPP, })
+        await setJSONinIDB(dataKey, entryObj, { store: IDB_STORE_SKAPP, })
       }
       // Return data
       return entryObj?.data;
@@ -133,7 +143,7 @@ export const getContent = async (publicKey, dataKey, options) => {
     if (publicKey == null) {
       throw new Error("Invalid Keys")
     }
-    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey)
+    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey, { timeout: 60 })
     if (entryObj) {
       if (options.contentOnly) {
         // decrypt it
