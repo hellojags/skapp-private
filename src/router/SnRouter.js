@@ -18,6 +18,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
+import AddNewSite from '../components/Hosting/AddNewSite'
 const SnRouter = (props) => (
    
         <Switch>
@@ -45,6 +46,9 @@ const SnRouter = (props) => (
             </Route>
             <Route exact path='/hosting'>
                 <Hosting />
+            </Route>
+            <Route exact path='/addnewsite'>
+                <AddNewSite />
             </Route>
             <Route exact path='/submitsite'>
                 <SubmitNewSite />

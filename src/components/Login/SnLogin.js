@@ -40,7 +40,7 @@ export default function SnLogin(props) {
 
     useEffect(() => {
         const skyidObj = new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' });
-        setState(state => ({ ...state, a: props.a }));
+        // setState(state => ({ ...state, a: props.a }));
       }, [props.a]);
 
     // Run Only Once

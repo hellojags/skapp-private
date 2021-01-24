@@ -1,5 +1,6 @@
-import { Box, InputBase } from '@material-ui/core'
 import React, { Fragment } from 'react'
+import { Box, InputBase } from '@material-ui/core'
+import { useHistory } from "react-router-dom";
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import UtilitiesItem from '../AppsComp/UtilitiesItem'
@@ -131,7 +132,7 @@ function Hosting() {
 
     const { width } = useWindowDimensions()
     const classes = useStyles()
-
+    let history = useHistory();
     return (
 
         <Fragment >
@@ -179,7 +180,8 @@ function Hosting() {
                     </Box>
 
                     <Box>
-                        <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}>
+                        <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}
+                            onClick={()=>history.push("/addnewsite")}>
                             Add Site
                     </SubmitBtn>
                     </Box>
@@ -189,7 +191,7 @@ function Hosting() {
             <Box marginTop="1rem">
                 <HostingItem ActiveSite={true} />
                 <HostingItem ActiveSit={false} />
-                <AddNewSite />
+                <AddNewSite onClick={()=>history.push("/addnewsite")}/>
             </Box>
 
         </Fragment>

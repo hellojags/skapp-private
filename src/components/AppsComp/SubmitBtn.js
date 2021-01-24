@@ -25,7 +25,7 @@ const useStyles = makeStyles({
         color: '#fff'
     },
 })
-const SubmitBtn = ({ addSite, styles, children }) => {
+const SubmitBtn = ({ addSite, styles, children, ...props }) => {
     const classes = useStyles()
 
     return (
@@ -35,6 +35,7 @@ const SubmitBtn = ({ addSite, styles, children }) => {
                 className={`${classes.btn} ${classes.slected}`}
                 // aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
+                onClick={props?.onClick}
             >
                 <AddOutlinedIcon className={classes.btnIcon} fontSize="small" />
 
