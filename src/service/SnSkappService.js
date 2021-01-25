@@ -42,6 +42,16 @@ import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed } from './SnSkyne
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
 
+// TODO: implement actual logic
+function generateSkappId(prop){
+  return new Date().getTime();
+}
+
+// TODO: implement actual logic
+function getPublicKey(props){
+  return "antares_va_tech";
+}
+
 // This JS file will list app methods consumed by components
 
 // ### User Profile Functionality ###
@@ -131,10 +141,31 @@ export const getDefaultAppStore = () => { }
 // ### Hosting Functionality ###
 
 // get my all hosted apps. Returns List of JSONS
-export const getMyHostedApps = (appIds) => { }
+export const getMyHostedApps = async (appIds) => { }
 
 //Update published app data
-export const setMyHostedApp = (appJSON) => { }
+export const setMyHostedApp = async (appJSON, previousId) => { 
+  let history;
+  const ts = new Date().getTime();
+  const id = generateSkappId();
+  if (previousId) {
+    let { content: {history, skylink} } = await getMyHostedApps(previousId);
+    history[ts]=skylink;
+  }
+  const hostedAppJSON = {
+    "$type": "skapp",
+    "$subType": "hosted",
+    id,
+    "version": "1",
+    "prevSkylink": history ? history[ts] : null,
+    "content": {
+        ...appJSON,
+        history
+    },
+    ts
+  };
+  await putFile(getPublicKey(), `hosted${id}`, hostedAppJSON);
+}
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
 export const setHNSEntry = (hnsName, skylink) => { }

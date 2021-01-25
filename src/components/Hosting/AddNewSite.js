@@ -8,6 +8,7 @@ import styles from './AddNewSiteStyles';
 import { ReactComponent as ImgIcon } from '../../assets/img/icons/image.svg';
 import { SnTextInput } from '../Utils/SnFormikControlls';
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
+import { setMyHostedApp } from '../../service/SnSkappService';
 
 const useStyles = makeStyles(styles)
 const optionsVersion = [
@@ -71,8 +72,9 @@ export default function AddNewSite() {
             <Formik
                 initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
                 validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
-                onSubmit={values => {
+                onSubmit={async values => {
                     console.log(JSON.stringify(values, null, 2));
+                    await setMyHostedApp(values);
                 }}>
                 {formik => (<form onSubmit={formik.handleSubmit}>
                     <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
