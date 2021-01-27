@@ -143,7 +143,7 @@ export const getContent = async (publicKey, dataKey, options) => {
     if (publicKey == null) {
       throw new Error("Invalid Keys")
     }
-    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey, { timeout: 60 })
+    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey, null)
     if (entryObj) {
       if (options.contentOnly) {
         // decrypt it

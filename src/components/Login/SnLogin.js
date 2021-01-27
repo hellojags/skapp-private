@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Button, Link, Typography } from '@material-ui/core';
 import styles from "./SnLoginStyles";
 import { connect } from "react-redux";
-import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup, onSkyIdLogout } from '../../service/SnSkappService';
-import SkyID from "skyid";
+import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup } from '../../service/SnSkappService';
+import skyId from '../../service/idp/SnSkyId'
 import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import useStyles from "./SnLoginStyles"
@@ -19,12 +19,13 @@ import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollo
 import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
 import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 
-let devMode = false;
-if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
-    devMode = true
-} else {
-    devMode = false
-}
+// let devMode = false;
+// if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
+//     devMode = true
+// } else {
+//     devMode = false
+// }
+// const skyidObj = new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' });
 
 export default function SnLogin(props) {
     const classes = useStyles()
@@ -36,92 +37,90 @@ export default function SnLogin(props) {
     const [seed, setSeed] = useState('')
     const [value, setValue] = useState(1)
     const [isTemp, setIsTemp] = useState(true)
-    const [skyid, setSkyid] = useState({})
+    //const [skyid, setSkyid] = useState(skyidObj)
 
     useEffect(() => {
-        const skyidObj = new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' });
-        // setState(state => ({ ...state, a: props.a }));
-      }, [props.a]);
-
-    // Run Only Once
-    useEffect(() => {
-        setSkyid();
-        console.log("skyid=" + skyid);
-    }, []);
-
-    // Run this code everytime on render
-    useEffect(() => {
-        //setSkyid(new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' }));
-        if (person) {
-            props.history.push("/appstore");
-        }
+        console.log("skyid=" + skyId);
     });
-    function skyidEventCallback(message) {
-        switch (message) {
-            case 'login_fail':
-                console.log('Login failed')
-                dispatch(setLoaderDisplay(false));
-                break;
-            case 'login_success':
-                console.log('Login succeed!')
-                onSkyIdSuccess();
-                break;
-            case 'destroy':
-                console.log('Logout succeed!');
-                onSkyIdLogout();
-                break;
-            default:
-                console.log(message)
-                dispatch(setLoaderDisplay(false));
-                break;
-        }
-    }
+
+    // // Run Only Once
+    // useEffect(() => {
+    //     console.log("skyid=" + skyid);
+    // }, []);
+
+    // // Run this code everytime on render
+    // useEffect(() => {
+    //     //setSkyid(new SkyID('skapp', skyidEventCallback, { devMode: process.env.NODE_ENV !== 'production' }));
+    //     if (person) {
+    //         props.history.push("/appstore");
+    //     }
+    // });
+    // function skyidEventCallback(message) {
+    //     switch (message) {
+    //         case 'login_fail':
+    //             console.log('Login failed')
+    //             dispatch(setLoaderDisplay(false));
+    //             break;
+    //         case 'login_success':
+    //             console.log('Login succeed!')
+    //             onSkyIdSuccess();
+    //             break;
+    //         case 'destroy':
+    //             console.log('Logout succeed!');
+    //             onSkyIdLogout();
+    //             break;
+    //         default:
+    //             console.log(message)
+    //             dispatch(setLoaderDisplay(false));
+    //             break;
+    //     }
+    // }
     const loginSkyID = async () => {
-        skyid.sessionStart();
+        skyId.sessionStart();
         dispatch(setLoaderDisplay(true));
     }
-    const onSkyIdLogout = async () => {
-        try {
-            dispatch(logoutPerson(stUserSession))
-            clearAllfromIDB({ store: IDB_STORE_SKAPP })
-            dispatch(setLoaderDisplay(false))
-            window.location.href = window.location.origin
-        } catch (e) {
-            console.log("Error during logout process.")
-            dispatch(setLoaderDisplay(false))
-        }
-    }
-    const onSkyIdSuccess = async () => {
-        try {
-            // create userSession Object
-            let userSession = { idp: ID_PROVIDER_SKYID, skyid: skyid };
-            const personObj = await getUserProfile(userSession);// dont proceed without pulling profile
-            userSession = { ...userSession, person: personObj };
-            dispatch(setUserSession(userSession));
-            // For first time user only 
-            let isFirstTime = await firstTimeUserSetup(userSession);
-            if (!isFirstTime)//if not firsttime call data sync 
-            {
-                // call dataSync
-                await syncData(userSession);
-            }
-            dispatch(setPersonGetOtherData(personObj));
-            //dispatch(setImportedSpace(await bsGetImportedSpacesObj(userSession)));
-            // get app profile
-            dispatch(getUserProfileAction(userSession));
-            dispatch(getUserMasterProfileAction(userSession));
-            // get userFollowers
-            dispatch(getMyFollowersAction(null));
-            // get userFollowings
-            dispatch(getMyFollowingsAction(null));
-            dispatch(setLoaderDisplay(false));
-            props.history.push("/appdetail");
-        }
-        catch (error) {
-            console.log("Error during login process. login failed");
-            dispatch(setLoaderDisplay(false));
-        }
-    }
+    // const onSkyIdLogout = async () => {
+    //     try {
+    //         dispatch(logoutPerson(stUserSession))
+    //         clearAllfromIDB({ store: IDB_STORE_SKAPP })
+    //         dispatch(setLoaderDisplay(false))
+    //         window.location.href = window.location.origin
+    //     } catch (e) {
+    //         console.log("Error during logout process.")
+    //         dispatch(setLoaderDisplay(false))
+    //     }
+    // }
+    // const onSkyIdSuccess = async () => {
+    //     try {
+    //         // create userSession Object
+    //         let userSession = { idp: ID_PROVIDER_SKYID, skyid: skyId };
+    //         const personObj = await getUserProfile(userSession);// dont proceed without pulling profile
+    //         userSession = { ...userSession, person: personObj };
+    //         dispatch(setUserSession(userSession));
+    //         // For first time user only 
+    //         let isFirstTime = await firstTimeUserSetup(userSession);
+    //         if (!isFirstTime)//if not firsttime call data sync 
+    //         {
+    //             // call dataSync
+    //             await syncData(userSession);
+    //         }
+    //         dispatch(setPersonGetOtherData(personObj));
+    //         //dispatch(setImportedSpace(await bsGetImportedSpacesObj(userSession)));
+    //         // get app profile
+    //         dispatch(getUserProfileAction(userSession));
+    //         dispatch(getUserMasterProfileAction(userSession));
+    //         // get userFollowers
+    //         dispatch(getMyFollowersAction(null));
+    //         // get userFollowings
+    //         dispatch(getMyFollowingsAction(null));
+    //         dispatch(setLoaderDisplay(false));
+    //         props.history.push("/appdetail");
+    //     }
+    //     catch (error) {
+    //         console.log("Error during login process. login failed");
+    //         dispatch(setLoaderDisplay(false));
+    //     }
+    // }
     const handleChange = (event, newValue) => {
         setValue(newValue)
     };
