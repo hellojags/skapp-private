@@ -177,14 +177,16 @@ const SnUpload = React.forwardRef((props, ref) => {
         try {
           let response;
           if (file.directory) {
-            const directory = file.files.reduce(
-              (acc, file) => ({ ...acc, [getRelativeFilePath(file)]: file }),
-              {}
-            );
+
+            const directory = file.files.reduce((accumulator, file) => {
+              const path = getRelativeFilePath(file);
+        
+              return { ...accumulator, [path]: file };
+            }, {});
 
             response = await client.uploadDirectory(
               directory,
-              encodeURIComponent(file.name),
+              getRootDirectory(file.files[0]),
               { onUploadProgress }
             );
           } else {
