@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Box, InputBase } from '@material-ui/core'
 import { useHistory } from "react-router-dom";
 import { fade, makeStyles } from '@material-ui/core/styles'
@@ -9,6 +9,7 @@ import SubmitBtn from '../AppsComp/SubmitBtn'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import HostingItem from './HostingItem'
 import AddNewSite from './AddNewSiteBtn'
+import { getMyHostedApps } from '../../service/SnSkappService';
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -133,6 +134,21 @@ function Hosting() {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     let history = useHistory();
+
+    const [hostedAppIdList, setHostedAppIdList] = useState([]);
+    
+    const loadHostedApps = async ()=> {
+        const hostedAppLidList = await getMyHostedApps();
+        setHostedAppIdList(hostedAppLidList);
+    };
+
+    useEffect(() => {
+        async function callLoadHostedApp() {
+            await loadHostedApps();
+        }
+        callLoadHostedApp();
+    }, []);
+
     return (
 
         <Fragment >
