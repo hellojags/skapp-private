@@ -50,7 +50,7 @@
     "serialize-to-js": "^3.1.1",
     "rxjs": "^6.6.3",
     "skyid": "0.0.4",
-    "skynet-js": "^2.9.0",
+    "skynet-js": "3.0.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "web-vitals": "^0.2.4",
