@@ -29,7 +29,8 @@ import {
   SKYSPACE_IDX_FILEPATH,
   SKYSPACE_PATH,
   SUCCESS,
-  USERSETTINGS_FILEPATH
+  USERSETTINGS_FILEPATH,
+  HOSTED_APP_IDS_DB_KEY
 } from '../utils/SnConstants';
 import {
   getAllItemsFromIDB,
@@ -38,7 +39,7 @@ import {
   setJSONinIDB,
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
-import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys } from './SnSkynet'
+import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent } from './SnSkynet'
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
 
@@ -136,10 +137,18 @@ export const getDefaultAppStore = () => { }
 // ### Hosting Functionality ###
 
 // get my all hosted apps. Returns List of JSONS
-export const getMyHostedApps = async (appIds) => { }
+export const getMyHostedApps = async (appIds) => {
+  try {
+    const hostedAppIdList = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, {store: IDB_STORE_SKAPP});
+    return hostedAppIdList?.data;
+  } catch (err) {
+    console.log(err);
+  }
+ }
 
 //Update published app data
 export const setMyHostedApp = async (appJSON, previousId) => { 
+  const hostedAppIdList = await getMyHostedApps() || [];
   let history;
   const ts = new Date().getTime();
   const id = generateSkappId();
@@ -160,6 +169,8 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     ts
   };
   await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, {store: IDB_STORE_SKAPP});
+  await putFile(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], {store: IDB_STORE_SKAPP});
+  return;
 }
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
