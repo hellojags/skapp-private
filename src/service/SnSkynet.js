@@ -170,10 +170,18 @@ export const getContent = async (publicKey, dataKey, options) => {
   }
 }
 
+// TODO: implement actual logic
+export function getKeys(props){
+  return {
+    publicKey : "ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b",
+    privateKey : "9be0a30c58ca2426f0d4f9d1dc81367ff1eb701a58b7d6c262192fde881528d4ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b"
+  };
+}
+
 // sets JSON file in SkyDB
 export const putFile = async (publicKey, dataKey, content, options) => {
    // fetch private key from localstorage
-   const privateKey = "";
+   const privateKey = getKeys().privateKey;
   try {
     // get previous skylink 
     // create linked list to track history

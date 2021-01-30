@@ -38,18 +38,13 @@ import {
   setJSONinIDB,
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
-import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed } from './SnSkynet'
+import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys } from './SnSkynet'
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
 
 // TODO: implement actual logic
 function generateSkappId(prop){
   return new Date().getTime();
-}
-
-// TODO: implement actual logic
-function getPublicKey(props){
-  return "antares_va_tech";
 }
 
 // This JS file will list app methods consumed by components
@@ -164,7 +159,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     },
     ts
   };
-  await putFile(getPublicKey(), `hosted${id}`, hostedAppJSON);
+  await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, {store: IDB_STORE_SKAPP});
 }
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
