@@ -135,11 +135,11 @@ function Hosting() {
     const classes = useStyles()
     let history = useHistory();
 
-    const [hostedAppIdList, setHostedAppIdList] = useState([]);
+    const [hostedAppListObj, setHostedAppListObj] = useState();
     
     const loadHostedApps = async ()=> {
-        const hostedAppLidList = await getMyHostedApps();
-        setHostedAppIdList(hostedAppLidList);
+        const hostedAppListObj = await getMyHostedApps([]);
+        setHostedAppListObj(hostedAppListObj);
     };
 
     useEffect(() => {

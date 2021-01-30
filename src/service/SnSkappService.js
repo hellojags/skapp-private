@@ -137,10 +137,25 @@ export const getDefaultAppStore = () => { }
 // ### Hosting Functionality ###
 
 // get my all hosted apps. Returns List of JSONS
+/**
+ * 
+ * @param { Array } appIds[] Optional. Do not pass argument to get only the list of IDs. Pass a blank array to get list of all hosted apps. 
+ * Pass array with values in it get app list of the provided hosted apps.
+ * 
+ *
+ */
 export const getMyHostedApps = async (appIds) => {
+  const hostedAppIdList = {appIdList: [], appDetailsList: {}}
   try {
-    const hostedAppIdList = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, {store: IDB_STORE_SKAPP});
-    return hostedAppIdList?.data;
+    if (appIds == null || appIds.length === 0) {
+      const { data=[] } = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, {store: IDB_STORE_SKAPP});
+      hostedAppIdList.appIdList=data;
+      appIds = appIds?.length === 0 ? data : appIds;
+    }
+    appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
+      hostedAppIdList.appDetailsList[appId] = (await getContent(getKeys().publicKey, `hosted${appId}`, {store: IDB_STORE_SKAPP})).data;
+    }));
+    return hostedAppIdList;
   } catch (err) {
     console.log(err);
   }
@@ -148,13 +163,14 @@ export const getMyHostedApps = async (appIds) => {
 
 //Update published app data
 export const setMyHostedApp = async (appJSON, previousId) => { 
-  const hostedAppIdList = await getMyHostedApps() || [];
-  let history;
+  const hostedAppIdList = (await getMyHostedApps()).appIdList || [];
+  let history = {
+    ts:  appJSON.skylink
+  };
   const ts = new Date().getTime();
   const id = generateSkappId();
-  if (previousId) {
-    let { content: {history, skylink} } = await getMyHostedApps(previousId);
-    history[ts]=skylink;
+  if (previousId) { // TODO: write logic when working from deploy screen
+    let { content: {prevHistory, prevSkylink} } = (await getMyHostedApps(previousId)).appDetailsList[previousId];
   }
   const hostedAppJSON = {
     "$type": "skapp",
