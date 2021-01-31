@@ -163,21 +163,26 @@ export const getMyHostedApps = async (appIds) => {
 
 //Update published app data
 export const setMyHostedApp = async (appJSON, previousId) => { 
+
   const hostedAppIdList = (await getMyHostedApps()).appIdList || [];
-  let history = {
-    ts:  appJSON.skylink
-  };
   const ts = new Date().getTime();
-  const id = generateSkappId();
-  if (previousId) { // TODO: write logic when working from deploy screen
-    let { content: {prevHistory, prevSkylink} } = (await getMyHostedApps(previousId)).appDetailsList[previousId];
+  let history = {};
+  history[ts] = appJSON.skylink;
+  const id = previousId ? previousId : generateSkappId();
+  let appVersion = "1";
+  let previousApp;
+  if (previousId) {
+    previousApp = (await getMyHostedApps([previousId])).appDetailsList[previousId];
+    appVersion = parseInt(previousApp.version) + 1;
+    history = {...previousApp.content.history, ...history};
   }
   const hostedAppJSON = {
     "$type": "skapp",
     "$subType": "hosted",
+    "createdTs": previousApp ? previousApp.createdTs : ts,
     id,
-    "version": "1",
-    "prevSkylink": history ? history[ts] : null,
+    "version": appVersion,
+    "prevSkylink": previousApp ? previousApp.content.skylink : null,
     "content": {
         ...appJSON,
         history
@@ -186,7 +191,8 @@ export const setMyHostedApp = async (appJSON, previousId) => {
   };
   await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, {store: IDB_STORE_SKAPP});
   await putFile(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], {store: IDB_STORE_SKAPP});
-  return;
+
+  return hostedAppJSON;
 }
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink

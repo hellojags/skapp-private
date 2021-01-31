@@ -9,9 +9,11 @@ import { ReactComponent as ShareIcon } from '../../assets/img/icons/shareSite.sv
 import styles from '../../assets/jss/hosting/HostingItemStyle'
 import { skylinkToUrl } from '../../utils/SnUtility'
 import moment from 'moment'
+import { useHistory } from 'react-router-dom'
 const useStyles = makeStyles(styles)
 const HostingItem = ({ ActiveSite, app }) => {
     const classes = useStyles();
+    let history = useHistory();
     const appContent = app.content;
     return (
         <Box display="flex" className={classes.root} position="relative">
@@ -56,7 +58,7 @@ const HostingItem = ({ ActiveSite, app }) => {
                     <Button className={classes.editBtn}>
                         <EditIcon />
                     </Button>
-                    <Button className={classes.manageBtn}>
+                    <Button className={classes.manageBtn} onClick={()=>history.push(`/deploysite/${app.id}`)}>
                         <FolderIcon />
                         <span>Manage Deployment</span>
                         <ChevronRightOutlinedIcon />

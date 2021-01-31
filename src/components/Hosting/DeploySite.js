@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem, Typography, FormGroup, FormControlLabel } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -16,6 +16,8 @@ import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg
 import { DropzoneArea } from 'material-ui-dropzone';
 import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
 import { IOSSwitch } from "./Switch";
+import { useParams } from 'react-router-dom';
+import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -24,11 +26,22 @@ const DeploySite = (props) => {
 
     const uploadEleRef = createRef();
     const dropZoneRef = createRef();
+    let { appId } = useParams();
 
     const [isFileUpload, setIsFileUpload] = useState(false);
-
+    const [appDetail, setAppDetail] = useState();
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
+    useEffect(() => {
+        loadAppDetail();
+    }, []);
+
+
+    const loadAppDetail = async ()=> {
+        const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
+        setAppDetail(appDetail);
+        return appDetail;
+    };
     const copyToClipboard = (url) => {
         navigator.clipboard.writeText(url);
     };
@@ -37,7 +50,17 @@ const DeploySite = (props) => {
         evt.preventDefault();
         evt.stopPropagation();
         uploadEleRef.current.gridRef.current.click();
-    }
+    };
+
+    const updateHostedApp = async (obj) => {
+        let currAppDetail = appDetail;
+        if (currAppDetail==null) {
+            currAppDetail = await loadAppDetail();
+        }
+        currAppDetail.content.skylink = obj.skylink;
+        const newAppDetail = await setMyHostedApp(currAppDetail.content, currAppDetail.id);
+        setAppDetail(newAppDetail);
+    };
 
     return (
         <Box >
@@ -169,7 +192,7 @@ const DeploySite = (props) => {
                                         source={UPLOAD_SOURCE_DEPLOY}
                                         ref={uploadEleRef}
                                         directoryMode={!isFileUpload}
-                                        onUpload={(obj) => console.log(obj)}
+                                        onUpload={updateHostedApp}
                                     />
 
                                 </div>

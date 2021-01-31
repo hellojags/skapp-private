@@ -143,10 +143,7 @@ function Hosting() {
     };
 
     useEffect(() => {
-        async function callLoadHostedApp() {
-            await loadHostedApps();
-        }
-        callLoadHostedApp();
+        loadHostedApps();
     }, []);
 
     return (
@@ -197,7 +194,7 @@ function Hosting() {
 
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}
-                            onClick={()=>history.push("/deploysite")}>
+                            onClick={()=>history.push("/submitsite")}>
                             Add Site
                     </SubmitBtn>
                     </Box>
@@ -209,7 +206,7 @@ function Hosting() {
                     (Object.keys(hostedAppListObj.appDetailsList)).map((appId, idx)=> 
                         <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]}/>
                     )}
-                <AddNewSite onClick={()=>history.push("/deploysite")}/>
+                <AddNewSite onClick={()=>history.push("/submitsite")}/>
             </Box>
 
         </Fragment>

@@ -48,7 +48,7 @@ const SnRouter = (props) => (
                 <Hosting />
             </Route>
             <Route exact path='/submitsite'>
-                <SubmitNewSite />
+                <AddNewSite />
             </Route>
             <Route exact path='/domains'>
                 <Domains />
@@ -68,7 +68,7 @@ const SnRouter = (props) => (
             <Route exact path='/settings'>
                 <Settings />
             </Route>
-            <Route exact path='/deploysite'>
+            <Route exact path='/deploysite/:appId'>
                 <DeploySite />
             </Route>
             <Route exact path='/apps'>
