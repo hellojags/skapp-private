@@ -9,7 +9,7 @@ export const SnTextInput = ({ label, className, showError, ...props }) => {
       <label htmlFor={props.id || props.name}>{label}</label>
       <input className={className} {...field} {...props} />
       {(showError ?? true) && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="required-field">{meta.error}</div>
       ) : null}
     </>
   );
@@ -55,7 +55,7 @@ export const SnSelect1 = ({ label, className, showError, options, ...props }) =>
       />
       </> 
       {(showError ?? true) && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="required-field">{meta.error}</div>
       ) : <></>}
     </>
   );
@@ -77,7 +77,7 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
       />
 
       {(showError ?? true) && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="required-field">{meta.error}</div>
       ) : <></>}
     </div>
   );

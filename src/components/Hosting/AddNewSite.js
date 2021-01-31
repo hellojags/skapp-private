@@ -75,13 +75,13 @@ const reactSelectStyles = {
 };
 
 const formikObj = {
-    appName: ['', Yup.string().required('Required')],
-    storageGateway: ['', Yup.string().required('Required')],
-    hns: ['', Yup.string().required('Required')],
-    skylink: ['', Yup.string().required('Required')],
-    defaultPath: ['', Yup.string().required('Required')],
-    portalMinVersion: ['', Yup.string().required('Required')],
-    sourceCode: ['', Yup.string().required('Required')],
+    appName: ['', Yup.string().required('This field is required')],
+    storageGateway: ['', Yup.string().required('This field is required')],
+    hns: ['', Yup.string().required('This field is required')],
+    skylink: ['', Yup.string().required('This field is required')],
+    defaultPath: ['', Yup.string().required('This field is required')],
+    portalMinVersion: ['', Yup.string().required('This field is required')],
+    sourceCode: ['', Yup.string().required('This field is required')],
     imgSkylink: [''],
     imgThumbnailSkylink: ['']
 };
@@ -137,6 +137,8 @@ export default function AddNewSite() {
             <Formik
                 initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
                 validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
+                validateOnChange={false}
+                validateOnBlur={false}
                 onSubmit={submitForm}>
                 {formik => (<form onSubmit={formik.handleSubmit}>
                     <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>

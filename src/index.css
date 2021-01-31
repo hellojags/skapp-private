@@ -262,3 +262,8 @@ border-top: 0;
 .d-none {
   display: none !important;
 }
+.required-field{
+  color: red;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
