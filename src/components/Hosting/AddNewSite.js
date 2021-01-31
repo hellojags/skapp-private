@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Box, Button, makeStyles, Grid, FormGroup, FormControlLabel, Typography } from '@material-ui/core';
 
 import Select from 'react-select';
@@ -21,7 +21,8 @@ import { useHistory } from 'react-router-dom';
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUploadList } from '../../redux/action-reducers-epic/SnUploadListAction';
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
@@ -90,6 +91,7 @@ export default function AddNewSite() {
     const [selectedOption, setSelectedOption] = useState(null);
     const classes = useStyles();
     let history = useHistory();
+    const dispatch = useDispatch();
     const uploadEleRef = createRef();
     const imgUploadEleRef = createRef();
     const dropZoneRef = createRef();
@@ -97,9 +99,22 @@ export default function AddNewSite() {
     const [isFileUpload, setIsFileUpload] = useState(false);
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
+    useEffect(() => {
+        return () => {
+            snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length = 0;
+            snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING_IMG].length = 0;
+            dispatch(setUploadList(snUploadListStore));
+        };
+    }, []);
 
     const submitForm = async (values) => {
         await setMyHostedApp(values);
+        history.push("/hosting");
+    };
+
+    const onCancel = async (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
         history.push("/hosting");
     };
 
@@ -128,7 +143,7 @@ export default function AddNewSite() {
                     <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
                         <h1 className={classes.h1}>Submit New Site</h1>
                         <Box className={classes.btnBox}>
-                            <Button className={classes.cancelBtn}>Cancel </Button>
+                            <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
                             <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
                         </Box>
                     </Box>
