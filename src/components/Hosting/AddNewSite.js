@@ -14,6 +14,7 @@ import { ReactComponent as ImgIcon } from '../../assets/img/icons/image.svg';
 import { ReactComponent as LinkIcon } from '../../assets/img/icons/attachment-link.9.svg';
 import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-upload-outline.svg';
 import { SnTextInput, SnSelect } from '../Utils/SnFormikControlls';
+import { skylinkToUrl } from "../../utils/SnUtility";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
 import { setMyHostedApp } from '../../service/SnSkappService';
 import { useHistory } from 'react-router-dom';
@@ -80,7 +81,9 @@ const formikObj = {
     defaultPath: ['', Yup.string().required('Required')],
     portalMinVersion: ['', Yup.string().required('Required')],
     sourceCode: ['', Yup.string().required('Required')],
-    skylink: ['', Yup.string().required('Required')]
+    skylink: ['', Yup.string().required('Required')],
+    imgSkylink: [''],
+    imgThumbnailSkylink: ['']
 };
 
 export default function AddNewSite() {
@@ -88,9 +91,11 @@ export default function AddNewSite() {
     const classes = useStyles();
     let history = useHistory();
     const uploadEleRef = createRef();
+    const imgUploadEleRef = createRef();
     const dropZoneRef = createRef();
 
     const [isFileUpload, setIsFileUpload] = useState(false);
+    const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
 
     const submitForm = async (values) => {
@@ -98,13 +103,16 @@ export default function AddNewSite() {
         history.push("/hosting");
     };
 
-    const handleDropZoneClick = (evt) => {
+    const handleDropZoneClick = (evt, dropZoneRef) => {
         evt.preventDefault();
         evt.stopPropagation();
-        uploadEleRef.current.gridRef.current.click();
+        dropZoneRef.current.gridRef.current.click();
     };
 
-    const snUploadListStore = useSelector((state) => state.snUploadListStore);
+    const handleImgUpload = (obj, formik) => {
+        formik.setFieldValue("imgSkylink", obj.skylink, true);
+        formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true)
+    };
 
     const copyToClipboard = (url) => {
         navigator.clipboard.writeText(url);
@@ -127,8 +135,28 @@ export default function AddNewSite() {
                     <Box component="form">
                         <Box>
                             <label className={classes.label}>Site Logo</label>
-                            <div className={classes.siteLogo}>
-                                <ImgIcon />
+                            <div className="d-none">
+                                <SnUpload
+                                    name="files"
+                                    source={UPLOAD_SOURCE_DEPLOY}
+                                    ref={imgUploadEleRef}
+                                    directoryMode={false}
+                                    onUpload={(obj) => handleImgUpload(obj, formik)}
+                                />
+                            </div>
+                            <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                {formik.values.imgThumbnailSkylink.trim()==="" && <ImgIcon />}
+                                {formik.values.imgThumbnailSkylink.trim()!=="" && <img
+                                    alt="app"
+                                    src={skylinkToUrl(formik.values.imgThumbnailSkylink)}
+                                    style={{
+                                        width: "250px",
+                                        height: "150px",
+                                        // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                                    }}
+                                    onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                                    name="1"
+                                />}
                             </div>
                             <div className={classes.inputGuide}>
                                 Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
@@ -221,7 +249,7 @@ export default function AddNewSite() {
                                                 filesLimit={100}
                                                 showAlerts={false}
                                                 dropzoneText={
-                                                    <div id="dropzone-text" onClick={handleDropZoneClick}>
+                                                    <div id="dropzone-text" onClick={(evt) => handleDropZoneClick(evt, uploadEleRef)}>
                                                         <div><UploadIcon /></div>
 
                                                         <div style={{ color: '#5C757D' }}>
@@ -240,7 +268,7 @@ export default function AddNewSite() {
                                 </Grid>
                                 <Grid item sm={12} xs={12}>
                                     {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_DEPLOY] && snUploadListStore[UPLOAD_SOURCE_DEPLOY].length > 0 && snUploadListStore[UPLOAD_SOURCE_DEPLOY]
-                                        .filter((fileObj, idx)=>idx===0)
+                                        .filter((fileObj, idx) => idx === 0)
                                         .map((fileObj) => (
                                             <Grid
                                                 item
