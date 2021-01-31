@@ -7,24 +7,39 @@ import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined'
 import { ReactComponent as FolderIcon } from '../../assets/img/icons/folderIcon.svg'
 import { ReactComponent as ShareIcon } from '../../assets/img/icons/shareSite.svg'
 import styles from '../../assets/jss/hosting/HostingItemStyle'
+import { skylinkToUrl } from '../../utils/SnUtility'
+import moment from 'moment'
 const useStyles = makeStyles(styles)
-const HostingItem = ({ ActiveSite }) => {
-    const classes = useStyles()
+const HostingItem = ({ ActiveSite, app }) => {
+    const classes = useStyles();
+    const appContent = app.content;
     return (
         <Box display="flex" className={classes.root} position="relative">
             <div className={classes.HostingImgContainer}>
-                <img src={HostingImg} alt="" />
+                {(appContent.imgThumbnailSkylink==null || appContent.imgThumbnailSkylink.trim()==="") && <img src={HostingImg} alt="" />}
+                {appContent.imgThumbnailSkylink!= null && appContent.imgThumbnailSkylink.trim()!=="" && 
+                <img alt="app"
+                    src={skylinkToUrl(appContent.imgThumbnailSkylink)}
+                    style={{
+                        width: "250px",
+                        height: "150px",
+                        // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                    }}
+                    name="1"
+                />}
             </div>
             <div className={classes.detailsCol}>
-                <h2 className={classes.h2}>SkySpaces.io</h2>
+                <h2 className={classes.h2}>{appContent.appName}</h2>
                 <Box display="flex" alignItems="center" className={classes.verisonAndLink}>
-                    <p>skyspacesio.skapp.io
+                    <p>{appContent.hns}
                         <ShareIcon />
                     </p>
-                    <span>version:1.0</span>
+                    <span>version:{app.version}</span>
                 </Box>
                 <Box className={classes.updateText}>
-                    Last Updated: 05:55:00 AM, October 05, 2020
+                    Last Updated: {moment(app.ts).format(
+                        "h:mm:ss A, MMMM D, YYYY"
+                      )}
                 </Box>
                 <Box display='flex' className={classes.btnContainer}>
                     {

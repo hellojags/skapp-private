@@ -82,7 +82,6 @@ const formikObj = {
     defaultPath: ['', Yup.string().required('Required')],
     portalMinVersion: ['', Yup.string().required('Required')],
     sourceCode: ['', Yup.string().required('Required')],
-    skylink: ['', Yup.string().required('Required')],
     imgSkylink: [''],
     imgThumbnailSkylink: ['']
 };

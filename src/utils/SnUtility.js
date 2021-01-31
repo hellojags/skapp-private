@@ -125,3 +125,9 @@ export const skylinkToUrl = (skyLink, userSetting) => {
 
 export const hashFromSkylinkUploadResponse = (response) => response.skylink.replace("sia:", "");
 
+export const launchSkyLink = (skyLink, userSetting) => {
+  const link = skylinkToUrl(skyLink, userSetting);
+  if (link !== "") {
+    window.open(link, "_blank");
+  }
+};

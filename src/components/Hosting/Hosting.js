@@ -205,8 +205,10 @@ function Hosting() {
 
             </Box>
             <Box marginTop="1rem">
-                <HostingItem ActiveSite={true} />
-                <HostingItem ActiveSit={false} />
+                {hostedAppListObj?.appDetailsList &&
+                    (Object.keys(hostedAppListObj.appDetailsList)).map((appId, idx)=> 
+                        <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]}/>
+                    )}
                 <AddNewSite onClick={()=>history.push("/deploysite")}/>
             </Box>
 
