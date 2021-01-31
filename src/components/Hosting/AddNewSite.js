@@ -19,7 +19,7 @@ import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFo
 import { setMyHostedApp } from '../../service/SnSkappService';
 import { useHistory } from 'react-router-dom';
 import SnUpload from '../../uploadUtil/SnUpload';
-import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
+import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { useSelector } from 'react-redux';
 
@@ -138,7 +138,7 @@ export default function AddNewSite() {
                             <div className="d-none">
                                 <SnUpload
                                     name="files"
-                                    source={UPLOAD_SOURCE_DEPLOY}
+                                    source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
                                     ref={imgUploadEleRef}
                                     directoryMode={false}
                                     onUpload={(obj) => handleImgUpload(obj, formik)}
@@ -220,7 +220,7 @@ export default function AddNewSite() {
                                         <div className="d-none">
                                             <SnUpload
                                                 name="files"
-                                                source={UPLOAD_SOURCE_DEPLOY}
+                                                source={UPLOAD_SOURCE_NEW_HOSTING}
                                                 ref={uploadEleRef}
                                                 directoryMode={!isFileUpload}
                                                 onUpload={(obj) => formik.setFieldValue("skylink", obj.skylink, true)}
@@ -267,7 +267,7 @@ export default function AddNewSite() {
                                     </Box>
                                 </Grid>
                                 <Grid item sm={12} xs={12}>
-                                    {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_DEPLOY] && snUploadListStore[UPLOAD_SOURCE_DEPLOY].length > 0 && snUploadListStore[UPLOAD_SOURCE_DEPLOY]
+                                    {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length > 0 && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING]
                                         .filter((fileObj, idx) => idx === 0)
                                         .map((fileObj) => (
                                             <Grid

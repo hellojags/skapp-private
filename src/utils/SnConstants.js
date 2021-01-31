@@ -113,5 +113,6 @@ export const IGNORE_PATH_IN_BACKUP = [USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILE
 export const authOrigin = "" // browser.blockstack.org is authenticator
 // (process.env.APP_ENV === 'development') ? 'http://localhost:3000' : "https://skyspaces.io";
 export const UPLOAD_SOURCE_DEPLOY = "UPLOAD_SOURCE_DEPLOY";
-
+export const UPLOAD_SOURCE_NEW_HOSTING = "UPLOAD_SOURCE_NEW_HOSTING";
+export const UPLOAD_SOURCE_NEW_HOSTING_IMG = "UPLOAD_SOURCE_NEW_HOSTING_IMG";
 export const HOSTED_APP_IDS_DB_KEY = "hostedSkapps";
