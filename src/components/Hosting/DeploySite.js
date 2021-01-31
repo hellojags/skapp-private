@@ -187,7 +187,7 @@ const DeploySite = (props) => {
                                         mozdirectory={true}
                                         maxFileSize={210000000}
                                         // onDelete={delImg}
-                                        filesLimit={100}
+                                        filesLimit={1}
                                         showAlerts={false}
                                         dropzoneText={
                                             <div id="dropzone-text" onClick={handleDropZoneClick}>

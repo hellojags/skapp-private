@@ -197,7 +197,7 @@ function Hosting() {
 
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}
-                            onClick={()=>history.push("/addnewsite")}>
+                            onClick={()=>history.push("/deploysite")}>
                             Add Site
                     </SubmitBtn>
                     </Box>
@@ -207,7 +207,7 @@ function Hosting() {
             <Box marginTop="1rem">
                 <HostingItem ActiveSite={true} />
                 <HostingItem ActiveSit={false} />
-                <AddNewSite onClick={()=>history.push("/addnewsite")}/>
+                <AddNewSite onClick={()=>history.push("/deploysite")}/>
             </Box>
 
         </Fragment>
