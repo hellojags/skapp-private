@@ -68,7 +68,7 @@ const SnRouter = (props) => (
             <Route exact path='/settings'>
                 <Settings />
             </Route>
-            <Route exact path='/deploysite/:appId'>
+            <Route exact path='/deploysite/:appId?'>
                 <DeploySite />
             </Route>
             <Route exact path='/apps'>
