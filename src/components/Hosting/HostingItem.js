@@ -10,11 +10,21 @@ import styles from '../../assets/jss/hosting/HostingItemStyle'
 import { skylinkToUrl } from '../../utils/SnUtility'
 import moment from 'moment'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setSelectedHostedApp } from '../../redux/action-reducers-epic/SnSelectedHostedAppAction'
 const useStyles = makeStyles(styles)
 const HostingItem = ({ ActiveSite, app }) => {
     const classes = useStyles();
     let history = useHistory();
+    const dispatch = useDispatch();
+    
     const appContent = app.content;
+
+    const onManageDeployment = (evt) => {
+        dispatch(setSelectedHostedApp(app.id));
+        history.push(`/deploysite/${app.id}`);
+    };
+
     return (
         <Box display="flex" className={classes.root} position="relative">
             <div className={classes.HostingImgContainer}>
@@ -58,7 +68,7 @@ const HostingItem = ({ ActiveSite, app }) => {
                     <Button className={classes.editBtn}>
                         <EditIcon />
                     </Button>
-                    <Button className={classes.manageBtn} onClick={()=>history.push(`/deploysite/${app.id}`)}>
+                    <Button className={classes.manageBtn} onClick={onManageDeployment}>
                         <FolderIcon />
                         <span>Manage Deployment</span>
                         <ChevronRightOutlinedIcon />

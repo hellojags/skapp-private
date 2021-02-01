@@ -31,6 +31,7 @@ const DeploySite = (props) => {
     const [isFileUpload, setIsFileUpload] = useState(false);
     const [appDetail, setAppDetail] = useState();
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
+    const snSelectedHostedAppStore = useSelector((state) => state.snSelectedHostedAppStore);
 
     useEffect(() => {
         loadAppDetail();
@@ -38,6 +39,9 @@ const DeploySite = (props) => {
 
 
     const loadAppDetail = async ()=> {
+        if (appId==null) {
+            appId = snSelectedHostedAppStore;
+        }
         const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
         setAppDetail(appDetail);
         return appDetail;
