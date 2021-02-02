@@ -211,6 +211,7 @@ function Hosting() {
                 {hostedAppListObj?.appDetailsList &&
                     (Object.keys(hostedAppListObj.appDetailsList))
                     .filter((appId)=>filterApps(searchStr, hostedAppListObj.appDetailsList[appId]))
+                    .sort((appId1, appId2)=>(hostedAppListObj.appDetailsList[appId2].ts-hostedAppListObj.appDetailsList[appId1].ts))
                     .map((appId, idx) =>
                         <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
