@@ -154,5 +154,5 @@ export const flattenObject = (obj) => {
  */
 export const isStrInObj = (searchStr, obj) => {
   const flattenedObj = flattenObject(obj);
-  return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toLowerCase().includes(searchStr.toLowerCase()));
+  return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toString().toLowerCase().includes(searchStr.toLowerCase()));
 };

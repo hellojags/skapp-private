@@ -11,6 +11,7 @@ import HostingItem from './HostingItem'
 import AddNewSite from './AddNewSiteBtn'
 import { getMyHostedApps } from '../../service/SnSkappService';
 import SnInfoModal from '../Modals/SnInfoModal';
+import { isStrInObj } from '../../utils/SnUtility';
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -137,7 +138,7 @@ function Hosting() {
     let history = useHistory();
 
     const [hostedAppListObj, setHostedAppListObj] = useState();
-
+    const [searchStr, setSearchStr] = useState("");
 
     useEffect(() => {
         loadHostedApps();
@@ -148,9 +149,7 @@ function Hosting() {
         setHostedAppListObj(hostedAppListObj);
     };
 
-    const filterApps = (searchStr, app) => {
-
-    };
+    const filterApps = (searchStr, app) => isStrInObj(searchStr, app);
 
     return (
 
@@ -192,6 +191,7 @@ function Hosting() {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            onChange={(evt)=>setSearchStr(evt.target.value)}
                         />
                     </div>}
                     <Box>
@@ -209,7 +209,9 @@ function Hosting() {
             </Box>
             <Box marginTop="1rem">
                 {hostedAppListObj?.appDetailsList &&
-                    (Object.keys(hostedAppListObj.appDetailsList)).map((appId, idx) =>
+                    (Object.keys(hostedAppListObj.appDetailsList))
+                    .filter((appId)=>filterApps(searchStr, hostedAppListObj.appDetailsList[appId]))
+                    .map((appId, idx) =>
                         <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
                 <AddNewSite onClick={() => history.push("/submitsite")} />
