@@ -39,7 +39,7 @@ import {
   setJSONinIDB,
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
-import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent } from './SnSkynet'
+import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent, getRegistryEntryURL } from './SnSkynet'
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
 
@@ -199,7 +199,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
 export const setHNSEntry = (hnsName, skylink) => { }
 
 //get HNS URL for TXT record
-export const getHNSSkyDBURL = (hnsName) => { }
+export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getKeys().publicKey, hnsName);
 
 
 export const initializeLocalDatabaseFromBackup = async () => {

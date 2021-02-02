@@ -16,13 +16,14 @@ import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-uploa
 import { SnTextInput, SnSelect } from '../Utils/SnFormikControlls';
 import { skylinkToUrl } from "../../utils/SnUtility";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
-import { setMyHostedApp } from '../../service/SnSkappService';
+import { getHNSSkyDBURL, setMyHostedApp } from '../../service/SnSkappService';
 import { useHistory } from 'react-router-dom';
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUploadList } from '../../redux/action-reducers-epic/SnUploadListAction';
+import SnInfoModal from '../Modals/SnInfoModal';
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
@@ -94,9 +95,15 @@ export default function AddNewSite() {
     const uploadEleRef = createRef();
     const imgUploadEleRef = createRef();
     const dropZoneRef = createRef();
+    const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
     const [isFileUpload, setIsFileUpload] = useState(false);
-    const snUploadListStore = useSelector((state) => state.snUploadListStore);
+
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoModalTitle, setInfoModalTitle] = useState("");
+    const [infoModalContent, setInfoModalContent] = useState("");
+    const [infoModalShowCopyToClipboard, setInfoModalShowCopyToClipboard] = useState(false);
+    const [infoModalClipboardTooltip, setInfoModalClipboardTooltip] = useState("");
 
     useEffect(() => {
         return () => {
@@ -108,8 +115,27 @@ export default function AddNewSite() {
 
     const submitForm = async (values) => {
         await setMyHostedApp(values);
+        const hnsSkyDBURL = getHNSSkyDBURL(values.hns);
+        setInfoModalParams({
+            title: `HNS SkyDB URL`,
+            content: hnsSkyDBURL,
+            showClipboardCopy: true,
+        });
+    };
+
+    const setInfoModalParams = ({title, content, showClipboardCopy=false, clipboardCopyTooltip, open= true}) => {
+        setInfoModalContent(content);
+        setInfoModalTitle(title);
+        setInfoModalShowCopyToClipboard(showClipboardCopy);
+        setInfoModalClipboardTooltip(clipboardCopyTooltip);
+        setShowInfoModal(open);
+    };
+
+    const onInfoModalClose = () => {
+        setInfoModalParams({open: false});
         history.push("/hosting");
     };
+
 
     const onCancel = async (evt) => {
         evt.preventDefault();
@@ -133,12 +159,13 @@ export default function AddNewSite() {
     };
 
     return (
+        <>
         <Box >
             <Formik
                 initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
                 validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
-                validateOnChange={false}
-                validateOnBlur={false}
+                validateOnChange={true}
+                validateOnBlur={true}
                 onSubmit={submitForm}>
                 {formik => (<form onSubmit={formik.handleSubmit}>
                     <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
@@ -359,5 +386,16 @@ export default function AddNewSite() {
                 </form>)}
             </Formik>
         </Box >
+        
+
+        <SnInfoModal
+                open={showInfoModal}
+                onClose={onInfoModalClose}
+                title={infoModalTitle}
+                content={infoModalContent}
+                showClipboardCopy={infoModalShowCopyToClipboard}
+            />
+
+        </>
     )
 };

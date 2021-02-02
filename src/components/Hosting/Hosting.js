@@ -10,6 +10,7 @@ import useWindowDimensions from '../../hooks/useWindowDimensions'
 import HostingItem from './HostingItem'
 import AddNewSite from './AddNewSiteBtn'
 import { getMyHostedApps } from '../../service/SnSkappService';
+import SnInfoModal from '../Modals/SnInfoModal';
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -136,15 +137,20 @@ function Hosting() {
     let history = useHistory();
 
     const [hostedAppListObj, setHostedAppListObj] = useState();
-    
-    const loadHostedApps = async ()=> {
-        const hostedAppListObj = await getMyHostedApps([]);
-        setHostedAppListObj(hostedAppListObj);
-    };
+
 
     useEffect(() => {
         loadHostedApps();
     }, []);
+
+    const loadHostedApps = async () => {
+        const hostedAppListObj = await getMyHostedApps([]);
+        setHostedAppListObj(hostedAppListObj);
+    };
+
+    const filterApps = (searchStr, app) => {
+
+    };
 
     return (
 
@@ -194,7 +200,7 @@ function Hosting() {
 
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}
-                            onClick={()=>history.push("/submitsite")}>
+                            onClick={() => history.push("/submitsite")}>
                             Add Site
                     </SubmitBtn>
                     </Box>
@@ -203,10 +209,10 @@ function Hosting() {
             </Box>
             <Box marginTop="1rem">
                 {hostedAppListObj?.appDetailsList &&
-                    (Object.keys(hostedAppListObj.appDetailsList)).map((appId, idx)=> 
-                        <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]}/>
+                    (Object.keys(hostedAppListObj.appDetailsList)).map((appId, idx) =>
+                        <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
-                <AddNewSite onClick={()=>history.push("/submitsite")}/>
+                <AddNewSite onClick={() => history.push("/submitsite")} />
             </Box>
 
         </Fragment>

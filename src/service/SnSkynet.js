@@ -241,7 +241,7 @@ export const setRegistryEntry = async (dataKey,content,options) => {
   return false
 }
 
-function getRegistryEntryURL(publicKey, dataKey) {
+export function getRegistryEntryURL(publicKey, dataKey) {
   try {
     const url = skynetClient.registry.getEntryUrl(publicKey, dataKey);
     return url;

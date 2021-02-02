@@ -131,3 +131,28 @@ export const launchSkyLink = (skyLink, userSetting) => {
     window.open(link, "_blank");
   }
 };
+
+export const flattenObject = (obj) => {
+  const flattened = {};
+  Object.keys(obj).forEach((key) => {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      Object.assign(flattened, flattenObject(obj[key]));
+    } else {
+      flattened[key] = obj[key]
+    }
+  });
+  return flattened;
+};
+
+/**
+ * 
+ * @param {String} searchStr Required. The string to search for in the object
+ * @param {Object} obj Required. The object in which the searchStr will be searched. 
+ * 
+ * @description Searches for the searchStr in the value of every leaf node of the object. 
+ * The method performs a case agnostic substring search. It returns true id searchStr in null.
+ */
+export const isStrInObj = (searchStr, obj) => {
+  const flattenedObj = flattenObject(obj);
+  return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toLowerCase().includes(searchStr.toLowerCase()));
+};

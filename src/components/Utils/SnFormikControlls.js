@@ -1,14 +1,15 @@
 import React from 'react';
-import { Formik, Form, useField } from 'formik';
+import { Formik, Form, useField, useFormikContext } from 'formik';
 import Select from 'react-select';
 
 export const SnTextInput = ({ label, className, showError, ...props }) => {
   const [field, meta] = useField(props);
+  const { submitCount } = useFormikContext();
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
       <input className={className} {...field} {...props} />
-      {(showError ?? true) && meta.error ? (
+      {(showError ?? true) && submitCount>0 && meta.error ? (
         <div className="required-field">{meta.error}</div>
       ) : null}
     </>
@@ -65,6 +66,7 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
   const [field, meta, helpers] = useField(props);
   const { touched, error, value } = meta;
   const { setValue } = helpers;
+  const { submitCount } = useFormikContext();
 
   return (
     <div>
@@ -76,7 +78,7 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
         styles={reactSelectStyles}
       />
 
-      {(showError ?? true) && meta.error ? (
+      {(showError ?? true) && submitCount>0 && meta.error ? (
         <div className="required-field">{meta.error}</div>
       ) : <></>}
     </div>
