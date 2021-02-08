@@ -347,7 +347,7 @@ export const getUserProfile = async (session) => {
   // let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
   let personObj = null
   const response = await getFile(session.skyid.userId, SKYID_PROFILE_PATH, { skydb: true, })
-  if (response == "" || response == "undefined" ) {
+  if (response == "" || response == undefined ) {
     // file not found
     console.log("Profile not found;, please check your connection and retry")
   } else {

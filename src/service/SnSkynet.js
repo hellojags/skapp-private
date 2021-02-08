@@ -112,9 +112,9 @@ export const getFile = async (publicKey, dataKey, options) => {
       let entryObj = null;
       // Below condition means, we are fetching other user's data
       if (options?.publicKey) {
-        let tempKey = publicKey + "#" + dataKey
+        let tempKey = options.publicKey + "#" + dataKey
         // fetch content from SkyDB
-        entryObj = getFile(options?.publicKey, dataKey, { ...options, contentOnly: false });
+        entryObj = await getContent(options?.publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
         await setJSONinIDB(tempKey, result, { store: IDB_STORE_SKYDB_CACHE, })
       }
@@ -143,7 +143,7 @@ export const getContent = async (publicKey, dataKey, options) => {
     if (publicKey == null) {
       throw new Error("Invalid Keys")
     }
-    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey, null)
+    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey)
     if (entryObj) {
       if (options.contentOnly) {
         // decrypt it

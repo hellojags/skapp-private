@@ -77,7 +77,7 @@ export default function SnLogin(props) {
     // }
     const loginSkyID = async () => {
         skyId.sessionStart();
-        dispatch(setLoaderDisplay(true));
+       // dispatch(setLoaderDisplay(true));
     }
     // const onSkyIdLogout = async () => {
     //     try {
