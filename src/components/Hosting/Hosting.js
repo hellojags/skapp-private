@@ -174,11 +174,11 @@ function Hosting() {
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-                    <Box>
+                    <Box className="d-none temp">
                         <UtilitiesItem />
                     </Box>
 
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={classes.search + " d-none temp"}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -194,7 +194,7 @@ function Hosting() {
                             onChange={(evt)=>setSearchStr(evt.target.value)}
                         />
                     </div>}
-                    <Box>
+                    <Box className="d-none temp">
                         <ListFilter />
                     </Box>
 
