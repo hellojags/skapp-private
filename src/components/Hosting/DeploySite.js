@@ -70,7 +70,7 @@ const DeploySite = (props) => {
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
                 <h1 className={classes.h1}>Deploy</h1>
-                <Box className={classes.btnBox}>
+                <Box className={classes.btnBox + " d-none temp"}>
                     <Button className={classes.settingBtn}>
                         <SettingIcon />
                         Setting
