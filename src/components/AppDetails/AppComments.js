@@ -1,21 +1,21 @@
-import React, { Fragment } from 'react'
-import AppComment from './AppComment'
-import CommentForm from './CommentForm'
+import React, { Fragment } from "react";
+import AppComment from "./AppComment";
+import CommentForm from "./CommentForm";
 
-const AppComments = () => {
-    return (
-        <Fragment>
-            <AppComment />
-            <AppComment />
+const AppComments = ({uid,version}) => {
+  return (
+    <Fragment>
+      <AppComment />
+      {/* <AppComment />
 
-            <AppComment />
+      <AppComment />
 
-            <AppComment />
+      <AppComment />
 
-            <AppComment />
-            <CommentForm />
-        </Fragment>
-    )
-}
+      <AppComment /> */}
+      <CommentForm uid={uid} version={version} />
+    </Fragment>
+  );
+};
 
-export default AppComments
+export default AppComments;

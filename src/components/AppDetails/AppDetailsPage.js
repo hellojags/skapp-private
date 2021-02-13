@@ -1,14 +1,38 @@
-import React from 'react'
-import AppDetailsHeader from './AppDetailsHeader'
-import AppInfo from './AppInfo'
+import React, { useEffect, useState } from "react";
+import AppDetailsHeader from "./AppDetailsHeader";
+import AppInfo from "./AppInfo";
+import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 
 const AppDetailsPage = () => {
-    return (
-        <div>
-            <AppDetailsHeader />
-            <AppInfo />
-        </div>
-    )
-}
+  const { id } = useParams();
 
-export default AppDetailsPage
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getPublishedAppsAction()); 
+  }, []);
+
+  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    if (publishedAppsStore) {
+      let appJSON = publishedAppsStore.get(id);
+      if(appJSON)
+      {
+        setData(appJSON);
+      }
+    }
+  }, [publishedAppsStore, id]); // if id or publishedAppsStore is changing run this method.
+
+  return (
+    <div>
+      <AppDetailsHeader data={data} />
+      <AppInfo data={data}/>
+    </div>
+  );
+};
+
+export default AppDetailsPage;

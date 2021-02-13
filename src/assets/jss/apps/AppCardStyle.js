@@ -64,6 +64,7 @@ const appCardStyle = {
     },
     cardFooterIcon: {
         // width: '17px',
+        cursor:"pointer",
         marginRight: '5px',
         '@media only screen and (max-width: 575px)': {
             marginRight: '0',

@@ -14,6 +14,11 @@ import { composeWithDevTools } from "redux-devtools-extension"
 // import { snMyFollowingsEpic } from "./sn.myFollowings.epic"
 import SnUploadListReducer from "./action-reducers-epic/SnUploadListReducer";
 import snSelectedHostedAppStore from "./action-reducers-epic/SnSelectedHostedAppReducer";
+import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
+import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
+import {snAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
+import {snPublishAppEpic} from "./action-reducers-epic/SnPublishAppEpic";
+
 
 const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
@@ -27,10 +32,14 @@ const rootReducer = combineReducers({
   // snMyFollowers: SnMyFollowers,
   // snMyFollowings: SnMyFollowings,
   snUploadListStore: SnUploadListReducer,
-  snSelectedHostedAppStore
+  snPublishedAppsStore,
+  snAppStatsStore,
+  snSelectedHostedAppStore,
 });
 
 const rootEpic = combineEpics(
+  snAppStatsEpic,
+  snPublishAppEpic,
   // snPersonEpic,
   // logoutPersonEpic,
   // snUserProfileEpic,
@@ -40,10 +49,11 @@ const rootEpic = combineEpics(
 )
 
 const observableMiddleware = createEpicMiddleware()
+observableMiddleware.run(rootEpic);
 const store = createStore(
   rootReducer,
   composeWithDevTools(redux.applyMiddleware(observableMiddleware))
 )
-observableMiddleware.run(rootEpic);
+
 
 export default store;

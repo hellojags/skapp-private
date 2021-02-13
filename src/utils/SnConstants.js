@@ -118,3 +118,11 @@ export const UPLOAD_SOURCE_NEW_HOSTING_IMG = "UPLOAD_SOURCE_NEW_HOSTING_IMG";
 export const HOSTED_APP_IDS_DB_KEY = "hostedSkapps";
 
 export const STORAGE_SELECTED_HOSTED_APP_KEY = "STORAGE_SELECTED_HOSTED_APP_KEY";
+
+
+// Stats Types
+
+export const LIKES = "likes";
+export const FAVORITE = "favoriteFlag";
+export const VIEW_COUNT = "views";
+export const ACCESS_COUNT = "accessCount";

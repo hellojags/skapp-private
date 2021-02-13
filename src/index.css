@@ -1,5 +1,5 @@
 /* @import url("https://use.typekit.net/ykx2tmg.css"); */
-*{
+ *{
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -262,8 +262,29 @@ border-top: 0;
 .d-none {
   display: none !important;
 }
+
+.react-tagsinput-input{
+  padding: 0px !important;
+  margin-top: 0px !important;
+}
+
+#vid img{
+  width: 100%;
+  height: 160px;
+}
+
 .required-field{
   color: red;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+
+.app-content::-webkit-scrollbar {
+  display: none;
+}
+
+.infinite-scroll-component{
+  overflow-x: hidden !important;
+
 }

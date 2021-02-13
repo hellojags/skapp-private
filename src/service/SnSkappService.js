@@ -39,12 +39,15 @@ import {
   setJSONinIDB,
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
+import { uploadFile } from "./SnSkynet"
 import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent, getRegistryEntryURL } from './SnSkynet'
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
+import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../utils/SnConstants";
+import imageCompression from "browser-image-compression";
 
 // TODO: implement actual logic
-function generateSkappId(prop){
+function generateSkappId(prop) {
   return new Date().getTime();
 }
 
@@ -109,22 +112,179 @@ export const setFollowingsJSON = async (followingsJSON, options) => {
 
 // ### Published Apps Functionality ###
 
-// get my all published apps. Returns List of JSONS. if appIds (List) is empty or null, return all apps JSON 
-export const getMyPublishedApps = (appIds) => { }
-//Update published app data
-export const setMyPublishedApp = (appJSON) => { }
+export const getPublishedApp = async (appId) => {
+  let publishedAppJSON = await getJSONfromIDB(appId, { store: IDB_STORE_SKAPP, });
+  return publishedAppJSON;
+}
+
+export const getAllPublishedApps = async () => {
+  let publishedAppsMap = new Map();
+  let publishedAppsIdList = await getJSONfromIDB(`publishedApps`, { store: IDB_STORE_SKAPP, });
+  if (publishedAppsIdList) {
+    for (let appId of publishedAppsIdList) {
+      let appJSON = await getJSONfromIDB(appId, { store: IDB_STORE_SKAPP, });
+      publishedAppsMap.set(appId, appJSON);
+    }
+    console.log("getAllPublishedApps: " + publishedAppsMap);
+    return publishedAppsMap;
+  }
+}
+
+//Update published app and returns list of all Published apps by loggedin User.
+export const publishApp = async (appJSON) => {
+  let apps = await setJSONinIDB(`publishedApps`, appJSON, { store: IDB_STORE_SKAPP });
+  if (apps) {
+    apps.push(appJSON.id);
+  }
+  else {
+    apps = [appJSON.id];
+  }
+  // update Index value
+  await setJSONinIDB(`publishedApps`, apps, { store: IDB_STORE_SKAPP });
+  // update existing published app
+  // add additional logic to link previously published App
+  await setJSONinIDB(appJSON.appId, appJSON, { store: IDB_STORE_SKAPP });
+  const publishedAppsMap = await getAllPublishedApps();
+  return publishedAppsMap;
+}
+
+
 
 // ### Apps Stats and comments Functionality ###
+export const setAppStats = async (statsType, value, appId) => {
+  let appStatsJSON = null;
+  try {
+    // Get Data from IDX-DB
+    let appStatsJSON = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+    // Update App Stats
+    if (appStatsJSON) {
+      if (statsType === LIKES) {
+        appStatsJSON.liked = value;
+      } if (statsType === FAVORITE) {
+        appStatsJSON.favorite = value;
+      } if (statsType === VIEW_COUNT) {
+        appStatsJSON.viewed++;
+      } if (statsType === ACCESS_COUNT) {
+        appStatsJSON.accessed++;
+      }
+    } else {
+      // send new empty object
 
-// get apps stats - 
-export const setAppStats = (statsJSON) => { }
+    }
+    // update IDX-DB with new value
+    await setJSONinIDB(`${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
+    //.then(() => {
+    // pushRoute(url);
+  } catch (err) {
+    console.log(err);
+    return appStatsJSON;
+  }
+  return appStatsJSON;
+}
 // pass list of appIds to get AppStats. Fav, Viewed, liked, accessed
-export const getAppStats = (appIds) => { }
-
+export const getAppStats = async (appId) => {
+  // Get Data from IDX-DB
+  let appStatsJSON = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+  if (appStatsJSON) {
+    return appStatsJSON;
+  }
+  else {
+    // TODO: create and return new empty stats object
+    return appStatsJSON;
+  }
+}
 // get apps comments - 
-export const setAppComments = (commentsJSON) => { }
+export const setAppComment = async (appId, comment) => {
+  let commentObj = {
+    timestamp: new Date(),
+    comment,
+  };
+  let appCommentsJSON = await getJSONfromIDB(`${appId}#appComments`, { store: IDB_STORE_SKAPP, });
+  if (appCommentsJSON === null) { //If null or empty
+    // TODO: create and return new empty stats object
+  }
+  appCommentsJSON.content.comments.push(commentObj);
+  await setJSONinIDB(`${appId}appComments`, appCommentsJSON, { store: IDB_STORE_SKAPP });
+}
+
 // pass list of appIds to get App Comments.
-export const getAppComments = (appIds) => { }
+export const getAppComments = async (appId) => {
+  let appCommentsJSON = await getJSONfromIDB(`${appId}#appComments`, { store: IDB_STORE_SKAPP, });
+  return appCommentsJSON;
+}
+
+//action for upload videos and images
+export const UploadAppLogo = async (file, setLogoUploaded, logoLoaderHandler) => {
+  try {
+    const getCompressed = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 256,
+      useWebWorker: true,
+    });
+    const skylinkForCompressed = await uploadFile(getCompressed);
+    const skylink = await uploadFile(file);
+
+    let obj = {
+      thumbnail: skylinkForCompressed.skylink,
+      image: skylink.skylink,
+    };
+    setLogoUploaded(obj);
+    logoLoaderHandler(false);
+  } catch (err) {
+    logoLoaderHandler(false);
+  }
+};
+
+export const UploadImagesAction = (file, getUploadedFile, getFun) => async (
+  dispatch
+) => {
+  try {
+    const getCompressed = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 256,
+      useWebWorker: true,
+    });
+
+    const skylinkForCompressed = await uploadFile(getCompressed);
+
+    const skylink = await uploadFile(file);
+
+    let obj = {
+      thumbnail: skylinkForCompressed.skylink,
+      image: skylink.skylink,
+    };
+
+    getUploadedFile(obj);
+    getFun(false);
+  } catch (err) {
+    getFun(false);
+    console.log(err);
+  }
+};
+
+export const UploadVideoAction = (
+  file,
+  thumb,
+  getUploadedFile,
+  videoUploadLoader
+) => async (dispatch) => {
+  try {
+    const skylinkForCompressed = await uploadFile(thumb);
+
+    const skylink = await uploadFile(file);
+
+    let obj = {
+      thumbnail: skylinkForCompressed.skylink,
+      video: skylink.skylink,
+    };
+
+    getUploadedFile(obj);
+    videoUploadLoader(false);
+  } catch (err) {
+    videoUploadLoader(false);
+    console.log(err);
+  }
+};
 
 // ### AppStore Functionality ###
 
@@ -145,24 +305,24 @@ export const getDefaultAppStore = () => { }
  *
  */
 export const getMyHostedApps = async (appIds) => {
-  const hostedAppIdList = {appIdList: [], appDetailsList: {}}
+  const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
     if (appIds == null || appIds.length === 0) {
-      const { data=[] } = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, {store: IDB_STORE_SKAPP});
-      hostedAppIdList.appIdList=data;
+      const { data = [] } = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+      hostedAppIdList.appIdList = data;
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getContent(getKeys().publicKey, `hosted${appId}`, {store: IDB_STORE_SKAPP})).data;
+      hostedAppIdList.appDetailsList[appId] = (await getContent(getKeys().publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP })).data;
     }));
     return hostedAppIdList;
   } catch (err) {
     console.log(err);
   }
- }
+}
 
 //Update published app data
-export const setMyHostedApp = async (appJSON, previousId) => { 
+export const setMyHostedApp = async (appJSON, previousId) => {
 
   const hostedAppIdList = (await getMyHostedApps()).appIdList || [];
   const ts = new Date().getTime();
@@ -174,7 +334,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
   if (previousId) {
     previousApp = (await getMyHostedApps([previousId])).appDetailsList[previousId];
     appVersion = parseInt(previousApp.version) + 1;
-    history = {...previousApp.content.history, ...history};
+    history = { ...previousApp.content.history, ...history };
   }
   const hostedAppJSON = {
     "$type": "skapp",
@@ -184,13 +344,13 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     "version": appVersion,
     "prevSkylink": previousApp ? previousApp.content.skylink : null,
     "content": {
-        ...appJSON,
-        history
+      ...appJSON,
+      history
     },
     ts
   };
-  await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, {store: IDB_STORE_SKAPP});
-  await putFile(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], {store: IDB_STORE_SKAPP});
+  await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  await putFile(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
 
   return hostedAppJSON;
 }
@@ -347,7 +507,7 @@ export const getUserProfile = async (session) => {
   // let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
   let personObj = null
   const response = await getFile(session.skyid.userId, SKYID_PROFILE_PATH, { skydb: true, })
-  if (response == "" || response == undefined ) {
+  if (response == "" || response == undefined) {
     // file not found
     console.log("Profile not found;, please check your connection and retry")
   } else {

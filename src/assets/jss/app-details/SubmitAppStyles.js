@@ -285,9 +285,6 @@ const SubmitAppStyles = () => ({
             height: '150px'
         }
     },
-    "MuiDropzoneArea-root": {
-        border: "none"
-    },
     previewImg: {
         background: '#fff',
         cursor: 'pointer',
