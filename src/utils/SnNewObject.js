@@ -265,4 +265,6 @@ export const getSkylinkTypeObjForHome = () => {
     label: "Upload Directory",
   }
   return JSON.parse(JSON.stringify(skylinkTypeObj))
-}
+};
+
+export const getPortalList = () => ["siasky.net", "skyportal.xyz"];
