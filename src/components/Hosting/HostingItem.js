@@ -17,7 +17,7 @@ const HostingItem = ({ ActiveSite, app }) => {
     const classes = useStyles();
     let history = useHistory();
     const dispatch = useDispatch();
-    
+
     const appContent = app.content;
 
     const onManageDeployment = (evt) => {
@@ -28,17 +28,17 @@ const HostingItem = ({ ActiveSite, app }) => {
     return (
         <Box display="flex" className={classes.root} position="relative">
             <div className={classes.HostingImgContainer}>
-                {(appContent.imgThumbnailSkylink==null || appContent.imgThumbnailSkylink.trim()==="") && <img src={HostingImg} alt="" />}
-                {appContent.imgThumbnailSkylink!= null && appContent.imgThumbnailSkylink.trim()!=="" && 
-                <img alt="app"
-                    src={skylinkToUrl(appContent.imgThumbnailSkylink)}
-                    style={{
-                        width: "250px",
-                        height: "150px",
-                        // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
-                    }}
-                    name="1"
-                />}
+                {(appContent.imgThumbnailSkylink == null || appContent.imgThumbnailSkylink.trim() === "") && <img src={HostingImg} alt="" />}
+                {appContent.imgThumbnailSkylink != null && appContent.imgThumbnailSkylink.trim() !== "" &&
+                    <img alt="app"
+                        src={skylinkToUrl(appContent.imgThumbnailSkylink)}
+                        style={{
+                            width: "250px",
+                            height: "150px",
+                            // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                        }}
+                        name="1"
+                    />}
             </div>
             <div className={classes.detailsCol}>
                 <h2 className={classes.h2}>{appContent.appName}</h2>
@@ -50,8 +50,8 @@ const HostingItem = ({ ActiveSite, app }) => {
                 </Box>
                 <Box className={classes.updateText}>
                     Last Updated: {moment(app.ts).format(
-                        "h:mm:ss A, MMMM D, YYYY"
-                      )}
+                    "h:mm:ss A, MMMM D, YYYY"
+                )}
                 </Box>
                 <Box display='flex' className={classes.btnContainer}>
                     {
@@ -65,8 +65,8 @@ const HostingItem = ({ ActiveSite, app }) => {
                                 Inactive
                             </Button>
                     }
-                    <Button className={classes.editBtn}>
-                        <EditIcon />
+                    <Button className={classes.ActiveBtn}>
+                        Publish
                     </Button>
                     <Button className={classes.manageBtn} onClick={onManageDeployment}>
                         <FolderIcon />
