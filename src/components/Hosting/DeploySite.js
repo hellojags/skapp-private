@@ -75,7 +75,9 @@ const DeploySite = (props) => {
     return (
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                <h1 className={classes.h1}>Deploy</h1>
+                <h1 className={classes.h1}>
+                    {appDetail?.content?.appName && `${appDetail.content.appName} / Deploy`}
+                </h1>
                 <Box className={classes.btnBox + " d-none temp"}>
                     <Button className={classes.settingBtn}>
                         <SettingIcon />
