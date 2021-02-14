@@ -12,6 +12,8 @@ import AddNewSite from './AddNewSiteBtn'
 import { getMyHostedApps } from '../../service/SnSkappService';
 import SnInfoModal from '../Modals/SnInfoModal';
 import { isStrInObj } from '../../utils/SnUtility';
+import { useDispatch } from 'react-redux';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -136,7 +138,8 @@ function Hosting() {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     let history = useHistory();
-
+    const dispatch = useDispatch();
+    
     const [hostedAppListObj, setHostedAppListObj] = useState();
     const [searchStr, setSearchStr] = useState("");
 
@@ -145,8 +148,10 @@ function Hosting() {
     }, []);
 
     const loadHostedApps = async () => {
+        dispatch(setLoaderDisplay(true));
         const hostedAppListObj = await getMyHostedApps([]);
         setHostedAppListObj(hostedAppListObj);
+        dispatch(setLoaderDisplay(false));
     };
 
     const filterApps = (searchStr, app) => isStrInObj(searchStr, app);
@@ -174,11 +179,11 @@ function Hosting() {
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-                    <Box>
+                    <Box className="d-none temp">
                         <UtilitiesItem />
                     </Box>
 
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={classes.search + " d-none temp"}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -194,7 +199,7 @@ function Hosting() {
                             onChange={(evt)=>setSearchStr(evt.target.value)}
                         />
                     </div>}
-                    <Box>
+                    <Box className="d-none temp">
                         <ListFilter />
                     </Box>
 

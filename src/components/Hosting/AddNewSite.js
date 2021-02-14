@@ -24,6 +24,8 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUploadList } from '../../redux/action-reducers-epic/SnUploadListAction';
 import SnInfoModal from '../Modals/SnInfoModal';
+import { getPortalList } from '../../utils/SnNewObject';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
@@ -42,11 +44,7 @@ const socialOption = [
     { value: 'Twitter', label: 'Twitter' },
 ]
 
-const storageGatewayOption = [
-    { value: 'Gateway1', label: 'Gateway1' },
-    { value: 'Gateway2', label: 'Gateway2' },
-    { value: 'Gateway3', label: 'Gateway3' },
-];
+const storageGatewayOption = getPortalList().map(portal => ({ "value": portal, "label": portal}));
 
 const reactSelectStyles = {
     control: styles => ({
@@ -114,7 +112,9 @@ export default function AddNewSite() {
     }, []);
 
     const submitForm = async (values) => {
+        dispatch(setLoaderDisplay(true));
         await setMyHostedApp(values);
+        dispatch(setLoaderDisplay(false));
         const hnsSkyDBURL = getHNSSkyDBURL(values.hns);
         setInfoModalParams({
             title: `HNS SkyDB URL`,

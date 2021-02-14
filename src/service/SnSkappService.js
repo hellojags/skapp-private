@@ -45,10 +45,11 @@ import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
 import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../utils/SnConstants";
 import imageCompression from "browser-image-compression";
+import { v4 as uuidv4 } from "uuid";
 
 // TODO: implement actual logic
 function generateSkappId(prop) {
-  return new Date().getTime();
+  return uuidv4();
 }
 
 // This JS file will list app methods consumed by components

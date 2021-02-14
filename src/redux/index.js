@@ -1,8 +1,8 @@
-import { combineReducers, createStore } from "redux"
-import { combineEpics } from "redux-observable"
-import { composeWithDevTools } from "redux-devtools-extension"
+import { combineReducers, createStore } from "redux";
+import { combineEpics } from "redux-observable";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-// import SnLoaderReducer from "./sn.loader.reducer"
+import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer";
 // import SnPerson from "./sn.person.reducer"
 // import SnUserProfile from "./sn.userprofile.reducer"
 // import { snUserProfileEpic } from "./sn.userprofile.epic"
@@ -24,7 +24,7 @@ const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
 
 const rootReducer = combineReducers({
-  // snLoader: SnLoaderReducer,
+  snLoader: SnLoaderReducer,
   // userSession: SnUserSessionReducer,
   // person: SnPerson,
   // snUserProfile: SnUserProfile,
