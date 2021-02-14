@@ -19,6 +19,7 @@ import { IOSSwitch } from "./Switch";
 import { useParams } from 'react-router-dom';
 import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import { getBase32Skylink } from "../../utils/SnUtility";
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -100,7 +101,10 @@ const DeploySite = (props) => {
                             <Box display="flex" justifyContent="space-between" marginTop='15px'>
                                 <div>
                                     <p className={classes.ContentItemTitle}>Skapp Base 32 URL</p>
-                                    <p className={classes.siteLink}>www.demo.com</p>
+                                    <p className={classes.siteLink}>
+                                        { appDetail?.content?.skylink && appDetail.content.storageGateway &&
+                                        `https://${getBase32Skylink(appDetail.content.skylink)}.${appDetail?.content?.storageGateway}`}
+                                    </p>
                                 </div>
                                 <span className={classes.changeBtnLink + " d-none temp"}>Change</span>
                             </Box>
