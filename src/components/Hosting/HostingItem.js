@@ -25,6 +25,11 @@ const HostingItem = ({ ActiveSite, app }) => {
         history.push(`/deploysite/${app.id}`);
     };
 
+    const onPublish = (evt) => {
+        dispatch(setSelectedHostedApp(app.id));
+        history.push(`/submitapp/${app.id}`);
+    };
+
     return (
         <Box display="flex" className={classes.root} position="relative">
             <div className={classes.HostingImgContainer}>
@@ -65,8 +70,8 @@ const HostingItem = ({ ActiveSite, app }) => {
                                 Inactive
                             </Button>
                     }
-                    <Button className={classes.ActiveBtn}>
-                        Publish
+                    <Button className={classes.manageBtn} onClick={onPublish}>
+                        <span>Publish</span>
                     </Button>
                     <Button className={classes.manageBtn} onClick={onManageDeployment}>
                         <FolderIcon />

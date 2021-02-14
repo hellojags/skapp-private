@@ -5,6 +5,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from "@material-ui/icons/Description";
 import styles from '../../assets/jss/app-details/SubmitAppStyles';
 import "./DeploySiteStyles.css";
+import moment from "moment";
 import Switch from './Switch'
 // img icon
 import { BsFileEarmarkArrowUp } from "react-icons/bs";
@@ -19,6 +20,7 @@ import { IOSSwitch } from "./Switch";
 import { useParams } from 'react-router-dom';
 import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import { getBase32Skylink } from "../../utils/SnUtility";
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -75,7 +77,9 @@ const DeploySite = (props) => {
     return (
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                <h1 className={classes.h1}>Deploy</h1>
+                <h1 className={classes.h1}>
+                    {appDetail?.content?.appName && `${appDetail.content.appName} / Deploy`}
+                </h1>
                 <Box className={classes.btnBox + " d-none temp"}>
                     <Button className={classes.settingBtn}>
                         <SettingIcon />
@@ -90,14 +94,20 @@ const DeploySite = (props) => {
                     <Grid item lg={4} md={6} sm={6} xs={12}>
                         <h4 className={classes.h4}>DNS</h4>
                         <div className={classes.DNSContainer}>
-                            <p className={classes.ContentItemTitle}>Ranked address</p>
-                            <p className={classes.siteLink}>https://www.skapp.com/UJJ5Rgbu2TM</p>
+                            <p className={classes.ContentItemTitle}>Skapp URL</p>
+                            <p className={classes.siteLink}>
+                                {appDetail?.content?.hns && appDetail?.content?.storageGateway && 
+                                `https://${appDetail.content.hns}.hns.${appDetail.content.storageGateway}`}
+                            </p>
                             <Box display="flex" justifyContent="space-between" marginTop='15px'>
                                 <div>
-                                    <p className={classes.ContentItemTitle}>Custom Domain</p>
-                                    <p className={classes.siteLink}>www.demo.com</p>
+                                    <p className={classes.ContentItemTitle}>Skapp Base 32 URL</p>
+                                    <p className={classes.siteLink}>
+                                        { appDetail?.content?.skylink && appDetail.content.storageGateway &&
+                                        `https://${getBase32Skylink(appDetail.content.skylink)}.${appDetail?.content?.storageGateway}`}
+                                    </p>
                                 </div>
-                                <span className={classes.changeBtnLink}>Change</span>
+                                <span className={classes.changeBtnLink + " d-none temp"}>Change</span>
                             </Box>
 
                         </div>
@@ -113,34 +123,21 @@ const DeploySite = (props) => {
 
                                 className={classes.ListRoot}
                             >
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-
+                                {   appDetail?.content?.history && 
+                                    Object.keys(appDetail.content.history)
+                                    .sort((ts1, ts2)=>parseInt(ts2)-parseInt(ts1))
+                                    .map((ts, idx) => 
+                                    <ListItem button key={idx}>
+                                        <Box display="flex" marginRight="auto" alignItems="center">
+                                            <ListItemIcon>
+                                                <DoneIcon />
+                                            </ListItemIcon>
+                                            <p>#{idx +1 }</p>
+                                        </Box>
+                                        <span>{moment(parseInt(ts)).fromNow()}</span>
+                                    </ListItem>
+                                )
+                            }
                             </List>
                         </div>
                     </Grid>
@@ -181,7 +178,7 @@ const DeploySite = (props) => {
                 </Grid>
 
                 <div className={classes.OneRowInput}>
-                    <div >
+                    <div className="d-none temp">
                         <FormGroup>
                             <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
                                 label="Upload File"

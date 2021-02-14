@@ -61,7 +61,7 @@ const Sidebar = (props) => {
               <ListItemText primary="Explore Apps" />
             </ListItem>
           </NavLink>
-          <NavLink exact to="/submitapp">
+          <NavLink to="/submitapp">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <SubmitAppIcon />
@@ -92,7 +92,7 @@ const Sidebar = (props) => {
           </NavLink>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <NavLink exact to="/deploysite">
+              <NavLink to="/deploysite">
                 <ListItem button className={classes.nested}>
                   <ListItemIcon className={classes.listIcon}>
                     <DeployIcon />

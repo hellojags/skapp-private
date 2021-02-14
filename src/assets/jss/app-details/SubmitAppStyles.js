@@ -492,6 +492,8 @@ const SubmitAppStyles = () => ({
     },
     DevelopmentsContainer: {
         minHeight: 190,
+        height: 200,
+        overflowY: 'auto',
         background: '#FFFFFF',
         border: '1px solid #D9E1EC',
         borderRadius: 8,
