@@ -32,7 +32,7 @@ const SnRouter = (props) => (
             <Route exact path='/appdetail'>
                 <AppDetailsPage />
             </Route>
-            <Route exact path='/submitapp'>
+            <Route path='/submitapp/:appId?'>
                 <SubmitApp />
             </Route>
             <Route exact path='/error'>
