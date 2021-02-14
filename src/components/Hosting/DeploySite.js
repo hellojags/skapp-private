@@ -21,6 +21,7 @@ import { useParams } from 'react-router-dom';
 import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 import { getBase32Skylink } from "../../utils/SnUtility";
+import useShowHostingLinks from '../../hooks/useShowHostingLinks';
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -36,6 +37,8 @@ const DeploySite = (props) => {
     const dispatch = useDispatch();
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
     const snSelectedHostedAppStore = useSelector((state) => state.snSelectedHostedAppStore);
+
+    useShowHostingLinks();
 
     useEffect(() => {
         loadAppDetail();

@@ -26,11 +26,14 @@ import { ExpandLess, ExpandMore } from "@material-ui/icons";
 // sidebar styles
 import style from "../../assets/jss/sidebar/SidebarStyle";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 const useStyles = makeStyles(style);
 
 const Sidebar = (props) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
+  const snShowHostingLinks = useSelector(state => state.snShowHostingLinks);
 
   const handleClick = () => {
     setOpen(!open);
@@ -78,19 +81,19 @@ const Sidebar = (props) => {
             </ListItem>
           </NavLink>
           <NavLink exact to="/hosting">
-            <ListItem button onClick={handleClick}>
+            <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <HostingIcon />
               </ListItemIcon>
               <ListItemText primary="Hosting" />
-              {open ? (
+              {snShowHostingLinks ? (
                 <ExpandLess className={classes.dropArrow} />
               ) : (
                 <ExpandMore className={classes.dropArrow} />
               )}
             </ListItem>
           </NavLink>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={snShowHostingLinks} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <NavLink to="/deploysite">
                 <ListItem button className={classes.nested}>
