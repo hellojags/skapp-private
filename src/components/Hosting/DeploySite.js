@@ -92,14 +92,17 @@ const DeploySite = (props) => {
                     <Grid item lg={4} md={6} sm={6} xs={12}>
                         <h4 className={classes.h4}>DNS</h4>
                         <div className={classes.DNSContainer}>
-                            <p className={classes.ContentItemTitle}>Ranked address</p>
-                            <p className={classes.siteLink}>https://www.skapp.com/UJJ5Rgbu2TM</p>
+                            <p className={classes.ContentItemTitle}>Skapp URL</p>
+                            <p className={classes.siteLink}>
+                                {appDetail?.content?.hns && appDetail?.content?.storageGateway && 
+                                `https://${appDetail.content.hns}.hns.${appDetail.content.storageGateway}`}
+                            </p>
                             <Box display="flex" justifyContent="space-between" marginTop='15px'>
                                 <div>
-                                    <p className={classes.ContentItemTitle}>Custom Domain</p>
+                                    <p className={classes.ContentItemTitle}>Skapp Base 32 URL</p>
                                     <p className={classes.siteLink}>www.demo.com</p>
                                 </div>
-                                <span className={classes.changeBtnLink}>Change</span>
+                                <span className={classes.changeBtnLink + " d-none temp"}>Change</span>
                             </Box>
 
                         </div>
@@ -183,7 +186,7 @@ const DeploySite = (props) => {
                 </Grid>
 
                 <div className={classes.OneRowInput}>
-                    <div >
+                    <div className="d-none temp">
                         <FormGroup>
                             <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
                                 label="Upload File"

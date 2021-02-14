@@ -245,7 +245,7 @@ export default function AddNewSite() {
 
                         </Box>
                         <div className={classes.OneRowInput}>
-                            <div >
+                            <div className="d-none temp">
                                 <FormGroup>
                                     <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
                                         label={`Upload ${isFileUpload ? "File" : "Folder"}`}
