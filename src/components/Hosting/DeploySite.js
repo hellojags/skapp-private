@@ -18,6 +18,7 @@ import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
 import { IOSSwitch } from "./Switch";
 import { useParams } from 'react-router-dom';
 import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -30,6 +31,7 @@ const DeploySite = (props) => {
 
     const [isFileUpload, setIsFileUpload] = useState(false);
     const [appDetail, setAppDetail] = useState();
+    const dispatch = useDispatch();
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
     const snSelectedHostedAppStore = useSelector((state) => state.snSelectedHostedAppStore);
 
@@ -42,7 +44,9 @@ const DeploySite = (props) => {
         if (appId==null) {
             appId = snSelectedHostedAppStore;
         }
+        dispatch(setLoaderDisplay(true));
         const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
+        dispatch(setLoaderDisplay(false));
         setAppDetail(appDetail);
         return appDetail;
     };
@@ -57,12 +61,14 @@ const DeploySite = (props) => {
     };
 
     const updateHostedApp = async (obj) => {
+        dispatch(setLoaderDisplay(true));
         let currAppDetail = appDetail;
         if (currAppDetail==null) {
             currAppDetail = await loadAppDetail();
         }
         currAppDetail.content.skylink = obj.skylink;
         const newAppDetail = await setMyHostedApp(currAppDetail.content, currAppDetail.id);
+        dispatch(setLoaderDisplay(false));
         setAppDetail(newAppDetail);
     };
 

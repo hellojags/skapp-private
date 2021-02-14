@@ -3,7 +3,7 @@ import "./SnLoaderStyles.css"
 import { useSelector} from "react-redux"
 
 export default function SnLoader(props) {
-  const snLoader = useSelector((state) => state.SnLoader)
+  const snLoader = useSelector((state) => state.snLoader)
   return (
     <>
       {snLoader && (

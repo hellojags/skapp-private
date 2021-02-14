@@ -12,6 +12,8 @@ import AddNewSite from './AddNewSiteBtn'
 import { getMyHostedApps } from '../../service/SnSkappService';
 import SnInfoModal from '../Modals/SnInfoModal';
 import { isStrInObj } from '../../utils/SnUtility';
+import { useDispatch } from 'react-redux';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -136,7 +138,8 @@ function Hosting() {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     let history = useHistory();
-
+    const dispatch = useDispatch();
+    
     const [hostedAppListObj, setHostedAppListObj] = useState();
     const [searchStr, setSearchStr] = useState("");
 
@@ -145,8 +148,10 @@ function Hosting() {
     }, []);
 
     const loadHostedApps = async () => {
+        dispatch(setLoaderDisplay(true));
         const hostedAppListObj = await getMyHostedApps([]);
         setHostedAppListObj(hostedAppListObj);
+        dispatch(setLoaderDisplay(false));
     };
 
     const filterApps = (searchStr, app) => isStrInObj(searchStr, app);
