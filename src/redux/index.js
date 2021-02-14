@@ -18,7 +18,7 @@ import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
 import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
 import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
 import {snGetPublishedAppsEpic,snSetPublishAppEpic, snGetAppCommentsEpic, snSetAppCommentEpic} from "./action-reducers-epic/SnPublishAppEpic";
-
+import snShowHostingLinks from "./action-reducers-epic/SnShowHostingLinksReducer";
 
 const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
@@ -35,6 +35,7 @@ const rootReducer = combineReducers({
   snPublishedAppsStore,
   snAppStatsStore,
   snSelectedHostedAppStore,
+  snShowHostingLinks
 });
 
 const rootEpic = combineEpics(
