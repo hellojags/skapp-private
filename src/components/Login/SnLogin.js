@@ -43,6 +43,14 @@ export default function SnLogin(props) {
         console.log("skyid=" + skyId);
     });
 
+    useEffect(() => {
+        console.log("stUserSession=" + stUserSession);
+        if(stUserSession != null)
+        {
+            history.push('/apps');
+        }
+    },[stUserSession]);
+
     // // Run Only Once
     // useEffect(() => {
     //     console.log("skyid=" + skyid);

@@ -43,7 +43,7 @@ const AppsList = ({ newData }) => {
         next={fetchMoreData}
         hasMore={alldata.length === newData.length ? false : true}
         loader={<h4>Loading...</h4>}
-        endMessage={<h3>End of apps</h3>}
+        // endMessage={<h3>End of Apps</h3>}
       >
         <Grid container spacing={1}>
           {alldata &&

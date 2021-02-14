@@ -57,9 +57,7 @@ const appCatOptions = [
 ];
 
 const optionsAge = [
-  { value: "7", label: "7" },
-  { value: "13", label: "13" },
-  { value: "18", label: "18" },
+  { value: "18+", label: "18+" },
   { value: "general", label: "general" },
 ];
 
@@ -70,9 +68,10 @@ const appStatus = [
 ];
 
 const socialOption = [
-  { value: "facebook", label: "facebook" },
+  { value: "Discord", label: "Discord" },
   { value: "Reddit", label: "Reddit" },
   { value: "Twitter", label: "Twitter" },
+  { value: "Dlink", label: "Dlink" },
 ];
 
 const reactSelectStyles = {
@@ -421,7 +420,7 @@ const SubmitApp = () => {
             className={`${classes.inputContainer} ${classes.max33}`}
             flex={1}
           >
-            <label>AppName</label>
+            <label>App Name</label>
             <input
               className={classes.input}
               placeholder="Skylink"
@@ -433,7 +432,7 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>Version</label>
+            <label>App Version</label>
             <Box>
               <Select
                 defaultValue={verson}
@@ -447,7 +446,7 @@ const SubmitApp = () => {
             </Box>
           </Box>
           <Box className={classes.inputContainer} flex={1}>
-            <label>Demo url</label>
+            <label>Demo Link</label>
             <input
               className={classes.input}
               name="demoUrl"
@@ -456,7 +455,7 @@ const SubmitApp = () => {
             />
           </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>Age</label>
+            <label>Age Restriction?</label>
             <Box>
               <Controller
                 as={Select}
@@ -479,12 +478,12 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow2}`}
         >
           <Box className={classes.inputContainer} flex={1}>
-            <label>App Website URL</label>
+            <label>App URL</label>
             <input
               name="appUrl"
               ref={register}
               className={classes.input}
-              placeholder="https://www.skapp.com/UJJ5Rgbu2TM"
+              placeholder="https://[hns name].hns"
             />
             {isAppUrlTrue && (
               <div className="required-field">This field is required</div>
@@ -496,11 +495,11 @@ const SubmitApp = () => {
               name="sourceCode"
               ref={register}
               className={classes.input}
-              placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+              placeholder="https://github.com"
             />
           </Box>
           <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>Choose Category</label>
+            <label>App Category</label>
             <Box>
               <Controller
                 as={Select}
@@ -523,7 +522,7 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow4}`}
         >
           <Box className={classes.inputContainer} flex={1}>
-            <label>Manual tag</label>
+            <label>Custom Tags</label>
             <TagsInput
               value={tags}
               className={classes.input}
@@ -557,7 +556,7 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.previewImgLabel}>
-              Preview Images
+              Preview Video/Images
               <span>
                 {" "}
                 Max. size of 5 MB in: JPG or PNG. 1750x900 or larger recommended
@@ -675,8 +674,31 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.textareaLabel}>
+              App Description
+              <span>Detailed summary of your app</span>
+            </label>
+          </div>
+          <Box position="relative">
+            <TextareaAutosize
+              name="appDescription"
+              ref={register}
+              className={classes.textarea}
+              aria-label="minimum height"
+              rowsMin={6}
+              // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
+              placeholder="Detailed summary of your app"
+            />
+            <span className={classes.maxChar}>0/5000</span>
+          </Box>
+          {isAppDetailDesTrue && (
+            <div className="required-field">Max 5000 Characters</div>
+          )}
+        </div>
+        <div className={classes.OneRowInput}>
+          <div>
+            <label className={classes.textareaLabel}>
               Release Notes
-              <span>This will go on App Card.</span>
+              {/* <span>This will go on App Card.</span> */}
             </label>
           </div>
           <Box position="relative">
@@ -689,35 +711,15 @@ const SubmitApp = () => {
               // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
               placeholder="Write your Comment"
             />
-            <span className={classes.maxChar}>Max 70 Characters</span>
-          </Box>
-        </div>
-        <div className={classes.OneRowInput}>
-          <div>
-            <label className={classes.textareaLabel}>
-              Detailed Description
-              <span>Detailed summary of your app</span>
-            </label>
-          </div>
-          <Box position="relative">
-            <TextareaAutosize
-              name="appDescription"
-              ref={register}
-              className={classes.textarea}
-              aria-label="minimum height"
-              rowsMin={6}
-              // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
-              placeholder="Write your Comment"
-            />
-            <span className={classes.maxChar}>0/500</span>
+            <span className={classes.maxChar}>0/5000</span>
           </Box>
           {isAppDetailDesTrue && (
-            <div className="required-field">This field is required</div>
+            <div className="required-field">Max 5000 Characters</div>
           )}
         </div>
         <div className={classes.OneRowInput}>
           <div>
-            <label className={classes.textareaLabel}>Social Media</label>
+            <label className={classes.textareaLabel}>Social Connections</label>
           </div>
           <Box position="relative">
             <Grid container spacing={2}>
@@ -732,7 +734,7 @@ const SubmitApp = () => {
                     styles={reactSelectStyles}
                   />
                   <input
-                    placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+                    placeholder=""
                     onChange={(e) => setfirstSocialLink(e.target.value)}
                   />
                 </Box>
@@ -748,7 +750,7 @@ const SubmitApp = () => {
                     styles={reactSelectStyles}
                   />
                   <input
-                    placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+                    placeholder=""
                     onChange={(e) => setSecondSocialLink(e.target.value)}
                   />
                 </Box>
@@ -764,7 +766,7 @@ const SubmitApp = () => {
                     styles={reactSelectStyles}
                   />
                   <input
-                    placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+                    placeholder=""
                     onChange={(e) => setThirdSocialLink(e.target.value)}
                   />
                 </Box>

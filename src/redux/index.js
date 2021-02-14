@@ -19,13 +19,14 @@ import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
 import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
 import {snGetPublishedAppsEpic,snSetPublishAppEpic, snGetAppCommentsEpic, snSetAppCommentEpic} from "./action-reducers-epic/SnPublishAppEpic";
 import snShowHostingLinks from "./action-reducers-epic/SnShowHostingLinksReducer";
+import SnUserSessionReducer from "./action-reducers-epic/SnUserSessionReducer";
 
 const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
 
 const rootReducer = combineReducers({
   snLoader: SnLoaderReducer,
-  // userSession: SnUserSessionReducer,
+  userSession: SnUserSessionReducer,
   // person: SnPerson,
   // snUserProfile: SnUserProfile,
   // snUserMasterProfile: SnUserMasterProfile,

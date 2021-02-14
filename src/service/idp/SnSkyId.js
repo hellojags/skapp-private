@@ -16,8 +16,10 @@ import store from "../../redux"
 
 
 function SkyIdHook() {
-    let history = useHistory();
-    history.push('/appdetail')
+    //let history = useHistory();
+    //history.push('/appdetail');
+    this.props.history.push("/apps");
+
   }
 
 const serialize = require("serialize-javascript");
@@ -90,7 +92,6 @@ const onSkyIdSuccess = async () => {
         store.dispatch(getMyFollowingsAction(null));
         store.dispatch(setLoaderDisplay(false));
         //window.history.pushState({}, '', '/appdetail')
-        SkyIdHook();
 
     }
     catch (error) {
