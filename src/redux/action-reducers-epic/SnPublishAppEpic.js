@@ -14,11 +14,13 @@ export const snPublishAppEpic = (action$) => {
         pipe(ofType(EPIC_TY_PUBLISH_APP),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                setLoaderDisplay(true)
+                console.log("snPublishAppEpic ", action)
+                //setLoaderDisplay(true)
                 return from(publishApp(action.payload.data)) // must return all published app
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            //setLoaderDisplay(false)
+                            //action.payload.manageSubmitLoader(false)
                             // Update Redux Store
                             return setPublishedAppsStore(res)
                         })

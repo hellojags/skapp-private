@@ -235,9 +235,7 @@ export const UploadAppLogo = async (file, setLogoUploaded, logoLoaderHandler) =>
   }
 };
 
-export const UploadImagesAction = (file, getUploadedFile, getFun) => async (
-  dispatch
-) => {
+export const UploadImagesAction = async (file, getUploadedFile, getFun) => {
   try {
     const getCompressed = await imageCompression(file, {
       maxSizeMB: 1,
@@ -262,12 +260,7 @@ export const UploadImagesAction = (file, getUploadedFile, getFun) => async (
   }
 };
 
-export const UploadVideoAction = (
-  file,
-  thumb,
-  getUploadedFile,
-  videoUploadLoader
-) => async (dispatch) => {
+export const UploadVideoAction = async (file, thumb, getUploadedFile, videoUploadLoader) => {
   try {
     const skylinkForCompressed = await uploadFile(thumb);
 

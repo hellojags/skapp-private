@@ -169,7 +169,7 @@ const SubmitApp = () => {
       let obj = {
         $type: "publishedSkapp",
         id: uuidv4(),
-        version: verson,
+        version: "v1",
         ts: "1610328319",
         content: data,
       };
@@ -199,7 +199,7 @@ const SubmitApp = () => {
         [thirdSocialLinkTitle]: thirdSocialLink,
       };
 
-      dispatch(publishAppAction(obj, manageSubmitLoader));
+      dispatch(publishAppAction(obj));
       setMandatory(false);
     }
   };
@@ -250,9 +250,7 @@ const SubmitApp = () => {
       img.src = oFREvent.target.result;
     };
 
-    UploadImagesAction(
-      file,
-      getUploadedFile,
+    UploadImagesAction(file, getUploadedFile, 
       id === "img1"
         ? firstImageLoader
         : id === "img2"
@@ -288,9 +286,7 @@ const SubmitApp = () => {
         var canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        canvas
-          .getContext("2d")
-          .drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
         var image = canvas.toDataURL();
 
         const thumb = await imageCompression.canvasToFile(canvas, "image/jpeg");
@@ -350,7 +346,7 @@ const SubmitApp = () => {
         justifyContent="space-between"
         marginTop="7px"
       >
-        <h1 className={classes.h1}>Submit your app</h1>
+        <h1 className={classes.h1}>Publish App</h1>
         <Box className={classes.btnBox}>
           <Button className={classes.cancelBtn}>Cancel </Button>
           <Button

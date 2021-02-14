@@ -66,7 +66,7 @@ const Sidebar = (props) => {
               <ListItemIcon className={classes.listIcon}>
                 <SubmitAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Submit App" />
+              <ListItemText primary="Publish App" />
             </ListItem>
           </NavLink>
           <NavLink exact to="/installedappps">
