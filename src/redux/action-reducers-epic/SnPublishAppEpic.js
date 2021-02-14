@@ -7,16 +7,17 @@ import {
     EPIC_TY_SET_APP_COMMENTS, EPIC_TY_GET_APP_COMMENTS
 } from "../SnActionConstants";
 import { publishApp, getAllPublishedApps, setAppComment, getAppComments } from "../../service/SnSkappService"
-import {setAppCommentStore,setPublishedAppsStore} from "./SnPublishAppAction"
+import { setAppCommentStore, setPublishedAppsStore } from "./SnPublishAppAction"
 // app stats actions
-export const snPublishAppEpic = (action$) => {
+
+export const snSetPublishAppEpic = (action$) =>
     action$.
         pipe(ofType(EPIC_TY_PUBLISH_APP),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
                 console.log("snPublishAppEpic ", action)
                 //setLoaderDisplay(true)
-                return from(publishApp(action.payload.data)) // must return all published app
+                return from(publishApp(action.payload)) // must return all published app
                     .pipe(
                         map((res) => {
                             //setLoaderDisplay(false)
@@ -26,20 +27,22 @@ export const snPublishAppEpic = (action$) => {
                         })
                     )
             }));
+export const snGetPublishedAppsEpic = (action$) =>
     action$.
         pipe(ofType(EPIC_TY_GET_PUBLISHED_APPS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                setLoaderDisplay(true)
+                //setLoaderDisplay(true)
                 return from(getAllPublishedApps())
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            //setLoaderDisplay(false)
                             // Update Redux Store
                             return setPublishedAppsStore(res)
                         })
                     )
             }));
+export const snSetAppCommentEpic = (action$) =>
     action$.
         pipe(ofType(EPIC_TY_SET_APP_COMMENTS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
@@ -54,6 +57,8 @@ export const snPublishAppEpic = (action$) => {
                         })
                     )
             }));
+
+export const snGetAppCommentsEpic = (action$) =>
     action$.
         pipe(ofType(EPIC_TY_GET_APP_COMMENTS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
@@ -68,4 +73,3 @@ export const snPublishAppEpic = (action$) => {
                         })
                     )
             }));
-}

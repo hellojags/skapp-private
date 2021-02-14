@@ -37,7 +37,6 @@ const optionsVersion = [
 ];
 
 const appCatOptions = [
-  { value: "all", label: "all" },
   { value: "social", label: "social" },
   { value: "video", label: "video" },
   { value: "pictures", label: "pictures" },

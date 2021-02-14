@@ -119,20 +119,23 @@ export const getPublishedApp = async (appId) => {
 }
 
 export const getAllPublishedApps = async () => {
-  let publishedAppsMap = new Map();
+  //let publishedAppsMap = new Map();
+  let publishedAppsMap = [];
   let publishedAppsIdList = await getJSONfromIDB(`publishedApps`, { store: IDB_STORE_SKAPP, });
   if (publishedAppsIdList) {
     for (let appId of publishedAppsIdList) {
       let appJSON = await getJSONfromIDB(appId, { store: IDB_STORE_SKAPP, });
-      publishedAppsMap.set(appId, appJSON);
+      //publishedAppsMap.set(appId, appJSON);
+      publishedAppsMap.push(appJSON)
     }
     console.log("getAllPublishedApps: " + publishedAppsMap);
-    return publishedAppsMap;
   }
+  return publishedAppsMap;
 }
 
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
+
   let apps = await setJSONinIDB(`publishedApps`, appJSON, { store: IDB_STORE_SKAPP });
   if (apps) {
     apps.push(appJSON.id);
@@ -144,7 +147,7 @@ export const publishApp = async (appJSON) => {
   await setJSONinIDB(`publishedApps`, apps, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
-  await setJSONinIDB(appJSON.appId, appJSON, { store: IDB_STORE_SKAPP });
+  await setJSONinIDB(appJSON.id, appJSON, { store: IDB_STORE_SKAPP });
   const publishedAppsMap = await getAllPublishedApps();
   return publishedAppsMap;
 }

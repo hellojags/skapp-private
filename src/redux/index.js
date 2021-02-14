@@ -16,8 +16,8 @@ import SnUploadListReducer from "./action-reducers-epic/SnUploadListReducer";
 import snSelectedHostedAppStore from "./action-reducers-epic/SnSelectedHostedAppReducer";
 import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
 import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
-import {snAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
-import {snPublishAppEpic} from "./action-reducers-epic/SnPublishAppEpic";
+import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
+import {snGetPublishedAppsEpic,snSetPublishAppEpic, snGetAppCommentsEpic, snSetAppCommentEpic} from "./action-reducers-epic/SnPublishAppEpic";
 
 
 const redux = require("redux")
@@ -38,8 +38,12 @@ const rootReducer = combineReducers({
 });
 
 const rootEpic = combineEpics(
-  snAppStatsEpic,
-  snPublishAppEpic,
+  snSetAppStatsEpic,
+  snGetAppStatsEpic,
+  snGetPublishedAppsEpic,
+  snSetPublishAppEpic,
+  snGetAppCommentsEpic, 
+  snSetAppCommentEpic,
   // snPersonEpic,
   // logoutPersonEpic,
   // snUserProfileEpic,
@@ -49,11 +53,11 @@ const rootEpic = combineEpics(
 )
 
 const observableMiddleware = createEpicMiddleware()
-observableMiddleware.run(rootEpic);
+
 const store = createStore(
   rootReducer,
   composeWithDevTools(redux.applyMiddleware(observableMiddleware))
 )
-
+observableMiddleware.run(rootEpic);
 
 export default store;
