@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -22,12 +22,15 @@ import {
   UploadImagesAction,
   UploadVideoAction,
   UploadAppLogo,
+  getMyHostedApps,
 } from "../../service/SnSkappService";
 import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css"; // If using WebPack and style-loader.
 import imageCompression from "browser-image-compression";
 import Alert from "@material-ui/lab/Alert";
 import Loader from "react-loader-spinner";
+import { useParams } from "react-router-dom";
+import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -118,6 +121,8 @@ const SubmitApp = () => {
   const [firstSocialLinkTitle, setfirstSocialLinkTitle] = useState("");
   const [secondSocialLinkTitle, setSecondSocialLinkTitle] = useState("");
   const [thirdSocialLinkTitle, setThirdSocialLinkTitle] = useState("");
+  const [appDetail, setAppDetail] = useState();
+  let { appId } = useParams();
 
   const [firstSocialLink, setfirstSocialLink] = useState("");
   const [secondSocialLink, setSecondSocialLink] = useState("");
@@ -141,6 +146,21 @@ const SubmitApp = () => {
   const [isAppUrlTrue, setIsAppUrlTrue] = useState(false);
   const [isAppCatTrue, setIsAppCatTrue] = useState(false);
   const [isAppDetailDesTrue, setIsAppDetailDesTrue] = useState(false);
+
+  useEffect(() => {
+    loadAppDetail();
+    // TODO: map appDetail to the form. Need to understand how react-hook-form works
+  }, []);
+
+  const loadAppDetail = async ()=> {
+    if (appId!=null) {
+      dispatch(setLoaderDisplay(true));
+      const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
+      dispatch(setLoaderDisplay(false));
+      setAppDetail(appDetail);
+      return appDetail;
+    }
+  };
 
   //manage submit loader
   const manageSubmitLoader = (val) => {
