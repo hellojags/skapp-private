@@ -166,10 +166,11 @@ const SubmitApp = () => {
     } else {
       setIsSubmit(true);
       let obj = {
-        $type: "publishedSkapp",
+        $type: "skapp",
+        $subtype: "published",
         id: uuidv4(),
         version: "v1",
-        ts: "1610328319",
+        ts: new Date().getTime(),
         content: data,
       };
 

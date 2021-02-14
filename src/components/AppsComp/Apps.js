@@ -152,7 +152,7 @@ function Apps() {
   }, []);
 
   // temp var for selected page
-  const selectedPage = true;
+  const selectedPage = false;
   // This page code
   const { width } = useWindowDimensions();
   const classes = useStyles();
@@ -219,7 +219,7 @@ function Apps() {
             <ListFilter />
           </Box>
           <Box>
-            <SelectItem />
+            {selectedPage && <SelectItem />}
           </Box>
           <Box>
             <SubmitBtn>Add App</SubmitBtn>
