@@ -5,6 +5,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from "@material-ui/icons/Description";
 import styles from '../../assets/jss/app-details/SubmitAppStyles';
 import "./DeploySiteStyles.css";
+import moment from "moment";
 import Switch from './Switch'
 // img icon
 import { BsFileEarmarkArrowUp } from "react-icons/bs";
@@ -122,34 +123,21 @@ const DeploySite = (props) => {
 
                                 className={classes.ListRoot}
                             >
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-                                <ListItem button>
-                                    <Box display="flex" marginRight="auto" alignItems="center">
-                                        <ListItemIcon>
-                                            <DoneIcon />
-                                        </ListItemIcon>
-                                        <p>#29857</p>
-                                    </Box>
-                                    <span>20 days ago</span>
-                                </ListItem>
-
+                                {   appDetail?.content?.history && 
+                                    Object.keys(appDetail.content.history)
+                                    .sort((ts1, ts2)=>parseInt(ts2)-parseInt(ts1))
+                                    .map((ts, idx) => 
+                                    <ListItem button key={idx}>
+                                        <Box display="flex" marginRight="auto" alignItems="center">
+                                            <ListItemIcon>
+                                                <DoneIcon />
+                                            </ListItemIcon>
+                                            <p>#{idx +1 }</p>
+                                        </Box>
+                                        <span>{moment(parseInt(ts)).fromNow()}</span>
+                                    </ListItem>
+                                )
+                            }
                             </List>
                         </div>
                     </Grid>
