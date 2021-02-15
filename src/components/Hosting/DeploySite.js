@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { Box, Button, makeStyles, Grid, ListItemIcon, List, ListItem, Typography, FormGroup, FormControlLabel } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -17,11 +17,11 @@ import { ReactComponent as IcIcon } from '../../assets/img/icons/ic_increase.svg
 import { DropzoneArea } from 'material-ui-dropzone';
 import { UPLOAD_SOURCE_DEPLOY } from '../../utils/SnConstants';
 import { IOSSwitch } from "./Switch";
-import { useParams } from 'react-router-dom';
-import { getMyHostedApps, setMyHostedApp } from '../../service/SnSkappService';
+import { setMyHostedApp } from '../../service/SnSkappService';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { getBase32Skylink } from "../../utils/SnUtility";
+import { genHostedAppSkappUrl, getBase32Skylink } from "../../utils/SnUtility";
 import useShowHostingLinks from '../../hooks/useShowHostingLinks';
+import { useLoadHostedAppFromUrl } from '../../hooks/useLoadHostedAppFromUrl';
 const useStyles = makeStyles(styles)
 
 const DeploySite = (props) => {
@@ -30,31 +30,14 @@ const DeploySite = (props) => {
 
     const uploadEleRef = createRef();
     const dropZoneRef = createRef();
-    let { appId } = useParams();
 
     const [isFileUpload, setIsFileUpload] = useState(false);
-    const [appDetail, setAppDetail] = useState();
+    const [appDetail, setAppDetail] = useLoadHostedAppFromUrl();
     const dispatch = useDispatch();
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
-    const snSelectedHostedAppStore = useSelector((state) => state.snSelectedHostedAppStore);
 
     useShowHostingLinks();
 
-    useEffect(() => {
-        loadAppDetail();
-    }, []);
-
-
-    const loadAppDetail = async ()=> {
-        if (appId==null) {
-            appId = snSelectedHostedAppStore;
-        }
-        dispatch(setLoaderDisplay(true));
-        const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
-        dispatch(setLoaderDisplay(false));
-        setAppDetail(appDetail);
-        return appDetail;
-    };
     const copyToClipboard = (url) => {
         navigator.clipboard.writeText(url);
     };
@@ -68,9 +51,6 @@ const DeploySite = (props) => {
     const updateHostedApp = async (obj) => {
         dispatch(setLoaderDisplay(true));
         let currAppDetail = appDetail;
-        if (currAppDetail==null) {
-            currAppDetail = await loadAppDetail();
-        }
         currAppDetail.content.skylink = obj.skylink;
         const newAppDetail = await setMyHostedApp(currAppDetail.content, currAppDetail.id);
         dispatch(setLoaderDisplay(false));
@@ -99,8 +79,7 @@ const DeploySite = (props) => {
                         <div className={classes.DNSContainer}>
                             <p className={classes.ContentItemTitle}>Skapp URL</p>
                             <p className={classes.siteLink}>
-                                {appDetail?.content?.hns && appDetail?.content?.storageGateway && 
-                                `https://${appDetail.content.hns}.hns.${appDetail.content.storageGateway}`}
+                                {genHostedAppSkappUrl(appDetail)}
                             </p>
                             <Box display="flex" justifyContent="space-between" marginTop='15px'>
                                 <div>

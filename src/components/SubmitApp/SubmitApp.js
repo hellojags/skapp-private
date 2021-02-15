@@ -31,6 +31,7 @@ import Alert from "@material-ui/lab/Alert";
 import Loader from "react-loader-spinner";
 import { useParams } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
+import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -113,15 +114,15 @@ const SubmitApp = () => {
 
   const [verson, setVersion] = useState("");
   const [tags, setTags] = useState([]);
-  const { register, handleSubmit, control } = useForm();
+  const { register, handleSubmit, control, setValue } = useForm();
   const classes = useStyles();
 
   // state for social links according to format
   const [firstSocialLinkTitle, setfirstSocialLinkTitle] = useState("");
   const [secondSocialLinkTitle, setSecondSocialLinkTitle] = useState("");
   const [thirdSocialLinkTitle, setThirdSocialLinkTitle] = useState("");
-  const [appDetail, setAppDetail] = useState();
-  let { appId } = useParams();
+  const [appDetail, setAppDetail] = useLoadHostedAppFromUrl();
+
 
   const [firstSocialLink, setfirstSocialLink] = useState("");
   const [secondSocialLink, setSecondSocialLink] = useState("");
@@ -147,19 +148,12 @@ const SubmitApp = () => {
   const [isAppDetailDesTrue, setIsAppDetailDesTrue] = useState(false);
 
   useEffect(() => {
-    loadAppDetail();
-    // TODO: map appDetail to the form. Need to understand how react-hook-form works
-  }, []);
-
-  const loadAppDetail = async ()=> {
-    if (appId!=null) {
-      dispatch(setLoaderDisplay(true));
-      const appDetail = (await getMyHostedApps([appId])).appDetailsList[appId];
-      dispatch(setLoaderDisplay(false));
-      setAppDetail(appDetail);
-      return appDetail;
+    if (appDetail?.content) {
+      const { appName, sourceCode } = appDetail.content;
+      setValue('appname', appName);
+      setValue('sourceCode', sourceCode);
     }
-  };
+  }, [appDetail]);
 
   //manage submit loader
   const manageSubmitLoader = (val) => {
@@ -169,6 +163,7 @@ const SubmitApp = () => {
   //manage loader to upload images
   //form submit function
   const onSubmit = (data) => {
+  console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
     if (appLogo === "") {
       setIsAppLogoTrue(true);
       // setMandatory(true);
