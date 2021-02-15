@@ -8,9 +8,6 @@ export default (state = null, action) => {
     default:
       if (state == null) {
         state = BROWSER_STORAGE.getItem(STORAGE_SELECTED_HOSTED_APP_KEY);
-        if (state != null) {
-          state = JSON.parse(state);
-        }
       }
       return state;
   }
