@@ -11,6 +11,7 @@ import {
 } from "./SnIndexedDB"
 import { encryptData, decryptData } from "./SnEncryption"
 import { getPortal} from '../utils/SnUtility'
+import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../utils/SnConstants"
 
 // ################################ SkyDB Methods ######################
 
@@ -24,7 +25,7 @@ const skynetClient = new SkynetClient("https://siasky.net")
 // decrypt = true|false
 // contentOnly = true|false  // If true will return onlu content from SkyDB (not revision number)
 // store = IDB_STORE_SKAPP | IDB_STORE_SKYDB_CACHE , IDB_STORE_SKAPP =  loggedin users Key/value. IDB_STORE_SKYDB_CACHE = otehr users key/Value
-
+export const getUserSession = () => JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY));
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
   // Get User Public Key
@@ -171,17 +172,14 @@ export const getContent = async (publicKey, dataKey, options) => {
 }
 
 // TODO: implement actual logic
-export function getKeys(props){
-  return {
-    publicKey : "ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b",
-    privateKey : "9be0a30c58ca2426f0d4f9d1dc81367ff1eb701a58b7d6c262192fde881528d4ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b"
-  };
+export function getKeys(session){
+  return genKeyPairFromSeed(session.skyid.seed);
 }
 
 // sets JSON file in SkyDB
 export const putFile = async (publicKey, dataKey, content, options) => {
    // fetch private key from localstorage
-   const privateKey = getKeys().privateKey;
+   const privateKey = getKeys(getUserSession()).privateKey;
   try {
     // get previous skylink 
     // create linked list to track history

@@ -39,7 +39,7 @@ import {
   setJSONinIDB,
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
-import { uploadFile } from "./SnSkynet"
+import { getUserSession, uploadFile } from "./SnSkynet"
 import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent, getRegistryEntryURL } from './SnSkynet'
 import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
@@ -305,12 +305,12 @@ export const getMyHostedApps = async (appIds) => {
   const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
     if (appIds == null || appIds.length === 0) {
-      const { data = [] } = await getContent(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+      const { data = [] } = await getContent(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
       hostedAppIdList.appIdList = data;
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getContent(getKeys().publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP })).data;
+      hostedAppIdList.appDetailsList[appId] = (await getContent(getKeys(getUserSession()).publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP })).data;
     }));
     return hostedAppIdList;
   } catch (err) {
@@ -321,7 +321,7 @@ export const getMyHostedApps = async (appIds) => {
 //Update published app data
 export const setMyHostedApp = async (appJSON, previousId) => {
 
-  const hostedAppIdList = (await getMyHostedApps()).appIdList || [];
+  const hostedAppIdList = (await getMyHostedApps())?.appIdList || [];
   const ts = new Date().getTime();
   let history = {};
   history[ts] = appJSON.skylink;
@@ -346,8 +346,8 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     },
     ts
   };
-  await putFile(getKeys().publicKey, `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
-  await putFile(getKeys().publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey, `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
 
   return hostedAppJSON;
 }
@@ -356,7 +356,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
 export const setHNSEntry = (hnsName, skylink) => { }
 
 //get HNS URL for TXT record
-export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getKeys().publicKey, hnsName);
+export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getKeys(getUserSession()).publicKey, hnsName);
 
 
 export const initializeLocalDatabaseFromBackup = async () => {
