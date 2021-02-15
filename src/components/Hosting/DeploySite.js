@@ -108,13 +108,13 @@ const DeploySite = (props) => {
                                 {   appDetail?.content?.history && 
                                     Object.keys(appDetail.content.history)
                                     .sort((ts1, ts2)=>parseInt(ts2)-parseInt(ts1))
-                                    .map((ts, idx) => 
+                                    .map((ts, idx, arr) => 
                                     <ListItem button key={idx}>
                                         <Box display="flex" marginRight="auto" alignItems="center">
                                             <ListItemIcon>
                                                 <DoneIcon />
                                             </ListItemIcon>
-                                            <p>#{idx +1 }</p>
+                                            <p>#{(arr.length - idx)}</p>
                                         </Box>
                                         <span>{moment(parseInt(ts)).fromNow()}</span>
                                     </ListItem>
