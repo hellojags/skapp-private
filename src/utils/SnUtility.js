@@ -172,3 +172,6 @@ export const isStrInObj = (searchStr, obj) => {
   const flattenedObj = flattenObject(obj);
   return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toString().toLowerCase().includes(searchStr.toLowerCase()));
 };
+
+export const genHostedAppSkappUrl = (hostedAppDetail) => hostedAppDetail?.content?.hns && hostedAppDetail?.content?.storageGateway && 
+`https://${hostedAppDetail.content.hns}.hns.${hostedAppDetail.content.storageGateway}`;
