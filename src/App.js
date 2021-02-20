@@ -9,13 +9,15 @@ import SnRouter from './router/SnRouter'
 import {
   BrowserRouter as Router
 } from "react-router-dom";
+import Nav from './components/Navbar/Nav'
+
 function App() {
   return (
     <Router>
       <ThemeProvider theme={skappTheme}>
       <SnLoader/>
         <div className="App">
-          <Navbar />
+          <Nav />
           <section className="main-content">
             <aside className="app-sidebar">
               <Sidebar />

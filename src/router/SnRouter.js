@@ -12,6 +12,9 @@ import Settings from '../components/Setting/Settings'
 import AppDetailsPage from '../components/AppDetails/AppDetailsPage'
 import DeploySite from '../components/Hosting/DeploySite'
 import SnLogin from '../components/Login/SnLogin'
+import DescoverDev from '../components/DescoverDev/DescoverDev'
+import AppStore from '../components/AppsComp/AppStore'
+import Login from '../components/Auth/Login'
 import {
     Switch,
     Route,
@@ -22,11 +25,20 @@ import AddNewSite from '../components/Hosting/AddNewSite'
 const SnRouter = (props) => (
    
         <Switch>
-            <Route exact path="/">
-                <Redirect to={`/login`}/>
-                {/* <Redirect to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}/> */}
+            <Route exact path='/'>
+                  <AppStore />
             </Route>
+            <Route exact path='/descoverdev'>
+                  <DescoverDev />
+            </Route>
+            {/* <Route exact path="/">
+                <Redirect to={`/login`}/>
+                 <Redirect to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}/> */}
+            {/* </Route> */}
             <Route exact path='/login'>
+                  <Login />
+            </Route>
+            <Route exact path='/SnLogin'>
                 <SnLogin />
             </Route>
             <Route exact path='/appdetail'>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import {React, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import AppCard from "./AppCard";
 import styles from "../../assets/jss/apps/AppListStyle";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Spiner from './Spiner'
 
 const useStyles = makeStyles(styles);
 
@@ -11,8 +12,8 @@ const AppsList = ({ newData }) => {
   const classes = useStyles();
   // const [data, setData] = useState(newData);
 
-  const [items, setITems] = React.useState(Array.from({ length: 10 }));
-  const [alldata, setalldata] = React.useState([]);
+  const [items, setItems] = useState(Array.from({ length: 12 }));
+  const [alldata, setalldata] = useState([]);
 
   useEffect(() => {
     // console.log(items.length);
@@ -28,24 +29,25 @@ const AppsList = ({ newData }) => {
     // a fake async api call like which sends
     // 20 more records in 1.5 secs
     setTimeout(() => {
-      setITems(items.concat(Array.from({ length: 10 })));
+      setItems(items.concat(Array.from({ length: 12 })));
       //   this.setState({
       //     items: this.state.items.concat(Array.from({ length: 20 })),
       //   });
-    }, 1000);
+    }, 1500);
   };
 
   return (
     <div className={`${classes.listContain} list-grid-container`}>
       <InfiniteScroll
+        scrollableTarget='app-content'
         className="infinite"
         dataLength={items.length}
         next={fetchMoreData}
         hasMore={alldata.length === newData.length ? false : true}
-        loader={<h4>Loading...</h4>}
+        loader={<Spiner />}
         // endMessage={<h3>End of Apps</h3>}
       >
-        <Grid container spacing={1}>
+        <Grid container spacing={1} id="appsInfinteScroll">
           {alldata &&
             alldata.map((item, index) => {
               return (

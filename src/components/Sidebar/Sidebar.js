@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Collapse from "@material-ui/core/Collapse";
+import { useLocation } from 'react-router-dom'
 // Custom Icons Imports
 import { ReactComponent as DashboardIcon } from "../../assets/img/icons/dashboardIcon.svg";
 import { ReactComponent as SubmitAppIcon } from "../../assets/img/icons/submitIcon.svg";
@@ -22,6 +23,7 @@ import { ReactComponent as ActivityLogIcon } from "../../assets/img/icons/starOu
 import { ReactComponent as KnowlBaseIcon } from "../../assets/img/icons/knowledgeBaseIcon.svg";
 import { ReactComponent as ProductUpdateIcon } from "../../assets/img/icons/productUpdateIcon.svg";
 import { ReactComponent as SettingNavLogIcon } from "../../assets/img/icons/settingNavIcon.svg";
+import { ReactComponent as PersonIcon } from '../../assets/img/icons/interface-essential-311.svg'
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 // sidebar styles
 import style from "../../assets/jss/sidebar/SidebarStyle";
@@ -37,9 +39,11 @@ const Sidebar = (props) => {
 
   const handleClick = () => {
     setOpen(!open);
-  };
+  }
 
-  return (
+  let location = useLocation()
+
+  let sidebar = (
     <div className={`${classes.sidebar} sidebar`} style={props.style}>
       <PerfectScrollbar>
         <List
@@ -78,6 +82,14 @@ const Sidebar = (props) => {
                 <MyAppIcon />
               </ListItemIcon>
               <ListItemText primary="My Apps" />
+            </ListItem>
+          </NavLink>
+          <NavLink exact to='/descoverdev'>
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="User Discovery" />
             </ListItem>
           </NavLink>
           <NavLink exact to="/hosting">
@@ -189,7 +201,11 @@ const Sidebar = (props) => {
         </div>
       </PerfectScrollbar>
     </div>
-  );
-};
+  )
+  return (
+    location.pathname === '/' || location.pathname === '/login' ? null : sidebar
+    // sidebar
+  )
+}
 
-export default Sidebar;
+export default Sidebar

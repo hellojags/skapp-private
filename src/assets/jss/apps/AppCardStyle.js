@@ -90,6 +90,7 @@ const appCardStyle = {
 
     },
     versionBtn: {
+        height: 22,
         backgroundColor: '#9d9d9d33',
         color: '#9D9D9D',
         '@media only screen and (max-width: 575px)': {
@@ -119,7 +120,10 @@ const appCardStyle = {
     },
     detailsArea: {
         paddingTop: 4,
-        paddingBottom: 0
+        paddingBottom: 0,
+        '& .MuiBox-root': {
+            paddingTop: 0
+        }
     },
     installBtn: {
         backgroundColor: '#1DBF73',
@@ -148,19 +152,22 @@ const appCardStyle = {
         backgroundColor: '#1DBF73!important'
     },
     tags: {
+        marginTop: 3,
         color: '#9D9D9D',
         width: '155px',
         justifyContent: 'space-between',
-        marginLeft: 'auto!important',
+        marginRight: 'auto!important',
+        marginLeft: '15px',
         '@media only screen and (max-width: 575px)': {
-            marginRight: 'auto!important',
-            marginLeft: '0!important',
+            // marginRight: 'auto!important',
+            marginRight: '0!important',
         },
 
     },
     footerBottom: {
         padding: '.6rem .9rem',
-        paddingBottom: "1.5rem",
+        paddingTop: '5px',
+        paddingBottom: ".75rem",
         '@media only screen and (max-width: 575px)': {
             flexDirection: 'column-reverse',
             padding: '.2rem .5rem',

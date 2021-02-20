@@ -18,7 +18,7 @@ import { ReactComponent as StarIcon } from "../../assets/img/icons/star-favorite
 import FiberManualRecordRoundedIcon from "@material-ui/icons/FiberManualRecordRounded";
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import ShareApp from "../ShareApp/ShareApp";
-import { getAppStatsAction } from "../../redux/action-reducers-epic/SnAppStatsAction";
+import { getAppStatsAction,setAppStatsAction } from "../../redux/action-reducers-epic/SnAppStatsAction";
 import { useDispatch } from "react-redux";
 import {LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT} from "../../utils/SnConstants";
 
@@ -55,7 +55,7 @@ const AppCard = ({ selectable, updated, item }) => {
   };
 
   const AccessApp = async (appId, appurl) => {
-    dispatch(AccessedAction(ACCESS_COUNT, appId, ));
+    dispatch(setAppStatsAction(ACCESS_COUNT,null, appId));
     OpenAppUrl(appurl);
   };
 
@@ -133,6 +133,7 @@ const AppCard = ({ selectable, updated, item }) => {
             </Typography>
           </CardContent>
         </CardActionArea>
+        
         <CardActions className={`${classes.detailsArea} cardFooter`}>
           <Box
             display="flex"
