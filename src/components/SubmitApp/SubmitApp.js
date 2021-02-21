@@ -215,6 +215,7 @@ const SubmitApp = () => {
 
       dispatch(publishAppAction(obj));
       setMandatory(false);
+      setIsSubmit(false);
     }
   };
 

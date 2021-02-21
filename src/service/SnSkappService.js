@@ -30,7 +30,8 @@ import {
   SKYSPACE_PATH,
   SUCCESS,
   USERSETTINGS_FILEPATH,
-  HOSTED_APP_IDS_DB_KEY
+  HOSTED_APP_IDS_DB_KEY,
+  PUBLISHED_APP_IDS_DB_KEY
 } from '../utils/SnConstants';
 import {
   getAllItemsFromIDB,
@@ -121,33 +122,35 @@ export const getPublishedApp = async (appId) => {
 export const getAllPublishedApps = async () => {
   //let publishedAppsMap = new Map();
   let publishedAppsMap = [];
-  let publishedAppsIdList = await getJSONfromIDB(`publishedApps`, { store: IDB_STORE_SKAPP, });
-  if (publishedAppsIdList) {
-    for (let appId of publishedAppsIdList) {
-      let appJSON = await getJSONfromIDB(appId, { store: IDB_STORE_SKAPP, });
-      //publishedAppsMap.set(appId, appJSON);
-      publishedAppsMap.push(appJSON)
+  try {
+    let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, PUBLISHED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+    if (publishedAppsIdList) {
+      await Promise.all(publishedAppsIdList.map(async (appId) => {
+        publishedAppsMap.push((await getFile(getKeys(getUserSession()).publicKey, appId, { store: IDB_STORE_SKAPP })));
+      }));
+      console.log("getAllPublishedApps: " + publishedAppsMap);
     }
-    console.log("getAllPublishedApps: " + publishedAppsMap);
+  } catch (err) {
+    console.log(err);
+    return publishedAppsMap;
   }
   return publishedAppsMap;
 }
 
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
-
-  let apps = await setJSONinIDB(`publishedApps`, appJSON, { store: IDB_STORE_SKAPP });
-  if (apps) {
-    apps.push(appJSON.id);
+  let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, PUBLISHED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+  if (publishedAppsIdList) {
+    publishedAppsIdList.push(appJSON.id);
   }
   else {
-    apps = [appJSON.id];
+    publishedAppsIdList = [appJSON.id];
   }
   // update Index value
-  await setJSONinIDB(`publishedApps`, apps, { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey,PUBLISHED_APP_IDS_DB_KEY, publishedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
-  await setJSONinIDB(appJSON.id, appJSON, { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey,appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
   const publishedAppsMap = await getAllPublishedApps();
   return publishedAppsMap;
 }

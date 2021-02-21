@@ -57,13 +57,13 @@ export const getFile = async (publicKey, dataKey, options) => {
         } else {
           // If revision numbers are different, return Skylink content from SkyDB/Skynet
           // Fetch content fromSkynet
-          let content = getSkylinkContent(registryEntry.data)
+          const { data, contentType, metadata, skylink } = await skynetClient.getFileContent(registryEntry.data);
           //setcontent in IndexedDB - "SkyDB Cache"
-          await setJSONinIDB(tempKey, [skyDBRevisionNo, content], {
+          await setJSONinIDB(tempKey, [skyDBRevisionNo, data], {
             store: IDB_STORE_SKYDB_CACHE,
           })
           // TODO: decrypt method
-          return content
+          return data
         }
       } else { // ### Loggedin User - Fetch request ###
         //step1: check if [DataKey] exist in app_metadata
@@ -76,7 +76,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         // Fetch value for [DataKey] from IndexedDB
         let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })
         // get revision number using dataKey - getEntry method
-        let registryEntry = await getRegistryEntry(options.publicKey, dataKey)
+        let registryEntry = await getRegistryEntry(publicKey, dataKey)
         const skyDBRevisionNo =
           registryEntry && registryEntry != "undefined"
             ? registryEntry.revision
@@ -84,7 +84,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         //check if [PubKey#DataKey ] exist in skydb_cache and revision numbers are same.
         if (
           result &&
-          result.length === 2 &&
+          result.length > 0  &&
           parseInt(result[0]) === parseInt(skyDBRevisionNo)
         ) {
           //if revision numbers are same, return Skylink content from IndexedDB
@@ -92,7 +92,8 @@ export const getFile = async (publicKey, dataKey, options) => {
         } else {
           // If revision numbers are different, return Skylink content from SkyDB/Skynet
           // Fetch content fromSkynet
-          let content = getSkylinkContent(registryEntry.data)
+          //let content = getSkylinkContent(registryEntry.data)
+          const { data, contentType, metadata, skylink } = await skynetClient.getFileContent(registryEntry.data);
           // TODO: convert array to JSOn object
           // Example:
           // {
@@ -101,11 +102,11 @@ export const getFile = async (publicKey, dataKey, options) => {
           //   },
           //   revision: 11
           // }
-          await setJSONinIDB(dataKey, [skyDBRevisionNo, content], {
+          await setJSONinIDB(dataKey, [skyDBRevisionNo, data], {
             store: IDB_STORE_SKAPP,
           })
           // TODO: decrypt method
-          return content
+          return data
         }
       }
     } else { //If we need to fetch directly from SkyDB
@@ -253,20 +254,35 @@ export function getRegistryEntryURL(publicKey, dataKey) {
 // gets Skylink Content.
 // TODO :  ahandling for Folder ?
 // client.downloadFile(skylink, { path: "dir2/file3" });
-export const getSkylinkContent = (skylink, options) =>
-  ajax({
-    url: getPortal() + `${skylink}?format=concat`,
-    method: "GET",
-    responseType: "",
-  }).pipe(
-    map((res) => {
-      return res
-    }),
-    catchError((error) => {
-      console.log("getSkylinkHeader::error: ", error)
-      return of(error)
-    })
-  )
+// export const getSkylinkContent = async (skylink, options) => {
+
+//   const skynetOptions = {
+//       method: "GET",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//       },
+//   }
+//  const  url =  getPortal() + `${skylink}?format=concat`;
+//  return fetch(url, options)
+//     .then((res) => {
+//       res.json()
+//     })
+//     .catch((err) => err);
+    
+//   // ajax({
+//   //   url: getPortal() + `${skylink}?format=concat`,
+//   //   method: "GET",
+//   //   responseType: "",
+//   // }).pipe(
+//   //   map((res) => {
+//   //     return res
+//   //   }),
+//   //   catchError((error) => {
+//   //     console.log("getSkylinkHeader::error: ", error)
+//   //     return of(error)
+//   //   })
+// }
 
 export const getSkylinkMetadata = async (skylink) => {
   try {

@@ -45,7 +45,7 @@ export const getPortal = () => {
   // let skynetPortal = store.getState().snUserSetting?.setting?.portal
   // skynetPortal =
   //   skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
-  // return skynetPortal
+   return "https://siasky.net/"
 }
 
 // It will generate base32 url for any Skapp
