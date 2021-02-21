@@ -4,9 +4,9 @@ export const setAppStatsAction = (actionType, data, appId) => ({
   type: EPIC_TY_SET_STATS,
   payload: {actionType, data, appId},
 })
-export const getAppStatsAction = (id) => ({
+export const getAppStatsAction = (appId) => ({
   type: EPIC_TY_GET_STATS,
-  payload: id,
+  payload: appId,
 })
 // Like, Fav, View, Access 
 export const setAppStatsStore = (appStatsJSON) => ({

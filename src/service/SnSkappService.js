@@ -42,7 +42,7 @@ import {
 } from "../service/SnIndexedDB"
 import { getUserSession, uploadFile } from "./SnSkynet"
 import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent, getRegistryEntryURL } from './SnSkynet'
-import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
+import { INITIAL_SKYDB_OBJ, createAppStatsObj } from '../utils/SnNewObject'
 import store from "../redux"
 import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../utils/SnConstants";
 import imageCompression from "browser-image-compression";
@@ -162,24 +162,23 @@ export const setAppStats = async (statsType, value, appId) => {
   let appStatsJSON = null;
   try {
     // Get Data from IDX-DB
-    let appStatsJSON = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+    let appStatsJSON = await getFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, { store: IDB_STORE_SKAPP, });
     // Update App Stats
-    if (appStatsJSON) {
-      if (statsType === LIKES) {
-        appStatsJSON.liked = value;
-      } if (statsType === FAVORITE) {
-        appStatsJSON.favorite = value;
-      } if (statsType === VIEW_COUNT) {
-        appStatsJSON.viewed++;
-      } if (statsType === ACCESS_COUNT) {
-        appStatsJSON.accessed++;
-      }
-    } else {
+    if (appStatsJSON === null || appStatsJSON === undefined ) {
       // send new empty object
-
+      appStatsJSON = createAppStatsObj();
+    }
+    if (statsType === LIKES) {
+      appStatsJSON.liked = value;
+    } if (statsType === FAVORITE) {
+      appStatsJSON.favorite = value;
+    } if (statsType === VIEW_COUNT) {
+      appStatsJSON.viewed++;
+    } if (statsType === ACCESS_COUNT) {
+      appStatsJSON.accessed++;
     }
     // update IDX-DB with new value
-    await setJSONinIDB(`${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
+    await putFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
     //.then(() => {
     // pushRoute(url);
   } catch (err) {
@@ -196,8 +195,7 @@ export const getAppStats = async (appId) => {
     return appStatsJSON;
   }
   else {
-    // TODO: create and return new empty stats object
-    return appStatsJSON;
+    return createAppStatsObj();
   }
 }
 // get apps comments - 

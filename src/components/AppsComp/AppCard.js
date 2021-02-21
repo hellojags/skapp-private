@@ -20,6 +20,7 @@ import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import ShareApp from "../ShareApp/ShareApp";
 import { getAppStatsAction,setAppStatsAction } from "../../redux/action-reducers-epic/SnAppStatsAction";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT} from "../../utils/SnConstants";
 
 // const MobileBreakPoint = '575px'
@@ -29,6 +30,7 @@ const useStyles = makeStyles(styles);
 
 const AppCard = ({ selectable, updated, item }) => {
   const dispatch = useDispatch();
+  const history = useHistory()
   const [modalOpen, setModalOpen] = useState(false);
   const HandleShareModel = () => {
     modalOpen ? setModalOpen(false) : setModalOpen(true);
@@ -46,7 +48,8 @@ const AppCard = ({ selectable, updated, item }) => {
   };
 
   const ViewAppDetail = async (appId) => {
-    await dispatch(getAppStatsAction(VIEW_COUNT, appId));
+    dispatch(setAppStatsAction(VIEW_COUNT,null, appId));
+    history.push(`/appdetail/${appId}`);
   };
 
   const OpenAppUrl = (url) => {

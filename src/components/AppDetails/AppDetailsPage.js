@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 
 const AppDetailsPage = () => {
-  const { id } = useParams();
+  const { appId } = useParams();
 
   const dispatch = useDispatch();
 
@@ -19,13 +19,13 @@ const AppDetailsPage = () => {
 
   useEffect(() => {
     if (publishedAppsStore) {
-      let appJSON = publishedAppsStore.get(id);
+      let appJSON = publishedAppsStore.get(appId);
       if(appJSON)
       {
         setData(appJSON);
       }
     }
-  }, [publishedAppsStore, id]); // if id or publishedAppsStore is changing run this method.
+  }, [publishedAppsStore, appId]); // if id or publishedAppsStore is changing run this method.
 
   return (
     <div>

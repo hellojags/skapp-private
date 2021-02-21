@@ -12,7 +12,7 @@ export const snSetAppStatsEpic = (action$) =>
         pipe(ofType(EPIC_TY_SET_STATS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                return from(setAppStats(action.payload.actionType, action.payload.data, action.payload.id))
+                return from(setAppStats(action.payload.actionType, action.payload.data, action.payload.appId))
                     .pipe(
                         map((res) => {
                             setLoaderDisplay(false)
@@ -26,7 +26,7 @@ export const snGetAppStatsEpic = (action$) => action$.pipe(ofType(EPIC_TY_GET_ST
     // do we need to change this to mergemap ? we dont want subscription to be overwritten
     switchMap((action) => {
         setLoaderDisplay(true)
-        return from(getAppStats(action.payload.id))
+        return from(getAppStats(action.payload.appId))
             .pipe(
                 map((res) => {
                     setLoaderDisplay(false)
