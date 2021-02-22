@@ -19,7 +19,7 @@ const AppDetailsPage = () => {
 
   useEffect(() => {
     if (publishedAppsStore) {
-      let appJSON = publishedAppsStore.get(appId);
+      let appJSON = publishedAppsStore.find(appData => appData.id === appId);
       if(appJSON)
       {
         setData(appJSON);

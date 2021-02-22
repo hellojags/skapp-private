@@ -156,9 +156,12 @@ const useStyles = makeStyles({
 const AppDetailsHeader = ({ data }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { isAppInFav, isAppLiked } = useSelector(
-    (state) => state.AppStatsReducer
+  const appStatsStore = useSelector(
+    (state) => state.snAppStatsStore
   );
+  // const { isAppInFav, isAppLiked } = useSelector(
+  //   (state) => state.snAppStatsStore
+  // );
 
   // action on app
   const LikeActionFunction = (value) => {
@@ -197,7 +200,7 @@ const AppDetailsHeader = ({ data }) => {
             <Typography>1.3k</Typography>
           </Box>
           <Box display="flex" alignItems="center" marginRight="0">
-            {isAppLiked === 1 ? (
+            {appStatsStore?.content?.liked === 1 ? (
               <StarIcon
                 className={classes.StarIcon}
                 onClick={() => LikeActionFunction(0)}
@@ -213,7 +216,7 @@ const AppDetailsHeader = ({ data }) => {
           </Box>
           <Box className={classes.favrIcon}>
             <IconButton aria-label="Favourite Button" size="small">
-              {isAppInFav === 0 ? (
+              {appStatsStore?.content?.favorite === 0 ? (
                 <HeartIcon
                   className={classes.HeartIcon}
                   onClick={() => favoriteActionFunction(1)}
