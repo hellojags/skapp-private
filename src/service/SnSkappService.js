@@ -31,7 +31,8 @@ import {
   SUCCESS,
   USERSETTINGS_FILEPATH,
   HOSTED_APP_IDS_DB_KEY,
-  PUBLISHED_APP_IDS_DB_KEY
+  PUBLISHED_APP_IDS_DB_KEY,
+  SKAPP_FOLLOWING_FILEPATH
 } from '../utils/SnConstants';
 import {
   getAllItemsFromIDB,
@@ -53,7 +54,7 @@ function generateSkappId(prop) {
   return uuidv4();
 }
 
-export function getSkappKeys(props){
+export function getSkappKeys(){
   return {
     publicKey : "ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b",
     privateKey : "9be0a30c58ca2426f0d4f9d1dc81367ff1eb701a58b7d6c262192fde881528d4ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b"
@@ -159,10 +160,18 @@ export const publishApp = async (appJSON) => {
   // add additional logic to link previously published App
   await putFile(getKeys(getUserSession()).publicKey,appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
   const publishedAppsMap = await getAllPublishedApps();
+  await addToSkappUserFollowing(getUserSession().publicKey);
   return publishedAppsMap;
 }
 
-
+export const addToSkappUserFollowing = async (userPublicKey) =>{
+  let skappFollowingPublicKeyLst = await getFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, { store: IDB_STORE_SKAPP });
+  skappFollowingPublicKeyLst = skappFollowingPublicKeyLst ? skappFollowingPublicKeyLst : [];
+  if (!skappFollowingPublicKeyLst.includes(userPublicKey)) {
+    skappFollowingPublicKeyLst.push(skappFollowingPublicKeyLst);
+    await putFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, skappFollowingPublicKeyLst, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey})
+  }
+}
 
 // ### Apps Stats and comments Functionality ###
 export const setAppStats = async (statsType, value, appId) => {
