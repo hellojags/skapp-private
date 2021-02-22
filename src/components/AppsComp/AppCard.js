@@ -77,7 +77,9 @@ const AppCard = ({ selectable, updated, item }) => {
           )}
         </Box>
       )} */}
+      <>
       <ShareApp shareModelOpen={modalOpen} shareModelFn={HandleShareModel} />
+      {item && 
       <Card className={classes.root}>
         <CardActionArea className={classes.cardActionArea} component="div">
           <CardMedia
@@ -213,6 +215,8 @@ const AppCard = ({ selectable, updated, item }) => {
           </Box>
         </CardActions>
       </Card>
+      }
+      </>
     </Box>
   );
 };
