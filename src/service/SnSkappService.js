@@ -306,12 +306,12 @@ export const getMyHostedApps = async (appIds) => {
   const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
     if (appIds == null || appIds.length === 0) {
-      const { data = [] } = await getFile(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+      const data  = await getFile(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
       hostedAppIdList.appIdList = data;
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getFile(getKeys(getUserSession()).publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP })).data;
+      hostedAppIdList.appDetailsList[appId] = (await getFile(getKeys(getUserSession()).publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP }));
     }));
     return hostedAppIdList;
   } catch (err) {
