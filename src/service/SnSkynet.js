@@ -180,7 +180,7 @@ export function getKeys(session){
 // sets JSON file in SkyDB
 export const putFile = async (publicKey, dataKey, content, options) => {
    // fetch private key from localstorage
-   const privateKey = getKeys(getUserSession()).privateKey;
+   const privateKey = options.privateKey ?? getKeys(getUserSession()).privateKey;
   try {
     // get previous skylink 
     // create linked list to track history
