@@ -89,6 +89,7 @@ export const HISTORY_FILEPATH = "skhub/history/history.json"
 export const USERSETTINGS_FILEPATH = "skhub/settings/usersetting.json"
 export const SKYNET_PORTALS_FILEPATH = "skhub/settings/portals/portals.json"
 export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json"
+export const SKAPP_FOLLOWING_FILEPATH = "skhub/skappFollowing.json";
 
 // IndexedDB metadataKey to maintain local state (not required in SkyDB)
 export const IDB_LAST_SYNC_REVISION_NO = "skhub/skyspaces/idb/lastSyncRevNo"
