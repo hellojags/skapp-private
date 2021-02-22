@@ -169,8 +169,12 @@ export const flattenObject = (obj) => {
  * The method performs a case agnostic substring search. It returns true id searchStr in null.
  */
 export const isStrInObj = (searchStr, obj) => {
-  const flattenedObj = flattenObject(obj);
-  return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toString().toLowerCase().includes(searchStr.toLowerCase()));
+  if (obj) {
+    const flattenedObj = flattenObject(obj);
+    return (searchStr==null) || Object.keys(flattenedObj).some(key=>flattenedObj[key]!=null && flattenedObj[key].toString().toLowerCase().includes(searchStr.toLowerCase()));
+  } else {
+    return true;
+  }
 };
 
 export const genHostedAppSkappUrl = (hostedAppDetail) => hostedAppDetail?.content?.hns && hostedAppDetail?.content?.storageGateway && 
