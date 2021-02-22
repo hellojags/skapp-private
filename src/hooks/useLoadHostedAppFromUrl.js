@@ -12,7 +12,7 @@ export function useLoadHostedAppFromUrl() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        loadAppDetail();
+        appId && loadAppDetail();
     }, [appId]);
 
     const loadAppDetail = async ()=> {
