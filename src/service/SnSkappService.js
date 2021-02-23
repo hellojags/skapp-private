@@ -32,7 +32,9 @@ import {
   USERSETTINGS_FILEPATH,
   HOSTED_APP_IDS_DB_KEY,
   PUBLISHED_APP_IDS_DB_KEY,
-  SKAPP_FOLLOWING_FILEPATH
+  SKAPP_FOLLOWING_FILEPATH,
+  SKAPP_SHARED_APPS_FILEPATH,
+  SKAPP_SHARED_APPS_KEY_SEPERATOR
 } from '../utils/SnConstants';
 import {
   getAllItemsFromIDB,
@@ -148,6 +150,7 @@ export const getAllPublishedApps = async () => {
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
   let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, PUBLISHED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+  const userPubKey = getKeys(getUserSession()).publicKey;
   if (publishedAppsIdList) {
     publishedAppsIdList.push(appJSON.id);
   }
@@ -160,16 +163,38 @@ export const publishApp = async (appJSON) => {
   // add additional logic to link previously published App
   await putFile(getKeys(getUserSession()).publicKey,appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
   const publishedAppsMap = await getAllPublishedApps();
-  await addToSkappUserFollowing(getUserSession().publicKey);
+  await addToSkappUserFollowing(userPubKey);
+  await addToSharedApps(userPubKey, appJSON.id);
   return publishedAppsMap;
 }
 
 export const addToSkappUserFollowing = async (userPublicKey) =>{
-  let skappFollowingPublicKeyLst = await getFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, { store: IDB_STORE_SKAPP });
-  skappFollowingPublicKeyLst = skappFollowingPublicKeyLst ? skappFollowingPublicKeyLst : [];
-  if (!skappFollowingPublicKeyLst.includes(userPublicKey)) {
-    skappFollowingPublicKeyLst.push(skappFollowingPublicKeyLst);
-    await putFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, skappFollowingPublicKeyLst, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey})
+  if (userPublicKey) {
+    let skappFollowingPublicKeyLst = await getFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, { store: IDB_STORE_SKAPP });
+    skappFollowingPublicKeyLst = skappFollowingPublicKeyLst || [];
+    if (!skappFollowingPublicKeyLst.includes(userPublicKey)) { 
+      skappFollowingPublicKeyLst.push(userPublicKey);
+      await putFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, skappFollowingPublicKeyLst, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey})
+    }
+  }
+}
+
+export const newSharedAppValObj = ()=> {
+  return {
+    viewCount: 0,
+    visitCount: 0
+  }
+}
+
+export const addToSharedApps = async (userPublicKey, appId) => {
+  if (userPublicKey && appId) {
+    let sharedAppListObj = await getFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, { store: IDB_STORE_SKAPP });
+    sharedAppListObj = sharedAppListObj || {};
+    const currAppKey = appId + SKAPP_SHARED_APPS_KEY_SEPERATOR + userPublicKey;
+    if (!Object.keys(sharedAppListObj).includes(currAppKey)) {
+      sharedAppListObj[currAppKey] = newSharedAppValObj();
+      await putFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, sharedAppListObj, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey});
+    }
   }
 }
 
