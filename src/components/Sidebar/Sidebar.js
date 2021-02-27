@@ -56,7 +56,7 @@ const Sidebar = (props) => {
               <ListItemIcon className={classes.listIcon}>
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Dashboard" />
+              <ListItemText primary="App Store" />
             </ListItem>
           </NavLink>
 
@@ -65,7 +65,7 @@ const Sidebar = (props) => {
               <ListItemIcon className={classes.listIcon}>
                 <MyAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Explore Apps" />
+              <ListItemText primary="My Published Apps" />
             </ListItem>
           </NavLink>
           <NavLink to="/submitapp">
@@ -76,20 +76,20 @@ const Sidebar = (props) => {
               <ListItemText primary="Publish App" />
             </ListItem>
           </NavLink>
-          <NavLink exact to="/installedappps">
+          {/* <NavLink exact to="/installedappps">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <MyAppIcon />
               </ListItemIcon>
               <ListItemText primary="My Apps" />
             </ListItem>
-          </NavLink>
+          </NavLink> */}
           <NavLink exact to='/descoverdev'>
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary="User Discovery" />
+              <ListItemText primary="Developer Discovery" />
             </ListItem>
           </NavLink>
           <NavLink exact to="/hosting">

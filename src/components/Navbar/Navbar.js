@@ -237,12 +237,12 @@ export default function Navbar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
+            {/* <MenuItem>
                 <Box display='flex' alignItems="center" className={classes.mobileHelpItem} >
                     <QuestionIcon />
                     <p className={classes.helpText}>Help</p>
                 </Box>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem>
                 <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                     <Badge color="secondary" variant="dot">
@@ -251,7 +251,6 @@ export default function Navbar() {
                 </IconButton>
                 <p className={classes.notifiText}>Notifications</p>
             </MenuItem>
-
             <MenuItem onClick={handleProfileMenuOpen}>
                 <Button className={classes.usrIcon}>
                     <PersonOutlineIcon className={classes.avatarIcon} />
@@ -311,10 +310,10 @@ export default function Navbar() {
                     </div>
 
                     <div className={classes.sectionDesktop}>
-                        <Box display='flex' alignItems="center" className={classes.pr_4}>
+                        {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
-                        </Box>
+                        </Box> */}
                         <Box display="flex" alignItems="center" className={classes.pr_4}>
 
                             <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>

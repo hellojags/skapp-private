@@ -1,4 +1,3 @@
-import SkyID from "skyid";
 import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup } from '../SnSkappService';
 import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../SnIndexedDB"

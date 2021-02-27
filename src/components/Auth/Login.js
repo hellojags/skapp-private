@@ -1,8 +1,12 @@
 import { Button, makeStyles } from '@material-ui/core'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { Paper, withStyles, Grid, Link, Typography } from '@material-ui/core';
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoGray.svg'
+import skyId from '../../service/idp/SnSkyId'
+import SnDisclaimer from "../Utils/SnDisclaimer";
+import { useHistory } from "react-router-dom"
 
 const useStyles = makeStyles({
     input: {
@@ -50,22 +54,51 @@ const useStyles = makeStyles({
 })
 const Login = () => {
     const classes = useStyles()
+    const dispatch = useDispatch()
+    const history = useHistory()
+    const person = useSelector((state) => state.person)
+    const stUserSession = useSelector((state) => state.userSession)
+
+    const [seed, setSeed] = useState('')
+    const [value, setValue] = useState(1)
+    const [isTemp, setIsTemp] = useState(true)
+    //const [skyid, setSkyid] = useState(skyidObj)
+
+    useEffect(() => {
+        console.log("skyid=" + skyId);
+    });
+
+    useEffect(() => {
+        console.log("stUserSession=" + stUserSession);
+        if(stUserSession != null)
+        {
+            history.push('/apps');
+        }
+    },[stUserSession]);
+
+    const loginSkyID = async () => {
+        skyId.sessionStart();
+       // dispatch(setLoaderDisplay(true));
+    }
+    const handleChange = (event, newValue) => {
+        setValue(newValue)
+    };
     return (
         <div className={classes.loginFormContainer}>
             <form className="login-form">
                 <div>
                     <Logo />
                     <h3>Sign In to Skapp</h3>
-                    <p>
+                    {/* <p>
                         <small>
                             Enter your secret key to continue <span className="secrect-key">Create a Secret Key</span>
                         </small>
 
-                    </p>
-                    <input className={classes.input} type="text" placeholder="12 - Word Secret Key" />
+                    </p> 
+                    <input className={classes.input} type="text" placeholder="12 - Word Secret Key" />*/}
                     {/* type="submit" */}
-                    <Button type="submit">Continue
-                   <Link to="/apps" className="link" />
+                    <Button type="submit" onClick={loginSkyID}> Login using SkyID
+                   {/* <Link to="/apps" className="link" /> */}
 
                     </Button>
 

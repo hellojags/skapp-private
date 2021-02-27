@@ -74,11 +74,11 @@ function ListFilter() {
                 aria-haspopup="true"
                 onClick={handleToggle}
             >
-                <FilterIcon />
+                <FilterIcon> </FilterIcon>
 
                 <span className="secon-nav__ItemText">
 
-                    {width <= 575 ? 'Sort' : 'Latest First'}
+                    {width <= 575 ? 'Sort' : 'Most Accessed First'}
 
                 </span>
 
@@ -95,9 +95,18 @@ function ListFilter() {
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                    <MenuItem onClick={handleClose}>Access Count (Highest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>View Count (Highest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Like Count (Highest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Favorite Count (Highest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Published Date (Latest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Update Date (Latest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Access Count (lowest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>View Count (lowest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Like Count (lowest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Favorite Count (lowest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Published Date (Oldest first)</MenuItem>
+                                    <MenuItem onClick={handleClose}>Update Date (Oldest first)</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>
                         </Paper>

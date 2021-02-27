@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 import SearchIcon from '@material-ui/icons/Search'
 // import MailIcon from '@material-ui/icons/Mail'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
-import MoreIcon from '@material-ui/icons/MoreVert'
+// import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 
@@ -25,7 +25,7 @@ import { ReactComponent as SettingIcon } from '../../assets/img/icons/setting.sv
 import { ReactComponent as EditProfileIcon } from '../../assets/img/icons/edit-profile.svg'
 import { ReactComponent as LogoutIcon } from '../../assets/img/icons/exit-log-out.2.svg'
 import { ReactComponent as NotificationIcon } from '../../assets/img/icons/notification.svg'
-import { ReactComponent as CustomMenuIcon } from '../../assets/img/icons/Icon ionic-ios-menu.svg'
+// import { ReactComponent as CustomMenuIcon } from '../../assets/img/icons/Icon ionic-ios-menu.svg'
 import { Box, Button } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
@@ -177,14 +177,23 @@ const useStyles = makeStyles((theme) => ({
         background: 'transparent',
         border: '1px solid #1DBF73',
         height: 38,
-        width: 135
+        width: 135,
+        '@media(max-width: 575px)': {
+            width: 75,
+            height: 36,
+        }
     },
     loginBtn: {
         background: ' #1DBF73!important',
         height: 38,
         width: 135,
         color: '#fff',
-        marginLeft: '1rem'
+        marginLeft: '1rem',
+        '@media(max-width: 575px)': {
+            width: 75,
+            height: 36,
+            marginLeft: '10px',
+        }
     }
 }))
 
@@ -208,10 +217,6 @@ export default function LandingPageNavbar() {
     const handleMenuClose = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
-    }
-
-    const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget)
     }
 
     const menuId = 'primary-search-account-menu'
@@ -253,12 +258,12 @@ export default function LandingPageNavbar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
+            {/* <MenuItem>
                 <Box display='flex' alignItems="center" className={classes.mobileHelpItem} >
                     <QuestionIcon />
                     <p className={classes.helpText}>Help</p>
                 </Box>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem>
                 <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                     <Badge color="secondary" variant="dot">
@@ -306,13 +311,11 @@ export default function LandingPageNavbar() {
                 }}></div>}
             <AppBar position="static" className={classes.root} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
-                    <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
-                        <CustomMenuIcon />
-                    </IconButton>
+
                     <div className="logo-top" >
                         <Logo />
                     </div>
-                    <div className={classes.search}>
+                    {/* <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
@@ -324,16 +327,34 @@ export default function LandingPageNavbar() {
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />
-                    </div>
+                    </div> */}
 
                     <div className={classes.sectionDesktop}>
-                        <Box display='flex' alignItems="center" className={classes.pr_4}>
+                        {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
-                        </Box>
+                        </Box> */}
                         <Box>
                             <Button className={classes.signupBtn}>
-                                Signup
+                                Login
+                                <Link className="link" to="/login" />
+                            </Button>
+                        </Box>
+                        <Box>
+                            <Button className={classes.loginBtn}>
+                                Publish Skapp
+                                <Link className="link" to="/login" />
+                            </Button>
+
+                        </Box>
+                        {/* <Box display="flex" alignItems="center" >
+
+                        </Box> */}
+                    </div>
+                    {width <= 960 && <Box display='flex'>
+                        <Box>
+                            <Button className={classes.signupBtn}>
+                                Publish App
                                 <Link className="link" to="/login" />
                             </Button>
                         </Box>
@@ -344,21 +365,8 @@ export default function LandingPageNavbar() {
                             </Button>
 
                         </Box>
-                        {/* <Box display="flex" alignItems="center" >
+                    </Box>}
 
-                        </Box> */}
-                    </div>
-                    <div className={classes.sectionMobile}>
-                        <IconButton
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <MoreIcon />
-                        </IconButton>
-                    </div>
                 </Toolbar>
             </AppBar>
             {renderMobileMenu}

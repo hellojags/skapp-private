@@ -194,9 +194,9 @@ function Apps() {
           flex={1}
           justifyContent="flex-end"
         >
-          <Box>
+          {/* <Box>
             <UtilitiesItem />
-          </Box>
+          </Box> */}
 
           {width > 1249 && (
             <div className={classes.search}>
@@ -215,14 +215,14 @@ function Apps() {
               />
             </div>
           )}
-          <Box>
+          {/* <Box>
             <ListFilter />
-          </Box>
+          </Box> */}
           <Box>
             {selectedPage && <SelectItem />}
           </Box>
           <Box>
-            <SubmitBtn>Add App</SubmitBtn>
+            <SubmitBtn>Publish App</SubmitBtn>
           </Box>
         </Box>
       </Box>

@@ -194,7 +194,7 @@ function AppStore() {
     const AppsComp = (<Fragment >
         <Box display="flex" className='second-nav' alignItems="center">
             <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                <h1 className={classes.pageHeading}>Skapp App Store</h1>
+                <h1 className={classes.pageHeading}>Skynet Apps</h1>
 
             </Box>
             {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
@@ -233,14 +233,14 @@ function AppStore() {
                 <Box>
                     <ListFilter />
                 </Box>
-                <Box>
+                {/* <Box>
                     <SelectItem />
-                </Box>
-                <Box>
+                </Box> */}
+                {/* <Box>
                     <SubmitBtn >
                         Add App
                     </SubmitBtn>
-                </Box>
+                </Box> */}
             </Box>
         </Box>
 
