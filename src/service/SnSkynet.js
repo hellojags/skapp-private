@@ -121,7 +121,6 @@ export const getFile = async (publicKey, dataKey, options) => {
         await setJSONinIDB(tempKey, result, { store: IDB_STORE_SKYDB_CACHE, })
       }
       else {
-        let registryEntry = await getRegistryEntry(publicKey, dataKey)
         // fetching loggedin users data from SkyDB
         entryObj = await getContent(publicKey, dataKey, { ...options, contentOnly: false });
         // update IndexedDB cache
@@ -145,7 +144,11 @@ export const getContent = async (publicKey, dataKey, options) => {
     if (publicKey == null) {
       throw new Error("Invalid Keys")
     }
-    const entryObj = await skynetClient.db.getJSON(publicKey, dataKey)
+    let registryEntry = await getRegistryEntry(publicKey, dataKey)
+    //var { data, revision } =await skynetClient.db.getJSON(publicKey, 'profile'); 
+    const { data, contentType, metadata, skylink } = await skynetClient.getFileContent(registryEntry.data);
+    //const entryObj = await skynetClient.db.getJSON(publicKey, dataKey)
+    const entryObj = {revision: registryEntry.revision , data}
     if (entryObj) {
       if (options.contentOnly) {
         // decrypt it

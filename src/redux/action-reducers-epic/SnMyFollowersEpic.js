@@ -5,15 +5,16 @@ import { ACT_TY_GET_MY_FOLLOWERS } from "../SnActionConstants"
 import { setMyFollowersAction } from "./SnMyFollowerAction"
 import { setLoaderDisplay } from "./SnLoaderAction"
 import { getFollowersJSON } from "../../service/SnSkappService"
+import store from "../../redux"
 
 export const snMyFollowersEpic = (action$) =>
   action$.pipe(
     ofType(ACT_TY_GET_MY_FOLLOWERS),
     switchMap((action) => {
-      setLoaderDisplay(true)
+      store.dispatch(setLoaderDisplay(true))
       return from(getFollowersJSON(action.payload)).pipe(
         map((res) => {
-          setLoaderDisplay(false)
+          store.dispatch(setLoaderDisplay(false))
           return setMyFollowersAction(res)
         })
       )

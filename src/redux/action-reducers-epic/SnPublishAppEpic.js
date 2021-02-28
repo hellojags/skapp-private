@@ -9,6 +9,7 @@ import {
 import { publishApp, getAllPublishedApps, setAppComment, getAppComments } from "../../service/SnSkappService"
 import { setAppCommentStore, setPublishedAppsStore } from "./SnPublishAppAction"
 // app stats actions
+import store from "../../redux"
 
 export const snSetPublishAppEpic = (action$) =>
     action$.
@@ -16,12 +17,12 @@ export const snSetPublishAppEpic = (action$) =>
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
                 console.log("snPublishAppEpic ", action)
-                //setLoaderDisplay(true)
+                store.dispatch(setLoaderDisplay(true))
                 return from(publishApp(action.payload)) // must return all published app
                     .pipe(
                         map((res) => {
                             //const apps = await getAllPublishedApps();
-                            //setLoaderDisplay(false)
+                            store.dispatch(setLoaderDisplay(false))
                             //action.payload.manageSubmitLoader(false)
                             // Update Redux Store
                             return setPublishedAppsStore(res)
@@ -33,11 +34,11 @@ export const snGetPublishedAppsEpic = (action$) =>
         pipe(ofType(EPIC_TY_GET_PUBLISHED_APPS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                setLoaderDisplay(true)
+                store.dispatch(setLoaderDisplay(true))
                 return from(getAllPublishedApps())
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            store.dispatch(setLoaderDisplay(false))
                             // Update Redux Store
                             return setPublishedAppsStore(res)
                         })
@@ -48,11 +49,11 @@ export const snSetAppCommentEpic = (action$) =>
         pipe(ofType(EPIC_TY_SET_APP_COMMENTS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                setLoaderDisplay(true)
+                store.dispatch(setLoaderDisplay(true))
                 return from(setAppComment(action.payload.appId, action.payload.data))
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            store.dispatch(setLoaderDisplay(false))
                             // Update Redux Store
                             return setAppCommentStore(res)
                         })
@@ -64,11 +65,11 @@ export const snGetAppCommentsEpic = (action$) =>
         pipe(ofType(EPIC_TY_GET_APP_COMMENTS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                setLoaderDisplay(true)
+                store.dispatch(setLoaderDisplay(true))
                 return from(getAppComments(action.payload.appId))
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            store.dispatch(setLoaderDisplay(false))
                             // Update Redux Store
                             return setAppCommentStore(res)
                         })

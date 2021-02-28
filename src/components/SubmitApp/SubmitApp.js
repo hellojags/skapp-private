@@ -179,6 +179,8 @@ const SubmitApp = () => {
       setIsAppDetailDesTrue(true);
     } else {
       setIsSubmit(true);
+      setMandatory(true);
+      dispatch(setLoaderDisplay(true))
       let obj = {
         $type: "skapp",
         $subtype: "published",
@@ -769,6 +771,7 @@ const SubmitApp = () => {
               </Grid>
 
               <Grid item md={6} lg={4} style={{ alignSelf: "center" }}>
+              <Button className={classes.cancelBtn}>Cancel </Button>
                 <Button
                   className={classes.button}
                   onClick={handleSubmit(onSubmit)}

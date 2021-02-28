@@ -7,6 +7,7 @@ import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoG
 import skyId from '../../service/idp/SnSkyId'
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 
 const useStyles = makeStyles({
     input: {
@@ -66,7 +67,7 @@ const Login = () => {
 
     useEffect(() => {
         console.log("skyid=" + skyId);
-    });
+    },[]);
 
     useEffect(() => {
         console.log("stUserSession=" + stUserSession);
@@ -78,7 +79,7 @@ const Login = () => {
 
     const loginSkyID = async () => {
         skyId.sessionStart();
-       // dispatch(setLoaderDisplay(true));
+        dispatch(setLoaderDisplay(true));
     }
     const handleChange = (event, newValue) => {
         setValue(newValue)
@@ -97,7 +98,7 @@ const Login = () => {
                     </p> 
                     <input className={classes.input} type="text" placeholder="12 - Word Secret Key" />*/}
                     {/* type="submit" */}
-                    <Button type="submit" onClick={loginSkyID}> Login using SkyID
+                    <Button onClick={loginSkyID}> Login using SkyID
                    {/* <Link to="/apps" className="link" /> */}
 
                     </Button>

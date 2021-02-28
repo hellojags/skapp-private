@@ -10,9 +10,9 @@ export const getPublishedAppsAction = () => ({
   payload: null,
 })
 // Like, Fav, View, Access 
-export const setPublishedAppsStore = (appStatsJSON) => ({
+export const setPublishedAppsStore = (appsJSON) => ({
   type: ACT_TY_SET_PUBLISHED_APPS,
-  payload: appStatsJSON,
+  payload: appsJSON,
 })
 
 export const setAppCommentAction = (appId,data) => ({

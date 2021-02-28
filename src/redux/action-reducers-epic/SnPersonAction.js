@@ -1,7 +1,6 @@
 import {
-  ACT_TY_SET_BLOCKSTACK_USER,
-  ACT_TY_FETCH_BLOCKSTACK_USER,
-  ACT_TY_LOGOUT_BLOCKSTACK_USER,
+  ACT_TY_SET_SKYDB_USER,
+  ACT_TY_LOGOUT_SKYDB_USER,
 } from "../SnActionConstants"
 import { STORAGE_USER_KEY, BROWSER_STORAGE } from "../../utils/SnConstants"
 //import { setSkyspaceList, fetchSkyspaceList } from "./sn.skyspace-list.action"
@@ -14,7 +13,7 @@ export const setPerson = (state) => {
     BROWSER_STORAGE.setItem(STORAGE_USER_KEY, JSON.stringify(state))
   }
   return {
-    type: ACT_TY_SET_BLOCKSTACK_USER,
+    type: ACT_TY_SET_SKYDB_USER,
     payload: state,
   }
 }
@@ -24,11 +23,6 @@ export const setPersonGetOtherData = (state) => {
   //store.dispatch(fetchSkyspaceList(null))
   return setPerson(state)
 }
-
-export const fetchBlockstackPerson = (userSession) => ({
-  type: ACT_TY_FETCH_BLOCKSTACK_USER,
-  payload: userSession,
-})
 
 export const logoutPerson = (userSession) => {
   BROWSER_STORAGE.clear()
@@ -49,7 +43,7 @@ export const logoutPerson = (userSession) => {
   //   window.location.href=window.location.origin;
   // }
   return {
-    type: ACT_TY_LOGOUT_BLOCKSTACK_USER,
+    type: ACT_TY_LOGOUT_SKYDB_USER,
     payload: userSession,
   }
 }

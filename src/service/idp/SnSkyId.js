@@ -12,7 +12,7 @@ import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAc
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction"
 //Store
 import store from "../../redux"
-
+import SkyID from "skyid";
 
 function SkyIdHook() {
     //let history = useHistory();
@@ -74,12 +74,12 @@ const onSkyIdSuccess = async () => {
         userSession = { ...userSession, person: personObj };
         store.dispatch(setUserSession(userSession));
         // For first time user only 
-        let isFirstTime = await firstTimeUserSetup(userSession);
-        if (!isFirstTime)//if not firsttime call data sync 
-        {
+        //let isFirstTime = await firstTimeUserSetup(userSession);
+        //if (!isFirstTime)//if not firsttime call data sync 
+        //{
             // call dataSync
-            await syncData(userSession);
-        }
+            //await syncData(userSession);
+        //}
         store.dispatch(setPersonGetOtherData(personObj));
         //dispatch(setImportedSpace(await bsGetImportedSpacesObj(userSession)));
         // get app profile

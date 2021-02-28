@@ -1,4 +1,5 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
+import { useSelector, useDispatch } from "react-redux"
 import { fade, makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -28,6 +29,8 @@ import { Box, Button } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
+import skyId from '../../service/idp/SnSkyId'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -173,6 +176,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Navbar() {
+    const dispatch = useDispatch()
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -181,6 +185,9 @@ export default function Navbar() {
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
+    useEffect(() => {
+        console.log("skyid=" + skyId);
+    },[]);
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -197,7 +204,10 @@ export default function Navbar() {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
-
+    const logoutSkyId = async () => {
+        skyId.sessionDestroy("/");
+        dispatch(setLoaderDisplay(true));
+    }
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
         <Menu
@@ -219,7 +229,7 @@ export default function Navbar() {
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
+            <MenuItem onClick={logoutSkyId} className={classes.MenuItem}>
                 <LogoutIcon className={classes.menuIcon} />
                 <span className={classes.logoutText}>Logout</span>
             </MenuItem>

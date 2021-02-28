@@ -5,17 +5,18 @@ import { ACT_TY_GET_USER_PROFILE } from "../SnActionConstants"
 import { setUserProfileAction } from "./SnUserProfileAction"
 import { setLoaderDisplay } from "./SnLoaderAction"
 import { bsGetUserAppProfile } from "../../service/SnSkappService"
+import store from "../../redux"
 
 export const snUserProfileEpic = (action$) =>
   action$.pipe(
     ofType(ACT_TY_GET_USER_PROFILE),
     switchMap((action) => {
       console.log("user setting epic", action)
-      setLoaderDisplay(true)
+      store.dispatch(setLoaderDisplay(true))
       return from(bsGetUserAppProfile(action.payload)).pipe(
         map((res) => {
           console.log(`User Profile:${res}`)
-          setLoaderDisplay(false)
+          store.dispatch(setLoaderDisplay(false))
           return setUserProfileAction(res)
         })
       )
