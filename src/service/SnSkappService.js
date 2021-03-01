@@ -11,7 +11,6 @@ import {
   FAILED_DECRYPT_ERR,
   FOLLOWER_PATH,
   FOLLOWING_PATH,
-  GAIA_HUB_URL,
   HISTORY_FILEPATH,
   IDB_IS_OUT_OF_SYNC,
   IDB_LAST_SYNC_REVISION_NO,
@@ -30,8 +29,8 @@ import {
   SKYSPACE_PATH,
   SUCCESS,
   USERSETTINGS_FILEPATH,
-  HOSTED_APP_IDS_DB_KEY,
-  PUBLISHED_APP_IDS_DB_KEY,
+  DK_HOSTED_APPS,
+  DK_PUBLISHED_APPS,
   SKAPP_FOLLOWING_FILEPATH,
   SKAPP_SHARED_APPS_FILEPATH,
   SKAPP_SHARED_APPS_KEY_SEPERATOR
@@ -44,7 +43,7 @@ import {
   IDB_STORE_SKAPP,
 } from "../service/SnIndexedDB"
 import { getUserSession, uploadFile } from "./SnSkynet"
-import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getContent, getRegistryEntryURL } from './SnSkynet'
+import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getRegistryEntryURL, setRegistryEntry} from './SnSkynet'
 import { INITIAL_SKYDB_OBJ, createAppStatsObj } from '../utils/SnNewObject'
 import store from "../redux"
 import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../utils/SnConstants";
@@ -70,17 +69,6 @@ export function getSkappKeys(){
 // null or publicKey
 export const getProfile = (publicKey) => {
   //set options
-}
-export const bsGetProfileInfo = (profile) => {
-  const recipientIdStr = profile?.appsMeta?.[document.location.origin]?.storage
-    ?.replace(GAIA_HUB_URL, "")
-    ?.replace("/", "")
-  const recipientId = recipientIdStr?.replace("/", "")
-  return {
-    key: profile?.appsMeta?.[document.location.origin]?.publicKey,
-    storage: profile?.appsMeta?.[document.location.origin]?.storage,
-    storageId: recipientId,
-  }
 }
 
 // set Profile
@@ -133,7 +121,7 @@ export const getAllPublishedApps = async () => {
   //let publishedAppsMap = new Map();
   let publishedAppsMap = [];
   try {
-    let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, PUBLISHED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+    let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
     if (publishedAppsIdList) {
       await Promise.all(publishedAppsIdList.map(async (appId) => {
         publishedAppsMap.push((await getFile(getKeys(getUserSession()).publicKey, appId, { store: IDB_STORE_SKAPP })));
@@ -149,7 +137,7 @@ export const getAllPublishedApps = async () => {
 
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
-  let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, PUBLISHED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+  let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
   const userPubKey = getKeys(getUserSession()).publicKey;
   if (publishedAppsIdList) {
     publishedAppsIdList.push(appJSON.id);
@@ -158,7 +146,7 @@ export const publishApp = async (appJSON) => {
     publishedAppsIdList = [appJSON.id];
   }
   // update Index value
-  await putFile(getKeys(getUserSession()).publicKey,PUBLISHED_APP_IDS_DB_KEY, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey,DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
   await putFile(getKeys(getUserSession()).publicKey,appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
@@ -203,20 +191,26 @@ export const setAppStats = async (statsType, value, appId) => {
   let appStatsJSON = null;
   try {
     // Get Data from IDX-DB
-    let appStatsJSON = await getFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+      appStatsJSON = await getFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, { store: IDB_STORE_SKAPP, });
     // Update App Stats
     if (appStatsJSON === null || appStatsJSON === undefined ) {
       // send new empty object
       appStatsJSON = createAppStatsObj();
     }
     if (statsType === LIKES) {
-      appStatsJSON.liked = value;
+      appStatsJSON.content.liked = value;
+      await setRegistryEntry(`${appId}#${LIKES}`,value, { store: IDB_STORE_SKAPP, });
     } if (statsType === FAVORITE) {
-      appStatsJSON.favorite = value;
+      appStatsJSON.content.favorite = value;
+      await setRegistryEntry(`${appId}#${FAVORITE}`,value, { store: IDB_STORE_SKAPP, });
     } if (statsType === VIEW_COUNT) {
-      appStatsJSON.viewed++;
+      appStatsJSON.content.viewed++;
+      let entry = await getRegistryEntry(getKeys(getUserSession()).publicKey,`${appId}#${VIEW_COUNT}`,{});
+      await setRegistryEntry(`${appId}#${VIEW_COUNT}`,parseInt(entry?.data ?? "0")+1, { store: IDB_STORE_SKAPP, });
     } if (statsType === ACCESS_COUNT) {
-      appStatsJSON.accessed++;
+      appStatsJSON.content.accessed++;
+      let entry = await getRegistryEntry(getKeys(getUserSession()).publicKey,`${appId}#${ACCESS_COUNT}`,{});
+      await setRegistryEntry(`${appId}#${ACCESS_COUNT}`,parseInt(entry?.data ?? "0")+1, { store: IDB_STORE_SKAPP, });
     }
     // update IDX-DB with new value
     await putFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
@@ -347,7 +341,7 @@ export const getMyHostedApps = async (appIds) => {
   const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
     if (appIds == null || appIds.length === 0) {
-      const data  = await getFile(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, { store: IDB_STORE_SKAPP });
+      const data  = await getFile(getKeys(getUserSession()).publicKey, DK_HOSTED_APPS, { store: IDB_STORE_SKAPP });
       hostedAppIdList.appIdList = data;
       appIds = appIds?.length === 0 ? data : appIds;
     }
@@ -389,7 +383,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     ts
   };
   await putFile(getKeys(getUserSession()).publicKey, `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
-  await putFile(getKeys(getUserSession()).publicKey, HOSTED_APP_IDS_DB_KEY, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
+  await putFile(getKeys(getUserSession()).publicKey, DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
 
   return hostedAppJSON;
 }

@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setAppStatsAction, getAppStatsAction
 } from "../../redux/action-reducers-epic/SnAppStatsAction";
-import {LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT} from "../../utils/SnConstants";
+import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../../utils/SnConstants";
 
 const useStyles = makeStyles({
   AppHeaderContainer: {
@@ -95,13 +95,14 @@ const useStyles = makeStyles({
     },
   },
   programBtn: {
-    background: "rgba(255,255,255,0.2)!important",
-    color: "#fff",
+    background: "rgba(255,255,255,0.7)!important",
+    color: "#1DBF73",
     paddingLeft: "10px",
     paddingRight: "10px",
-    fontSize: 10,
-    fontWeight: 400,
+    fontSize: 14,
+    fontWeight: 600,
     marginTop: ".8rem",
+    margin: "22px 0",
   },
   installBtn: {
     background: "#fff!important",
@@ -189,7 +190,7 @@ const AppDetailsHeader = ({ data }) => {
             className={classes.VisiIconContainer}
           >
             <VisibilityOutlinedIcon />
-            <Typography>2.5k</Typography>
+            <Typography>{appStatsStore?.content?.viewed}</Typography>
           </Box>
           <Box
             display="flex"
@@ -200,7 +201,7 @@ const AppDetailsHeader = ({ data }) => {
             <Typography>1.3k</Typography>
           </Box>
           <Box display="flex" alignItems="center" marginRight="0">
-            {appStatsStore?.content?.liked === 1 ? (
+            { (parseInt(appStatsStore?.content?.liked) === parseInt(1)) ? (
               <StarIcon
                 className={classes.StarIcon}
                 onClick={() => LikeActionFunction(0)}
@@ -212,11 +213,11 @@ const AppDetailsHeader = ({ data }) => {
                 onClick={() => LikeActionFunction(1)}
               />
             )}
-            <Typography>5.0 (1k+)</Typography>
+            <Typography>{appStatsStore?.content?.liked}</Typography>
           </Box>
           <Box className={classes.favrIcon}>
             <IconButton aria-label="Favourite Button" size="small">
-              {appStatsStore?.content?.favorite === 0 ? (
+              {(parseInt(appStatsStore?.content?.favorite) === parseInt(0)) ? (
                 <HeartIcon
                   className={classes.HeartIcon}
                   onClick={() => favoriteActionFunction(1)}
@@ -246,11 +247,12 @@ const AppDetailsHeader = ({ data }) => {
             erat, sed diam voluptua. At vero eos et accusam et. */}
             {data && data.content.appDescription}
           </Typography>
+          
+          <Box>
           <Button size="small" className={classes.programBtn}>
             {data && data.content.category}
           </Button>
-          <Box>
-            <Button className={classes.installBtn}>+ Install</Button>
+            {/* <Button className={classes.installBtn}>+ Install</Button> */}
           </Box>
         </Box>
       </Box>

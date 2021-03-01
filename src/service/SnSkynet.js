@@ -12,12 +12,13 @@ import {
 import { encryptData, decryptData } from "./SnEncryption"
 import { getPortal} from '../utils/SnUtility'
 import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../utils/SnConstants"
-
+/* global BigInt */ 
+//above comment is required to enable BigInt
 // ################################ SkyDB Methods ######################
 
 // pick skynet portal
-const skynetClient = new SkynetClient("https://siasky.net")
-
+const skynetClient = new SkynetClient("https://siasky.net");
+let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB
 // publicKey = null | "PubKey Value". If it has PubKey value, that means we need to fetch data of another user. 
@@ -227,20 +228,30 @@ export const getRegistryEntry = async (publicKey, dataKey, options) => {
 }
 
 export const setRegistryEntry = async (dataKey,content,options) => {
-   // fetch private key from localstorage
-   const privateKey = "";
+  let revision = 0;
   try {
-    // TODO: get last revision number
-    const revision = 0;
-    let entry = { datakey:dataKey, data: content, revision};
+     // fetch private key from localstorage
+    const privateKey = options.privateKey ?? getKeys(getUserSession()).privateKey;
+    const publicKey = options.publicKey ?? getKeys(getUserSession()).publicKey;
+    if(options?.maxRevisionFlag)
+    {
+      revision = REGISTRY_MAX_REVISION;
+    }
+    else
+    {
+      let entry = await getRegistryEntry(publicKey,dataKey,null)
+      revision = entry && entry != "undefined" && entry?.revision != NaN && entry.revision != "undefined" ? entry.revision : 0
+      revision++;
+    }
+    let entry = { datakey:dataKey, data: content+"", revision : BigInt(revision)};
     await skynetClient.registry.setEntry(privateKey, entry);
-    return true
+    await setJSONinIDB(dataKey, [BigInt(revision),content], options)
+    return {resultFlag: true,revision}
   } catch (error) {
     // setErrorMessage(error.message);
     console.log(`error.message ${error.message}`)
-    return false
+    return {resultFlag: false,revision}
   }
-  return false
 }
 
 export function getRegistryEntryURL(publicKey, dataKey) {

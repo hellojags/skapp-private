@@ -71,7 +71,6 @@ export const MUI_THEME_DARK = "dark"
 // import { UserSession, AppConfig } from "blockstack"
 // import { DEFAULT_PORTAL } from "../sn.constants"
 
-export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub"
 export const SKYID_PROFILE_PATH = "profile"
 export const SKAPP_PROFILE_PATH = "skhub/skapp/profile.json" // this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
 export const FOLLOWING_PATH = "skhub/following.json" // will contain array of public key[array of Users]. this key will be set by app specific pub key/User
@@ -104,28 +103,38 @@ export const DK_IDB_SYNC_HISTORY = "skhub/skyspaces/idb"
 // ** Start : AppStore Specific keys
 export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider"
 // ** End : AppStore Specific keys
-export const EXPLORER_URL = "https://explorer.blockstack.org"
 export const SUCCESS = "success"
 export const FAILED = "failed"
 export const CONFLICT = "conflict"
 export const FAILED_DECRYPT_ERR = "FailedDecryptionError"
-export const ID_PROVIDER = "BLOCKSTACK"
-export const AVATAR_IMAGE_DEFAULT =
-  "https://s3.amazonaws.com/onename/avatar-placeholder.png"
+export const AVATAR_IMAGE_DEFAULT = "https://s3.amazonaws.com/onename/avatar-placeholder.png"
 export const IGNORE_PATH_IN_BACKUP = [USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH]
-export const authOrigin = "" // browser.blockstack.org is authenticator
-// (process.env.APP_ENV === 'development') ? 'http://localhost:3000' : "https://skyspaces.io";
+export const authOrigin = "" 
 export const UPLOAD_SOURCE_DEPLOY = "UPLOAD_SOURCE_DEPLOY";
 export const UPLOAD_SOURCE_NEW_HOSTING = "UPLOAD_SOURCE_NEW_HOSTING";
 export const UPLOAD_SOURCE_NEW_HOSTING_IMG = "UPLOAD_SOURCE_NEW_HOSTING_IMG";
-export const HOSTED_APP_IDS_DB_KEY = "hostedSkapps";
-export const PUBLISHED_APP_IDS_DB_KEY = "publishedApps";
+
 export const STORAGE_SELECTED_HOSTED_APP_KEY = "STORAGE_SELECTED_HOSTED_APP_KEY";
 
 
-// Stats Types
+// Skapp SkyDB DataKeys
+export const DK_PUBLISHED_APPS = "publishedApps";
+export const DK_HOSTED_APPS = "hostedApps";
 
+//Stats Action Type
 export const LIKES = "likes";
-export const FAVORITE = "favoriteFlag";
+export const FAVORITE = "favorite";
 export const VIEW_COUNT = "views";
-export const ACCESS_COUNT = "accessCount";
+export const ACCESS_COUNT = "access";
+
+// SkyMQ Events
+export const EVENT_PUBLISHED_APP =  DK_PUBLISHED_APPS;
+export const EVENT_REMOVE_PUBLISHED_APP =  DK_PUBLISHED_APPS + '#REMOVED';
+export const EVENT_APP_VIEWED =  'viewed';
+export const EVENT_APP_ACCESSED =  'appAccessed';
+export const EVENT_APP_LIKED =  'appLiked';
+export const EVENT_APP_LIKED_REMOVED =  'appLikedRemoved';
+export const EVENT_APP_FAVORITE_MARKED =  'FavoriteMarked';
+export const EVENT_APP_FAVORITE_UNMARKED =  'FavoriteUnmarked';
+export const EVENT_APP_COMMENT_ADDED =  'commentAdded';
+export const EVENT_APP_COMMENT_REMOVED =  'commentRemoved';

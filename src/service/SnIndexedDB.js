@@ -11,6 +11,7 @@ import { extendPrototype } from "localforage-setitems"
 export const IDB_NAME = "SkyDB"
 export const IDB_STORE_SKAPP = "skapp"
 export const IDB_STORE_SKYDB_CACHE = "skydb_cache" // this store containers other users data "pubkey#datakey -> [revision, content]"
+export const IDB_STORE_SKAPP_AGGREGATOR = "aggregator" 
 
 extendPrototype(localforage)
 

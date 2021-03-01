@@ -5,7 +5,7 @@ import { setLoaderDisplay } from "./SnLoaderAction"
 import { EPIC_TY_SET_STATS, EPIC_TY_GET_STATS } from "../SnActionConstants"
 import { setAppStats, getAppStats } from "../../service/SnSkappService"
 import { setAppStatsStore } from "./SnAppStatsAction"
-
+import store from "../../redux"
 // app stats actions
 export const snSetAppStatsEpic = (action$) =>
     action$.
@@ -15,9 +15,9 @@ export const snSetAppStatsEpic = (action$) =>
                 return from(setAppStats(action.payload.actionType, action.payload.data, action.payload.appId))
                     .pipe(
                         map((res) => {
-                            setLoaderDisplay(false)
+                            //setLoaderDisplay(false)
                             // Update Redux Store
-                            return setAppStatsStore(res)
+                            return  setAppStatsStore(res)
                         })
                     )
             }));
