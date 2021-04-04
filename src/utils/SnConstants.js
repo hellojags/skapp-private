@@ -122,19 +122,28 @@ export const DK_PUBLISHED_APPS = "publishedApps";
 export const DK_HOSTED_APPS = "hostedApps";
 
 //Stats Action Type
-export const LIKES = "likes";
-export const FAVORITE = "favorite";
-export const VIEW_COUNT = "views";
-export const ACCESS_COUNT = "access";
-
+// export const VIEW_COUNT = "view";
+// export const ACCESS_COUNT = "access";
+// export const LIKE = "like";
+// export const LIKE_REMOVED = "like_removed";
+// export const FAVORITE = "favorite";
+// export const FAVORITE_REMOVED = "favorite_removed";
+export const ANONYMOUS = "anonymous";
 // SkyMQ Events
-export const EVENT_PUBLISHED_APP =  DK_PUBLISHED_APPS;
-export const EVENT_REMOVE_PUBLISHED_APP =  DK_PUBLISHED_APPS + '#REMOVED';
-export const EVENT_APP_VIEWED =  'viewed';
-export const EVENT_APP_ACCESSED =  'appAccessed';
-export const EVENT_APP_LIKED =  'appLiked';
-export const EVENT_APP_LIKED_REMOVED =  'appLikedRemoved';
-export const EVENT_APP_FAVORITE_MARKED =  'FavoriteMarked';
-export const EVENT_APP_FAVORITE_UNMARKED =  'FavoriteUnmarked';
-export const EVENT_APP_COMMENT_ADDED =  'commentAdded';
-export const EVENT_APP_COMMENT_REMOVED =  'commentRemoved';
+export const EVENT_PUBLISHED_APP = "0";
+export const EVENT_PUBLISHED_APP_REMOVED = "1";
+export const EVENT_APP_VIEWED = "2";
+export const EVENT_APP_ACCESSED = "3";
+export const EVENT_APP_LIKED = "4";
+export const EVENT_APP_LIKED_REMOVED = "5";
+export const EVENT_APP_FAVORITE = "6";
+export const EVENT_APP_FAVORITE_REMOVED = "7";
+export const EVENT_APP_COMMENT = "8";
+export const EVENT_APP_COMMENT_REMOVED = "9";
+
+// export const EVENT_APP_LIKED_REMOVED =  'appLikedRemoved';
+// export const EVENT_APP_FAVORITE_MARKED =  'FavoriteMarked';
+// export const EVENT_APP_FAVORITE_UNMARKED =  'FavoriteUnmarked';
+// export const EVENT_APP_COMMENT_ADDED =  'commentAdded';
+// export const EVENT_APP_COMMENT_REMOVED =  'commentRemoved';
+// export const EVENT_REMOVE_PUBLISHED_APP =  DK_PUBLISHED_APPS + '#REMOVED';

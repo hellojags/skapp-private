@@ -41,20 +41,20 @@ const optionsVersion = [
 ];
 
 const appCatOptions = [
-  { value: "social", label: "social" },
-  { value: "video", label: "video" },
-  { value: "pictures", label: "pictures" },
-  { value: "music", label: "music" },
-  { value: "productivity", label: "productivity" },
-  { value: "utilities", label: "utilities" },
-  { value: "games", label: "games" },
-  { value: "blogs", label: "blogs" },
-  { value: "software", label: "software" },
-  { value: "livestream", label: "livestream" },
-  { value: "books", label: "books" },
-  { value: "marketplace", label: "marketplace" },
-  { value: "finance", label: "finance" },
-  { value: "portal", label: "portal" },
+  { value: "Social", label: "Social" },
+  { value: "Video", label: "Video" },
+  { value: "Pictures", label: "Pictures" },
+  { value: "Music", label: "Music" },
+  { value: "Productivity", label: "Productivity" },
+  { value: "Utilities", label: "Utilities" },
+  { value: "Games", label: "Games" },
+  { value: "Blogs", label: "Blogs" },
+  { value: "Software", label: "Software" },
+  { value: "Livestream", label: "Livestream" },
+  { value: "Books", label: "Books" },
+  { value: "Marketplace", label: "Marketplace" },
+  { value: "Finance", label: "Finance" },
+  { value: "Portal", label: "Portal" },
 ];
 
 const optionsAge = [
@@ -771,7 +771,6 @@ const SubmitApp = () => {
               </Grid>
 
               <Grid item md={6} lg={4} style={{ alignSelf: "center" }}>
-              <Button className={classes.cancelBtn}>Cancel </Button>
                 <Button
                   className={classes.button}
                   onClick={handleSubmit(onSubmit)}

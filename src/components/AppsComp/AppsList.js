@@ -13,7 +13,7 @@ const AppsList = ({ newData }) => {
   // const [data, setData] = useState(newData);
 
   const [items, setItems] = useState(Array.from({ length: 12 }));
-  const [alldata, setalldata] = useState([]);
+  const [alldata, setAlldata] = useState([]);
 
   useEffect(() => {
     // console.log(items.length);
@@ -21,7 +21,7 @@ const AppsList = ({ newData }) => {
       const indexOfLastTodo = 1 * items.length;
       const indexOfFirstTodo = indexOfLastTodo - items.length;
       const currentTodos = newData?.slice(indexOfFirstTodo, indexOfLastTodo);
-      setalldata(currentTodos);
+      setAlldata(currentTodos);
     }
   }, [items.length, newData]);
 
@@ -39,7 +39,7 @@ const AppsList = ({ newData }) => {
   return (
     <div className={`${classes.listContain} list-grid-container`}>
       <InfiniteScroll
-        scrollableTarget='app-content'
+        scrollableTarget="app-content"
         className="infinite"
         dataLength={items.length}
         next={fetchMoreData}

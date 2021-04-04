@@ -3,7 +3,7 @@ import AppDetailsHeader from "./AppDetailsHeader";
 import AppInfo from "./AppInfo";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 
 const AppDetailsPage = () => {
   const { appId } = useParams();
@@ -11,7 +11,7 @@ const AppDetailsPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPublishedAppsAction()); 
+    dispatch(getMyPublishedAppsAction()); 
   }, []);
 
   const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);

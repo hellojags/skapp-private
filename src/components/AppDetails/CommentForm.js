@@ -1,7 +1,7 @@
 import React from "react";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import { Button, makeStyles } from "@material-ui/core";
-import { setAppCommentAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { setAppCommentAction } from "../../redux/action-reducers-epic/SnAppCommentsAction";
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles({

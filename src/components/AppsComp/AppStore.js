@@ -8,6 +8,7 @@ import SelectItem from './SelectItem'
 import SubmitBtn from './SubmitBtn'
 import AppsList from './AppsList'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
+import useInterval from "react-useinterval"
 // import PerfectScrollbar from 'react-perfect-scrollbar'
 // import CustomPagination from './CustomPagination'
 // import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
@@ -20,7 +21,7 @@ import "slick-carousel/slick/slick-theme.css"
 import SlickNextArrow from '../slickarrows/SlickNextArrow'
 import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
-import { getPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
 import { useDispatch, useSelector } from "react-redux";
 
 // import classes from '*.module.css'
@@ -166,10 +167,11 @@ const useStyles = makeStyles(theme => (
 // get div with
 function AppStore() {
     const dispatch = useDispatch();
-    const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
+    const classes = useStyles();
+    let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
     useEffect(() => {
         // console.log("came here");
-        dispatch(getPublishedAppsAction());
+        dispatch(getAllPublishedAppsAction());
       }, []);
       
     // temp var for selected page
@@ -190,12 +192,18 @@ function AppStore() {
         prevArrow: <SlickPrevArrow />
     }
     // console.log(width)
-    const classes = useStyles()
+
+    // useInterval(async () => {
+    //     dispatch(getAllPublishedAppsAction());
+    // }, 30000);
+
     const AppsComp = (<Fragment >
         <Box display="flex" className='second-nav' alignItems="center">
             <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                 <h1 className={classes.pageHeading}>Skynet Apps</h1>
-
+            </Box>
+            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+               <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
             </Box>
             {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                 <Box>
@@ -252,62 +260,72 @@ function AppStore() {
         <Slider {...settings} className="appTagsButtons">
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Social
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Video
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Pictures
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Music
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Productivity
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Utilities
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Games
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Blogs
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Software
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Livestream
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Books
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                    Art & Design (5)
+                Marketplace
+            </Button>
+            </div>
+            <div>
+                <Button className="tagButton">
+                Finance
+            </Button>
+            </div>
+            <div>
+                <Button className="tagButton">
+                Portal
             </Button>
             </div>
         </Slider>

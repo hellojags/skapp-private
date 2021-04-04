@@ -11,7 +11,7 @@ import { extendPrototype } from "localforage-setitems"
 export const IDB_NAME = "SkyDB"
 export const IDB_STORE_SKAPP = "skapp"
 export const IDB_STORE_SKYDB_CACHE = "skydb_cache" // this store containers other users data "pubkey#datakey -> [revision, content]"
-export const IDB_STORE_SKAPP_AGGREGATOR = "aggregator" 
+export const IDB_STORE_SKAPP_AGGREGATED_DATA = "skapp_aggregated_data"
 
 extendPrototype(localforage)
 
@@ -32,11 +32,18 @@ const skydbCacheDataStoreIDB = localforage.createInstance({
   storeName: IDB_STORE_SKYDB_CACHE,
 })
 
+const AggregatedDataIDB = localforage.createInstance({
+  name: IDB_NAME,
+  storeName: IDB_STORE_SKAPP_AGGREGATED_DATA,
+})
+
 export const setJSONinIDB = async (key, value, opts) => {
   const result = null
   try {
     if (opts.store === IDB_STORE_SKYDB_CACHE) {
       await skydbCacheDataStoreIDB.setItem(key, value)
+    } else if (opts.store === IDB_STORE_SKAPP_AGGREGATED_DATA) {
+      await AggregatedDataIDB.setItem(key, value)
     } else {
       await IndexedDB4SkyDB.setItem(key, value)
     }
@@ -68,6 +75,8 @@ export const getJSONfromIDB = async (key, opts) => {
   try {
     if (opts.store === IDB_STORE_SKYDB_CACHE) {
       value = await skydbCacheDataStoreIDB.getItem(key)
+    } else if (opts.store === IDB_STORE_SKAPP_AGGREGATED_DATA) {
+      value = await AggregatedDataIDB.getItem(key)
     } else {
       value = await IndexedDB4SkyDB.getItem(key)
     }
@@ -86,6 +95,8 @@ export const removeJSONfromIDB = async (key, opts) => {
   try {
     if (opts.store === IDB_STORE_SKYDB_CACHE) {
       await skydbCacheDataStoreIDB.removeItem(key)
+    } else if (opts.store === IDB_STORE_SKAPP_AGGREGATED_DATA) {
+      await AggregatedDataIDB.removeItem(key)
     } else {
       await IndexedDB4SkyDB.removeItem(key)
       //await setJSONinIDB(IDB_IS_OUT_OF_SYNC, true, opts)
@@ -106,6 +117,34 @@ export const getAllItemsFromIDB = async (opts) => {
     try {
       // The same code, but using ES6 Promises.
       await skydbCacheDataStoreIDB
+        .iterate((value, key, iterationNumber) => {
+          result.push({ [key]: value })
+          keys.push(key)
+          recordCount = iterationNumber
+          // console.log([key, value]);
+        })
+        .then(() => {
+          // console.log('Iteration has completed');
+        })
+        .catch((err) => {
+          // This code runs if there were any errors
+          result = []
+          keys = []
+          recordCount = 0
+          console.log(err)
+        })
+      // console.log('result'+result);
+    } catch (err) {
+      // This code runs if there were any errors.
+      // console.log(err);
+      result = []
+      keys = []
+      recordCount = 0
+    }
+  } else if (opts.store === IDB_STORE_SKAPP_AGGREGATED_DATA) {
+    try {
+      // The same code, but using ES6 Promises.
+      await AggregatedDataIDB
         .iterate((value, key, iterationNumber) => {
           result.push({ [key]: value })
           keys.push(key)
@@ -171,7 +210,18 @@ export const clearAllfromIDB = async (opts) => {
       .then(() => {
         console.log("Dropped otherStore")
       })
-  } else {
+  }
+  else if (opts.store === IDB_STORE_SKAPP_AGGREGATED_DATA) {
+    await AggregatedDataIDB
+      .dropInstance({
+        name: IDB_NAME,
+        storeName: IDB_STORE_SKAPP_AGGREGATED_DATA,
+      })
+      .then(() => {
+        console.log("Dropped otherStore")
+      })
+  }
+  else {
     await IndexedDB4SkyDB.dropInstance({
       name: IDB_NAME,
       storeName: IDB_STORE_SKAPP,

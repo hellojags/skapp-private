@@ -1,14 +1,11 @@
-import {ACT_TY_SET_PUBLISHED_APPS, ACT_TY_SET_APP_COMMENTS} from "../SnActionConstants";
+import {ACT_TY_SET_MY_PUBLISHED_APPS} from "../SnActionConstants";
 let initState = {
-  publishedAppsStore: [],
-  appCommentsStore: [],
+  publishedAppsStore: []
 };
 export default (state = initState, action) => {
   switch (action.type) {
-    case ACT_TY_SET_PUBLISHED_APPS:
+    case ACT_TY_SET_MY_PUBLISHED_APPS:
       return {...state, publishedAppsStore : action.payload}
-    case ACT_TY_SET_APP_COMMENTS:
-      return {...state, appCommentsStore : action.payload}
     default:
       return state
   }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,21 +7,29 @@ import {
   Typography,
 } from "@material-ui/core";
 // Icons
-import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
-import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg";
 import { ReactComponent as ShareIcon } from "../../assets/img/icons/share.1.svg";
 import { ReactComponent as MsgIcon } from "../../assets/img/icons/Messages, Chat.15.svg";
 import { ReactComponent as StarIcon } from "../../assets/img/icons/star-favorite.svg";
 import { ReactComponent as StarIconOutline } from "../../assets/img/icons/starOutlinedIcon.svg";
+// icons
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
+import LaunchOutlinedIcon from '@material-ui/icons/LaunchOutlined';
+import LaunchIcon from '@material-ui/icons/Launch';
 // img import
 import cubsImg from "../../assets/img/cubs.png";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAppStatsAction, getAppStatsAction
 } from "../../redux/action-reducers-epic/SnAppStatsAction";
-import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../../utils/SnConstants";
+import { EVENT_APP_VIEWED, EVENT_APP_ACCESSED, EVENT_APP_LIKED, EVENT_APP_LIKED_REMOVED, EVENT_APP_FAVORITE, EVENT_APP_FAVORITE_REMOVED, EVENT_APP_COMMENT, EVENT_APP_COMMENT_REMOVED } from "../../utils/SnConstants";
+import { getAppStats, getAggregatedAppStats, getAggregatedAppStatsByAppId } from "../../service/SnSkappService";
 
 const useStyles = makeStyles({
   AppHeaderContainer: {
@@ -128,10 +136,10 @@ const useStyles = makeStyles({
     },
   },
   favrIcon: {
-    marginLeft: "1.3rem",
+    marginLeft: ".8rem",
 
     "@media only screen and (max-width: 575px)": {
-      marginLeft: ".7rem",
+      marginLeft: ".5rem",
     },
   },
   sharIcon: {
@@ -148,50 +156,131 @@ const useStyles = makeStyles({
     },
   },
   msgIconContainer: {
+    marginLeft: ".5rem",
     marginRight: "1rem",
     "@media only screen and (max-width: 575px)": {
       marginRight: "8px",
+      marginLeft: "0",
     },
   },
 });
 const AppDetailsHeader = ({ data }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [appStats, setAppStats] = useState(false);
+  const [aggregatedAppStats, setAggregatedAppStats] = useState(false);
   const appStatsStore = useSelector(
     (state) => state.snAppStatsStore
   );
-  // const { isAppInFav, isAppLiked } = useSelector(
-  //   (state) => state.snAppStatsStore
-  // );
-
-  // action on app
-  const LikeActionFunction = (value) => {
-    dispatch(setAppStatsAction(LIKES, value, data.id));
-  };
-
-  const favoriteActionFunction = (value) => {
-    dispatch(setAppStatsAction(FAVORITE, value, data.id));
-  };
-
+  
   useEffect(() => {
+
     if (data) {
+      fetchMyAppStats();
+      fetchAggregatedAppStats();
       // onload get apps stats data and load in store
-      dispatch(getAppStatsAction(data.id));
+      //dispatch(getAppStatsAction(data.id));
     }
-  }, [data]);
+  },[data]);
+
+  // View|access|likes|fav
+  const fetchMyAppStats = async () => {
+    const result = await getAppStats(data.id);
+    setAppStats(result);
+  }
+
+  // View|access|likes|fav
+  const fetchAggregatedAppStats = async () => {
+    const result = await getAggregatedAppStatsByAppId(data.id);
+    setAggregatedAppStats(result);
+  }
+
+  const appStatsAction = (eventType) => {
+    // EVENT_APP_FAVORITE, EVENT_APP_FAVORITE_REMOVED
+    dispatch(setAppStatsAction(eventType,data.id));
+  };
+
+  // useEffect(() => {
+  //   if (data) {
+  //     // onload get apps stats data and load in store
+  //     //dispatch(getAppStatsAction(data.id));
+  //     setAppStats(getAppStats(data.id));
+  //   }
+  // }, [data,appStats]);
 
   return (
     <Box className={classes.AppHeaderContainer} display="flex">
       <Box className={classes.box1}>
         <Box display="flex" width="100%">
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.VisiIconContainer}
-          >
-            <VisibilityOutlinedIcon />
-            <Typography>{appStatsStore?.content?.viewed}</Typography>
+          <Box display="flex" alignItems="center" className={classes.VisiIconContainer}>
+            <VisibilityIcon/>
+            <Typography>{aggregatedAppStats[0]}</Typography>
           </Box>
+          <Box display="flex" alignItems="center" className={classes.VisiIconContainer}>
+            <LaunchIcon/>
+            <Typography>{aggregatedAppStats[1]}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" marginRight="0">
+            {/* <ThumbUpAltIcon/> */}
+            {(parseInt(appStats[2]) === parseInt(1)) ? (
+              <ThumbUpAltIcon
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
+              />
+            ) : (
+              <ThumbUpAltOutlinedIcon
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED)}
+              />
+            )}
+            <Typography>{aggregatedAppStats[2]}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" className={classes.favrIcon}>
+            {/* <FavoriteOutlinedIcon/> */}
+            {(parseInt(appStats[3]) === parseInt(1)) ? (
+                <FavoriteOutlinedIcon
+                  className={classes.HeartIcon}
+                  onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}
+                />
+              ) : (
+                <FavoriteBorderOutlinedIcon
+                  className={classes.addFav}
+                  onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
+                />
+              )}
+                 <Typography>{aggregatedAppStats[3]}</Typography>
+          </Box>
+          
+          {/* <Box display="flex" alignItems="center" marginRight="0">
+            {(parseInt(appStats[2]) === parseInt(1)) ? (
+              <ThumbUpAltIcon
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
+              />
+            ) : (
+              <ThumbUpAltOutlinedIcon
+                style={{ height: 19 }}
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED)}
+              />
+            )}
+            <Typography>{appStats?.content?.liked}</Typography>
+          </Box> */}
+          {/* <Box className={classes.favrIcon}>
+            <IconButton aria-label="Favourite Button" size="small">
+              {(parseInt(appStats[3]) === parseInt(1)) ? (
+                <FavoriteBorderOutlinedIcon
+                  className={classes.HeartIcon}
+                  onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}
+                />
+              ) : (
+                <FavoriteOutlinedIcon
+                  className={classes.addFav}
+                  onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
+                />
+              )}
+            </IconButton>
+          </Box> */}
           <Box
             display="flex"
             alignItems="center"
@@ -199,36 +288,6 @@ const AppDetailsHeader = ({ data }) => {
           >
             <MsgIcon className={classes.MsgIcon} />
             <Typography>1.3k</Typography>
-          </Box>
-          <Box display="flex" alignItems="center" marginRight="0">
-            { (parseInt(appStatsStore?.content?.liked) === parseInt(1)) ? (
-              <StarIcon
-                className={classes.StarIcon}
-                onClick={() => LikeActionFunction(0)}
-              />
-            ) : (
-              <StarIconOutline
-                style={{ height: 19 }}
-                className={classes.StarIcon}
-                onClick={() => LikeActionFunction(1)}
-              />
-            )}
-            <Typography>{appStatsStore?.content?.liked}</Typography>
-          </Box>
-          <Box className={classes.favrIcon}>
-            <IconButton aria-label="Favourite Button" size="small">
-              {(parseInt(appStatsStore?.content?.favorite) === parseInt(0)) ? (
-                <HeartIcon
-                  className={classes.HeartIcon}
-                  onClick={() => favoriteActionFunction(1)}
-                />
-              ) : (
-                <FavoriteIcon
-                  className={classes.addFav}
-                  onClick={() => favoriteActionFunction(0)}
-                />
-              )}
-            </IconButton>
           </Box>
           <Box className={classes.sharIcon}>
             <IconButton aria-label="Share Button" size="small">
@@ -247,11 +306,11 @@ const AppDetailsHeader = ({ data }) => {
             erat, sed diam voluptua. At vero eos et accusam et. */}
             {data && data.content.appDescription}
           </Typography>
-          
+
           <Box>
-          <Button size="small" className={classes.programBtn}>
-            {data && data.content.category}
-          </Button>
+            <Button size="small" className={classes.programBtn}>
+              {data && data.content.category}
+            </Button>
             {/* <Button className={classes.installBtn}>+ Install</Button> */}
           </Box>
         </Box>

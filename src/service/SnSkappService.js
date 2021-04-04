@@ -33,7 +33,17 @@ import {
   DK_PUBLISHED_APPS,
   SKAPP_FOLLOWING_FILEPATH,
   SKAPP_SHARED_APPS_FILEPATH,
-  SKAPP_SHARED_APPS_KEY_SEPERATOR
+  SKAPP_SHARED_APPS_KEY_SEPERATOR,
+  EVENT_PUBLISHED_APP,
+  EVENT_APP_VIEWED,
+  EVENT_APP_ACCESSED,
+  EVENT_APP_LIKED,
+  EVENT_APP_LIKED_REMOVED,
+  EVENT_APP_FAVORITE,
+  EVENT_APP_FAVORITE_REMOVED,
+  EVENT_APP_COMMENT,
+  FAVORITE_REMOVED,
+  ANONYMOUS,
 } from '../utils/SnConstants';
 import {
   getAllItemsFromIDB,
@@ -41,31 +51,24 @@ import {
   setAllinIDB,
   setJSONinIDB,
   IDB_STORE_SKAPP,
+  IDB_STORE_SKAPP_AGGREGATED_DATA,
 } from "../service/SnIndexedDB"
-import { getUserSession, uploadFile } from "./SnSkynet"
-import { getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getKeys, getRegistryEntryURL, setRegistryEntry} from './SnSkynet'
-import { INITIAL_SKYDB_OBJ, createAppStatsObj } from '../utils/SnNewObject'
+import { getUserPublicKey, getUserPrivateKey, getProviderKeysByType, uploadFile, getRegistryEntry, putFile, getFile, snKeyPairFromSeed, getRegistryEntryURL, setRegistryEntry } from './SnSkynet'
+import { INITIAL_SKYDB_OBJ } from '../utils/SnNewObject'
 import store from "../redux"
-import { LIKES, FAVORITE, VIEW_COUNT, ACCESS_COUNT } from "../utils/SnConstants";
 import imageCompression from "browser-image-compression";
 import { v4 as uuidv4 } from "uuid";
+import { emitEvent } from "./SnSkyMQEventEmitter";
+var _ = require('lodash');
 
 // TODO: implement actual logic
 function generateSkappId(prop) {
   return uuidv4();
 }
-
-export function getSkappKeys(){
-  return {
-    publicKey : "ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b",
-    privateKey : "9be0a30c58ca2426f0d4f9d1dc81367ff1eb701a58b7d6c262192fde881528d4ff03642858fcb0c4f6e90bd76bcd0cd91f3db837b79581afd4371a325604c00b"
-  };
-}
-
+// Provider Type: GEQ Provider, Aggregator, Validator, Moderator, Blocklist Manager
 // This JS file will list app methods consumed by components
 
 // ### User Profile Functionality ###
-
 // null or publicKey
 export const getProfile = (publicKey) => {
   //set options
@@ -117,16 +120,73 @@ export const getPublishedApp = async (appId) => {
   return publishedAppJSON;
 }
 
-export const getAllPublishedApps = async () => {
+export const getAllPublishedApps = async (sortOn, orderBy, resultCount) => {
+  //let publishedAppsMap = new Map();
+  let allPublishedApps = [];
+  try {
+    let publishedAppsIdList = await getFile(getProviderKeysByType("AGGREGATOR").publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP_AGGREGATED_DATA });
+    if (publishedAppsIdList) {
+      await Promise.all(publishedAppsIdList.map(async (pubkeyAndAppId) => {
+        let temp = pubkeyAndAppId.split('#'); //userPubkey#appId
+        let appJSON = await getFile(temp[0], temp[1], { store: IDB_STORE_SKAPP_AGGREGATED_DATA })
+        if (appJSON) { // if no appJSON found in user SkyDB, skip and move on to next appId
+          // Read appStats from Aggregator Storage and update AppJSON
+          let appStats = "0#0#0#0";
+          let appStatsList = [];
+          try {
+            let tempEntry = await getRegistryEntry(getProviderKeysByType("AGGREGATOR").publicKey, temp[1] + "#stats");
+            appStats = tempEntry ? tempEntry.data : "0#0#0#0";
+            appStatsList = appStats.split('#');
+            // View#access#likes#fav
+            appJSON.content.appstats = { views: parseInt(appStatsList[0]), access: parseInt(appStatsList[1]), likes: parseInt(appStatsList[2]), favorites: parseInt(appStatsList[3]) };
+          } catch (e) {
+            console.log("getAllPublishedApps: e" + e);
+          }
+          allPublishedApps.push(appJSON);
+        }
+      }));
+      // Sort list by specific parameter
+      let iteratees = obj => -obj.content.appstats.views;
+      switch (sortOn) {
+        case "VIEWS":
+          iteratees = obj => (orderBy === "ASC") ? obj.content.appstats.views : -obj.content.appstats.views;
+          break;
+        case "ACCESS":
+          iteratees = obj => (orderBy === "ASC") ? obj.content.appstats.access : -obj.content.appstats.access;
+          break;
+        case "LIKES":
+          iteratees = obj => (orderBy === "ASC") ? obj.content.appstats.likes : -obj.content.appstats.likes;
+          break;
+        case "FAVORITES":
+          iteratees = obj => (orderBy === "ASC") ? obj.content.appstats.favorites : -obj.content.appstats.favorites;
+          break;
+        default:
+          iteratees = obj => -obj.content.appstats.views;
+          console.log("In Dafault sorting 'Views Desc' ");
+          break;
+      }
+      allPublishedApps = _.orderBy(allPublishedApps, iteratees)
+      if (resultCount && resultCount != 0) {
+        allPublishedApps = allPublishedApps.slice(0, resultCount);
+      }
+      console.log("allPublishedApps: " + allPublishedApps);
+    }
+  } catch (err) {
+    console.log(err);
+    return allPublishedApps;
+  }
+  return allPublishedApps;
+}
+export const getMyPublishedApps = async () => {
   //let publishedAppsMap = new Map();
   let publishedAppsMap = [];
   try {
-    let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+    let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
     if (publishedAppsIdList) {
       await Promise.all(publishedAppsIdList.map(async (appId) => {
-        publishedAppsMap.push((await getFile(getKeys(getUserSession()).publicKey, appId, { store: IDB_STORE_SKAPP })));
+        publishedAppsMap.push((await getFile(getUserPublicKey(), appId, { store: IDB_STORE_SKAPP })));
       }));
-      console.log("getAllPublishedApps: " + publishedAppsMap);
+      console.log("getMyPublishedApps: " + publishedAppsMap);
     }
   } catch (err) {
     console.log(err);
@@ -137,8 +197,7 @@ export const getAllPublishedApps = async () => {
 
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
-  let publishedAppsIdList = await getFile(getKeys(getUserSession()).publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
-  const userPubKey = getKeys(getUserSession()).publicKey;
+  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
   if (publishedAppsIdList) {
     publishedAppsIdList.push(appJSON.id);
   }
@@ -146,93 +205,158 @@ export const publishApp = async (appJSON) => {
     publishedAppsIdList = [appJSON.id];
   }
   // update Index value
-  await putFile(getKeys(getUserSession()).publicKey,DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
-  await putFile(getKeys(getUserSession()).publicKey,appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
-  const publishedAppsMap = await getAllPublishedApps();
-  await addToSkappUserFollowing(userPubKey);
-  await addToSharedApps(userPubKey, appJSON.id);
+  await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
+  await emitEvent(appJSON.id, EVENT_PUBLISHED_APP);
+  const publishedAppsMap = await getMyPublishedApps();
+  //await addToSkappUserFollowing(userPubKey);
+  //await addToSharedApps(userPubKey, appJSON.id);
   return publishedAppsMap;
 }
 
-export const addToSkappUserFollowing = async (userPublicKey) =>{
-  if (userPublicKey) {
-    let skappFollowingPublicKeyLst = await getFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, { store: IDB_STORE_SKAPP });
-    skappFollowingPublicKeyLst = skappFollowingPublicKeyLst || [];
-    if (!skappFollowingPublicKeyLst.includes(userPublicKey)) { 
-      skappFollowingPublicKeyLst.push(userPublicKey);
-      await putFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, skappFollowingPublicKeyLst, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey})
-    }
-  }
-}
+// export const addToSkappUserFollowing = async (userPublicKey) => {
+//   if (userPublicKey) {
+//     let skappFollowingPublicKeyLst = await getFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, { store: IDB_STORE_SKAPP });
+//     skappFollowingPublicKeyLst = skappFollowingPublicKeyLst || [];
+//     if (!skappFollowingPublicKeyLst.includes(userPublicKey)) {
+//       skappFollowingPublicKeyLst.push(userPublicKey);
+//       await putFile(getSkappKeys().publicKey, SKAPP_FOLLOWING_FILEPATH, skappFollowingPublicKeyLst, { store: IDB_STORE_SKAPP, privateKey: getSkappKeys().privateKey })
+//     }
+//   }
+// }
 
-export const newSharedAppValObj = ()=> {
+export const newSharedAppValObj = () => {
   return {
     viewCount: 0,
     visitCount: 0
   }
 }
 
-export const addToSharedApps = async (userPublicKey, appId) => {
-  if (userPublicKey && appId) {
-    let sharedAppListObj = await getFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, { store: IDB_STORE_SKAPP });
-    sharedAppListObj = sharedAppListObj || {};
-    const currAppKey = appId + SKAPP_SHARED_APPS_KEY_SEPERATOR + userPublicKey;
-    if (!Object.keys(sharedAppListObj).includes(currAppKey)) {
-      sharedAppListObj[currAppKey] = newSharedAppValObj();
-      await putFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, sharedAppListObj, { store: IDB_STORE_SKAPP, privateKey :  getSkappKeys().privateKey});
-    }
-  }
-}
+// export const addToSharedApps = async (userPublicKey, appId) => {
+//   if (userPublicKey && appId) {
+//     let sharedAppListObj = await getFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, { store: IDB_STORE_SKAPP });
+//     sharedAppListObj = sharedAppListObj || {};
+//     const currAppKey = appId + SKAPP_SHARED_APPS_KEY_SEPERATOR + userPublicKey;
+//     if (!Object.keys(sharedAppListObj).includes(currAppKey)) {
+//       sharedAppListObj[currAppKey] = newSharedAppValObj();
+//       await putFile(getSkappKeys().publicKey, SKAPP_SHARED_APPS_FILEPATH, sharedAppListObj, { store: IDB_STORE_SKAPP, privateKey: getSkappKeys().privateKey });
+//     }
+//   }
+// }
 
 // ### Apps Stats and comments Functionality ###
-export const setAppStats = async (statsType, value, appId) => {
-  let appStatsJSON = null;
+export const setAppStatsEvent = async (statsEventType, appId) => {
+  let appStatsStr = "0#0#0#0"; // View#access#likes#fav
+  let publicKey = getUserPublicKey() ?? ANONYMOUS;
+  let appStatsList = null;
   try {
     // Get Data from IDX-DB
-      appStatsJSON = await getFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, { store: IDB_STORE_SKAPP, });
-    // Update App Stats
-    if (appStatsJSON === null || appStatsJSON === undefined ) {
-      // send new empty object
-      appStatsJSON = createAppStatsObj();
+    //appStatsJSON = await getFile(getUserPublicKey(),`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+    if (publicKey != ANONYMOUS) {
+      // STEP1: get current value from Users Storage
+      let appStatsEntry = await getRegistryEntry(getUserPublicKey(), `${appId}#stats`, { store: IDB_STORE_SKAPP, });
+      appStatsStr = appStatsEntry?.data ?? "0#0#0#0";// View#access#likes#fav
     }
-    if (statsType === LIKES) {
-      appStatsJSON.content.liked = value;
-      await setRegistryEntry(`${appId}#${LIKES}`,value, { store: IDB_STORE_SKAPP, });
-    } if (statsType === FAVORITE) {
-      appStatsJSON.content.favorite = value;
-      await setRegistryEntry(`${appId}#${FAVORITE}`,value, { store: IDB_STORE_SKAPP, });
-    } if (statsType === VIEW_COUNT) {
-      appStatsJSON.content.viewed++;
-      let entry = await getRegistryEntry(getKeys(getUserSession()).publicKey,`${appId}#${VIEW_COUNT}`,{});
-      await setRegistryEntry(`${appId}#${VIEW_COUNT}`,parseInt(entry?.data ?? "0")+1, { store: IDB_STORE_SKAPP, });
-    } if (statsType === ACCESS_COUNT) {
-      appStatsJSON.content.accessed++;
-      let entry = await getRegistryEntry(getKeys(getUserSession()).publicKey,`${appId}#${ACCESS_COUNT}`,{});
-      await setRegistryEntry(`${appId}#${ACCESS_COUNT}`,parseInt(entry?.data ?? "0")+1, { store: IDB_STORE_SKAPP, });
+    appStatsList = appStatsStr.split('#');
+    switch (statsEventType) {
+      case EVENT_APP_VIEWED:
+        appStatsList[0] = parseInt(appStatsList[0]) + 1;
+        break;
+      case EVENT_APP_ACCESSED:
+        appStatsList[1] = parseInt(appStatsList[1]) + 1;
+        break;
+      case EVENT_APP_LIKED:
+        appStatsList[2] = 1;
+        break;
+      case EVENT_APP_LIKED_REMOVED:
+        appStatsList[2] = 0;
+        break;
+      case EVENT_APP_FAVORITE:
+        appStatsList[3] = 1;
+        break;
+      case EVENT_APP_FAVORITE_REMOVED:
+        appStatsList[3] = 0;
+        break;
+      default:
+        console.log("In Dafault loop: " + statsEventType)
+        break;
     }
+    if (publicKey != ANONYMOUS) {
+      await setRegistryEntry(`${appId}#stats`, appStatsList.join("#"), { store: IDB_STORE_SKAPP, });
+    }
+    await emitEvent(appId, statsEventType);
+    // if (statsType === LIKES) {
+    //   appStatsJSON.content.liked = value;
+    //   await setRegistryEntry(`${appId}#${LIKES}`, value, { store: IDB_STORE_SKAPP, });
+    //   await emitEvent(appId, EVENT_APP_LIKED)
+    // } if (statsType === FAVORITE) {
+    //   appStatsJSON.content.favorite = value;
+    //   await setRegistryEntry(`${appId}#${FAVORITE}`, value, { store: IDB_STORE_SKAPP, });
+    //   await emitEvent(appId, EVENT_APP_FAVORITE)
+    // } if (statsType === VIEW_COUNT) {
+    //   appStatsJSON.content.viewed++;
+    //   let entry = await getRegistryEntry(getUserPublicKey(), `${appId}#${VIEW_COUNT}`, {});
+    //   await setRegistryEntry(`${appId}#${VIEW_COUNT}`, parseInt(entry?.data ?? "0") + 1, { store: IDB_STORE_SKAPP, });
+    //   await emitEvent(appId, EVENT_APP_VIEWED)
+    // } if (statsType === ACCESS_COUNT) {
+    //   appStatsJSON.content.accessed++;
+    //   let entry = await getRegistryEntry(getUserPublicKey(), `${appId}#${ACCESS_COUNT}`, {});
+    //   await setRegistryEntry(`${appId}#${ACCESS_COUNT}`, parseInt(entry?.data ?? "0") + 1, { store: IDB_STORE_SKAPP, });
+    //   await emitEvent(appId, EVENT_APP_ACCESSED)
+    // }
     // update IDX-DB with new value
-    await putFile(getKeys(getUserSession()).publicKey,`${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
+    // await putFile(getUserPublicKey(), `${appId}#stats`, appStatsJSON, { store: IDB_STORE_SKAPP })
     //.then(() => {
     // pushRoute(url);
   } catch (err) {
     console.log(err);
-    return appStatsJSON;
+    return appStatsList;
   }
-  return appStatsJSON;
+  return appStatsList;
 }
 // pass list of appIds to get AppStats. Fav, Viewed, liked, accessed
 export const getAppStats = async (appId) => {
   // Get Data from IDX-DB
-  let appStatsJSON = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP, });
-  if (appStatsJSON) {
-    return appStatsJSON;
-  }
-  else {
-    return createAppStatsObj();
+  //let appStatsObj = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP, });
+  // let appStatsStr = (appStatsObj && appStatsObj[1]) ?? "0#0#0#0"
+  // let appStatsList = appStatsStr.split("#"); // View#access#likes#fav
+
+  let appStatsObj = await getRegistryEntry(getUserPublicKey(), `${appId}#stats`);
+  let appStatsList = (appStatsObj?.data ?? "0#0#0#0").split("#");
+  return appStatsList;
+}
+
+export const getAggregatedAppStatsByAppId = async (appId) => {
+  // Get Data from IDX-DB
+  let appStatsObj = await getRegistryEntry(getProviderKeysByType("AGGREGATOR").publicKey, `${appId}#stats`);
+  // let appStatsObj = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP_AGGREGATED_DATA, });
+  let appStatsList = (appStatsObj?.data ?? "0#0#0#0").split("#"); // View#access#likes#fav
+  return appStatsList;
+}
+
+// need to optimize below method
+export const getAggregatedAppStats = async (appIds) => {
+  // get all appId from PublishedApp
+  // Fetch all AppStats
+
+  const appStatsList = { appIdList: [], appStatsList: {} }
+  try {
+    if (appIds == null || appIds.length === 0) {
+      const data = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP_AGGREGATED_DATA });
+      appStatsList.appIdList = data;
+      appIds = appIds?.length === 0 ? data : appIds;
+    }
+    appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
+      appStatsList.appStatsList[appId] = (await getFile(getUserPublicKey(), `${appId}#stats`, { store: IDB_STORE_SKAPP_AGGREGATED_DATA }));
+    }));
+    return appStatsList;
+  } catch (err) {
+    console.log(err);
   }
 }
+
 // get apps comments - 
 export const setAppComment = async (appId, comment) => {
   let commentObj = {
@@ -341,12 +465,12 @@ export const getMyHostedApps = async (appIds) => {
   const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
     if (appIds == null || appIds.length === 0) {
-      const data  = await getFile(getKeys(getUserSession()).publicKey, DK_HOSTED_APPS, { store: IDB_STORE_SKAPP });
+      const data = await getFile(getUserPublicKey(), DK_HOSTED_APPS, { store: IDB_STORE_SKAPP });
       hostedAppIdList.appIdList = data;
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getFile(getKeys(getUserSession()).publicKey, `hosted${appId}`, { store: IDB_STORE_SKAPP }));
+      hostedAppIdList.appDetailsList[appId] = (await getFile(getUserPublicKey(), `hosted${appId}`, { store: IDB_STORE_SKAPP }));
     }));
     return hostedAppIdList;
   } catch (err) {
@@ -382,8 +506,8 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     },
     ts
   };
-  await putFile(getKeys(getUserSession()).publicKey, `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
-  await putFile(getKeys(getUserSession()).publicKey, DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
+  await putFile(getUserPublicKey(), `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
 
   return hostedAppJSON;
 }
@@ -392,7 +516,7 @@ export const setMyHostedApp = async (appJSON, previousId) => {
 export const setHNSEntry = (hnsName, skylink) => { }
 
 //get HNS URL for TXT record
-export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getKeys(getUserSession()).publicKey, hnsName);
+export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getUserPublicKey(), hnsName);
 
 
 export const initializeLocalDatabaseFromBackup = async () => {
@@ -545,7 +669,8 @@ export const getUserProfile = async (session) => {
     console.log("Profile not found;, please check your connection and retry")
   } else {
     // success
-    let skyIdProfileObj = JSON.parse(response)
+    //let temp = JSON.stringify(response);
+    let skyIdProfileObj = JSON.parse(response);
     const { publicKey, privateKey } = snKeyPairFromSeed(session.skyid.seed)
     personObj = {
       masterPublicKey: session.skyid.userId, // public key derived from "master seed". we pull profile using this public key

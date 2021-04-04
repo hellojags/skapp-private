@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as unFilledStar } from "@fortawesome/free-regular-svg-icons";
 import { Box, makeStyles, Typography } from "@material-ui/core";
-import { getAppCommentAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getAppCommentAction } from "../../redux/action-reducers-epic/SnAppCommentsAction";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams } from "react-router-dom";

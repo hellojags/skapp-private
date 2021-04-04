@@ -109,7 +109,7 @@ const AppInfo = ({ data }) => {
   return (
     <Fragment>
       <Typography component="h2" className={`${classes.h2} ${classes.mb0}`}>
-        Information
+        App Details
       </Typography>
 
       <Box display="flex" className={classes.informationContainer}>

@@ -2,36 +2,34 @@ import { ofType } from "redux-observable"
 import { switchMap, map } from "rxjs/operators"
 import { from } from "rxjs"
 import { setLoaderDisplay } from "./SnLoaderAction"
-import { EPIC_TY_SET_STATS, EPIC_TY_GET_STATS } from "../SnActionConstants"
-import { setAppStatsEvent, getAppStats } from "../../service/SnSkappService"
-import { setAppStatsStore } from "./SnAppStatsAction"
-import store from "../../redux"
+import { EPIC_TY_AGG_SET_STATS, EPIC_TY_AGG_GET_STATS } from "../SnActionConstants"
+import store from ".."
 // app stats actions
-export const snSetAppStatsEpic = (action$) =>
+export const snSetAggregatedAppStatsEpic = (action$) =>
     action$.
-        pipe(ofType(EPIC_TY_SET_STATS),
+        pipe(ofType(EPIC_TY_AGG_SET_STATS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
-                return from(setAppStatsEvent(action.payload.actionType, action.payload.appId))
+                return from(getAggregatedAppStats(action.payload.appIdList))
                     .pipe(
                         map((res) => {
                             //setLoaderDisplay(false)
                             // Update Redux Store
-                            return  setAppStatsStore(res)
+                            return  setAggregatedAppStatsStore(res)
                         })
                     )
             }));
 
-export const snGetAppStatsEpic = (action$) => action$.pipe(ofType(EPIC_TY_GET_STATS),
+export const snGetAggregatedAppStatsEpic = (action$) => action$.pipe(ofType(EPIC_TY_AGG_GET_STATS),
     // do we need to change this to mergemap ? we dont want subscription to be overwritten
     switchMap((action) => {
         setLoaderDisplay(true)
-        return from(getAppStats(action.payload.appId))
+        return from(getAggregatedAppStats(action.payload.appId))
             .pipe(
                 map((res) => {
                     setLoaderDisplay(false)
                     // Update Redux Store
-                    return setAppStatsStore(res)
+                    return setAggregatedAppStatsStore(res)
                 })
             )
     }));

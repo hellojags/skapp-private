@@ -11,7 +11,7 @@ import useWindowDimensions from "../../hooks/useWindowDimensions";
 // import PerfectScrollbar from 'react-perfect-scrollbar'
 import CustomPagination from "./CustomPagination";
 import SelectedAppsHeader from "./SelectedAppsHeader";
-import { getPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -148,7 +148,7 @@ function Apps() {
   const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
   useEffect(() => {
     // console.log("came here");
-    dispatch(getPublishedAppsAction());
+    dispatch(getMyPublishedAppsAction());
   }, []);
 
   // temp var for selected page

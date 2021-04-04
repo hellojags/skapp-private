@@ -1,6 +1,6 @@
 import { ajax } from "rxjs/ajax"
 import { map, catchError } from "rxjs/operators"
-import { getRelativeFilePath, getRootDirectory, parseSkylink, SkynetClient,genKeyPairFromSeed } from "skynet-js"
+import { getRelativeFilePath, getRootDirectory, parseSkylink, SkynetClient, genKeyPairFromSeed } from "skynet-js"
 import { of } from "rxjs"
 import prettyBytes from "pretty-bytes"
 import {
@@ -10,9 +10,9 @@ import {
   IDB_STORE_SKYDB_CACHE,
 } from "./SnIndexedDB"
 import { encryptData, decryptData } from "./SnEncryption"
-import { getPortal} from '../utils/SnUtility'
+import { getPortal } from '../utils/SnUtility'
 import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../utils/SnConstants"
-/* global BigInt */ 
+/* global BigInt */
 //above comment is required to enable BigInt
 // ################################ SkyDB Methods ######################
 
@@ -26,7 +26,51 @@ let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // decrypt = true|false
 // contentOnly = true|false  // If true will return onlu content from SkyDB (not revision number)
 // store = IDB_STORE_SKAPP | IDB_STORE_SKYDB_CACHE , IDB_STORE_SKAPP =  loggedin users Key/value. IDB_STORE_SKYDB_CACHE = otehr users key/Value
-export const getUserSession = () => JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY));
+export const getUserSession = () => {
+  let session = null;
+  try {
+    session = JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY))
+  }
+  catch(e)
+  {
+    return session
+  }
+  return session
+}
+export function getUserPublicKey() {
+  return getUserSession() ? getUserSession().person.appPublicKey : null
+}
+export function getUserPrivateKey() {
+  return getUserSession() ? getUserSession().person.appPrivateKey : null
+}
+// export function getSkappKeys() {
+//   return {
+//       publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
+//       privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
+//   };
+// }
+export function getProviderKeysByType(keyType) {
+  let keys = { privateKey: null, publicKey: null };
+  switch (keyType) {
+    case "GEQ":
+      keys = {
+        publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
+        privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
+      };
+      break;
+    case "AGGREGATOR":
+      keys = {
+        publicKey: "315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c",
+        privateKey: "397c17d094da41d641bec5d7c6f255c27485d784d7aaa91bad6c3bc5ebce9bff315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c"
+      };
+      break;
+    default:
+      console.log("In Dafault loop: " + keyType)
+      break;
+  }
+  return keys;
+}
+
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
   // Get User Public Key
@@ -85,7 +129,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         //check if [PubKey#DataKey ] exist in skydb_cache and revision numbers are same.
         if (
           result &&
-          result.length > 0  &&
+          result.length > 0 &&
           parseInt(result[0]) === parseInt(skyDBRevisionNo)
         ) {
           //if revision numbers are same, return Skylink content from IndexedDB
@@ -149,7 +193,7 @@ export const getContent = async (publicKey, dataKey, options) => {
     //var { data, revision } =await skynetClient.db.getJSON(publicKey, 'profile'); 
     const { data, contentType, metadata, skylink } = await skynetClient.getFileContent(registryEntry.data);
     //const entryObj = await skynetClient.db.getJSON(publicKey, dataKey)
-    const entryObj = {revision: registryEntry.revision , data}
+    const entryObj = { revision: registryEntry.revision, data }
     if (entryObj) {
       if (options.contentOnly) {
         // decrypt it
@@ -176,15 +220,10 @@ export const getContent = async (publicKey, dataKey, options) => {
   }
 }
 
-// TODO: implement actual logic
-export function getKeys(session){
-  return genKeyPairFromSeed(session.skyid.seed);
-}
-
 // sets JSON file in SkyDB
 export const putFile = async (publicKey, dataKey, content, options) => {
-   // fetch private key from localstorage
-   const privateKey = options.privateKey ?? getKeys(getUserSession()).privateKey;
+  // fetch private key from localstorage
+  const privateKey = options.privateKey ?? getUserPrivateKey();
   try {
     // get previous skylink 
     // create linked list to track history
@@ -227,30 +266,30 @@ export const getRegistryEntry = async (publicKey, dataKey, options) => {
   return null
 }
 
-export const setRegistryEntry = async (dataKey,content,options) => {
+export const setRegistryEntry = async (dataKey, content, options) => {
   let revision = 0;
   try {
-     // fetch private key from localstorage
-    const privateKey = options.privateKey ?? getKeys(getUserSession()).privateKey;
-    const publicKey = options.publicKey ?? getKeys(getUserSession()).publicKey;
-    if(options?.maxRevisionFlag)
-    {
+    // fetch private key from localstorage
+    const privateKey = options.privateKey ?? getUserPrivateKey();
+    const publicKey = options.publicKey ?? getUserPublicKey();
+    if (options?.maxRevisionFlag) {
       revision = REGISTRY_MAX_REVISION;
     }
-    else
-    {
-      let entry = await getRegistryEntry(publicKey,dataKey,null)
+    else {
+      let entry = await getRegistryEntry(publicKey, dataKey, null)
       revision = entry && entry != "undefined" && entry?.revision != NaN && entry.revision != "undefined" ? entry.revision : 0
       revision++;
     }
-    let entry = { datakey:dataKey, data: content+"", revision : BigInt(revision)};
+    let entry = { datakey: dataKey, data: content + "", revision: BigInt(revision) };
     await skynetClient.registry.setEntry(privateKey, entry);
-    await setJSONinIDB(dataKey, [BigInt(revision),content], options)
-    return {resultFlag: true,revision}
+    if (options.skipIDB && options.skipIDB != true) {
+      await setJSONinIDB(dataKey, [BigInt(revision), content], options)
+    }
+    return { resultFlag: true, revision }
   } catch (error) {
     // setErrorMessage(error.message);
     console.log(`error.message ${error.message}`)
-    return {resultFlag: false,revision}
+    return { resultFlag: false, revision }
   }
 }
 
@@ -283,7 +322,7 @@ export function getRegistryEntryURL(publicKey, dataKey) {
 //       res.json()
 //     })
 //     .catch((err) => err);
-    
+
 //   // ajax({
 //   //   url: getPortal() + `${skylink}?format=concat`,
 //   //   method: "GET",

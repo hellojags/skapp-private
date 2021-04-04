@@ -53,13 +53,13 @@ export default function SnProfile(props) {
   const userSession = useSelector((state) => state.userSession)
 
   // Effects
-  useEffect(() => {
-    //   //setData(defaultValues);
-    //   // fetchProfile JSON
-    //   // If not found Initialize it and show on UI
-    //   //dispatch(getUserMasterProfileAction(userSession));
-    //   //dispatch(getUserProfileAction(userSession));
-  }, [userProfile, userMasterProfile])
+  // useEffect(() => {
+  //   //   //setData(defaultValues);
+  //   //   // fetchProfile JSON
+  //   //   // If not found Initialize it and show on UI
+  //   //   //dispatch(getUserMasterProfileAction(userSession));
+  //   //   //dispatch(getUserProfileAction(userSession));
+  // }, [userProfile, userMasterProfile])
 
   const handleClick = (newState) => () => {
     setState({ open: true, ...newState })

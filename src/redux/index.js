@@ -14,10 +14,14 @@ import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer";
 // import { snMyFollowingsEpic } from "./sn.myFollowings.epic"
 import SnUploadListReducer from "./action-reducers-epic/SnUploadListReducer";
 import snSelectedHostedAppStore from "./action-reducers-epic/SnSelectedHostedAppReducer";
+import snAllPublishedAppsStore from "./action-reducers-epic/SnAllPublishAppReducer";
+import {snGetAllPublishedAppsEpic} from "./action-reducers-epic/SnAllPublishAppEpic";
 import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
+import {snGetPublishedAppsEpic,snSetPublishAppEpic} from "./action-reducers-epic/SnPublishAppEpic";
 import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
 import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
-import {snGetPublishedAppsEpic,snSetPublishAppEpic, snGetAppCommentsEpic, snSetAppCommentEpic} from "./action-reducers-epic/SnPublishAppEpic";
+import snAppCommentsStore from "./action-reducers-epic/SnAppCommentsReducer";
+import {snGetAppCommentsEpic,snSetAppCommentEpic} from "./action-reducers-epic/SnAppCommentsEpic";
 import snShowHostingLinks from "./action-reducers-epic/SnShowHostingLinksReducer";
 import SnUserSessionReducer from "./action-reducers-epic/SnUserSessionReducer";
 
@@ -33,17 +37,20 @@ const rootReducer = combineReducers({
   // snMyFollowers: SnMyFollowers,
   // snMyFollowings: SnMyFollowings,
   snUploadListStore: SnUploadListReducer,
+  snAllPublishedAppsStore,
   snPublishedAppsStore,
   snAppStatsStore,
+  snAppCommentsStore,
   snSelectedHostedAppStore,
   snShowHostingLinks
 });
 
 const rootEpic = combineEpics(
-  snSetAppStatsEpic,
-  snGetAppStatsEpic,
+  snGetAllPublishedAppsEpic,
   snGetPublishedAppsEpic,
   snSetPublishAppEpic,
+  snSetAppStatsEpic,
+  snGetAppStatsEpic,
   snGetAppCommentsEpic, 
   snSetAppCommentEpic,
   // snPersonEpic,

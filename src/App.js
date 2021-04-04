@@ -22,7 +22,7 @@ function App() {
             <aside className="app-sidebar">
               <Sidebar />
             </aside>
-            <main className="app-content">
+            <main className="app-content" id="app-content">
               <SnRouter />
             </main>
           </section>
