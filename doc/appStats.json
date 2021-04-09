@@ -1,0 +1,14 @@
+{
+    "$type": "skapp",
+    "$subType": "stats",
+    "id": "SKAPP_ID",
+    "version": "1",
+    "prevSkylink":"",
+    "content": {
+            "favorite" : "1|0", 
+            "viewed" : "120", // counter increments everytime card is clicked to view details
+            "liked" : "1|0", 
+            "accessed" : "111", // counter increments everytime app URL is clicked
+    },
+    "ts": 1610328319
+}

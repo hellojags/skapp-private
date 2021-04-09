@@ -1,0 +1,63 @@
+{
+    "$type": "skapp",
+    "$subType": "published",
+    "id": "SKAPP_ID",
+    "version": "1",
+    "prevSkylink":"",
+    "content": {
+        "skappLogo": "[46 Character SKYLINK]",
+        "appname": "SkyFeed",
+        "demoUrl": "[46 Character SKYLINK]",
+        "age": "[18+|general]",
+        "appUrl": "skylink URL",
+        "defaultPath": "index.html or EMPTY",
+        "sourceCode": "git url",
+        "category": [
+            "list"
+        ],
+        "tags": [
+            "tag1",
+            "tag2"
+        ],
+        "appStatus": [
+            "beta|alpha|live"
+        ],
+        "previewImages": {
+            "aspectRatio": 0.5625,
+            "images": [
+                {
+                    "thumbnail": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg",
+                    "image": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg"
+                },
+                {
+                    "thumbnail": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg",
+                    "image": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg"
+                },
+                {
+                    "thumbnail": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg",
+                    "image": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg"
+                },
+                {
+                    "thumbnail": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg",
+                    "image": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg"
+                }
+            ]
+        },
+        "previewVideo": {
+            "thumbnail": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg",
+            "mp4+1080x1920": "sia://PAF7C6slOWpgCM9CTjrtuwA51yBgsLMOARI86gaoadFoHg"
+        },
+        "appDescription": "",
+        "releaseNotes": "",
+        "history": [
+            "list of skylinks"
+        ],
+        "supportDetails": "",
+        "connections": {
+            "twitter": "",
+            "email": "",
+            "discord": ""
+        }
+    },
+    "ts": 1610328319
+}

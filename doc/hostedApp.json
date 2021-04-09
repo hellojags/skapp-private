@@ -1,0 +1,19 @@
+{
+    "$type": "skapp",
+    "$subType": "hosted",
+    "id": "SKAPP_ID",
+    "version": "1",
+    "prevSkylink":"",
+    "content": {
+        "storageGateway": "skynetportalUrl",
+        "hns": "skyfeed",
+        "skylink": "skylink",
+        "defaultPath": "index.html or EMPTY",
+        "portalMinVersion": "1.5",
+        "sourceCode": "git url",
+        "history": [
+            "list of skylinks"
+        ]
+    },
+    "ts": 1610328319
+}
