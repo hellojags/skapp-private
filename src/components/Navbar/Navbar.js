@@ -31,7 +31,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import skyId from '../../service/idp/SnSkyId'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-
+import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#fff',
@@ -177,6 +177,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
     const dispatch = useDispatch()
+    const history = useHistory();
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -184,6 +185,7 @@ export default function Navbar() {
 
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+    const stUserSession = useSelector((state) => state.userSession)
 
     useEffect(() => {
         console.log("skyid=" + skyId);
@@ -199,6 +201,14 @@ export default function Navbar() {
     const handleMenuClose = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
+    }
+    const handleSettings = () => {
+        setAnchorEl(null)
+        handleMobileMenuClose()
+        if(stUserSession != null)
+        {
+            history.push('/settings');
+        }
     }
 
     const handleMobileMenuOpen = (event) => {
@@ -221,11 +231,11 @@ export default function Navbar() {
             className="profile-dropdown"
 
         >
-            <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
+            <MenuItem onClick={handleSettings} className={classes.MenuItem}>
                 <SettingIcon className={classes.menuIcon} />
                 <span>Settings</span>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
+            <MenuItem onClick={handleSettings} className={classes.MenuItem}>
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
             </MenuItem>

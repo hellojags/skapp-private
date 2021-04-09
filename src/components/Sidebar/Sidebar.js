@@ -59,7 +59,14 @@ const Sidebar = (props) => {
               <ListItemText primary="App Store" />
             </ListItem>
           </NavLink>
-
+          <NavLink to="/submitapp">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <SubmitAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Publish App" />
+            </ListItem>
+          </NavLink>
           <NavLink exact to="/apps">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
@@ -68,12 +75,12 @@ const Sidebar = (props) => {
               <ListItemText primary="My Published Apps" />
             </ListItem>
           </NavLink>
-          <NavLink to="/submitapp">
+          <NavLink exact to="/apps">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
-                <SubmitAppIcon />
+                <MyAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Publish App" />
+              <ListItemText primary="My Installed Apps" />
             </ListItem>
           </NavLink>
           {/* <NavLink exact to="/installedappps">
@@ -188,12 +195,14 @@ const Sidebar = (props) => {
           aria-labelledby="nested-list-subheader"
           className={classes.root}
         >
-          <ListItem button>
-            <ListItemIcon className={classes.listIcon}>
-              <SettingNavLogIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-          </ListItem>
+          <NavLink exact to="/settings">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <SettingNavLogIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+          </NavLink>
         </List>
         <div className={classes.promoCard}>
           <h3 className={classes.promoTitle}>Promo Title</h3>
