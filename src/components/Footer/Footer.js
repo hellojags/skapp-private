@@ -12,6 +12,9 @@ const Footer = () => {
         <footer className="footer">
             <ul>
                 <li>
+                    test
+                </li>
+                <li>
                     Help
                 </li>
                 <li>
