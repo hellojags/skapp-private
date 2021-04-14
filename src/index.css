@@ -481,6 +481,11 @@ border-top: 0;
   cursor: pointer;
 
 }
+.footer ul li  svg{
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
 .footer ul:first-child {
   margin-right: 1.5rem;
 }

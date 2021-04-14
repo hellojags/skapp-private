@@ -1,3 +1,4 @@
+import { Email, GitHub } from '@material-ui/icons'
 import React from 'react'
 import { ReactComponent as FacebookIcon } from '../../assets/img/icons/001-facebook.svg'
 import { ReactComponent as WhatsappIcon } from '../../assets/img/icons/003-whatsapp.svg'
@@ -6,14 +7,15 @@ import { ReactComponent as LinkedInIcon } from '../../assets/img/icons/010-linke
 import { ReactComponent as InstaIcon } from '../../assets/img/icons/011-instagram.svg'
 import { ReactComponent as TwitterIcon } from '../../assets/img/icons/013-twitter.svg'
 import { ReactComponent as RedditIcon } from '../../assets/img/icons/015-reddit.svg'
+import Dis from '../../svg/Discord'
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+// import {  as filledStar } from "@fortawesome/free-solid-svg-icons"
 const Footer = () => {
     return (
         <footer className="footer">
             <ul>
-                <li>
-                    test
-                </li>
+
                 <li>
                     Help
                 </li>
@@ -51,7 +53,7 @@ const Footer = () => {
                     </a>
                 </li>
                 <li>
-                    <a href="#0">
+                    <a href="https://twitter.com/skynethub">
                         <TwitterIcon />
                     </a>
                 </li>
@@ -59,6 +61,22 @@ const Footer = () => {
                     <a href="#0">
                         <RedditIcon />
                     </a>
+                </li>
+                <li>
+                    <a href="https://github.com/skynethubio/skapp">
+                        <GitHub />
+                    </a>
+                </li>
+                <li>
+                    <a href="https://discord.com/invite/zuwNT4YsWD">
+                        <Dis />
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:hello@skapp.io">
+                        <Email />
+                    </a>
+
                 </li>
             </ul>
         </footer>
