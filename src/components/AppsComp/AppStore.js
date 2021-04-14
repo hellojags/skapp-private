@@ -1,5 +1,5 @@
 import { Box, Button, InputBase } from '@material-ui/core'
-import React, { Fragment,useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 // import UtilitiesItem from './UtilitiesItem'
@@ -21,13 +21,15 @@ import "slick-carousel/slick/slick-theme.css"
 import SlickNextArrow from '../slickarrows/SlickNextArrow'
 import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
-import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
-import { useDispatch, useSelector } from "react-redux";
-
+import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction"
+import { useDispatch, useSelector } from "react-redux"
+import Fuse from 'fuse.js'
+import styles from "../../assets/jss/apps/AppListStyle"
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
 const useStyles = makeStyles(theme => (
     {
+        ...styles,
         search: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
@@ -166,20 +168,55 @@ const useStyles = makeStyles(theme => (
 
 // get div with
 function AppStore() {
-    const dispatch = useDispatch();
-    const classes = useStyles();
-    let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
+    const dispatch = useDispatch()
+    const classes = useStyles()
+    let tags = []
+    let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore)
+
+    const [searchData, setSearchData] = useState([])
+
     useEffect(() => {
         // console.log("came here");
-        dispatch(getAllPublishedAppsAction());
-      }, []);
-      
+        dispatch(getAllPublishedAppsAction())
+        setSearchData(publishedAppsStore)
+    }, [])
+
+    console.log('searched data', searchData)
+    publishedAppsStore.filter(item => {
+        if (item.content.tags.length > 0) {
+            const tempTags = item.content.tags
+            tags = [...tags, ...tempTags]
+
+        }
+    })
+    // tags = [...new Set(tags)]
+    let tagsWithCount = tags.reduce(function (obj, b) {
+        obj[b] = ++obj[b] || 1
+        return obj
+    }, {})
+    useEffect(() => {
+        // if (tagsWithCount) {
+        setSearchData(publishedAppsStore)
+        // }
+    }, [setSearchData, publishedAppsStore])
+    // const [state, setstate] = useState(initialState)
+
+    // console.log(newD)
+
+    // tagsWithCount = Object.keys(tagsWithCount)
+
+    // tagsWithCount = Object.values(tagsWithCount)
+
+    tagsWithCount = Object.entries(tagsWithCount)
+    console.log("dfdfd", tagsWithCount)
     // temp var for selected page
     // const selectedPage = true
     // This page code
     const { width } = useWindowDimensions()
-    
+
+
     let showSlides = width > 1600 ? 1600 / 140 : width / 140
+    let slicky = tagsWithCount.length < showSlides ? 'unslick' : 'slick'
     var settings = {
         dots: false,
         infinite: true,
@@ -189,7 +226,14 @@ function AppStore() {
         slidesToShow: showSlides,
         slidesToScroll: 1,
         nextArrow: <SlickNextArrow />,
-        prevArrow: <SlickPrevArrow />
+        prevArrow: <SlickPrevArrow />,
+        responsive: [
+
+            {
+                breakpoint: 10000, // a unrealistically big number to cover up greatest screen resolution
+                settings: slicky
+            }
+        ]
     }
     // console.log(width)
 
@@ -197,39 +241,74 @@ function AppStore() {
     //     dispatch(getAllPublishedAppsAction());
     // }, 30000);
 
-    const AppsComp = (<Fragment >
-        <Box display="flex" className='second-nav' alignItems="center">
-            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                <h1 className={classes.pageHeading}>Skynet Apps</h1>
-            </Box>
-            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-               <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
-            </Box>
-            {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
-                <Box>
-                    <div className={classes.searchIcon}>
-                        <SearchIcon />
-                    </div>
+    const searchHandler = (e) => {
+        const options = {
+            // isCaseSensitive: false,
+            // includeScore: false,
+            // shouldSort: true,
+            // includeMatches: false,
+            // findAllMatches: false,
+            // minMatchCharLength: 1,
+            // location: 0,
+            // threshold: 0.6,
+            // distance: 100,
+            // useExtendedSearch: false,
+            // ignoreLocation: false,
+            // ignoreFieldNorm: false,
+            includeScore: true,
+            keys: [
+
+                "content.tags",
+                "content.appname",
+            ]
+        }
+
+        const fuse = new Fuse(publishedAppsStore, options)
+
+        // Change the pattern
+        const pattern = e.target.value
+        console.log(pattern)
+        if (pattern) {
+            let _newD = fuse.search(pattern)
+            _newD = _newD.map(_ => _.item)
+            setSearchData(_newD)
+            console.log(_newD)
+        } else {
+            setSearchData(publishedAppsStore)
+        }
+    }
+
+
+    // app list code
+    const tagClickHandler = (e) => {
+        let storeApps = publishedAppsStore
+        storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
+        setSearchData(storeApps)
+        console.log("tem apps", storeApps)
+        // setSearchData 
+        // console.log()
+    }
+    return (
+        // (width < 575)
+        //     ? <div className={classes.mobileSave}>{AppsComp}</div>
+        //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
+
+        <div><Fragment >
+            <Box display="flex" className='second-nav' alignItems="center">
+                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                    <h1 className={classes.pageHeading}>Skynet Apps</h1>
                 </Box>
-                <InputBase
-                    placeholder="Search Apps"
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                />
-            </div>}
-            <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-
-
-                {width > 1049 && <div className={classes.search}>
+                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                    <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
+                </Box>
+                {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                     </Box>
                     <InputBase
+                        onChange={searchHandler}
                         placeholder="Search Apps"
                         classes={{
                             root: classes.inputRoot,
@@ -238,109 +317,127 @@ function AppStore() {
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </div>}
-                <Box>
-                    <ListFilter />
-                </Box>
-                {/* <Box>
+                <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
+
+
+                    {width > 1049 && <div className={classes.search}>
+                        <Box>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                        </Box>
+                        <InputBase
+                            onChange={searchHandler}
+                            placeholder="Search Apps"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </div>}
+                    <Box>
+                        <ListFilter />
+                    </Box>
+                    {/* <Box>
                     <SelectItem />
                 </Box> */}
-                {/* <Box>
+                    {/* <Box>
                     <SubmitBtn >
                         Add App
                     </SubmitBtn>
                 </Box> */}
+                </Box>
             </Box>
-        </Box>
 
-        {/* <div >
+            {/* <div >
             <Button className="tagButton">
                 Art & Design (5)
             </Button>
         </div> */}
-        <Slider {...settings} className="appTagsButtons">
-            <div>
+            <Slider {...settings} id="appTagsButtons" className="appTagsButtons">
+                {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
+                    <Button data-tag={tag[0]} onClick={tagClickHandler} className="tagButton">
+                        {tag[0]} ({tag[1]})
+                    </Button>
+                </div>)}
+                {/* <div>
                 <Button className="tagButton">
-                Social
+                    Social
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Video
+                    Video
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Pictures
+                    Pictures
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Music
+                    Music
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Productivity
+                    Productivity
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Utilities
+                    Utilities
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Games
+                    Games
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Blogs
+                    Blogs
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Software
+                    Software
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Livestream
+                    Livestream
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Books
+                    Books
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Marketplace
+                    Marketplace
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Finance
+                    Finance
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Portal
+                    Portal
             </Button>
-            </div>
-        </Slider>
-        <div>
-            <AppsList newData={publishedAppsStore}/>
-            <Footer />
-        </div>
-    </Fragment>)
+            </div> */}
+            </Slider>
+            <div>
+                <AppsList newData={searchData} />
 
-    return (
-        // (width < 575)
-        //     ? <div className={classes.mobileSave}>{AppsComp}</div>
-        //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-
-        <div>{AppsComp}</div>
+                <Footer />
+            </div>
+        </Fragment></div>
     )
 }
 

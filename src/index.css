@@ -299,9 +299,7 @@ border-top: 0;
 .slick-prev {
   left: -15px;
 }
-.infinite-scroll-component {
-  overflow-x: hidden!important;
-}
+
 /* load more apps  spiner css */
 .loadMoreSpiner{
   display: flex;
@@ -563,7 +561,20 @@ border-top: 0;
   display: none;
 }
 
-.infinite-scroll-component{
-  overflow-x: hidden !important;
+/* slick slider handling */
+.regular.slider.appTagsButtons{
+  display: flex;
+}
+.regular.slider.appTagsButtons button {
+  margin-right: 1rem;
+}
+.tagButton::after{
+  content: '';
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* background-color: #000; */
+  position: absolute;
 
 }
