@@ -486,6 +486,13 @@ border-top: 0;
   height: 16px;
   vertical-align: middle;
 }
+.footer ul li a:hover, .footer ul li:hover {
+  color: #1dbf73;
+}
+
+.footer ul li a:hover svg, .footer ul li a:hover path {
+  fill: #1dbf73;
+}
 .footer ul:first-child {
   margin-right: 1.5rem;
 }
