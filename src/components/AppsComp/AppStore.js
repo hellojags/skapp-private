@@ -174,6 +174,7 @@ function AppStore() {
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore)
 
     const [searchData, setSearchData] = useState([])
+    const [selectedTag, setSelectedTag] = useState('')
 
     useEffect(() => {
         // console.log("came here");
@@ -216,7 +217,8 @@ function AppStore() {
 
 
     let showSlides = width > 1600 ? 1600 / 140 : width / 140
-    let slicky = tagsWithCount.length < showSlides ? 'unslick' : 'slick'
+    console.log("slided to show " + showSlides + "Width " + width)
+    let slicky = 155 * tagsWithCount.length - 550 < width ? 'unslick' : 'slick'
     var settings = {
         dots: false,
         infinite: true,
@@ -282,11 +284,26 @@ function AppStore() {
     // app list code
     const tagClickHandler = (e) => {
         let storeApps = publishedAppsStore
-        storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
-        setSearchData(storeApps)
-        console.log("tem apps", storeApps)
-        // setSearchData 
-        // console.log()
+
+        if (selectedTag === e.target.dataset.tag) {
+            setSelectedTag("")
+            e.target.classList.remove("selected")
+            e.target.classList.add("notselected")
+            setSearchData(publishedAppsStore)
+        } else {
+            setSelectedTag(e.target.dataset.tag)
+            // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
+
+            storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
+            // e.target.classList
+            setSearchData(storeApps)
+            e.target.classList.add("selected")
+            // console.log("cls ", )
+            e.target.classList.remove("notselected")
+            // setSearchData 
+            // console.log()
+        }
+
     }
     return (
         // (width < 575)

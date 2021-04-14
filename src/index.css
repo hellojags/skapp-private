@@ -399,10 +399,22 @@ border-top: 0;
   top: -1px;
   bottom: -1px;
 }
+.tagButton{
+  background-color: #1dbf73!important;
+  color: #fff;
+}
+.tagButton.notselected{
+  background-color: #fff!important;
+  color: rgba(0, 0, 0, 0.87);
+}
+.tagButton{
+  background-color: #fff!important;
+}
 .tagButton.slickNex svg, .tagButton.slickPrev svg{
   font-size: 14px;
   
 }
+
 .tagButton.slickNex, .tagButton.slickPrev{
   height: 38px;
 }
@@ -430,8 +442,14 @@ border-top: 0;
   background: #fff!important;
 }
 .tagButton.slickNex:focus > *, .tagButton.slickPrev:focus  > *{
-  color: rgba(0, 0, 0, 0.87);
+  color: #1dbf73
   
+}
+.tagButton.slickNex, .tagButton.slickPrev{
+  color: #9D9D9D;
+}
+.tagButton.slickNex:hover, .tagButton.slickNex:focus, .tagButton.slickPrev:focus, .tagButton.slickPrev:hover{
+  color: #1dbf73;
 }
 /* material ui overwrite the checkbox color  */
 .MuiCheckbox-colorPrimary.Mui-checked{
