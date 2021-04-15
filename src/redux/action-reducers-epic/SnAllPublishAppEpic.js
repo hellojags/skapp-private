@@ -4,7 +4,7 @@ import { from } from "rxjs"
 import { setLoaderDisplay } from "./SnLoaderAction"
 import {
     EPIC_TY_GET_ALL_PUBLISHED_APPS,
-} from "../SnActionConstants";
+} from "../SnActionConstants"
 import { getAllPublishedApps } from "../../service/SnSkappService"
 import { setAllPublishedAppsStore } from "./SnAllPublishAppAction"
 // app stats actions
@@ -14,8 +14,9 @@ export const snGetAllPublishedAppsEpic = (action$) =>
         pipe(ofType(EPIC_TY_GET_ALL_PUBLISHED_APPS),
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
+                console.log("sortby", action.sortBy)
                 //store.dispatch(setLoaderDisplay(true))
-                return from(getAllPublishedApps("VIEWS","DESC",0))
+                return from(getAllPublishedApps(action.sortBy.sortOn, action.sortBy.orderBy, action.sortBy.n))
                     .pipe(
                         map((res) => {
                             //store.dispatch(setLoaderDisplay(false))
@@ -23,5 +24,5 @@ export const snGetAllPublishedAppsEpic = (action$) =>
                             return setAllPublishedAppsStore(res)
                         })
                     )
-            }));
+            }))
 

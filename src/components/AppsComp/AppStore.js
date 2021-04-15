@@ -178,7 +178,7 @@ function AppStore() {
 
     useEffect(() => {
         // console.log("came here");
-        dispatch(getAllPublishedAppsAction())
+        dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
         setSearchData(publishedAppsStore)
     }, [])
 
@@ -259,9 +259,9 @@ function AppStore() {
             // ignoreFieldNorm: false,
             includeScore: true,
             keys: [
-
-                "content.tags",
                 "content.appname",
+                "content.category",
+                "content.tags"
             ]
         }
 
@@ -449,7 +449,7 @@ function AppStore() {
             </Button>
             </div> */}
             </Slider>
-            <div>
+            <div style={{ marginBottom: '2rem' }}>
                 <AppsList newData={searchData} />
 
                 <Footer />

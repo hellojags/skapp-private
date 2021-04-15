@@ -13,6 +13,7 @@ import CustomPagination from "./CustomPagination"
 import SelectedAppsHeader from "./SelectedAppsHeader"
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction"
 import { useDispatch, useSelector } from "react-redux"
+import NoApps from "../NoApps/NoApps"
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -150,7 +151,7 @@ function Apps() {
     // console.log("came here");
     dispatch(getMyPublishedAppsAction())
   }, [])
-
+  console.log("published aaap ", publishedAppsStore.length)
   // temp var for selected page
   const selectedPage = false
   // This page code
@@ -229,19 +230,29 @@ function Apps() {
       {/* When items are selectable */}
       {selectedPage && <SelectedAppsHeader />}
       <div>
-        <AppsList newData={publishedAppsStore} />
+        {<AppsList newData={publishedAppsStore} />}
       </div>
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />
       </Box> */}
     </Fragment>
   )
-
+  const finalComp = (publishedAppsStore.length ? AppsComp : (<NoApps
+    msg='No Published Apps to display in AppStore. Publish your App using "Publish App" BUTTON '
+    btnText="Publish App"
+    pageType="Published"
+    link="/submitapp"
+  />))
   return (
     // (width < 575)
     //     ? <div className={classes.mobileSave}>{AppsComp}</div>
     //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-    <div>{AppsComp}</div>
+    // <div>{AppsComp}
+    <>
+
+      { finalComp}
+
+    </>
   )
 }
 

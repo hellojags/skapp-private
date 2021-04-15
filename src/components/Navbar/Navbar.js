@@ -25,13 +25,13 @@ import { ReactComponent as EditProfileIcon } from '../../assets/img/icons/edit-p
 import { ReactComponent as LogoutIcon } from '../../assets/img/icons/exit-log-out.2.svg'
 import { ReactComponent as NotificationIcon } from '../../assets/img/icons/notification.svg'
 import { ReactComponent as CustomMenuIcon } from '../../assets/img/icons/Icon ionic-ios-menu.svg'
-import { Box, Button } from '@material-ui/core'
+import { Box, Button, Tooltip, Typography } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import skyId from '../../service/idp/SnSkyId'
-import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { useHistory } from "react-router-dom";
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import { useHistory } from "react-router-dom"
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#fff',
@@ -131,7 +131,9 @@ const useStyles = makeStyles((theme) => ({
     },
     userName: {
         paddingLeft: "10px",
-        paddingRight: "1rem"
+        paddingRight: "1rem",
+        textTransform: 'capitalize',
+        maxWidth: 110,
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -177,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
     const dispatch = useDispatch()
-    const history = useHistory();
+    const history = useHistory()
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -188,8 +190,14 @@ export default function Navbar() {
     const stUserSession = useSelector((state) => state.userSession)
 
     useEffect(() => {
-        console.log("skyid=" + skyId);
-    },[]);
+        console.log("skyid=" + skyId)
+    }, [])
+    const [person, setPerson] = useState({})
+    const user = useSelector(state => state.userSession)
+    useEffect(() => {
+        setPerson(user.person.profile)
+    }, [setPerson, user])
+    console.log(person)
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -205,9 +213,8 @@ export default function Navbar() {
     const handleSettings = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
-        if(stUserSession != null)
-        {
-            history.push('/settings');
+        if (stUserSession != null) {
+            history.push('/settings')
         }
     }
 
@@ -215,8 +222,8 @@ export default function Navbar() {
         setMobileMoreAnchorEl(event.currentTarget)
     }
     const logoutSkyId = async () => {
-        skyId.sessionDestroy("/");
-        dispatch(setLoaderDisplay(true));
+        skyId.sessionDestroy("/")
+        dispatch(setLoaderDisplay(true))
     }
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
@@ -273,9 +280,16 @@ export default function Navbar() {
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <Button className={classes.usrIcon}>
-                    <PersonOutlineIcon className={classes.avatarIcon} />
+                    {/* <PersonOutlineIcon className={classes.avatarIcon} /> */}
+                    <img src={
+                        person.avatar &&
+                        `https://siasky.net/${person.avatar
+                        }`
+                    } alt="" />
                 </Button>
-                <p className={classes.userName}>Fernando Cabral</p>
+                <Tooltip title={person.username} placement="top" arrow >
+                    <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                </Tooltip>
                 <KeyboardArrowDownIcon className={classes.AngleDown} />
             </MenuItem>
         </Menu>
@@ -345,9 +359,17 @@ export default function Navbar() {
 
                         <Box display="flex" alignItems="center" onClick={handleProfileMenuOpen}>
                             <Button className={classes.usrIcon}>
-                                <PersonOutlineIcon className={classes.avatarIcon} />
+                                {/* <PersonOutlineIcon className={classes.avatarIcon} />
+                                 */}
+                                <img src={
+                                    person.avatar &&
+                                    `https://siasky.net/${person.avatar
+                                    }`
+                                } alt="" />
                             </Button>
-                            <p className={classes.userName}>Fernando Cabral</p>
+                            <Tooltip title={person.username} placement="top" arrow >
+                                <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                            </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>
                     </div>

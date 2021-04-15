@@ -1,9 +1,11 @@
-import React, { Fragment } from 'react'
-import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from '@material-ui/core'
+import React, { Fragment, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { Button, ClickAwayListener, FormControl, Grow, InputLabel, MenuItem, MenuList, Paper, Popper, Select } from '@material-ui/core'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import { ReactComponent as FilterIcon } from '../../assets/img/icons/Filter, Settings, Sort.svg'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
+import { getAllPublishedAppsAction } from '../../redux/action-reducers-epic/SnAllPublishAppAction'
 const useStyles = makeStyles(theme => ({
     dropArrow: {
         color: '#323232'
@@ -34,45 +36,92 @@ const useStyles = makeStyles(theme => ({
 function ListFilter() {
     const { width } = useWindowDimensions()
     const classes = useStyles()
+    const dispatch = useDispatch()
+    // const [open, setOpen] = React.useState(false)
+    const [filterVal, setFilterVal] = useState('ACCESS DESC')
     const [open, setOpen] = React.useState(false)
-    const anchorRef = React.useRef(null)
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen)
+    useEffect(() => {
+        if (filterVal) {
+            const filterBy = filterVal.split(" ")
+            console.log('split ', filterBy)
+            dispatch(getAllPublishedAppsAction(filterBy[0], filterBy[1], 0))
+        }
+    }, [filterVal])
+
+    // const [open, setOpen] = React.useState(false)
+
+    const handleChange = (event) => {
+        setFilterVal(event.target.value)
     }
 
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return
-        }
-
+    const handleClose = () => {
         setOpen(false)
     }
 
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault()
-            setOpen(false)
-        }
+    const handleOpen = () => {
+        setOpen(true)
     }
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open)
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus()
-        }
 
-        prevOpen.current = open
-    }, [open])
+    // function handleListKeyDown(event) {
+    //     if (event.key === 'Tab') {
+    //         event.preventDefault()
+    //         setOpen(false)
+    //     }
+    // }
+    // return focus to the button when we transitioned from !open -> open
+    // const prevOpen = React.useRef(open)
+    // React.useEffect(() => {
+    //     if (prevOpen.current === true && open === false) {
+    //         anchorRef.current.focus()
+    //     }
+
+    //     prevOpen.current = open
+    // }, [open])
 
     return (
-        < Fragment >
 
-            <Button
+        < Fragment >
+            <div>
+                {/* <Button className={classes.button} onClick={handleOpen}>
+                    Open the select
+      </Button> */}
+                <FormControl className={classes.formControl}>
+                    {/* <InputLabel id="demo-controlled-open-select-label"></InputLabel> */}
+                    <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        open={open}
+                        onClose={handleClose}
+                        onOpen={handleOpen}
+                        value={filterVal}
+                        onChange={handleChange}
+                    >
+                        {/* <MenuItem value="">
+                            <em>Sort By
+                            </em>
+                        </MenuItem> */}
+                        <MenuItem value="ACCESS DESC" onClick={handleClose}>Access Count (Highest first)</MenuItem>
+                        <MenuItem value="VIEWS DESC" onClick={handleClose}>View Count (Highest first)</MenuItem>
+                        <MenuItem value="LIKES DESC" onClick={handleClose}>Like Count (Highest first)</MenuItem>
+                        <MenuItem value="FAVORITES DESC" onClick={handleClose}>Favorite Count (Highest first)</MenuItem>
+                        {/* <MenuItem onClick={handleClose}>Published Date (Latest first)</MenuItem>
+                        <MenuItem onClick={handleClose}>Update Date (Latest first)</MenuItem> */}
+                        <MenuItem value="ACCESS ASC" onClick={handleClose}>Access Count (lowest first)</MenuItem>
+                        <MenuItem value="VIEWS ASC" onClick={handleClose}>View Count (lowest first)</MenuItem>
+                        <MenuItem value="LIKES ASC" onClick={handleClose}>Like Count (lowest first)</MenuItem>
+                        <MenuItem value="FAVORITES ASC" onClick={handleClose}>Favorite Count (lowest first)</MenuItem>
+                        {/* <MenuItem onClick={handleClose}>Published Date (Oldest first)</MenuItem>
+                        <MenuItem onClick={handleClose}>Update Date (Oldest first)</MenuItem> */}
+                    </Select>
+                </FormControl>
+            </div>
+
+            {/* <Button
                 className={`${classes.utilBtn} ${classes.textColor}`}
-                ref={anchorRef}
+                // ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
-                onClick={handleToggle}
+            // onClick={handleToggle}
             >
                 <FilterIcon> </FilterIcon>
 
@@ -86,7 +135,7 @@ function ListFilter() {
             </Button>
 
 
-            <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+            <Popper className={classes.popper} open={open} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                     <Grow
                         {...TransitionProps}
@@ -94,26 +143,32 @@ function ListFilter() {
                     >
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    <MenuItem onClick={handleClose}>Access Count (Highest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>View Count (Highest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Like Count (Highest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Favorite Count (Highest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Published Date (Latest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Update Date (Latest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Access Count (lowest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>View Count (lowest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Like Count (lowest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Favorite Count (lowest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Published Date (Oldest first)</MenuItem>
-                                    <MenuItem onClick={handleClose}>Update Date (Oldest first)</MenuItem>
-                                </MenuList>
+                                {/* <InputLabel id="demo-controlled-open-select-label">Age</InputLabel> */}
+            {/* <Select
+                labelId="demo-controlled-open-select-label"
+                id="demo-controlled-open-select"
+                open={open}
+                onClose={handleClose}
+                onOpen={handleOpen}
+                value={filterVal}
+                onChange={handleChange}
+            >
+                <MenuItem data-sort="ACESS DESC" onClick={handleClose}>Access Count (Highest first)</MenuItem>
+                <MenuItem onClick={handleClose}>View Count (Highest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Like Count (Highest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Favorite Count (Highest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Published Date (Latest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Update Date (Latest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Access Count (lowest first)</MenuItem>
+                <MenuItem onClick={handleClose}>View Count (lowest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Like Count (lowest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Favorite Count (lowest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Published Date (Oldest first)</MenuItem>
+                <MenuItem onClick={handleClose}>Update Date (Oldest first)</MenuItem>
+            </Select>
                             </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper>
-        </Fragment>
+                        </Paper > */}
+        </Fragment >
     )
 }
 
