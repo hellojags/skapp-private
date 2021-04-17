@@ -15,6 +15,7 @@ import SnLogin from '../components/Login/SnLogin'
 import DescoverDev from '../components/DescoverDev/DescoverDev'
 import AppStore from '../components/AppsComp/AppStore'
 import Login from '../components/Auth/Login'
+import EditSite from '../components/Hosting/EditSite'
 import {
     Switch,
     Route,
@@ -61,6 +62,9 @@ const SnRouter = (props) => (
             </Route>
             <Route exact path='/submitsite'>
                 <AddNewSite />
+            </Route>
+            <Route exact path='/editsite/:appId'>
+                <EditSite />
             </Route>
             <Route exact path='/domains'>
                 <Domains />
