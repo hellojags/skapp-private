@@ -146,11 +146,21 @@ export default function EditSite() {
         await setMyHostedApp(values, appId);
         dispatch(setLoaderDisplay(false));
         const hnsSkyDBURL = getHNSSkyDBURL(values.hns);
-        setInfoModalParams({
-            title: `HNS SkyDB URL`,
-            content: hnsSkyDBURL,
-            showClipboardCopy: true,
-        });
+        
+        if(values.hns != `${hostedAppObj.appDetailsList[appId].content.hns}`) {
+            setInfoModalParams({
+                title: `HNS SkyDB URL`,
+                content: hnsSkyDBURL,
+                showClipboardCopy: true,
+            });
+        } else {
+            setInfoModalParams({
+                title: `Success`,
+                content: `Site updated successfully!`,
+                showClipboardCopy: false,
+            });
+        }
+        
     };
 
     const setInfoModalParams = ({ title, content, showClipboardCopy = false, clipboardCopyTooltip, open = true }) => {
@@ -201,10 +211,10 @@ export default function EditSite() {
                             onSubmit={submitForm}>
                             {formik => (<form onSubmit={formik.handleSubmit}>
                                 <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                                    <h1 className={classes.h1}>Submit New Site</h1>
+                                    <h1 className={classes.h1}>Edit Site</h1>
                                     <Box className={classes.btnBox}>
                                         <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
-                                        <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
+                                        <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save </Button>
                                     </Box>
                                 </Box>
                                 <Box component="form">
@@ -243,7 +253,7 @@ export default function EditSite() {
                                             <SnTextInput
                                                 label="App Name"
                                                 name="appName"
-                                                readOnly={true}
+                                                disabled={true}
                                                 className={classes.input}
                                                 type="text" />
                                         </Box>
