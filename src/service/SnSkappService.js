@@ -219,6 +219,25 @@ export const publishApp = async (appJSON) => {
   return publishedAppsMap;
 }
 
+export const republishApp = async (appJSON) => {
+  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+  // check if appid is present in publishedAppsIdList.
+  if (publishedAppsIdList && publishedAppsIdList.includes(appJSON.id)) {
+    // update Index value
+    await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+    // update existing published app
+    // add additional logic to link previously published App
+    await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
+    await emitEvent(appJSON.id, EVENT_PUBLISHED_APP);
+    //await addToSkappUserFollowing(userPubKey);
+    //await addToSharedApps(userPubKey, appJSON.id);
+  }
+  else {
+    console.log("app is not published. first publish app, then only you can EDIT app");
+  }
+  const publishedAppsMap = await getMyPublishedApps();
+  return publishedAppsMap;
+}
 export const installApp = async (appJSON) => {
   let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
   if (installedAppsIdList) {
