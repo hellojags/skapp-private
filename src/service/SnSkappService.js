@@ -32,6 +32,7 @@ import {
   DK_HOSTED_APPS,
   DK_PUBLISHED_APPS,
   DK_INSTALLED_APPS,
+  DK_UNINSTALLED_APPS,
   SKAPP_FOLLOWING_FILEPATH,
   SKAPP_SHARED_APPS_FILEPATH,
   SKAPP_SHARED_APPS_KEY_SEPERATOR,
@@ -276,7 +277,7 @@ export const uninstallApp = async (appId) => {
     if (installedAppsIdList.includes(appId)) {
       installedAppsIdList.splice(installedAppsIdList.indexOf(appId),1);
       //set updated list
-      await putFile(getUserPublicKey(), DK_UNINSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
+      await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
       // update existing published app
       // add additional logic to link previously published App// set empty value
       await putFile(getUserPublicKey(), `${appId}#installed`, {}, { store: IDB_STORE_SKAPP })
