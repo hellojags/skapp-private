@@ -220,23 +220,41 @@ export const publishApp = async (appJSON) => {
 }
 
 export const installApp = async (appJSON) => {
-  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
-  if (publishedAppsIdList) {
-    publishedAppsIdList.push(appJSON.id);
+  let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+  if (installedAppsIdList) {
+    installedAppsIdList.push(appJSON.id);
   }
   else {
-    publishedAppsIdList = [appJSON.id];
+    installedAppsIdList = [appJSON.id];
   }
   // update Index value
-  await putFile(getUserPublicKey(), DK_INSTALLED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
   await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
   await emitEvent(appJSON.id, EVENT_APP_INSTALLED);
-  const publishedAppsMap = await getMyPublishedApps();
+  const installedAppsMap = await getMyPublishedApps();
   //await addToSkappUserFollowing(userPubKey);
   //await addToSharedApps(userPubKey, appJSON.id);
-  return publishedAppsMap;
+  return installedAppsMap;
+}
+
+export const getMyInstalledApps = async () => {
+  //let publishedAppsMap = new Map();
+  let installedAppsMap = [];
+  try {
+    let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+    if (installedAppsIdList) {
+      await Promise.all(installedAppsIdList.map(async (appId) => {
+        installedAppsMap.push((await getFile(getUserPublicKey(), appId, { store: IDB_STORE_SKAPP })));
+      }));
+      console.log("getMyInstalledAppsMap: " + installedAppsMap);
+    }
+  } catch (err) {
+    console.log(err);
+    return installedAppsMap;
+  }
+  return installedAppsMap;
 }
 
 // export const addToSkappUserFollowing = async (userPublicKey) => {
