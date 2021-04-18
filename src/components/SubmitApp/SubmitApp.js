@@ -32,6 +32,7 @@ import Loader from "react-loader-spinner";
 import { useParams } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
+import { skylinkToUrl } from "../../utils/SnUtility";
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -149,9 +150,13 @@ const SubmitApp = () => {
 
   useEffect(() => {
     if (appDetail?.content) {
-      const { appName, sourceCode } = appDetail.content;
+      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
+      console.log(appDetail.content);
       setValue('appname', appName);
       setValue('sourceCode', sourceCode);
+      setValue('appUrl', hns);
+      setValue('applogo', imgThumbnailSkylink);
+      setVersion(portalMinVersion);
     }
   }, [appDetail]);
 
@@ -332,6 +337,7 @@ const SubmitApp = () => {
   };
 
   const setLogoUploaded = (file) => {
+    console.log(file);
     setAppLogo(file);
   };
 
@@ -353,6 +359,8 @@ const SubmitApp = () => {
     };
     UploadAppLogo(file, setLogoUploaded, logoLoaderHandler);
   };
+
+  // get
 
   return (
     <Box>
@@ -391,7 +399,7 @@ const SubmitApp = () => {
             className={classes.siteLogo}
           >
             {/* <ImgIcon /> */}
-
+            { !appLogo && appDetail ? <img  width={"100%"} height={"160px"} src={skylinkToUrl(appDetail.content.imgThumbnailSkylink)} /> : null }
             <div style={{ position: "absolute" }}>
               {isLogoUploaded && (
                 <Loader type="Oval" color="#57C074" height={50} width={50} />
@@ -433,7 +441,8 @@ const SubmitApp = () => {
             <label>App Version</label>
             <Box>
               <Select
-                defaultValue={verson}
+                //defaultValue={verson}
+                value={{ value: verson, label: verson }}
                 onChange={(e) => setVersion(e.value)}
                 options={optionsVersion}
                 styles={reactSelectStyles}
