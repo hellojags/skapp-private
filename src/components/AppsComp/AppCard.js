@@ -286,7 +286,7 @@ const AppCard = ({ selectable, updated, item }) => {
               </Box>
             </CardActions>
             <CardActions className={classes.footerBottom}>
-              {/* <Box>
+             <Box>
             <Button
               size="medium"
               className={`${classes.installBtn} ${
@@ -297,7 +297,7 @@ const AppCard = ({ selectable, updated, item }) => {
               {updated === false && "Update"}
               {updated === undefined && "Install"}
             </Button>
-          </Box> */}
+          </Box>
               <Box className={`${classes.tags} tags-card`} display="flex" >
 
                 {item.content.tags && item.content.tags.map((item, index) => {

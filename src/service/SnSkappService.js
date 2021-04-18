@@ -31,6 +31,7 @@ import {
   USERSETTINGS_FILEPATH,
   DK_HOSTED_APPS,
   DK_PUBLISHED_APPS,
+  DK_INSTALLED_APPS,
   SKAPP_FOLLOWING_FILEPATH,
   SKAPP_SHARED_APPS_FILEPATH,
   SKAPP_SHARED_APPS_KEY_SEPERATOR,
@@ -43,6 +44,8 @@ import {
   EVENT_APP_FAVORITE_REMOVED,
   EVENT_APP_COMMENT,
   FAVORITE_REMOVED,
+  EVENT_APP_INSTALLED,
+  EVENT_APP_UNINSTALLED,
   ANONYMOUS,
 } from '../utils/SnConstants';
 import {
@@ -210,6 +213,26 @@ export const publishApp = async (appJSON) => {
   // add additional logic to link previously published App
   await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
   await emitEvent(appJSON.id, EVENT_PUBLISHED_APP);
+  const publishedAppsMap = await getMyPublishedApps();
+  //await addToSkappUserFollowing(userPubKey);
+  //await addToSharedApps(userPubKey, appJSON.id);
+  return publishedAppsMap;
+}
+
+export const installApp = async (appJSON) => {
+  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+  if (publishedAppsIdList) {
+    publishedAppsIdList.push(appJSON.id);
+  }
+  else {
+    publishedAppsIdList = [appJSON.id];
+  }
+  // update Index value
+  await putFile(getUserPublicKey(), DK_INSTALLED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  // update existing published app
+  // add additional logic to link previously published App
+  await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
+  await emitEvent(appJSON.id, EVENT_APP_INSTALLED);
   const publishedAppsMap = await getMyPublishedApps();
   //await addToSkappUserFollowing(userPubKey);
   //await addToSharedApps(userPubKey, appJSON.id);
