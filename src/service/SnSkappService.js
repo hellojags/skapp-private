@@ -242,7 +242,17 @@ export const republishApp = async (appJSON) => {
 export const installApp = async (appJSON) => {
   let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
   if (installedAppsIdList) {
-    installedAppsIdList.push(appJSON.id);
+    //app should not already be installed
+    if (!installedAppsIdList.includes(appJSON.id)) {
+      installedAppsIdList.push(appJSON.id);
+    }
+    else
+    {
+      const installedAppsMap = await getMyInstalledApps();
+      //await addToSkappUserFollowing(userPubKey);
+      //await addToSharedApps(userPubKey, appJSON.id);
+      return installedAppsMap;
+    }
   }
   else {
     installedAppsIdList = [appJSON.id];
@@ -251,9 +261,9 @@ export const installApp = async (appJSON) => {
   await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
-  await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
+  await putFile(getUserPublicKey(), `${appJSON.id}#installed`, appJSON, { store: IDB_STORE_SKAPP })
   await emitEvent(appJSON.id, EVENT_APP_INSTALLED);
-  const installedAppsMap = await getMyPublishedApps();
+  const installedAppsMap = await getMyInstalledApps();
   //await addToSkappUserFollowing(userPubKey);
   //await addToSharedApps(userPubKey, appJSON.id);
   return installedAppsMap;
@@ -266,7 +276,7 @@ export const getMyInstalledApps = async () => {
     let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
     if (installedAppsIdList) {
       await Promise.all(installedAppsIdList.map(async (appId) => {
-        installedAppsMap.push((await getFile(getUserPublicKey(), appId, { store: IDB_STORE_SKAPP })));
+        installedAppsMap.push((await getFile(getUserPublicKey(), `${appId}#installed`, { store: IDB_STORE_SKAPP })));
       }));
       console.log("getMyInstalledAppsMap: " + installedAppsMap);
     }
