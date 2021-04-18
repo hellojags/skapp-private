@@ -13,6 +13,7 @@ import CustomPagination from "./CustomPagination";
 import SelectedAppsHeader from "./SelectedAppsHeader";
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 import { useDispatch, useSelector } from "react-redux";
+import { installApp } from '../../service/SnSkappService'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -156,6 +157,11 @@ function Apps() {
   // This page code
   const { width } = useWindowDimensions();
   const classes = useStyles();
+    
+  const handleInstall = async (item) => {
+    const check = await installApp(item);
+    dispatch(getMyPublishedAppsAction());
+  }
 
   const AppsComp = (
     <Fragment>
@@ -229,7 +235,7 @@ function Apps() {
       {/* When items are selectable */}
       {selectedPage && <SelectedAppsHeader />}
       <div>
-        <AppsList newData={publishedAppsStore} />
+        <AppsList newData={publishedAppsStore} updated={undefined} handleInstall={handleInstall}/>
       </div>
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />

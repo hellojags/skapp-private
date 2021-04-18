@@ -23,6 +23,8 @@ import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
 import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { installApp } from '../../service/SnSkappService'
 
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
@@ -173,7 +175,18 @@ function AppStore() {
         // console.log("came here");
         dispatch(getAllPublishedAppsAction());
       }, []);
-      
+    
+    const history = useHistory();
+    const stUserSession = useSelector((state) => state.userSession);
+    
+    const handleInstall = async (item) => {
+        if (stUserSession) {
+            const check = await installApp(item);
+            dispatch(getAllPublishedAppsAction());
+        } else {
+            history.push('/login');
+        } 
+    }
     // temp var for selected page
     // const selectedPage = true
     // This page code
@@ -330,7 +343,7 @@ function AppStore() {
             </div>
         </Slider>
         <div>
-            <AppsList newData={publishedAppsStore}/>
+            <AppsList newData={publishedAppsStore} handleInstall={handleInstall} />
             <Footer />
         </div>
     </Fragment>)

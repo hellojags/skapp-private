@@ -38,7 +38,7 @@ import { getAppStats, getAggregatedAppStats, getAggregatedAppStatsByAppId ,setAp
 import styles from "../../assets/jss/apps/AppCardStyle";
 const useStyles = makeStyles(styles);
 
-const AppCard = ({ selectable, updated, item }) => {
+const AppCard = ({ selectable, updated, item, handleInstall }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -287,16 +287,17 @@ const AppCard = ({ selectable, updated, item }) => {
             </CardActions>
             <CardActions className={classes.footerBottom}>
              <Box>
-            <Button
-              size="medium"
-              className={`${classes.installBtn} ${
-                updated ? classes.bgUnistall : classes.bgUpdate
-              }`}
-            >
-              {updated && "Uninstall"}
-              {updated === false && "Update"}
-              {updated === undefined && "Install"}
-            </Button>
+              <Button
+                size="medium"
+                className={`${classes.installBtn} ${
+                  updated ? classes.bgUnistall : classes.bgUpdate
+                }`}
+                onClick={(e) => handleInstall(item)}
+              >
+                {updated && "Uninstall"}
+                {updated === false && "Update"}
+                {updated === undefined && "Install"}
+              </Button>
           </Box>
               <Box className={`${classes.tags} tags-card`} display="flex" >
 

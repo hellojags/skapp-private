@@ -1,5 +1,5 @@
 import { Box, Button, Grid, InputBase } from '@material-ui/core'
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -9,6 +9,10 @@ import useWindowDimensions from '../../hooks/useWindowDimensions'
 
 import AppCard from './AppCard'
 import styles from "../../assets/jss/apps/AppListStyle"
+import { getMyInstalledApps, installApp } from '../../service/SnSkappService'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import { useDispatch, useSelector } from 'react-redux';
+import AppsList from "./AppsList";
 
 const useStyles = makeStyles(theme => (
     {
@@ -148,9 +152,39 @@ function InstalledApps() {
     // temp var for selected page
     // const selectedPage = true
 
-    const { width } = useWindowDimensions()
-    const classes = useStyles()
+    const { width } = useWindowDimensions();
+    const classes = useStyles();
+    const dispatch = useDispatch();
 
+    const [installedAppListObj, setInstalledAppListObj] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    // const [searchStr, setSearchStr] = useState("");
+
+    useEffect(() => {
+        loadInstalledApps();
+    }, []);
+
+    const loadInstalledApps = async () => {
+        dispatch(setLoaderDisplay(true));
+        setIsLoading(true);
+        const installedAppListObj = await getMyInstalledApps([]);
+        setInstalledAppListObj(installedAppListObj);
+        setIsLoading(false);
+        dispatch(setLoaderDisplay(false));
+    };
+    const stUserSession = useSelector((state) => state.userSession);
+    
+    const handleInstall = async (item) => {
+        console.log('handle: ', item);
+        if (stUserSession) {
+            const check = await installApp(item);
+            if (check) {
+                console.log('installed');
+            } else {
+                console.log('not installed');
+            }
+        }
+    }
 
     return (
         <Fragment >
@@ -213,28 +247,8 @@ function InstalledApps() {
             {/* {selectedPage && <SelectedAppsHeader />} */}
 
             <div className={`${classes.listContain} list-grid-container`}>
-                <Grid container spacing={1}>
-                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-                        <AppCard selectable={true} updated={true} />
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-                        <AppCard selectable={true} updated={false} />
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-                        <AppCard updated={true} />
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-                        <AppCard updated={true} />
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-                        <AppCard selectable={true} updated={false} />
-                    </Grid>
-
-                </Grid>
+                <AppsList newData={installedAppListObj} updated={true} handleInstall={handleInstall} />
             </div>
-            {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
-                <CustomPagination />
-            </Box> */}
         </Fragment>
     )
 }

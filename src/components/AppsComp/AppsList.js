@@ -8,7 +8,7 @@ import Spiner from './Spiner'
 
 const useStyles = makeStyles(styles);
 
-const AppsList = ({ newData }) => {
+const AppsList = ({ newData, handleInstall, updated }) => {
   const classes = useStyles();
   // const [data, setData] = useState(newData);
 
@@ -52,7 +52,7 @@ const AppsList = ({ newData }) => {
             alldata.map((item, index) => {
               return (
                 <Grid item xs={6} sm={6} md={4} lg={3} xl={3} key={index}>
-                  <AppCard selectable={true} item={item} />
+                  <AppCard selectable={true} item={item} updated={updated} handleInstall={handleInstall}/>
                 </Grid>
               );
             })}
