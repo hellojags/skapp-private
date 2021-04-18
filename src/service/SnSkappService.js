@@ -269,6 +269,26 @@ export const installApp = async (appJSON) => {
   return installedAppsMap;
 }
 
+export const uninstallApp = async (appJSON) => {
+  let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+  if (installedAppsIdList) {
+    //app should already be installed for uninstall
+    if (installedAppsIdList.includes(appJSON.id)) {
+      installedAppsIdList.splice(installedAppsIdList.indexOf(appJSON.id),1);
+      //set updated list
+      await putFile(getUserPublicKey(), DK_UNINSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
+      // update existing published app
+      // add additional logic to link previously published App// set empty value
+      await putFile(getUserPublicKey(), `${appJSON.id}#installed`, {}, { store: IDB_STORE_SKAPP })
+      await emitEvent(appJSON.id, EVENT_APP_UNINSTALLED);
+    }
+  }
+  const installedAppsMap = await getMyInstalledApps();
+  //await addToSkappUserFollowing(userPubKey);
+  //await addToSharedApps(userPubKey, appJSON.id);
+  return installedAppsMap;
+}
+
 export const getMyInstalledApps = async () => {
   //let publishedAppsMap = new Map();
   let installedAppsMap = [];
