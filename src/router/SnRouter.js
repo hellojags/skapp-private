@@ -54,7 +54,7 @@ const SnRouter = (props) => (
             <Route exact path='/noapp'>
                 <NoApps />
             </Route>
-            <Route exact path='/installedappps'>
+            <Route exact path='/installedapps'>
                 <InstalledApps />
             </Route>
             <Route exact path='/hosting'>
