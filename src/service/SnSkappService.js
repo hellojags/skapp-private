@@ -62,6 +62,7 @@ import store from "../redux"
 import imageCompression from "browser-image-compression";
 import { v4 as uuidv4 } from "uuid";
 import { emitEvent } from "./SnSkyMQEventEmitter";
+import { isNull } from 'lodash';
 var _ = require('lodash');
 
 // TODO: implement actual logic
@@ -570,6 +571,21 @@ export const setMyHostedApp = async (appJSON, previousId) => {
   await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
 
   return hostedAppJSON;
+}
+
+export const deleteMyHostedApp = async (appId) => {
+  let status = false;
+  try {
+    const hostedAppIdList = (await getMyHostedApps())?.appIdList || [];
+    hostedAppIdList.splice(hostedAppIdList.indexOf(appId), 1);
+    await putFile(getUserPublicKey(), `hosted${appId}`, {}, { store: IDB_STORE_SKAPP });
+    await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList], { store: IDB_STORE_SKAPP });
+    status = true;
+  }
+  catch (e) {
+    console.log("deleteMyHostedApp : Error deleting  = " + appId)
+  }
+  return status;
 }
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
