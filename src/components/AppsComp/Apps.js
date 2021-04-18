@@ -14,6 +14,7 @@ import SelectedAppsHeader from "./SelectedAppsHeader";
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 import { useDispatch, useSelector } from "react-redux";
 import { installApp } from '../../service/SnSkappService'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -159,7 +160,9 @@ function Apps() {
   const classes = useStyles();
     
   const handleInstall = async (item) => {
+    dispatch(setLoaderDisplay(true));
     const check = await installApp(item);
+    dispatch(setLoaderDisplay(false));
     dispatch(getMyPublishedAppsAction());
   }
 
