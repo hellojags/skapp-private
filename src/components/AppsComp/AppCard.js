@@ -292,7 +292,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                 className={`${classes.installBtn} ${
                   updated ? classes.bgUnistall : classes.bgUpdate
                 }`}
-                onClick={(e) => handleInstall(item)}
+                onClick={(e) => handleInstall(item, updated ? 'uninstall': 'install')}
               >
                 {updated && "Uninstall"}
                 {updated === false && "Update"}

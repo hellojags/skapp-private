@@ -12,6 +12,7 @@ import useWindowDimensions from "../../hooks/useWindowDimensions";
 import CustomPagination from "./CustomPagination";
 import SelectedAppsHeader from "./SelectedAppsHeader";
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
 import { useDispatch, useSelector } from "react-redux";
 import { installApp } from '../../service/SnSkappService'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
@@ -148,9 +149,12 @@ const useStyles = makeStyles((theme) => ({
 function Apps() {
   const dispatch = useDispatch();
   const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
-  useEffect(() => {
+  const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
+
+  useEffect(async () => {
     // console.log("came here");
-    dispatch(getMyPublishedAppsAction());
+    await dispatch(getMyPublishedAppsAction());
+    await dispatch(getMyInstalledAppsAction());
   }, []);
 
   // temp var for selected page
@@ -159,11 +163,12 @@ function Apps() {
   const { width } = useWindowDimensions();
   const classes = useStyles();
     
-  const handleInstall = async (item) => {
-    dispatch(setLoaderDisplay(true));
-    const check = await installApp(item);
-    dispatch(setLoaderDisplay(false));
-    dispatch(getMyPublishedAppsAction());
+  const handleInstall = async (item, key) => {
+    if (key == "install") {
+      dispatch(installedAppAction(item));
+    } else {
+      dispatch(unInstalledAppAction(item.id));
+    }
   }
 
   const AppsComp = (
@@ -175,7 +180,7 @@ function Apps() {
           className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}
         >
           <h1 className={classes.pageHeading}>Apps</h1>
-          <small className={classes.smallText}>120 Results</small>
+          <small className={classes.smallText}>{publishedAppsStore.length} Results</small>
         </Box>
         {width < 1250 && (
           <div
@@ -238,7 +243,7 @@ function Apps() {
       {/* When items are selectable */}
       {selectedPage && <SelectedAppsHeader />}
       <div>
-        <AppsList newData={publishedAppsStore} updated={undefined} handleInstall={handleInstall}/>
+        <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} updated={undefined} handleInstall={handleInstall}/>
       </div>
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />

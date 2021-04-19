@@ -17,7 +17,9 @@ import snSelectedHostedAppStore from "./action-reducers-epic/SnSelectedHostedApp
 import snAllPublishedAppsStore from "./action-reducers-epic/SnAllPublishAppReducer";
 import {snGetAllPublishedAppsEpic} from "./action-reducers-epic/SnAllPublishAppEpic";
 import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
+import snInstalledAppsStore from "./action-reducers-epic/SnInstalledAppReducer";
 import {snGetPublishedAppsEpic,snSetPublishAppEpic} from "./action-reducers-epic/SnPublishAppEpic";
+import {snGetInstalledAppsEpic, snSetInstallAppEpic, snSetUnInstallAppEpic } from "./action-reducers-epic/SnInstalledAppEpic";
 import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
 import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
 import snAppCommentsStore from "./action-reducers-epic/SnAppCommentsReducer";
@@ -39,6 +41,7 @@ const rootReducer = combineReducers({
   snUploadListStore: SnUploadListReducer,
   snAllPublishedAppsStore,
   snPublishedAppsStore,
+  snInstalledAppsStore,
   snAppStatsStore,
   snAppCommentsStore,
   snSelectedHostedAppStore,
@@ -49,6 +52,9 @@ const rootEpic = combineEpics(
   snGetAllPublishedAppsEpic,
   snGetPublishedAppsEpic,
   snSetPublishAppEpic,
+  snGetInstalledAppsEpic,
+  snSetInstallAppEpic,
+  snSetUnInstallAppEpic,
   snSetAppStatsEpic,
   snGetAppStatsEpic,
   snGetAppCommentsEpic, 

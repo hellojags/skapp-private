@@ -13,6 +13,8 @@ import { getMyInstalledApps, installApp } from '../../service/SnSkappService'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 import { useDispatch, useSelector } from 'react-redux';
 import AppsList from "./AppsList";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+import NoApp from '../NoApps/NoApps';
 
 const useStyles = makeStyles(theme => (
     {
@@ -160,95 +162,90 @@ function InstalledApps() {
     const [isLoading, setIsLoading] = useState(false);
     // const [searchStr, setSearchStr] = useState("");
 
+    const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
     useEffect(() => {
-        loadInstalledApps();
+        setIsLoading(true);
+        dispatch(getMyInstalledAppsAction());
+        setIsLoading(false);
     }, []);
 
-    const loadInstalledApps = async () => {
-        dispatch(setLoaderDisplay(true));
-        setIsLoading(true);
-        const installedAppListObj = await getMyInstalledApps([]);
-        setInstalledAppListObj(installedAppListObj);
-        setIsLoading(false);
-        dispatch(setLoaderDisplay(false));
-    };
-    const stUserSession = useSelector((state) => state.userSession);
-    
-    const handleInstall = async (item) => {
-        console.log('handle: ', item);
-        if (stUserSession) {
-            const check = await installApp(item);
-            if (check) {
-                console.log('installed');
-            } else {
-                console.log('not installed');
-            }
+    const handleInstall = async (item, key) => {
+        if (key == "install") {
+            dispatch(installedAppAction(item));
+        } else {
+            dispatch(unInstalledAppAction(item.id));
         }
     }
 
     return (
-        <Fragment >
-            <Box display="flex" className='second-nav' alignItems="center">
-                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Apps</h1>
-                    <small className={classes.smallText}>120 Results</small>
-                </Box>
-                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
-                    <Box>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                    </Box>
-                    <InputBase
-                        placeholder="Search Apps"
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                        }}
-                        inputProps={{ 'aria-label': 'search' }}
-                    />
-                </div>}
-                <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
+        <Fragment>
+            {
+                !isLoading && installedAppsStore.length > 0 ?
+                    <Fragment>
+                        <Box display="flex" className='second-nav' alignItems="center">
+                            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                                <h1 className={classes.pageHeading}>Apps</h1>
+                                <small className={classes.smallText}>{installedAppsStore.length} Results</small>
+                            </Box>
+                            {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                                <Box>
+                                    <div className={classes.searchIcon}>
+                                        <SearchIcon />
+                                    </div>
+                                </Box>
+                                <InputBase
+                                    placeholder="Search Apps"
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </div>}
+                            <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
 
-                    <Box className={classes.btnSecondNavContainer}>
-                        <Button className={classes.btnSecondNav} style={{ color: '#000' }}> All (50)</Button>
-                    </Box>
-                    <Box className={classes.btnSecondNavContainer}>
-                        <Button className={classes.btnSecondNav} > Programms (12)</Button>
-                    </Box>
-                    <Box className={classes.btnSecondNavContainer}>
-                        <Button className={classes.btnSecondNav}>Utilities (25)</Button>
-                    </Box>
-                    {width > 1249 && <div className={classes.search}>
-                        <Box>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon />
-                            </div>
+                                <Box className={classes.btnSecondNavContainer}>
+                                    <Button className={classes.btnSecondNav} style={{ color: '#000' }}> All (50)</Button>
+                                </Box>
+                                <Box className={classes.btnSecondNavContainer}>
+                                    <Button className={classes.btnSecondNav} > Programms (12)</Button>
+                                </Box>
+                                <Box className={classes.btnSecondNavContainer}>
+                                    <Button className={classes.btnSecondNav}>Utilities (25)</Button>
+                                </Box>
+                                {width > 1249 && <div className={classes.search}>
+                                    <Box>
+                                        <div className={classes.searchIcon}>
+                                            <SearchIcon />
+                                        </div>
+                                    </Box>
+                                    <InputBase
+                                        placeholder="Search Apps"
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                    />
+                                </div>}
+                                <Box>
+                                    <ListFilter />
+                                </Box>
+                                <Box>
+                                    <SelectItem />
+                                </Box>
+
+                            </Box>
                         </Box>
-                        <InputBase
-                            placeholder="Search Apps"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>}
-                    <Box>
-                        <ListFilter />
-                    </Box>
-                    <Box>
-                        <SelectItem />
-                    </Box>
+                        {/* When items are selectable */}
+                        {/* {selectedPage && <SelectedAppsHeader />} */}
 
-                </Box>
-            </Box>
-            {/* When items are selectable */}
-            {/* {selectedPage && <SelectedAppsHeader />} */}
-
-            <div className={`${classes.listContain} list-grid-container`}>
-                <AppsList newData={installedAppListObj} updated={true} handleInstall={handleInstall} />
-            </div>
+                        <div className={`${classes.listContain} list-grid-container`}>
+                            <AppsList newData={installedAppsStore} installedApps={installedAppsStore} updated={true} handleInstall={handleInstall} />
+                        </div>
+                    </Fragment>
+                :   <NoApp />
+            }
         </Fragment>
     )
 }

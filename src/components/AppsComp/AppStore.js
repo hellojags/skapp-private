@@ -22,9 +22,12 @@ import SlickNextArrow from '../slickarrows/SlickNextArrow'
 import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
 import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { installApp } from '../../service/SnSkappService'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
@@ -171,18 +174,24 @@ function AppStore() {
     const dispatch = useDispatch();
     const classes = useStyles();
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
-    useEffect(() => {
+    const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
+    
+    useEffect(async () => {
         // console.log("came here");
-        dispatch(getAllPublishedAppsAction());
+        await dispatch(getAllPublishedAppsAction());
+        await dispatch(getMyInstalledAppsAction());
       }, []);
     
     const history = useHistory();
     const stUserSession = useSelector((state) => state.userSession);
     
-    const handleInstall = async (item) => {
+    const handleInstall = async (item, key) => {
         if (stUserSession) {
-            const check = await installApp(item);
-            dispatch(getAllPublishedAppsAction());
+            if (key == "install") {
+                dispatch(installedAppAction(item));
+            } else {
+                dispatch(unInstalledAppAction(item.id));
+            }
         } else {
             history.push('/login');
         } 
@@ -343,7 +352,7 @@ function AppStore() {
             </div>
         </Slider>
         <div>
-            <AppsList newData={publishedAppsStore} handleInstall={handleInstall} />
+            <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} handleInstall={handleInstall} />
             <Footer />
         </div>
     </Fragment>)
