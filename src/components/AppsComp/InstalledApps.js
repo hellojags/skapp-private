@@ -204,7 +204,7 @@ function InstalledApps() {
                             </div>}
                             <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
 
-                                <Box className={classes.btnSecondNavContainer}>
+                                {/* <Box className={classes.btnSecondNavContainer}>
                                     <Button className={classes.btnSecondNav} style={{ color: '#000' }}> All (50)</Button>
                                 </Box>
                                 <Box className={classes.btnSecondNavContainer}>
@@ -212,7 +212,7 @@ function InstalledApps() {
                                 </Box>
                                 <Box className={classes.btnSecondNavContainer}>
                                     <Button className={classes.btnSecondNav}>Utilities (25)</Button>
-                                </Box>
+                                </Box> */}
                                 {width > 1249 && <div className={classes.search}>
                                     <Box>
                                         <div className={classes.searchIcon}>
@@ -228,12 +228,12 @@ function InstalledApps() {
                                         inputProps={{ 'aria-label': 'search' }}
                                     />
                                 </div>}
-                                <Box>
+                                {/* <Box>
                                     <ListFilter />
                                 </Box>
                                 <Box>
                                     <SelectItem />
-                                </Box>
+                                </Box> */}
 
                             </Box>
                         </Box>
