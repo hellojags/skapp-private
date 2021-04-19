@@ -4,10 +4,10 @@ import { from } from "rxjs"
 import { setLoaderDisplay } from "./SnLoaderAction"
 import {
     EPIC_TY_INSTALLED_APP, EPIC_TY_GET_MY_INSTALLED_APPS,
-    EPIC_TY_UNINSTALLED_APP,
+    EPIC_TY_UNINSTALLED_APP, EPIC_TY_INSTALLED_FOR_LOGIN_APP
 } from "../SnActionConstants";
 import { getMyInstalledApps, installApp, uninstallApp } from "../../service/SnSkappService"
-import { setInstalledAppsStore } from "./SnInstalledAppAction"
+import { setInstalledAppsStore, installedAppActionForLogin } from "./SnInstalledAppAction"
 // app stats actions
 import store from "../../redux"
 export const snSetInstallAppEpic = (action$) =>
@@ -20,6 +20,7 @@ export const snSetInstallAppEpic = (action$) =>
                 return from(installApp(action.payload)) // must return all published app
                     .pipe(
                         map((res) => {
+                            store.dispatch(installedAppActionForLogin(null));
                             store.dispatch(setLoaderDisplay(false))
                             return setInstalledAppsStore(res)
                         })
@@ -35,7 +36,7 @@ export const snSetUnInstallAppEpic = (action$) =>
                 return from(uninstallApp(action.payload)) // must return all published app
                     .pipe(
                         map((res) => {
-                            console.log('comes', res)
+                            store.dispatch(installedAppActionForLogin(null));
                             store.dispatch(setLoaderDisplay(false))
                             return setInstalledAppsStore(res)
                         })
@@ -47,12 +48,10 @@ export const snGetInstalledAppsEpic = (action$) =>
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
 
             switchMap((action) => {
-                console.log('there')
                 store.dispatch(setLoaderDisplay(true))
                 return from(getMyInstalledApps())
                     .pipe(
                         map((res) => {
-                            console.log('coming: ', res);
                             store.dispatch(setLoaderDisplay(false))
                             // Update Redux Store
                             return setInstalledAppsStore(res)

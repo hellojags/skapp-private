@@ -22,12 +22,10 @@ import SlickNextArrow from '../slickarrows/SlickNextArrow'
 import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
 import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
-import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, installedAppActionForLogin } from "../../redux/action-reducers-epic/SnInstalledAppAction";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { installApp } from '../../service/SnSkappService'
-import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
@@ -174,12 +172,15 @@ function AppStore() {
     const dispatch = useDispatch();
     const classes = useStyles();
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
-    const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
+    const { installedAppsStore, installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
     
     useEffect(async () => {
         // console.log("came here");
         await dispatch(getAllPublishedAppsAction());
         await dispatch(getMyInstalledAppsAction());
+        if (installedAppsStoreForLogin) {
+            await dispatch(installedAppAction(installedAppsStoreForLogin));
+        }
       }, []);
     
     const history = useHistory();
@@ -193,7 +194,10 @@ function AppStore() {
                 dispatch(unInstalledAppAction(item.id));
             }
         } else {
-            history.push('/login');
+            if (key == "install") {
+                await dispatch(installedAppActionForLogin(item));
+                history.push('/login');
+            }
         } 
     }
     // temp var for selected page
