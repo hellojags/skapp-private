@@ -183,30 +183,30 @@ function AppStore() {
     }, [])
 
     console.log('searched data', searchData)
-    publishedAppsStore.filter(item => {
-        if (item.content.tags.length > 0) {
-            const tempTags = item.content.tags
-            tags = [...tags, ...tempTags]
+    // publishedAppsStore.filter(item => {
+    //     if (item.content.category) {
 
-        }
-    })
+    //         tags = [...tags, ...tempTags]
+
+    //     }
+    // })
     // tags = [...new Set(tags)]
     let tagsWithCount = tags.reduce(function (obj, b) {
         obj[b] = ++obj[b] || 1
         return obj
     }, {})
     useEffect(() => {
-        // if (tagsWithCount) {
+
         setSearchData(publishedAppsStore)
-        // }
+
     }, [setSearchData, publishedAppsStore])
     // const [state, setstate] = useState(initialState)
 
     // console.log(newD)
 
-    // tagsWithCount = Object.keys(tagsWithCount)
+    tagsWithCount = Object.keys(tagsWithCount)
 
-    // tagsWithCount = Object.values(tagsWithCount)
+    tagsWithCount = Object.values(tagsWithCount)
 
     tagsWithCount = Object.entries(tagsWithCount)
     console.log("dfdfd", tagsWithCount)
@@ -282,19 +282,65 @@ function AppStore() {
 
 
     // app list code
-    const tagClickHandler = (e) => {
-        let storeApps = publishedAppsStore
+    // const tagClickHandler = (e) => {
+    //     let storeApps = publishedAppsStore
 
-        if (selectedTag === e.target.dataset.tag) {
+    //     if (selectedTag === e.target.dataset.tag) {
+    //         setSelectedTag("")
+    //         e.target.classList.remove("selected")
+    //         e.target.classList.add("notselected")
+    //         setSearchData(publishedAppsStore)
+    //     } else {
+    //         setSelectedTag(e.target.dataset.tag)
+    //         // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
+
+    //         storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
+    //         // e.target.classList
+    //         setSearchData(storeApps)
+    //         e.target.classList.add("selected")
+    //         // console.log("cls ", )
+    //         e.target.classList.remove("notselected")
+    //         // setSearchData 
+    //         // console.log()
+    //     }
+
+    // }
+    // catogires click handlers
+    const catClickHandler = (e) => {
+        let storeApps = publishedAppsStore
+        if (e.target.dataset.cat == 'All') {
+            setSearchData(publishedAppsStore)
+            return 0
+        }
+        if (e.target.dataset.cat !== selectedTag) {
+            setSelectedTag(e.target.dataset.cat)
+            // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
+            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.add('bg-green-imp')
+
+            storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
+            // e.target.classList
+            setSearchData(storeApps)
+            e.target.classList.add("selected")
+            // console.log("cls ", )
+            e.target.classList.remove("notselected")
+            // setSearchData 
+            // console.log()
+            return 0
+        }
+        if (selectedTag === e.target.dataset.cat) {
             setSelectedTag("")
             e.target.classList.remove("selected")
             e.target.classList.add("notselected")
             setSearchData(publishedAppsStore)
+            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.remove('bg-green-imp')
+
         } else {
+
             setSelectedTag(e.target.dataset.tag)
             // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
+            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.add('bg-green-imp')
 
-            storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
+            storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
             // e.target.classList
             setSearchData(storeApps)
             e.target.classList.add("selected")
@@ -303,8 +349,26 @@ function AppStore() {
             // setSearchData 
             // console.log()
         }
+        // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.remove('bg-green-imp')
 
     }
+    let categories = []
+    publishedAppsStore.filter(item => categories.push(item.content.category))
+    console.log("cates", categories)
+    let catWithCount = categories.reduce(function (obj, b) {
+        obj[b] = ++obj[b] || 1
+        return obj
+    }, {})
+    // catWithCount = Object.keys(catWithCount)
+
+    // catWithCount = Object.values(catWithCount)
+
+    catWithCount = Object.entries(catWithCount)
+    catWithCount.unshift(['All', categories.length])
+    console.log("catwithcount", catWithCount)
+    // const catClickHandler = (e) => {
+    //     console.log('catClickHandler')
+    // }
     return (
         // (width < 575)
         //     ? <div className={classes.mobileSave}>{AppsComp}</div>
@@ -378,9 +442,15 @@ function AppStore() {
             </Button>
         </div> */}
             <Slider {...settings} id="appTagsButtons" className="appTagsButtons">
-                {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
+                {/* {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
                     <Button data-tag={tag[0]} onClick={tagClickHandler} className="tagButton">
                         {tag[0]} ({tag[1]})
+                    </Button>
+                </div>)} */}
+
+                {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
+                    <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
+                        {tag[0]} <span className='count-cat'>{tag[1]}</span>
                     </Button>
                 </div>)}
                 {/* <div>
