@@ -216,27 +216,7 @@ function AppStore() {
     const { width } = useWindowDimensions()
 
 
-    let showSlides = width > 1600 ? 1600 / 140 : width / 140
-    console.log("slided to show " + showSlides + "Width " + width)
-    let slicky = 155 * tagsWithCount.length - 550 < width ? 'unslick' : 'slick'
-    var settings = {
-        dots: false,
-        infinite: true,
-        speed: 500,
-        // slidesToShow: Math.floor(width / 140),
-        // slidesToShow: Math.floor(width / 140),
-        slidesToShow: showSlides,
-        slidesToScroll: 1,
-        nextArrow: <SlickNextArrow />,
-        prevArrow: <SlickPrevArrow />,
-        responsive: [
 
-            {
-                breakpoint: 10000, // a unrealistically big number to cover up greatest screen resolution
-                settings: slicky
-            }
-        ]
-    }
     // console.log(width)
 
     // useInterval(async () => {
@@ -369,6 +349,32 @@ function AppStore() {
     // const catClickHandler = (e) => {
     //     console.log('catClickHandler')
     // }
+    let sliderContainerWidth
+    if (document.querySelector('.appTagsButtons')) {
+        sliderContainerWidth = document.querySelector('.appTagsButtons').clientWidth
+    }
+    console.log(sliderContainerWidth, 141 * catWithCount.length)
+    let showSlides = width > 1600 ? 1600 / 140 : width / 140
+    console.log("slided to show " + showSlides + "Width " + width)
+    let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
+    var settings = {
+        dots: false,
+        infinite: true,
+        speed: 500,
+        // slidesToShow: Math.floor(width / 140),
+        // slidesToShow: Math.floor(width / 140),
+        slidesToShow: showSlides,
+        slidesToScroll: 1,
+        nextArrow: <SlickNextArrow />,
+        prevArrow: <SlickPrevArrow />,
+        responsive: [
+
+            {
+                breakpoint: 10000, // a unrealistically big number to cover up greatest screen resolution
+                settings: slicky
+            }
+        ]
+    }
     return (
         // (width < 575)
         //     ? <div className={classes.mobileSave}>{AppsComp}</div>

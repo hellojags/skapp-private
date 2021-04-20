@@ -280,6 +280,15 @@ border-top: 0;
   display: flex;
   justify-content: space-around;
 }
+
+.tagButton.slickNex .MuiButton-label{
+  display: flex;
+  justify-content: flex-start;
+}
+.tagButton.slickPrev .MuiButton-label{
+  display: flex;
+  justify-content: flex-end;
+}
 .tagButton:hover:not(.slickNex, .slickPrev){
   background-color: #1dbf7378!important;
 }
