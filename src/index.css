@@ -627,18 +627,16 @@ border-top: 0;
 /*  */
 .appCardHeader{
   background-size: 110px!important;
-  
-}
+  cursor: pointer;
+} 
 .tagOnAppCard {
-  padding: 2px 10px;
-    background: #ececec;
-    border-radius: 5px;
-    font-size: 12px;
-    color: #1DBF73
-}
+ margin-right: 5px;
+ display: inline-block;
+} 
+/*
 .tagOnAppCard:not(:last-child){
   margin-right: 7px;
-}
+} */
 /* categoryOnAppCard */
 .categoryOnAppCard span{
   background-color: #ffffff;

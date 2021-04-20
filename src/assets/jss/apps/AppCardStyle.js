@@ -41,7 +41,8 @@ const appCardStyle = {
         '&:hover': {
             // background: '#fff!important',
             opacity: 1
-        }
+        },
+        cursor: 'context-menu'
     },
     cardH2: {
         fontWeight: 700,
@@ -170,7 +171,7 @@ const appCardStyle = {
     },
     footerBottom: {
         padding: '.6rem .9rem',
-        paddingTop: '5px',
+        paddingTop: '8px',
         paddingBottom: ".75rem",
         '@media only screen and (max-width: 575px)': {
             flexDirection: 'column-reverse',

@@ -363,8 +363,7 @@ export default function Navbar() {
                                  */}
                                 <img src={
                                     person.avatar &&
-                                    `https://siasky.net/${person.avatar
-                                    }`
+                                    `https://siasky.net/${person.avatar}`
                                 } alt="" />
                             </Button>
                             <Tooltip title={person.username} placement="top" arrow >

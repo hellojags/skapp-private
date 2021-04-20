@@ -32,7 +32,7 @@ import {
 } from "../../redux/action-reducers-epic/SnAppStatsAction"
 import { EVENT_APP_VIEWED, EVENT_APP_ACCESSED, EVENT_APP_LIKED, EVENT_APP_LIKED_REMOVED, EVENT_APP_FAVORITE, EVENT_APP_FAVORITE_REMOVED, EVENT_APP_COMMENT, EVENT_APP_COMMENT_REMOVED } from "../../utils/SnConstants"
 import { getAppStats, getAggregatedAppStats, getAggregatedAppStatsByAppId, setAppStatsEvent } from "../../service/SnSkappService"
-
+import millify from 'millify'
 // const MobileBreakPoint = '575px'
 //import styles
 import styles from "../../assets/jss/apps/AppCardStyle"
@@ -262,7 +262,7 @@ const AppCard = ({ selectable, updated, item }) => {
 
                     <VisibilityIcon className={classes.cardFooterIcon} />
                   </Tooltip>
-                  <Typography variant="caption">{aggregatedAppStats[0]}</Typography>
+                  <Typography variant="caption">{aggregatedAppStats[0] && millify(aggregatedAppStats[0])}</Typography>
                 </Box>
                 <Box
                   display="flex"
@@ -273,7 +273,7 @@ const AppCard = ({ selectable, updated, item }) => {
 
                     <LaunchOutlinedIcon className={classes.cardFooterIcon} />
                   </Tooltip>
-                  <Typography variant="caption">{aggregatedAppStats[1]}</Typography>
+                  <Typography variant="caption">{aggregatedAppStats[1] && millify(aggregatedAppStats[1])}</Typography>
                 </Box>
                 {/* <Box
               display="flex"
@@ -307,7 +307,7 @@ const AppCard = ({ selectable, updated, item }) => {
                       />
                     </Tooltip>
                   )}
-                  <Typography variant="caption">{aggregatedAppStats[3]}</Typography>
+                  <Typography variant="caption">{aggregatedAppStats[3] && millify(aggregatedAppStats[3])}</Typography>
                 </Box>
                 <Box
                   display="flex"
@@ -329,7 +329,7 @@ const AppCard = ({ selectable, updated, item }) => {
                       />
                     </Tooltip>
                   )}
-                  <Typography variant="caption">{aggregatedAppStats[2]}</Typography>
+                  <Typography variant="caption">{aggregatedAppStats[2] && millify(aggregatedAppStats[2])}</Typography>
                   {/* <ThumbUpAltIcon className={classes.cardFooterIcon} />
                   <Typography variant="caption">2.5k</Typography> */}
                 </Box>
@@ -340,7 +340,7 @@ const AppCard = ({ selectable, updated, item }) => {
                   className={classes.footerItem}
                 >
                   <MsgIcon className={classes.cardFooterIcon} />
-                  <Typography variant="caption">1.3k</Typography>
+                  <Typography variant="caption">{millify(1456044)}</Typography>
                 </Box>
                 {/* <Box marginLeft="auto">
               <Button
@@ -355,18 +355,17 @@ const AppCard = ({ selectable, updated, item }) => {
 
             </CardActions>
             <CardActions className={classes.footerBottom}>
-              {/* <Box>
-            <Button
-              size="medium"
-              className={`${classes.installBtn} ${
-                updated ? classes.bgUnistall : classes.bgUpdate
-              }`}
-            >
-              {updated && "Uninstall"}
-              {updated === false && "Update"}
-              {updated === undefined && "Install"}
-            </Button>
-          </Box> */}
+              <Box>
+                <Button
+                  size="medium"
+                  className={`${classes.installBtn} ${updated ? classes.bgUnistall : classes.bgUpdate
+                    }`}
+                >
+                  {updated && "Uninstall"}
+                  {updated === false && "Update"}
+                  {updated === undefined && "Install"}
+                </Button>
+              </Box>
 
             </CardActions>
           </Card>

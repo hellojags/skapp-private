@@ -39,6 +39,7 @@
     "localforage-setitems": "^1.4.0",
     "lodash": "^4.17.21",
     "material-ui-dropzone": "^3.5.0",
+    "millify": "^3.5.2",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.0",
     "node-forge": "^0.10.0",
