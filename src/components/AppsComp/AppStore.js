@@ -142,9 +142,9 @@ const useStyles = makeStyles(theme => (
             , '@media only screen and (max-width: 510px)': {
                 flexWrap: 'wrap',
                 "& > div": {
-                    width: '50%',
-                    minWidth: '50%',
-                    maxWidth: '50%',
+                    // width: '50%',
+                    // minWidth: '50%',
+                    // maxWidth: '50%',
                     marginBottom: '.75rem'
                 },
                 "& > div:nth-child(odd)": {
