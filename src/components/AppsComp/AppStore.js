@@ -85,8 +85,8 @@ const useStyles = makeStyles(theme => (
             },
             '@media (max-width: 1460px)': {
                 width: '100%'
-            }
-
+            },
+            paddingRight: '10px'
         },
 
         pageHeading: {
@@ -245,14 +245,14 @@ function AppStore() {
 
     const searchHandler = (e) => {
         const options = {
-            // isCaseSensitive: false,
+            isCaseSensitive: false,
             // includeScore: false,
-            // shouldSort: true,
+            shouldSort: true,
             // includeMatches: false,
-            // findAllMatches: false,
-            // minMatchCharLength: 1,
+            findAllMatches: true,
+            minMatchCharLength: 0,
             // location: 0,
-            // threshold: 0.6,
+            threshold: 0.0,
             // distance: 100,
             // useExtendedSearch: false,
             // ignoreLocation: false,
@@ -325,6 +325,7 @@ function AppStore() {
                         </div>
                     </Box>
                     <InputBase
+
                         onChange={searchHandler}
                         placeholder="Search Apps"
                         classes={{
@@ -332,6 +333,8 @@ function AppStore() {
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
+                        type="search"
+
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
@@ -351,6 +354,8 @@ function AppStore() {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            type="search"
+
                         />
                     </div>}
                     <Box>
