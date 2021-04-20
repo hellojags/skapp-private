@@ -247,8 +247,7 @@ export const installApp = async (appJSON) => {
     if (!installedAppsIdList.includes(appJSON.id)) {
       installedAppsIdList.push(appJSON.id);
     }
-    else
-    {
+    else {
       const installedAppsMap = await getMyInstalledApps();
       //await addToSkappUserFollowing(userPubKey);
       //await addToSharedApps(userPubKey, appJSON.id);
@@ -275,7 +274,7 @@ export const uninstallApp = async (appId) => {
   if (installedAppsIdList) {
     //app should already be installed for uninstall
     if (installedAppsIdList.includes(appId)) {
-      installedAppsIdList.splice(installedAppsIdList.indexOf(appId),1);
+      installedAppsIdList.splice(installedAppsIdList.indexOf(appId), 1);
       //set updated list
       await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
       // update existing published app
@@ -562,7 +561,7 @@ export const getMyHostedApps = async (appIds) => {
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getFile(getUserPublicKey(), `hosted${appId}`, { store: IDB_STORE_SKAPP }));
+      hostedAppIdList.appDetailsList[appId] = (await getFile(getUserPublicKey(), `${appId}#hosted`, { store: IDB_STORE_SKAPP }));
     }));
     return hostedAppIdList;
   } catch (err) {
@@ -598,9 +597,12 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     },
     ts
   };
-  await putFile(getUserPublicKey(), `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
-  await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
-
+  //alert("previousId" + previousId);
+  await putFile(getUserPublicKey(), `${id}#hosted`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  if (previousId === "" || previousId === null || previousId === undefined) {
+    //alert("adding in array" + previousId);
+    await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
+  }
   return hostedAppJSON;
 }
 
@@ -609,7 +611,7 @@ export const deleteMyHostedApp = async (appId) => {
   try {
     const hostedAppIdList = (await getMyHostedApps())?.appIdList || [];
     hostedAppIdList.splice(hostedAppIdList.indexOf(appId), 1);
-    await putFile(getUserPublicKey(), `hosted${appId}`, {}, { store: IDB_STORE_SKAPP });
+    await putFile(getUserPublicKey(), `${appId}#hosted`, {}, { store: IDB_STORE_SKAPP });
     await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList], { store: IDB_STORE_SKAPP });
     status = true;
   }
