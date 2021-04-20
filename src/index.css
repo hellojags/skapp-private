@@ -630,7 +630,7 @@ border-top: 0;
   cursor: pointer;
 } 
 .tagOnAppCard {
- margin-right: 5px;
+ margin-right: 5px!important;
  display: inline-block;
 } 
 /*

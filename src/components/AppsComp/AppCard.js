@@ -195,7 +195,7 @@ const AppCard = ({ selectable, updated, item }) => {
                     </IconButton>
                   </Box>
                 </Box>
-                <Box className={`${classes.tags} tags-card`} display="flex" >
+                <Box className={`${classes.tags} tags-card`} >
 
                   {item.content.tags && item.content.tags.map((item, index) => {
                     return (
