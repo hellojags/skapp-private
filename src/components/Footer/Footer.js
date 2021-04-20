@@ -8,10 +8,12 @@ import { ReactComponent as InstaIcon } from '../../assets/img/icons/011-instagra
 import { ReactComponent as TwitterIcon } from '../../assets/img/icons/013-twitter.svg'
 import { ReactComponent as RedditIcon } from '../../assets/img/icons/015-reddit.svg'
 import Dis from '../../svg/Discord'
+import axios from 'axios'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 // import {  as filledStar } from "@fortawesome/free-solid-svg-icons"
 const Footer = () => {
+
     return (
         <footer className="footer">
             <ul>
@@ -20,14 +22,19 @@ const Footer = () => {
                     Help
                 </li>
                 <li>
-                    Privacy Policy
+                    <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
+                        Privacy Policy
+                    </a>
                 </li>
                 <li>
-                    Terms & Conditions
+                    <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
+                        Terms & Conditions
+                    </a>
+
                 </li>
             </ul>
             <ul className="md-links">
-                <li>
+                {/* <li>
                     <a href="#0">
                         <FacebookIcon />
                     </a>
@@ -46,20 +53,25 @@ const Footer = () => {
                     <a href="#0">
                         <LinkedInIcon />
                     </a>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                     <a href="#0">
                         <InstaIcon />
                     </a>
-                </li>
+                </li> */}
                 <li>
                     <a href="https://twitter.com/skynethub">
                         <TwitterIcon />
                     </a>
                 </li>
-                <li>
+                {/* <li>
                     <a href="#0">
                         <RedditIcon />
+                    </a>
+                </li> */}
+                <li>
+                    <a href="https://discord.com/invite/zuwNT4YsWD">
+                        <Dis />
                     </a>
                 </li>
                 <li>
@@ -67,11 +79,7 @@ const Footer = () => {
                         <GitHub />
                     </a>
                 </li>
-                <li>
-                    <a href="https://discord.com/invite/zuwNT4YsWD">
-                        <Dis />
-                    </a>
-                </li>
+
                 <li>
                     <a href="mailto:hello@skapp.io">
                         <Email />
