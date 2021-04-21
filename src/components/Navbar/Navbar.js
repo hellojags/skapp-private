@@ -123,11 +123,13 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     usrIcon: {
+
         width: '28px',
         height: '28px',
         minWidth: 'auto',
         backgroundColor: '#7e84a31c',
-        borderRadius: "50%"
+        borderRadius: "50%",
+        padding: 0
     },
     userName: {
         paddingLeft: "10px",
@@ -281,11 +283,8 @@ export default function Navbar() {
             <MenuItem onClick={handleProfileMenuOpen}>
                 <Button className={classes.usrIcon}>
                     {/* <PersonOutlineIcon className={classes.avatarIcon} /> */}
-                    <img src={
-                        person.avatar &&
-                        `https://siasky.net/${person.avatar
-                        }`
-                    } alt="" />
+                    <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
+                        alt="" />
                 </Button>
                 <Tooltip title={person.username} placement="top" arrow >
                     <Typography className={classes.userName} noWrap>{person.username}</Typography>
@@ -358,13 +357,11 @@ export default function Navbar() {
                         </Box>
 
                         <Box display="flex" alignItems="center" onClick={handleProfileMenuOpen}>
-                            <Button className={classes.usrIcon}>
+                            <Button className={classes.usrIcon} >
                                 {/* <PersonOutlineIcon className={classes.avatarIcon} />
                                  */}
-                                <img src={
-                                    person.avatar &&
-                                    `https://siasky.net/${person.avatar}`
-                                } alt="" />
+                                <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
+                                    alt="" />
                             </Button>
                             <Tooltip title={person.username} placement="top" arrow >
                                 <Typography className={classes.userName} noWrap>{person.username}</Typography>
