@@ -11,83 +11,88 @@ import Dis from '../../svg/Discord'
 import axios from 'axios'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useSelector } from 'react-redux'
 // import {  as filledStar } from "@fortawesome/free-solid-svg-icons"
 const Footer = () => {
+    const userSession = useSelector((state) => state.userSession)
+    let footerComp = (< footer className="footer" >
+        <ul>
 
+            <li>
+                Help
+</li>
+            <li>
+
+                <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
+                    Privacy Policy
+    </a>
+            </li>
+            <li>
+                <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
+                    Terms & Conditions
+    </a>
+
+            </li>
+        </ul>
+        <ul className="md-links">
+            {/* <li>
+    <a href="#0">
+        <FacebookIcon />
+    </a>
+</li>
+<li>
+    <a href="#0">
+        <WhatsappIcon />
+    </a>
+</li>
+<li>
+    <a href="#0">
+        <YoutubeIcon />
+    </a>
+</li>
+<li>
+    <a href="#0">
+        <LinkedInIcon />
+    </a>
+</li> */}
+            {/* <li>
+    <a href="#0">
+        <InstaIcon />
+    </a>
+</li> */}
+            <li>
+                <a href="https://twitter.com/skynethub" target="_blank" rel="noopener noreferrer">
+                    <TwitterIcon />
+                </a>
+            </li>
+            {/* <li>
+    <a href="#0">
+        <RedditIcon />
+    </a>
+</li> */}
+            <li>
+                <a href="https://discord.com/invite/zuwNT4YsWD" target="_blank" rel="noopener noreferrer">
+                    <Dis />
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/skynethubio/skapp" target="_blank" rel="noopener noreferrer">
+                    <GitHub />
+                </a>
+            </li>
+
+            <li>
+                <a href="mailto:hello@skapp.io" target="_blank" rel="noopener noreferrer">
+                    <Email />
+                </a>
+
+            </li>
+        </ul>
+    </footer >)
     return (
-        <footer className="footer">
-            <ul>
-
-                <li>
-                    Help
-                </li>
-                <li>
-                    <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
-                        Privacy Policy
-                    </a>
-                </li>
-                <li>
-                    <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
-                        Terms & Conditions
-                    </a>
-
-                </li>
-            </ul>
-            <ul className="md-links">
-                {/* <li>
-                    <a href="#0">
-                        <FacebookIcon />
-                    </a>
-                </li>
-                <li>
-                    <a href="#0">
-                        <WhatsappIcon />
-                    </a>
-                </li>
-                <li>
-                    <a href="#0">
-                        <YoutubeIcon />
-                    </a>
-                </li>
-                <li>
-                    <a href="#0">
-                        <LinkedInIcon />
-                    </a>
-                </li> */}
-                {/* <li>
-                    <a href="#0">
-                        <InstaIcon />
-                    </a>
-                </li> */}
-                <li>
-                    <a href="https://twitter.com/skynethub">
-                        <TwitterIcon />
-                    </a>
-                </li>
-                {/* <li>
-                    <a href="#0">
-                        <RedditIcon />
-                    </a>
-                </li> */}
-                <li>
-                    <a href="https://discord.com/invite/zuwNT4YsWD">
-                        <Dis />
-                    </a>
-                </li>
-                <li>
-                    <a href="https://github.com/skynethubio/skapp">
-                        <GitHub />
-                    </a>
-                </li>
-
-                <li>
-                    <a href="mailto:hello@skapp.io">
-                        <Email />
-                    </a>
-
-                </li>
-            </ul>
-        </footer>
+        <>
+            { !userSession && footerComp}
+        </>
     )
 }
 
