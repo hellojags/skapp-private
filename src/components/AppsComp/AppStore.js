@@ -174,10 +174,11 @@ function AppStore() {
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore)
 
     const [searchData, setSearchData] = useState([])
-    const [selectedTag, setSelectedTag] = useState('')
+    const [selectedTag, setSelectedTag] = useState('All')
 
     useEffect(() => {
         // console.log("came here");
+
         dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
         setSearchData(publishedAppsStore)
     }, [])
@@ -286,51 +287,39 @@ function AppStore() {
 
     // }
     // catogires click handlers
+    document.querySelector(`button[data-cat="All"]`) && document.querySelector(`button[data-cat=${selectedTag}]`).classList.add('selected')
+
     const catClickHandler = (e) => {
         let storeApps = publishedAppsStore
         if (e.target.dataset.cat == 'All') {
+            setSelectedTag('All')
             setSearchData(publishedAppsStore)
+            Array.from(document.querySelectorAll('.tagButton')).forEach((el) => el.classList.remove('selected'))
+            e.target.classList.add("selected")
             return 0
         }
-        if (e.target.dataset.cat !== selectedTag) {
+        if (e.target.dataset.cat !== selectedTag && document.querySelector(".tagButton")) {
             setSelectedTag(e.target.dataset.cat)
-            // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
-            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.add('bg-green-imp')
-
             storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
-            // e.target.classList
             setSearchData(storeApps)
+
+            Array.from(document.querySelectorAll('.tagButton')).forEach((el) => el.classList.remove('selected'))
             e.target.classList.add("selected")
-            // console.log("cls ", )
-            e.target.classList.remove("notselected")
-            // setSearchData 
-            // console.log()
             return 0
         }
         if (selectedTag === e.target.dataset.cat) {
-            setSelectedTag("")
+            setSelectedTag("All")
             e.target.classList.remove("selected")
-            e.target.classList.add("notselected")
             setSearchData(publishedAppsStore)
-            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.remove('bg-green-imp')
 
         } else {
 
             setSelectedTag(e.target.dataset.tag)
-            // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
-            // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.add('bg-green-imp')
 
             storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
-            // e.target.classList
             setSearchData(storeApps)
             e.target.classList.add("selected")
-            // console.log("cls ", )
-            e.target.classList.remove("notselected")
-            // setSearchData 
-            // console.log()
         }
-        // document.querySelector(`button[data-cat=${e.target.dataset.cat}]`).classList.remove('bg-green-imp')
-
     }
     let categories = []
     publishedAppsStore.filter(item => categories.push(item.content.category))
@@ -339,16 +328,12 @@ function AppStore() {
         obj[b] = ++obj[b] || 1
         return obj
     }, {})
-    // catWithCount = Object.keys(catWithCount)
 
-    // catWithCount = Object.values(catWithCount)
 
     catWithCount = Object.entries(catWithCount)
     catWithCount.unshift(['All', categories.length])
-    console.log("catwithcount", catWithCount)
-    // const catClickHandler = (e) => {
-    //     console.log('catClickHandler')
-    // }
+    // console.log("catwithcount", catWithCount)
+
     let sliderContainerWidth
     if (document.querySelector('.appTagsButtons')) {
         sliderContainerWidth = document.querySelector('.appTagsButtons').clientWidth
@@ -359,12 +344,12 @@ function AppStore() {
     let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
     var settings = {
         dots: false,
-        infinite: true,
+        infinite: false,
         speed: 500,
         // slidesToShow: Math.floor(width / 140),
         // slidesToShow: Math.floor(width / 140),
         slidesToShow: showSlides,
-        slidesToScroll: 1,
+        slidesToScroll: 2,
         nextArrow: <SlickNextArrow />,
         prevArrow: <SlickPrevArrow />,
         responsive: [
@@ -456,7 +441,7 @@ function AppStore() {
 
                 {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
                     <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
-                        {tag[0]} <span className='count-cat'>{tag[1]}</span>
+                        <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
                     </Button>
                 </div>)}
                 {/* <div>
