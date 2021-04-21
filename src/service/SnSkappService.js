@@ -209,10 +209,8 @@ export const publishApp = async (appJSON) => {
   else {
     publishedAppsIdList = [appJSON.id];
   }
-  if (!publishedAppsIdList.includes(appJSON.id)) {
-    // update Index value
-    await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
-  }
+  // update Index value
+  await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
   await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
@@ -226,7 +224,7 @@ export const publishApp = async (appJSON) => {
 export const republishApp = async (appJSON) => {
   let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
   // check if appid is present in publishedAppsIdList.
-  if (publishedAppsIdList && publishedAppsIdList.includes(appJSON.id)) {
+  if (publishedAppsIdList && !publishedAppsIdList.includes(appJSON.id)) {
     // update Index value
     await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
     // update existing published app
