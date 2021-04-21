@@ -203,14 +203,16 @@ export const getMyPublishedApps = async () => {
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
   let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
-  if (publishedAppsIdList) {
+  if (publishedAppsIdList && !publishedAppsIdList.includes(appJSON.id)) {
     publishedAppsIdList.push(appJSON.id);
   }
   else {
     publishedAppsIdList = [appJSON.id];
   }
-  // update Index value
-  await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  if (!publishedAppsIdList.includes(appJSON.id)) {
+    // update Index value
+    await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+  }
   // update existing published app
   // add additional logic to link previously published App
   await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
