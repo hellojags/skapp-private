@@ -168,7 +168,7 @@ const SubmitApp = () => {
   //form submit function
   const onSubmit = (data) => {
   console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
-    if (appLogo === "" && appDetail.content.imgThumbnailSkylink == "") {
+    if (appLogo === "" && appDetail?.content.imgThumbnailSkylink == "") {
       setIsAppLogoTrue(true);
       // setMandatory(true);
     } else if (data.appname === "") {
@@ -188,7 +188,7 @@ const SubmitApp = () => {
       let obj = {
         $type: "skapp",
         $subtype: "published",
-        id: appDetail.id || uuidv4(),
+        id: appDetail?.id || uuidv4(),
         version: "v1",
         ts: new Date().getTime(),
         content: data,
