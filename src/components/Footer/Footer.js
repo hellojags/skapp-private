@@ -15,27 +15,30 @@ import { useSelector } from 'react-redux'
 // import {  as filledStar } from "@fortawesome/free-solid-svg-icons"
 const Footer = () => {
     const userSession = useSelector((state) => state.userSession)
-    let footerComp = (< footer className="footer" >
-        <ul>
 
-            <li>
-                Help
+    return (
+        <>
+            { !userSession && < footer className="footer" >
+                <ul>
+
+                    <li>
+                        Help
 </li>
-            <li>
+                    <li>
 
-                <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
-                    Privacy Policy
+                        <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
+                            Privacy Policy
     </a>
-            </li>
-            <li>
-                <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
-                    Terms & Conditions
+                    </li>
+                    <li>
+                        <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
+                            Terms & Conditions
     </a>
 
-            </li>
-        </ul>
-        <ul className="md-links">
-            {/* <li>
+                    </li>
+                </ul>
+                <ul className="md-links">
+                    {/* <li>
     <a href="#0">
         <FacebookIcon />
     </a>
@@ -55,43 +58,40 @@ const Footer = () => {
         <LinkedInIcon />
     </a>
 </li> */}
-            {/* <li>
+                    {/* <li>
     <a href="#0">
         <InstaIcon />
     </a>
 </li> */}
-            <li>
-                <a href="https://twitter.com/skynethub" target="_blank" rel="noopener noreferrer">
-                    <TwitterIcon />
-                </a>
-            </li>
-            {/* <li>
+                    <li>
+                        <a href="https://twitter.com/skynethub" target="_blank" rel="noopener noreferrer">
+                            <TwitterIcon />
+                        </a>
+                    </li>
+                    {/* <li>
     <a href="#0">
         <RedditIcon />
     </a>
 </li> */}
-            <li>
-                <a href="https://discord.com/invite/zuwNT4YsWD" target="_blank" rel="noopener noreferrer">
-                    <Dis />
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/skynethubio/skapp" target="_blank" rel="noopener noreferrer">
-                    <GitHub />
-                </a>
-            </li>
+                    <li>
+                        <a href="https://discord.com/invite/zuwNT4YsWD" target="_blank" rel="noopener noreferrer">
+                            <Dis />
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/skynethubio/skapp" target="_blank" rel="noopener noreferrer">
+                            <GitHub />
+                        </a>
+                    </li>
 
-            <li>
-                <a href="mailto:hello@skapp.io" target="_blank" rel="noopener noreferrer">
-                    <Email />
-                </a>
+                    <li>
+                        <a href="mailto:hello@skapp.io" target="_blank" rel="noopener noreferrer">
+                            <Email />
+                        </a>
 
-            </li>
-        </ul>
-    </footer >)
-    return (
-        <>
-            { !userSession && footerComp}
+                    </li>
+                </ul>
+            </footer >}
         </>
     )
 }
