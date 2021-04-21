@@ -151,7 +151,6 @@ const SubmitApp = () => {
   useEffect(() => {
     if (appDetail?.content) {
       const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
-      console.log(appDetail.content);
       setValue('appname', appName);
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
@@ -169,7 +168,7 @@ const SubmitApp = () => {
   //form submit function
   const onSubmit = (data) => {
   console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
-    if (appLogo === "") {
+    if (appLogo === "" && appDetail.content.imgThumbnailSkylink == "") {
       setIsAppLogoTrue(true);
       // setMandatory(true);
     } else if (data.appname === "") {
@@ -189,7 +188,7 @@ const SubmitApp = () => {
       let obj = {
         $type: "skapp",
         $subtype: "published",
-        id: uuidv4(),
+        id: appDetail.id || uuidv4(),
         version: "v1",
         ts: new Date().getTime(),
         content: data,
