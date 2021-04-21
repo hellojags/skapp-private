@@ -15,11 +15,11 @@ export const snGetAllPublishedAppsEpic = (action$) =>
             // do we need to change this to mergemap ? we dont want subscription to be overwritten
             switchMap((action) => {
                 console.log("sortby", action.sortBy)
-                //store.dispatch(setLoaderDisplay(true))
+                store.dispatch(setLoaderDisplay(true))
                 return from(getAllPublishedApps(action.sortBy.sortOn, action.sortBy.orderBy, action.sortBy.n))
                     .pipe(
                         map((res) => {
-                            //store.dispatch(setLoaderDisplay(false))
+                            store.dispatch(setLoaderDisplay(false))
                             // Update Redux Store
                             return setAllPublishedAppsStore(res)
                         })

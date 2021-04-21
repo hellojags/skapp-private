@@ -104,6 +104,9 @@ function ListFilter() {
                 <span className="sortIcon-container">
                     <SortIcon /></span>
 
+                {/* <FilterIcon> </FilterIcon> */}
+                <span className="sortIcon-container">
+                    <SortIcon /></span>
                 <span className="secon-nav__ItemText">
 
                     {/* {width <= 575 ? 'Sort' : 'Most Accessed First'}  */}
@@ -111,7 +114,8 @@ function ListFilter() {
 
                 </span>
 
-            </Button>
+
+            </Button >
 
             <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
@@ -139,7 +143,7 @@ function ListFilter() {
                     </Grow>
                 )}
             </Popper>
-        </Fragment>
+        </Fragment >
     )
 }
 
