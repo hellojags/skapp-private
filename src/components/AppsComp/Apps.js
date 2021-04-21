@@ -2,6 +2,7 @@ import { Box, InputBase } from "@material-ui/core";
 import React, { Fragment, useEffect, useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
+import { useHistory } from "react-router-dom";
 import UtilitiesItem from "./UtilitiesItem";
 import ListFilter from "./ListFilter";
 import SelectItem from "./SelectItem";
@@ -152,6 +153,7 @@ function Apps() {
   const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
   const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
   const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(async () => {
     // console.log("came here");
@@ -188,8 +190,10 @@ function Apps() {
           <small className={classes.smallText}>{publishedAppsStore.length} Results</small>
         </Box>
         {width < 1250 && (
+          //remove the style property to show it again, in future
           <div
             className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}
+            style={{ display: 'none' }}
           >
             <Box>
               <div className={classes.searchIcon}>
@@ -218,7 +222,8 @@ function Apps() {
           </Box> */}
 
           {width > 1249 && (
-            <div className={classes.search}>
+            //remove the style property to show it again, in future
+            <div className={classes.search} style={{ display: 'none' }}>
               <Box>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
@@ -241,7 +246,7 @@ function Apps() {
             {selectedPage && <SelectItem />}
           </Box>
           <Box>
-            <SubmitBtn>Publish App</SubmitBtn>
+            <SubmitBtn onClick={(e) => history.push('/submitapp')}>Publish App</SubmitBtn>
           </Box>
         </Box>
       </Box>
