@@ -105,8 +105,7 @@ function ListFilter() {
                     <SortIcon /></span>
 
                 {/* <FilterIcon> </FilterIcon> */}
-                <span className="sortIcon-container">
-                    <SortIcon /></span>
+
                 <span className="secon-nav__ItemText">
 
                     {/* {width <= 575 ? 'Sort' : 'Most Accessed First'}  */}
