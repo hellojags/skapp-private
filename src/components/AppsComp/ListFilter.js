@@ -101,7 +101,8 @@ function ListFilter() {
                 aria-haspopup="true"
                 onClick={handleToggle}
             >
-                <FilterIcon> </FilterIcon>
+                <span className="sortIcon-container">
+                    <SortIcon /></span>
 
                 <span className="secon-nav__ItemText">
 
@@ -109,8 +110,7 @@ function ListFilter() {
                     {selectData[filterVal]}
 
                 </span>
-                <span className="sortIcon-container">
-                    <SortIcon /></span>
+
             </Button>
 
             <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
