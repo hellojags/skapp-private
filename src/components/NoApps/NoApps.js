@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react'
 import { Box, Button, makeStyles } from '@material-ui/core'
+import { Link } from 'react-router-dom'
+
 import styles from '../../assets/jss/no-apps/NoAppsStyle'
 import { ReactComponent as RoundedBoxs } from '../../assets/img/icons/roundedBoxs.svg'
 const useStyles = makeStyles(styles)
-const NoApps = () => {
+const NoApps = ({ btnText, pageType, msg, link }) => {
     const classes = useStyles()
     return (
         <Fragment>
@@ -12,11 +14,12 @@ const NoApps = () => {
                 <div className={classes.boxIcon}>
                     <RoundedBoxs />
                 </div>
-                <h2 className={classes.h2}>No apps installed</h2>
-                <p className={classes.p}>Go to app store, Explore apps and install</p>
+                <h2 className={classes.h2}>No apps {pageType}</h2>
+                <p className={classes.p}>{msg}</p>
                 <Button className={classes.button}>
-                    Discover Apps
-            </Button>
+                    {btnText}
+                    <Link className="link" to={link}></Link>
+                </Button>
             </Box>
         </Fragment>
     )

@@ -1,18 +1,19 @@
-import { Box, InputBase } from "@material-ui/core";
-import React, { Fragment, useEffect } from "react";
-import { fade, makeStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
-import UtilitiesItem from "./UtilitiesItem";
-import ListFilter from "./ListFilter";
-import SelectItem from "./SelectItem";
-import SubmitBtn from "./SubmitBtn";
-import AppsList from "./AppsList";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { Box, InputBase } from "@material-ui/core"
+import React, { Fragment, useEffect } from "react"
+import { fade, makeStyles } from "@material-ui/core/styles"
+import SearchIcon from "@material-ui/icons/Search"
+import UtilitiesItem from "./UtilitiesItem"
+import ListFilter from "./ListFilter"
+import SelectItem from "./SelectItem"
+import SubmitBtn from "./SubmitBtn"
+import AppsList from "./AppsList"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 // import PerfectScrollbar from 'react-perfect-scrollbar'
-import CustomPagination from "./CustomPagination";
-import SelectedAppsHeader from "./SelectedAppsHeader";
-import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
-import { useDispatch, useSelector } from "react-redux";
+import CustomPagination from "./CustomPagination"
+import SelectedAppsHeader from "./SelectedAppsHeader"
+import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction"
+import { useDispatch, useSelector } from "react-redux"
+import NoApps from "../NoApps/NoApps"
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -141,21 +142,21 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-}));
+}))
 
 function Apps() {
-  const dispatch = useDispatch();
-  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
+  const dispatch = useDispatch()
+  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore)
   useEffect(() => {
     // console.log("came here");
-    dispatch(getMyPublishedAppsAction());
-  }, []);
-
+    dispatch(getMyPublishedAppsAction())
+  }, [])
+  console.log("published aaap ", publishedAppsStore.length)
   // temp var for selected page
-  const selectedPage = false;
+  const selectedPage = false
   // This page code
-  const { width } = useWindowDimensions();
-  const classes = useStyles();
+  const { width } = useWindowDimensions()
+  const classes = useStyles()
 
   const AppsComp = (
     <Fragment>
@@ -229,20 +230,30 @@ function Apps() {
       {/* When items are selectable */}
       {selectedPage && <SelectedAppsHeader />}
       <div>
-        <AppsList newData={publishedAppsStore} />
+        {<AppsList newData={publishedAppsStore} />}
       </div>
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />
       </Box> */}
     </Fragment>
-  );
-
+  )
+  const finalComp = (publishedAppsStore.length ? AppsComp : (<NoApps
+    msg='No Published Apps to display in AppStore. Publish your App using "Publish App" BUTTON '
+    btnText="Publish App"
+    pageType="Published"
+    link="/submitapp"
+  />))
   return (
     // (width < 575)
     //     ? <div className={classes.mobileSave}>{AppsComp}</div>
     //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-    <div>{AppsComp}</div>
-  );
+    // <div>{AppsComp}
+    <>
+
+      { finalComp}
+
+    </>
+  )
 }
 
-export default Apps;
+export default Apps
