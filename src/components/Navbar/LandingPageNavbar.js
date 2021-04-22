@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
         height: '28px',
         minWidth: 'auto',
         backgroundColor: '#7e84a31c',
-        borderRadius: "50%"
+        borderRadius: "4px"
     },
     userName: {
         paddingLeft: "10px",

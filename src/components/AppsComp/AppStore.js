@@ -338,7 +338,16 @@ function AppStore() {
     if (document.querySelector('.appTagsButtons')) {
         sliderContainerWidth = document.querySelector('.appTagsButtons').clientWidth
     }
-    console.log(sliderContainerWidth, 141 * catWithCount.length)
+    // enabling the slicker slider logically 
+    const sliderRef = React.createRef()
+    const [showSlider, setShowSlider] = React.useState(false)
+
+    React.useLayoutEffect(() => {
+        if (sliderRef.current.clientWidth < sliderRef.current.scrollWidth) {
+            setShowSlider(true)
+        }
+    }, [sliderRef])
+    // console.log(sliderRef.current.clientWidth, sliderRef.current.scrollWidth)
     let showSlides = width > 1600 ? 1600 / 140 : width / 140
     console.log("slided to show " + showSlides + "Width " + width)
     let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
@@ -348,7 +357,7 @@ function AppStore() {
         speed: 500,
         // slidesToShow: Math.floor(width / 140),
         // slidesToShow: Math.floor(width / 140),
-        slidesToShow: showSlides,
+        slidesToShow: width > 890 ? Math.round(showSlides) - 2 : showSlides,
         slidesToScroll: 2,
         nextArrow: <SlickNextArrow />,
         prevArrow: <SlickPrevArrow />,
@@ -432,19 +441,22 @@ function AppStore() {
                 Art & Design (5)
             </Button>
         </div> */}
-            <Slider {...settings} id="appTagsButtons" className="appTagsButtons">
-                {/* {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
+            <div ref={sliderRef}>
+
+
+                <Slider {...settings} id="appTagsButtons" className="appTagsButtons" >
+                    {/* {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
                     <Button data-tag={tag[0]} onClick={tagClickHandler} className="tagButton">
                         {tag[0]} ({tag[1]})
                     </Button>
                 </div>)} */}
 
-                {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
-                    <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
-                        <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
-                    </Button>
-                </div>)}
-                {/* <div>
+                    {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
+                        <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
+                            <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
+                        </Button>
+                    </div>)}
+                    {/* <div>
                 <Button className="tagButton">
                     Social
             </Button>
@@ -514,7 +526,8 @@ function AppStore() {
                     Portal
             </Button>
             </div> */}
-            </Slider>
+                </Slider>
+            </div>
             <div style={{ marginBottom: '2rem' }}>
                 <AppsList newData={searchData} />
 

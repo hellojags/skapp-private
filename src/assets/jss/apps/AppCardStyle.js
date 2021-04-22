@@ -103,6 +103,7 @@ const appCardStyle = {
         }
     },
     cardSmallText: {
+        // padding: " 0!important",
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
@@ -208,8 +209,26 @@ const appCardStyle = {
         color: '#1DBF73!important',
         width: 24,
         transform: 'translateX(-8px)'
+    },
+    desc: {
+        maxWidth: "100%",
+        overflow: "hidden",
+        position: "relative",
+        lineHeight: "1.2em",
+        maxHeight: "2.4em",
+        textAlign: "justify",
+        marginRight: "-5em",
+        paddingRight: "1em",
+        marginBottom: "0.5em",
+        // whiteSpace: "nowrap"
+    },
+    moreDescBtn: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        background: '#fff',
+        cursor: 'pointer'
     }
-
 
 }
 export default appCardStyle

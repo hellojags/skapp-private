@@ -191,13 +191,7 @@ main{
   .cardFooter > div .MuiTypography-caption{
     font-size: 7px;
   }
-  .tags-card{
-    max-width: 120px;
-    margin-bottom: 5px;
-  }
-  .tags-card span{
-    font-size: 9px;
-  }
+  
   .card-container .card-head{
     max-height: 30px;
   }
@@ -304,10 +298,25 @@ button[data-cat="All"] .count-cat{
   margin-bottom: 10px;
   margin-top: 10px;
 }
+.tags-card{
+  max-height:2em;
+  overflow: hidden;
+  line-height: .5em;
+}
 @media(max-width: 575px) {
   .appTagsButtons{
   
     margin-top: 0px;
+  }
+  .tags-card{
+    /* max-width: 120px; */
+    margin-bottom: 5px;
+    max-height:1.5em;
+    overflow: hidden;
+    line-height: .5em;
+  }
+  .tags-card span{
+    font-size: 9px;
   }
 }
 /* .tagButton:focus{
@@ -720,4 +729,24 @@ input[type="search"]::-webkit-search-cancel-button {
 .tagButton.selected .count-cat {
   background-color: #4e4e4e;
   color: #fff;
+}
+.app-logo-img{
+  width: 100px;
+  height: 100px;
+  background: #4e4e4e;
+  border-radius: 9px;
+  align-self: center;
+  display: inline-flex;
+  padding: 14px;
+  text-align: center;
+}
+.app-logo-img img{
+  width: 100%;
+  object-fit: contain;
+}
+@media (max-width: 575px) {
+  .app-logo-img {
+    width: 65px;
+    height: 65px;
+  }
 }

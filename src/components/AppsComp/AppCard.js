@@ -36,7 +36,16 @@ import millify from 'millify'
 // const MobileBreakPoint = '575px'
 //import styles
 import styles from "../../assets/jss/apps/AppCardStyle"
+import DataUsageIcon from '@material-ui/icons/DataUsage'
 const useStyles = makeStyles(styles)
+
+const appBg = {
+  'Social': "rgb(29, 191, 115)",
+  'Pictures': "lightgray",
+  'Video': "gray",
+  'Utilities': "#8ad4c5",
+  'Productivity': "#cf4cac"
+}
 
 const AppCard = ({ selectable, updated, item }) => {
   const dispatch = useDispatch()
@@ -112,7 +121,55 @@ const AppCard = ({ selectable, updated, item }) => {
     dispatch(setAppStatsAction(EVENT_APP_ACCESSED, appId))
     OpenAppUrl(appurl)
   }
+  // logical Tool tip
+  const descRef = React.createRef()
+  const tagsRef = React.createRef()
 
+  const [showLink, setShowLink] = useState(false)
+  const [allowToolTip, setAllowToolTip] = useState(false)
+  React.useLayoutEffect(() => {
+
+    if (tagsRef.current.scrollHeight > tagsRef.current.offsetHeight) {
+      setAllowToolTip(true)
+    }
+
+    else {
+      setAllowToolTip(false)
+    }
+    // console.log("descRef scroll height" + tagsRef.current.scrollHeight, "offset" + tagsRef.current.offsetHeight)
+  }, [tagsRef])
+  React.useLayoutEffect(() => {
+    if (descRef.current.scrollHeight > descRef.current.offsetHeight + 1) {
+      setShowLink(true)
+    }
+
+    else {
+      setShowLink(false)
+    }
+
+    // console.log("descRef scroll height" + tagsRef.current.scrollHeight, "offset" + tagsRef.current.offsetHeight)
+  }, [descRef])
+
+
+  // like and fav ui 
+  // const [likeClick, setLikeClick] = useState(false)
+  const [uiSpiner, setUiSpiner] = useState(null)
+  const [uiliked, setUiLiked] = useState(false)
+  const onLikeClick = () => {
+    // setUiSpiner(null)
+    setUiLiked(true)
+    setUiSpiner(true)
+    setTimeout(() => {
+      setUiSpiner(false)
+
+    }, 2000)
+  }
+  // setTimeout(() => {
+  // }, 3000)
+  // useEffect(() => {
+  //   setUiSpiner(null)
+
+  // }, [])
   return (
     <Box className="card-container" position="relative">
       {/* {selectable && (
@@ -133,11 +190,11 @@ const AppCard = ({ selectable, updated, item }) => {
         {item &&
           <Card className={classes.root}>
             <CardActionArea className={classes.cardActionArea} component="div">
-              <CardMedia
+              {/* <CardMedia
                 onClick={() => ViewAppDetail(item.id)}
                 className={`${classes.media} appCardHeader`}
                 style={{
-                  backgroundColor: item.content.category == "Social" ? "#1DBF73" : 'lightgray'
+                  backgroundColor: appBg[item.content.category]
                 }}
                 image={
                   item.content.skappLogo.thumbnail &&
@@ -145,7 +202,14 @@ const AppCard = ({ selectable, updated, item }) => {
                   }`
                 }
                 title="Contemplative Reptile"
-              />
+              /> */}
+              <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
+                backgroundColor: appBg[item.content.category] ? appBg[item.content.category] : Math.floor(Math.random() * 16777215).toString(16)
+              }}>
+                <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail &&
+                  `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
+                  }`} alt="" /></span>
+              </Box>
               <div className="categoryOnAppCard">
                 <span>
                   {item.content.category}
@@ -195,31 +259,66 @@ const AppCard = ({ selectable, updated, item }) => {
                     </IconButton>
                   </Box>
                 </Box>
-                <Box className={`${classes.tags} tags-card`} >
+                {(item.content.tags && allowToolTip) ?
+                  <Box position="relative" className={`${classes.tags} tags-card`} ref={tagsRef} >
 
-                  {item.content.tags && item.content.tags.map((item, index) => {
-                    return (
-                      // <Typography variant="caption" component="span">
-                      //   #{item}
-                      // </Typography>
-                      <>
-                        <Typography className="tagOnAppCard" variant="caption" component='span'>
-                          #{item}
-                        </Typography>
+                    {item.content.tags && item.content.tags.map((item, index) => {
+                      return (
+                        // <Typography variant="caption" component="span">
+                        //   #{item}
+                        // </Typography>
+                        <>
+                          <Typography className="tagOnAppCard" variant="caption" component='span'>
+                            #{item}
+                          </Typography>
 
-                      </>
-                    )
-                  })}
-                  {/* <Typography variant="caption" component="span">
-                  Programms
-            </Typography>
-                <Typography variant="caption" component="span">
-                  |
-            </Typography>
-                <Typography variant="caption" component="span">
-                  Utilities
-            </Typography> */}
-                </Box>
+                        </>
+                      )
+                    })}
+                    {/* <Typography variant="caption" component="span">
+                    Programms
+                    </Typography>
+                    <Typography variant="caption" component="span">
+                    |
+                    </Typography>
+                    <Typography variant="caption" component="span">
+                    Utilities
+                    </Typography> */}
+                    <Tooltip title={item.content.tags && item.content.tags.map(item => ' #' + item)}>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 400,
+
+                      }} className={classes.moreDescBtn}> ...more</span>
+                    </Tooltip>
+
+
+                  </Box>
+                  : <Box className={`${classes.tags} tags-card`} ref={tagsRef} >
+
+                    {item.content.tags && item.content.tags.map((item, index) => {
+                      return (
+                        // <Typography variant="caption" component="span">
+                        //   #{item}
+                        // </Typography>
+                        <>
+                          <Typography className="tagOnAppCard" variant="caption" component='span'>
+                            #{item}
+                          </Typography>
+
+                        </>
+                      )
+                    })}
+                    {/* <Typography variant="caption" component="span">
+                    Programms
+                    </Typography>
+                    <Typography variant="caption" component="span">
+                    |
+                    </Typography>
+                    <Typography variant="caption" component="span">
+                    Utilities
+                    </Typography> */}
+                  </Box>}
                 {/* <Box className={`${classes.tags} tags-card`} display="flex" >
 
                   <Typography variant="caption" component='span'>
@@ -233,14 +332,43 @@ const AppCard = ({ selectable, updated, item }) => {
                         </Typography>
                 </Box> */}
                 <Typography
+                  ref={descRef}
                   variant="body2"
                   color="textSecondary"
                   component="p"
-                  className={classes.cardSmallText}
-                  noWrap
+                  className={`${classes.cardSmallText} ${classes.desc}`}
+
                 >
                   {item.content.appDescription}
+                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
+
                 </Typography>
+                {/* <div
+                  ref={descRef}
+                  className={`${classes.cardSmallText} ${classes.desc}`}
+
+                >
+                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
+Lorem ipsum dolor sit amet co
+                </div> */}
+                {/* {
+                  
+                    ? <Tooltip title={item.content.appDescription}>
+                     
+                    </Tooltip>
+                    : <Typography
+                      ref={divRef}
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                      className={`${classes.cardSmallText} ${classes.desc}`}
+
+
+                    >
+                      {item.content.appDescription}
+                    </Typography>
+                } */}
+
               </CardContent>
             </CardActionArea>
 
@@ -316,17 +444,35 @@ const AppCard = ({ selectable, updated, item }) => {
                 >
                   {(parseInt(appStats[2]) === parseInt(1)) ? (
                     <Tooltip title="Number of user liked this app" placement="top" arrow>
-                      <ThumbUpAltIcon
+                      { uiSpiner === null ? <ThumbUpAltIcon
                         className={`${classes.cardFooterIcon} unlike`}
-                        onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
-                      />
+                        onClick={() => {
+                          appStatsAction(EVENT_APP_LIKED_REMOVED)
+                          onLikeClick()
+                        }}
+                      /> : uiSpiner === false ? <ThumbUpAltOutlinedIcon
+                        className={`${classes.cardFooterIcon} like`}
+                        onClick={() => {
+                          appStatsAction(EVENT_APP_LIKED)
+                          onLikeClick()
+                        }}
+                      /> : <DataUsageIcon className={`${classes.cardFooterIcon}`} />}
                     </Tooltip>
                   ) : (
                     <Tooltip title="Number of user liked this app" placement="top" arrow>
-                      <ThumbUpAltOutlinedIcon
+                      {uiSpiner === null ? <ThumbUpAltOutlinedIcon
                         className={`${classes.cardFooterIcon} like`}
-                        onClick={() => appStatsAction(EVENT_APP_LIKED)}
-                      />
+                        onClick={() => {
+                          appStatsAction(EVENT_APP_LIKED)
+                          onLikeClick()
+                        }}
+                      /> : uiSpiner === false ? <ThumbUpAltIcon
+                        className={`${classes.cardFooterIcon} unlike`}
+                        onClick={() => {
+                          appStatsAction(EVENT_APP_LIKED_REMOVED)
+                          onLikeClick()
+                        }}
+                      /> : <DataUsageIcon className={`${classes.cardFooterIcon}`} />}
                     </Tooltip>
                   )}
                   <Typography variant="caption">{aggregatedAppStats[2] && millify(aggregatedAppStats[2])}</Typography>
