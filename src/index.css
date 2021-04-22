@@ -750,3 +750,7 @@ input[type="search"]::-webkit-search-cancel-button {
     height: 65px;
   }
 }
+.unlike:hover, .like:hover, .unFav:hover, .fav:hover{
+background-color: #4e4e4e28;
+border-radius: 5px;
+}

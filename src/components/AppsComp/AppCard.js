@@ -154,18 +154,14 @@ const AppCard = ({ selectable, updated, item }) => {
   // like and fav ui 
   // const [likeClick, setLikeClick] = useState(false)
   const [uiSpiner, setUiSpiner] = useState(null)
-  const [uiliked, setUiLiked] = useState(false)
+  const [uiliked, setUiLiked] = useState(null)
   const onLikeClick = () => {
-    // setUiSpiner(null)
-    setUiLiked(true)
     setUiSpiner(true)
     setTimeout(() => {
       setUiSpiner(false)
 
     }, 2000)
   }
-  // setTimeout(() => {
-  // }, 3000)
   // useEffect(() => {
   //   setUiSpiner(null)
 
