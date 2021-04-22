@@ -195,7 +195,7 @@ export default function Navbar() {
     const [person, setPerson] = useState({})
     const user = useSelector(state => state.userSession)
     useEffect(() => {
-        setPerson(user.person.profile)
+        setPerson(user?.person?.profile)
     }, [setPerson, user])
     console.log(person)
     const handleProfileMenuOpen = (event) => {
