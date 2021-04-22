@@ -26,12 +26,12 @@ const Footer = () => {
 </li>
                     <li>
 
-                        <a href="https://github.com/skynethubio/skapp-private/files/6328563/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
+                        <a href="/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
                             Privacy Policy
     </a>
                     </li>
                     <li>
-                        <a href="https://github.com/skynethubio/skapp-private/files/6328564/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
+                        <a href="/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
                             Terms & Conditions
     </a>
 
