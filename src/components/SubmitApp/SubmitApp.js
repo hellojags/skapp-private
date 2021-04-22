@@ -25,7 +25,7 @@ import {
   getMyHostedApps,
 } from "../../service/SnSkappService";
 import TagsInput from "react-tagsinput";
-import "react-tagsinput/react-tagsinput.css"; // If using WebPack and style-loader.
+import "./taginput.css"; // If using WebPack and style-loader.
 import imageCompression from "browser-image-compression";
 import Alert from "@material-ui/lab/Alert";
 import Loader from "react-loader-spinner";
@@ -155,7 +155,8 @@ const SubmitApp = () => {
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
       setValue('applogo', imgThumbnailSkylink);
-      setVersion(portalMinVersion);
+      setValue('verson', portalMinVersion);
+      // setVersion(portalMinVersion);
     }
   }, [appDetail]);
 
@@ -173,7 +174,7 @@ const SubmitApp = () => {
       // setMandatory(true);
     } else if (data.appname === "") {
       setIsAppNameTrue(true);
-    } else if (verson === "") {
+    } else if (data.verson === "") {
       setIsAppVersionTrue(true);
     } else if (data.appUrl === "") {
       setIsAppUrlTrue(true);
@@ -189,7 +190,7 @@ const SubmitApp = () => {
         $type: "skapp",
         $subtype: "published",
         id: appDetail?.id || uuidv4(),
-        version: "v1",
+        version: data.verson,
         ts: new Date().getTime(),
         content: data,
       };
@@ -436,30 +437,99 @@ const SubmitApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
+          <Box className={classes.inputContainer} flex={1}>
+            <label>App URL(Skylink)</label>
+            <input
+              name="appUrl"
+              ref={register}
+              className={classes.input}
+              placeholder="https://[hns name].hns"
+            />
+            {isAppUrlTrue && (
+              <div className="required-field">This field is required</div>
+            )}
+          </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
             <label>App Version</label>
+            <input
+              name="verson"
+              ref={register}
+              className={classes.input}
+              placeholder="Version"
+            />
+            { isAppVersionTrue && (
+              <div className="required-field">This field is required</div>
+            )}
+          </Box>
+          <Box className={`${classes.inputContainer}`} flex={1}>
+            <label>App Status</label>
             <Box>
-              <Select
-                //defaultValue={verson}
-                value={{ value: verson, label: verson }}
-                onChange={(e) => setVersion(e.value)}
-                options={optionsVersion}
+              <Controller
+                isMulti
+                as={Select}
+                ref={register}
+                control={control}
+                name="appStatus"
+                defaultValue={selectedOption}
+                onChange={setSelectedOption}
+                options={appStatus}
                 styles={reactSelectStyles}
               />
-              {isAppVersionTrue && (
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          display="flex"
+          className={`${classes.formRow} ${classes.formRow2}`}
+        >
+          <Box className={`${classes.inputContainer}`} flex={1}>
+            <label>App Category</label>
+            <Box>
+              <Controller
+                as={Select}
+                control={control}
+                ref={register}
+                name="category"
+                defaultValue={selectedOption}
+                onChange={setSelectedOption}
+                options={appCatOptions}
+                styles={reactSelectStyles}
+              />
+              {isAppCatTrue && (
                 <div className="required-field">This field is required</div>
               )}
             </Box>
           </Box>
-          <Box className={classes.inputContainer} flex={1}>
-            <label>Demo Link</label>
-            <input
+          <Box className={classes.inputContainerTag} flex={1}>
+            <label>Custom Tags</label>
+            <TagsInput
+              value={tags}
+              className={`${classes.inputTag}`}
+              onChange={(tags) => setTags(tags)}
+            />
+            {/* <input
               className={classes.input}
-              name="demoUrl"
+              name="tags"
               ref={register}
-              placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+              value="Skylink"
+            /> */}
+          </Box>
+        </Box>
+        <Box
+          display="flex"
+          className={`${classes.formRow} ${classes.formRow2}`}
+        >
+           <Box className={classes.inputContainer} flex={1}>
+            <label>Git URL</label>
+            <input
+              name="sourceCode"
+              ref={register}
+              className={classes.input}
+              placeholder="https://github.com"
             />
           </Box>
+          
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
             <label>Age Restriction?</label>
             <Box>
@@ -479,86 +549,23 @@ const SubmitApp = () => {
             </Box>
           </Box>
         </Box>
-        <Box
-          display="flex"
-          className={`${classes.formRow} ${classes.formRow2}`}
-        >
-          <Box className={classes.inputContainer} flex={1}>
-            <label>App URL</label>
-            <input
-              name="appUrl"
-              ref={register}
-              className={classes.input}
-              placeholder="https://[hns name].hns"
-            />
-            {isAppUrlTrue && (
-              <div className="required-field">This field is required</div>
-            )}
-          </Box>
-          <Box className={classes.inputContainer} flex={1}>
-            <label>Source Code</label>
-            <input
-              name="sourceCode"
-              ref={register}
-              className={classes.input}
-              placeholder="https://github.com"
-            />
-          </Box>
-          <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Category</label>
-            <Box>
-              <Controller
-                as={Select}
-                control={control}
-                ref={register}
-                name="category"
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
-                options={appCatOptions}
-                styles={reactSelectStyles}
-              />
-              {isAppCatTrue && (
-                <div className="required-field">This field is required</div>
-              )}
-            </Box>
-          </Box>
-        </Box>
-        <Box
+       
+        {/* <Box
           display="flex"
           className={`${classes.formRow} ${classes.formRow4}`}
         >
           <Box className={classes.inputContainer} flex={1}>
-            <label>Custom Tags</label>
-            <TagsInput
-              value={tags}
+            <label>Demo Link</label>
+            <input
               className={classes.input}
-              onChange={(tags) => setTags(tags)}
-            />
-            {/* <input
-              className={classes.input}
-              name="tags"
+              name="demoUrl"
               ref={register}
-              value="Skylink"
-            /> */}
+              placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+            />
           </Box>
 
-          <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Status</label>
-            <Box>
-              <Controller
-                isMulti
-                as={Select}
-                ref={register}
-                control={control}
-                name="appStatus"
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
-                options={appStatus}
-                styles={reactSelectStyles}
-              />
-            </Box>
-          </Box>
-        </Box>
+      
+        </Box> */}
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.previewImgLabel}>

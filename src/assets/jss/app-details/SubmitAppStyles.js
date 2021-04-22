@@ -101,6 +101,28 @@ const SubmitAppStyles = () => ({
         }
 
     },
+    inputTag: {
+        background: '#fff',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 10,
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 10,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+
+    },
     inputContainer: {
         '& > label': {
             display: 'block',
@@ -125,6 +147,27 @@ const SubmitAppStyles = () => ({
 
         },
 
+    },
+    inputContainerTag: {
+        '& > label': {
+            display: 'block',
+            color: '#5A607F',
+            marginBottom: 7
+        },
+        '& input:focus, & select:focus': {
+            outline: 'none!important',
+        },
+        marginTop: '25px',
+        '&': {
+            marginRight: '1rem'
+        },
+        '& input, & input': {
+            fontSize: 16
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '16px',
+            marginRight: '10px'
+        },
     },
     max33: {
         maxWidth: 'calc(33.33% - 1rem)',
