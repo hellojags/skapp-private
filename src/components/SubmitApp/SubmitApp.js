@@ -5,9 +5,10 @@ import {
   makeStyles,
   Grid,
   TextareaAutosize,
+  Tooltip 
 } from "@material-ui/core";
 import Select from "react-select";
-import { Add } from "@material-ui/icons";
+import { Add, HelpOutline } from "@material-ui/icons";
 import styles from "../../assets/jss/app-details/SubmitAppStyles";
 // img icon
 import { ReactComponent as ImgIcon } from "../../assets/img/icons/image.svg";
@@ -392,7 +393,7 @@ const SubmitApp = () => {
       <Box component="form">
         {/* < */}
         <Box>
-          <label className={classes.label}>Site Logo</label>
+          <label className={classes.label}>Site Logo <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
           <div
             style={{ position: "relative" }}
             id="logo"
@@ -426,7 +427,7 @@ const SubmitApp = () => {
             className={`${classes.inputContainer} ${classes.max33}`}
             flex={1}
           >
-            <label>App Name</label>
+            <label>App Name <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <input
               className={classes.input}
               placeholder="Skylink"
@@ -438,7 +439,7 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={classes.inputContainer} flex={1}>
-            <label>App URL(Skylink)</label>
+            <label>App URL(Skylink) <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <input
               name="appUrl"
               ref={register}
@@ -450,7 +451,7 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>App Version</label>
+            <label>App Version <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <input
               name="verson"
               ref={register}
@@ -462,7 +463,7 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Status</label>
+            <label>App Status <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <Box>
               <Controller
                 isMulti
@@ -484,7 +485,7 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow2}`}
         >
           <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Category</label>
+            <label>App Category <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -502,7 +503,7 @@ const SubmitApp = () => {
             </Box>
           </Box>
           <Box className={classes.inputContainerTag} flex={1}>
-            <label>Custom Tags</label>
+            <label>Custom Tags <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <TagsInput
               value={tags}
               className={`${classes.inputTag}`}
@@ -521,7 +522,7 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow2}`}
         >
            <Box className={classes.inputContainer} flex={1}>
-            <label>Git URL</label>
+            <label>Git URL <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <input
               name="sourceCode"
               ref={register}
@@ -531,7 +532,7 @@ const SubmitApp = () => {
           </Box>
           
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>Age Restriction?</label>
+            <label>Age Restriction? <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -568,12 +569,12 @@ const SubmitApp = () => {
         </Box> */}
         <div className={classes.OneRowInput}>
           <div>
-            <label className={classes.previewImgLabel}>
-              Preview Video/Images
+            <label className={classes.previewImgLabel} >
+              Preview Video/Images 
               <span>
                 {" "}
                 Max. size of 5 MB in: JPG or PNG. 1750x900 or larger recommended
-              </span>
+              </span> <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
             </label>
           </div>
           <Grid container spacing={2}>
@@ -688,7 +689,7 @@ const SubmitApp = () => {
           <div>
             <label className={classes.textareaLabel}>
               App Description
-              <span>Detailed summary of your app</span>
+              <span>Detailed summary of your app</span><Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
             </label>
           </div>
           <Box position="relative">
@@ -710,7 +711,7 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.textareaLabel}>
-              Release Notes
+              Release Notes <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
               {/* <span>This will go on App Card.</span> */}
             </label>
           </div>
@@ -732,7 +733,7 @@ const SubmitApp = () => {
         </div>
         <div className={classes.OneRowInput}>
           <div>
-            <label className={classes.textareaLabel}>Social Connections</label>
+            <label className={classes.textareaLabel}>Social Connections <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
           </div>
           <Box position="relative">
             <Grid container spacing={2}>
