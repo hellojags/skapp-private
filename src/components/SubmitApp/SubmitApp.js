@@ -161,6 +161,41 @@ const SubmitApp = () => {
     }
   }, [appDetail]);
 
+  const handleReset = () => {
+    if (appDetail?.content) {
+      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
+      setValue('appname', appName);
+      setValue('sourceCode', sourceCode);
+      setValue('appUrl', hns);
+      setValue('applogo', imgThumbnailSkylink);
+      setValue('verson', portalMinVersion);
+    } else {
+      setValue('appname', '');
+      setValue('sourceCode', '');
+      setValue('appUrl', '');
+      setValue('applogo', '');
+      setValue('verson', '');
+    }
+    setValue("demoUrl", "");
+    setValue("category", "");
+    setValue("age", "");
+    setValue("appStatus", "");
+    setValue("firstSocialLinkTitle", "");
+    setValue("secondSocialLinkTitle", "");
+    setValue("thirdSocialLinkTitle", "");
+    setSelectedOption("");
+    setVideoObj({});
+    setAppLogo("");
+    setTags([]);
+    setfirstSocialLinkTitle("");
+    setSecondSocialLinkTitle("");
+    setThirdSocialLinkTitle("");
+    setfirstSocialLink("");
+    setSecondSocialLink("");
+    setThirdSocialLink("");
+    setValue('appDescription', '');
+    setValue('releaseNotes', '');
+  }
   //manage submit loader
   const manageSubmitLoader = (val) => {
     setIsSubmit(val);
@@ -374,7 +409,7 @@ const SubmitApp = () => {
       >
         <h1 className={classes.h1}>Publish App</h1>
         <Box className={classes.btnBox}>
-          <Button className={classes.cancelBtn}>Cancel </Button>
+          <Button className={classes.cancelBtn} onClick={handleReset}> Reset Form </Button>
           <Button
             disabled={isSubmit}
             className={classes.submitBtn}
@@ -427,7 +462,7 @@ const SubmitApp = () => {
             className={`${classes.inputContainer} ${classes.max33}`}
             flex={1}
           >
-            <label>App Name <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+            <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               className={classes.input}
               placeholder="Skylink"
@@ -438,8 +473,8 @@ const SubmitApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={classes.inputContainer} flex={1}>
-            <label>App URL(Skylink) <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+          <Box className={`${classes.inputContainer} ${classes.max33}`} flex={1}>
+            <label>App URL(Skylink) <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="appUrl"
               ref={register}
@@ -450,8 +485,8 @@ const SubmitApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>App Version <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+          <Box className={`${classes.inputContainer}`} flex={1}>
+            <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="verson"
               ref={register}
@@ -462,11 +497,11 @@ const SubmitApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Status <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
+            <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Controller
-                isMulti
+                isMulti={false}
                 as={Select}
                 ref={register}
                 control={control}
@@ -484,8 +519,8 @@ const SubmitApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-          <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Category <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+          <Box className={`${classes.inputContainer}`}>
+            <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -503,7 +538,7 @@ const SubmitApp = () => {
             </Box>
           </Box>
           <Box className={classes.inputContainerTag} flex={1}>
-            <label>Custom Tags <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+            <label>Custom Tags <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <TagsInput
               value={tags}
               className={`${classes.inputTag}`}
@@ -522,7 +557,7 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow2}`}
         >
            <Box className={classes.inputContainer} flex={1}>
-            <label>Git URL <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+            <label>Git URL <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="sourceCode"
               ref={register}
@@ -530,9 +565,17 @@ const SubmitApp = () => {
               placeholder="https://github.com"
             />
           </Box>
-          
+          <Box className={classes.inputContainer} flex={1}>
+            <label>Demo URL</label>
+            <input
+              className={classes.input}
+              name="demoUrl"
+              ref={register}
+              placeholder="https://www.demo.com/UJJ5Rgbu2TM"
+            />
+          </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>Age Restriction? <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+            <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -550,23 +593,6 @@ const SubmitApp = () => {
             </Box>
           </Box>
         </Box>
-       
-        {/* <Box
-          display="flex"
-          className={`${classes.formRow} ${classes.formRow4}`}
-        >
-          <Box className={classes.inputContainer} flex={1}>
-            <label>Demo Link</label>
-            <input
-              className={classes.input}
-              name="demoUrl"
-              ref={register}
-              placeholder="https://www.demo.com/UJJ5Rgbu2TM"
-            />
-          </Box>
-
-      
-        </Box> */}
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.previewImgLabel} >
@@ -574,7 +600,7 @@ const SubmitApp = () => {
               <span>
                 {" "}
                 Max. size of 5 MB in: JPG or PNG. 1750x900 or larger recommended
-              </span> <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
+              </span> <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
             </label>
           </div>
           <Grid container spacing={2}>
@@ -689,7 +715,7 @@ const SubmitApp = () => {
           <div>
             <label className={classes.textareaLabel}>
               App Description
-              <span>Detailed summary of your app</span><Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
+              <span>Detailed summary of your app</span><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
             </label>
           </div>
           <Box position="relative">
@@ -711,7 +737,7 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.textareaLabel}>
-              Release Notes <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip>
+              Release Notes <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
               {/* <span>This will go on App Card.</span> */}
             </label>
           </div>
@@ -733,21 +759,27 @@ const SubmitApp = () => {
         </div>
         <div className={classes.OneRowInput}>
           <div>
-            <label className={classes.textareaLabel}>Social Connections <Tooltip title="site logo"><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></Tooltip></label>
+            <label className={classes.textareaLabel}>Social Connections <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
           </div>
           <Box position="relative">
             <Grid container spacing={2}>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Select
+                  <Controller
+                    isMulti={false}
+                    as={Select}
+                    ref={register}
+                    control={control}
                     classNamePrefix="socialMedia"
                     className={classes.socilaMediaSelect}
+                    name="firstSocialLinkTitle"
                     defaultValue={firstSocialLinkTitle}
                     onChange={(e) => setfirstSocialLinkTitle(e.value)}
                     options={socialOption}
                     styles={reactSelectStyles}
                   />
                   <input
+                    value={firstSocialLink}
                     placeholder=""
                     onChange={(e) => setfirstSocialLink(e.target.value)}
                   />
@@ -755,9 +787,14 @@ const SubmitApp = () => {
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Select
+                  <Controller
+                    isMulti={false}
+                    as={Select}
+                    ref={register}
+                    control={control}
                     classNamePrefix="socialMedia"
                     className={classes.socilaMediaSelect}
+                    name="secondSocialLinkTitle"
                     defaultValue={secondSocialLinkTitle}
                     onChange={(e) => setSecondSocialLinkTitle(e.value)}
                     options={socialOption}
@@ -765,15 +802,21 @@ const SubmitApp = () => {
                   />
                   <input
                     placeholder=""
+                    value={secondSocialLink}
                     onChange={(e) => setSecondSocialLink(e.target.value)}
                   />
                 </Box>
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Select
+                  <Controller
+                    isMulti={false}
+                    as={Select}
+                    ref={register}
+                    control={control}
                     classNamePrefix="socialMedia"
                     className={classes.socilaMediaSelect}
+                    name="thirdSocialLinkTitle"
                     defaultValue={thirdSocialLinkTitle}
                     onChange={(e) => setThirdSocialLinkTitle(e.value)}
                     options={socialOption}
@@ -781,6 +824,7 @@ const SubmitApp = () => {
                   />
                   <input
                     placeholder=""
+                    value={thirdSocialLink}
                     onChange={(e) => setThirdSocialLink(e.target.value)}
                   />
                 </Box>

@@ -262,18 +262,9 @@ const SubmitAppStyles = () => ({
     formRow1: {
         '@media only screen and (max-width: 575px)': {
             flexWrap: "wrap",
-            '& > div:first-child, & > div:nth-child(3)': {
+            '& > div': {
                 maxWidth: 'calc(100% - 1rem)',
                 flex: 'calc(100% - 1rem)'
-            }
-            ,
-            '& > div:nth-child(3)': {
-                order: 4,
-
-            },
-            '& > div:nth-child(2), & > div:nth-child(4)': {
-                maxWidth: 'calc(50% - 13px)',
-                flex: 'calc(50% - 13px)'
             }
         }
     },
