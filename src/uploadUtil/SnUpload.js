@@ -119,6 +119,9 @@ const SnUpload = React.forwardRef((props, ref) => {
   };
 
   const handleDrop = async (acceptedFiles) => {
+    // if (props.uploadStarted) {
+    props.uploadStarted && props.uploadStarted(true);
+    // }
     if ((props.directoryMode || isDir) && acceptedFiles.length) {
       const rootDir = getRootDirectory(acceptedFiles[0]); // get the file path from the first file
 
@@ -207,6 +210,8 @@ const SnUpload = React.forwardRef((props, ref) => {
           props.onUploadEnd && props.onUploadEnd();
           //send event to parent
         } catch (error) {
+          props.uploadStarted && props.uploadStarted(true);
+    
           if (
             error.response &&
             error.response.status === HttpStatus.TOO_MANY_REQUESTS

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import styles from "../../assets/jss/app-details/SubmitAppStyles";
 import { ReactComponent as ImgIcon } from "../../assets/img/icons/image.svg";
 import { useForm, Controller } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 // importing action
 import {
   publishAppAction,
@@ -34,6 +34,8 @@ import { useParams } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
 import { skylinkToUrl } from "../../utils/SnUtility";
+import SnUpload from '../../uploadUtil/SnUpload';
+import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -125,7 +127,6 @@ const SubmitApp = () => {
   const [thirdSocialLinkTitle, setThirdSocialLinkTitle] = useState("");
   const [appDetail, setAppDetail] = useLoadHostedAppFromUrl();
 
-
   const [firstSocialLink, setfirstSocialLink] = useState("");
   const [secondSocialLink, setSecondSocialLink] = useState("");
   const [thirdSocialLink, setThirdSocialLink] = useState("");
@@ -149,6 +150,7 @@ const SubmitApp = () => {
   const [isAppCatTrue, setIsAppCatTrue] = useState(false);
   const [isAppDetailDesTrue, setIsAppDetailDesTrue] = useState(false);
 
+  const imgUploadEleRef = createRef();
   useEffect(() => {
     if (appDetail?.content) {
       const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
@@ -382,20 +384,37 @@ const SubmitApp = () => {
   };
 
   const UploadLogoFunction = (file) => {
+    console.log(file);
     setIsLogoUploaded(true);
-    var image = document.getElementById("logo");
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function (oFREvent) {
-      var img = document.createElement("img");
-      img.setAttribute("width", "100%");
-      img.setAttribute("height", "160px");
-      image.append(img);
-      img.src = oFREvent.target.result;
-    };
-    UploadAppLogo(file, setLogoUploaded, logoLoaderHandler);
+    // var image = document.getElementById("logo");
+    // var reader = new FileReader();
+    // reader.readAsDataURL(file);
+    // reader.onload = function (oFREvent) {
+    //   var img = document.createElement("img");
+    //   img.setAttribute("width", "100%");
+    //   img.setAttribute("height", "160px");
+    //   image.append(img);
+    //   img.src = oFREvent.target.result;
+    // };
+    // UploadAppLogo(file, setLogoUploaded, logoLoaderHandler);
   };
-
+  const handleImgUpload = (obj) => {
+   let newObj = {
+      thumbnail: obj.thumbnail,
+      image: obj.skylink,
+    };
+    setAppLogo(newObj);
+    setIsLogoUploaded(false);
+    // formik.setFieldValue("imgSkylink", obj.skylink, true);
+    // formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true)
+  };
+  const handleDropZoneClick = (evt, dropZoneRef) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    // setIsLogoUploaded(true);
+    dropZoneRef.current.gridRef.current.click();
+  };
+  
   // get
 
   return (
@@ -426,34 +445,49 @@ const SubmitApp = () => {
       </Box>
 
       <Box component="form">
-        {/* < */}
         <Box>
-          <label className={classes.label}>Site Logo <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
-          <div
-            style={{ position: "relative" }}
-            id="logo"
-            className={classes.siteLogo}
-          >
-            {/* <ImgIcon /> */}
-            { !appLogo && appDetail ? <img  width={"100%"} height={"160px"} src={skylinkToUrl(appDetail.content.imgThumbnailSkylink)} /> : null }
-            <div style={{ position: "absolute" }}>
-              {isLogoUploaded && (
-                <Loader type="Oval" color="#57C074" height={50} width={50} />
-              )}
-            </div>
+          <label className={classes.label}>Site Logo</label>
+          <div className="d-none">
+            <SnUpload
+                name="files"
+                source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
+                ref={imgUploadEleRef}
+                directoryMode={false}
+                onUpload={(e) => handleImgUpload(e)}
+                uploadStarted={(e) => setIsLogoUploaded(e)}
+            />
           </div>
-
+          <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+            {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <ImgIcon />}
+            { !isLogoUploaded && (Object.keys(appLogo).length || appDetail) ? <img
+                alt="app"
+                src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
+                style={{
+                    width: "250px",
+                    height: "150px",
+                    // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                }}
+                onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                name="1"
+              /> : null 
+            }
+            { isLogoUploaded && (
+              <Loader
+                type="Oval"
+                color="#57C074"
+                height={50}
+                width={50}
+              />
+            )}
+          </div>
           <div className={classes.inputGuide}>
             Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
           </div>
-          <input
-            type="file"
-            onChange={(e) => UploadLogoFunction(e.target.files[0])}
-          />
+          <input type="text" hidden />
         </Box>
         {isAppLogoTrue && (
           <div className="required-field">This field is required</div>
-        )}
+        )} 
         <Box
           display="flex"
           className={`${classes.formRow} ${classes.formRow1}`}
