@@ -30,12 +30,13 @@ import "./taginput.css"; // If using WebPack and style-loader.
 import imageCompression from "browser-image-compression";
 import Alert from "@material-ui/lab/Alert";
 import Loader from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
 import { skylinkToUrl } from "../../utils/SnUtility";
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
+import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -66,7 +67,7 @@ const optionsAge = [
   { value: "general", label: "general" },
 ];
 
-const appStatus = [
+const appStatusOptions = [
   { value: "Alpha", label: "Alpha" },
   { value: "Beta", label: "Beta" },
   { value: "Live", label: "Live" },
@@ -112,20 +113,24 @@ const reactSelectStyles = {
 };
 
 let forImagesPreview = [];
-const SubmitApp = () => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const EditPublishApp = () => {
+  const [category, setCategory] = useState("");
+  const [appStatus, setAppStatus] = useState("");
+  const [age, setAge] = useState("");
   const dispatch = useDispatch();
 
-  const [verson, setVersion] = useState("");
   const [tags, setTags] = useState([]);
   const { register, handleSubmit, control, setValue } = useForm();
   const classes = useStyles();
+
+  const { appId } = useParams();
+  const history = useHistory();
 
   // state for social links according to format
   const [firstSocialLinkTitle, setfirstSocialLinkTitle] = useState("");
   const [secondSocialLinkTitle, setSecondSocialLinkTitle] = useState("");
   const [thirdSocialLinkTitle, setThirdSocialLinkTitle] = useState("");
-  const [appDetail, setAppDetail] = useLoadHostedAppFromUrl();
+  const [appDetail, setAppDetail] = useState({});
 
   const [firstSocialLink, setfirstSocialLink] = useState("");
   const [secondSocialLink, setSecondSocialLink] = useState("");
@@ -151,57 +156,54 @@ const SubmitApp = () => {
   const [isAppDetailDesTrue, setIsAppDetailDesTrue] = useState(false);
 
   const imgUploadEleRef = createRef();
-  useEffect(() => {
-    if (appDetail?.content) {
-      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
-      setValue('appname', appName);
-      setValue('sourceCode', sourceCode);
-      setValue('appUrl', hns);
-      setValue('applogo', imgThumbnailSkylink);
-      setValue('verson', portalMinVersion);
-      // setVersion(portalMinVersion);
+  
+  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
+
+  useEffect(async () => {
+    await dispatch(getMyPublishedAppsAction()); 
+    if (publishedAppsStore) {
+        let appJSON = publishedAppsStore.find(appData => appData.id === appId);
+        if(appJSON) {
+            await setAppDetail(appJSON);
+            if (appJSON?.content) {
+                const { appname, sourceCode, appUrl, previewVideo, skappLogo, demoUrl, category, age, appStatus, tags, connections, appDescription, releaseNotes } = appJSON.content;
+                setValue('appname', appname);
+                setValue('sourceCode', sourceCode);
+                setValue('appUrl', appUrl);
+                setValue('applogo', skappLogo);
+                setValue('verson', appJSON.version);
+                setValue("demoUrl", demoUrl);
+                setAge({ label: age, value: age });
+                setAppStatus({ label: appStatus, value: appStatus });
+                setCategory({ label: category, value: category });
+                setVideoObj(previewVideo);
+                setAppLogo(skappLogo);
+                setTags(tags);
+               
+                if (Object.keys(connections)[0]) {
+                    setfirstSocialLinkTitle({value: Object.keys(connections)[0], label: Object.keys(connections)[0]});
+                }
+          
+                if (Object.keys(connections)[1]) {
+                    setSecondSocialLinkTitle({value: Object.keys(connections)[1], label: Object.keys(connections)[1]});
+                }
+          
+                if (Object.keys(connections)[2]) {
+                    setThirdSocialLinkTitle({value: Object.keys(connections)[0], label: Object.keys(connections)[2]});
+                }
+                setfirstSocialLink(connections[Object.keys(connections)[0]] ? connections[Object.keys(connections)[0]]: "");
+                setSecondSocialLink(connections[Object.keys(connections)[1]] ? connections[Object.keys(connections)[1]] : "");
+                setThirdSocialLink(connections[Object.keys(connections)[2]] ? connections[Object.keys(connections)[2]] : "");
+                setValue('appDescription', appDescription);
+                setValue('releaseNotes', releaseNotes);
+            }
+        }
     }
-  }, [appDetail]);
+  }, []);
 
   const handleReset = () => {
-    if (appDetail?.content) {
-      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
-      setValue('appname', appName);
-      setValue('sourceCode', sourceCode);
-      setValue('appUrl', hns);
-      setValue('applogo', imgThumbnailSkylink);
-      setValue('verson', portalMinVersion);
-    } else {
-      setValue('appname', '');
-      setValue('sourceCode', '');
-      setValue('appUrl', '');
-      setValue('applogo', '');
-      setValue('verson', '');
-    }
-    setValue("demoUrl", "");
-    setValue("category", "");
-    setValue("age", "");
-    setValue("appStatus", "");
-    setValue("firstSocialLinkTitle", "");
-    setValue("secondSocialLinkTitle", "");
-    setValue("thirdSocialLinkTitle", "");
-    setSelectedOption("");
-    setVideoObj({});
-    setAppLogo("");
-    setTags([]);
-    setfirstSocialLinkTitle("");
-    setSecondSocialLinkTitle("");
-    setThirdSocialLinkTitle("");
-    setfirstSocialLink("");
-    setSecondSocialLink("");
-    setThirdSocialLink("");
-    setValue('appDescription', '');
-    setValue('releaseNotes', '');
+    history.push('/apps');
   }
-  //manage submit loader
-  const manageSubmitLoader = (val) => {
-    setIsSubmit(val);
-  };
 
   //manage loader to upload images
   //form submit function
@@ -216,7 +218,7 @@ const SubmitApp = () => {
       setIsAppVersionTrue(true);
     } else if (data.appUrl === "") {
       setIsAppUrlTrue(true);
-    } else if (data.category === null) {
+    } else if (!category) {
       setIsAppCatTrue(true);
     } else if (data.appDescription === "") {
       setIsAppDetailDesTrue(true);
@@ -238,24 +240,20 @@ const SubmitApp = () => {
         images: forImagesPreview,
       };
       obj.content.skappLogo = appLogo;
-      obj.content.category = obj.content.category && obj.content.category.value;
+      obj.content.category = category && category.value ? category.value : "";
       obj.content.defaultPath = "index.html or EMPTY";
-      obj.content.age = obj.content.age && obj.content.age.value;
+      obj.content.age = age && age.value ?  age.value : "";
       obj.content.previewVideo = videoObjt;
-      obj.content.appStatus =
-        obj.content.appStatus &&
-        obj.content.appStatus.map((i) => {
-          return i.value;
-        });
+      obj.content.appStatus = appStatus && appStatus.value ? appStatus.value : "";
       obj.content.tags = tags;
       obj.content.previewImages = imagesPrevieObj;
       obj.content.history = ["list of skylinks"];
       obj.content.supportDetails = "";
 
       obj.content.connections = {
-        [firstSocialLinkTitle]: firstSocialLink,
-        [secondSocialLinkTitle]: secondSocialLink,
-        [thirdSocialLinkTitle]: thirdSocialLink,
+        [firstSocialLinkTitle && firstSocialLinkTitle.value ? firstSocialLinkTitle.value: "" ]: firstSocialLink,
+        [secondSocialLinkTitle && secondSocialLinkTitle.value ? secondSocialLinkTitle.value : ""]: secondSocialLink,
+        [thirdSocialLinkTitle && thirdSocialLinkTitle.value ? thirdSocialLinkTitle.value: ""]: thirdSocialLink,
       };
 
       dispatch(publishAppAction(obj));
@@ -374,30 +372,6 @@ const SubmitApp = () => {
     fileReader.readAsArrayBuffer(file);
   };
 
-  const setLogoUploaded = (file) => {
-    console.log(file);
-    setAppLogo(file);
-  };
-
-  const logoLoaderHandler = (val) => {
-    setIsLogoUploaded(val);
-  };
-
-  const UploadLogoFunction = (file) => {
-    console.log(file);
-    setIsLogoUploaded(true);
-    // var image = document.getElementById("logo");
-    // var reader = new FileReader();
-    // reader.readAsDataURL(file);
-    // reader.onload = function (oFREvent) {
-    //   var img = document.createElement("img");
-    //   img.setAttribute("width", "100%");
-    //   img.setAttribute("height", "160px");
-    //   image.append(img);
-    //   img.src = oFREvent.target.result;
-    // };
-    // UploadAppLogo(file, setLogoUploaded, logoLoaderHandler);
-  };
   const handleImgUpload = (obj) => {
    let newObj = {
       thumbnail: obj.thumbnail,
@@ -426,9 +400,9 @@ const SubmitApp = () => {
         justifyContent="space-between"
         marginTop="7px"
       >
-        <h1 className={classes.h1}>Publish App</h1>
+        <h1 className={classes.h1}>Edit Publish App</h1>
         <Box className={classes.btnBox}>
-          <Button className={classes.cancelBtn} onClick={handleReset}> Reset Form </Button>
+          <Button className={classes.cancelBtn} onClick={handleReset}> Cancel </Button>
           <Button
             disabled={isSubmit}
             className={classes.submitBtn}
@@ -438,7 +412,7 @@ const SubmitApp = () => {
             {isSubmit ? (
               <Loader type="Oval" color="#FFFFFF" height={15} width={15} />
             ) : (
-              "Submit"
+              "Save"
             )}
           </Button>
         </Box>
@@ -459,9 +433,9 @@ const SubmitApp = () => {
           </div>
           <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
             {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <ImgIcon />}
-            { !isLogoUploaded && (Object.keys(appLogo).length || appDetail) ? <img
+            { !isLogoUploaded && (Object.keys(appLogo).length || Object.keys(appDetail).length) ? <img
                 alt="app"
-                src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
+                src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.skappLogo.thumbnail)}
                 style={{
                     width: "250px",
                     height: "150px",
@@ -534,15 +508,13 @@ const SubmitApp = () => {
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
             <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
-              <Controller
-                isMulti={false}
-                as={Select}
+              <Select
                 ref={register}
-                control={control}
                 name="appStatus"
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
-                options={appStatus}
+                value={appStatus}
+                defaultValue={appStatus}
+                onChange={(e)=> setAppStatus(e)}
+                options={appStatusOptions}
                 styles={reactSelectStyles}
               />
             </Box>
@@ -556,13 +528,12 @@ const SubmitApp = () => {
           <Box className={`${classes.inputContainer}`}>
             <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
-              <Controller
-                as={Select}
-                control={control}
+              <Select
                 ref={register}
                 name="category"
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
+                defaultValue={category}
+                value={category}
+                onChange={(e) => setCategory(e)}
                 options={appCatOptions}
                 styles={reactSelectStyles}
               />
@@ -611,16 +582,12 @@ const SubmitApp = () => {
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
             <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
-              <Controller
-                as={Select}
+              <Select
                 name="age"
                 ref={register}
-                control={control}
-                defaultValue={selectedOption}
-                onChange={([selected]) => {
-                  // React Select return object instead of value for selection
-                  return { value: selected };
-                }}
+                value={age}
+                defaultValue={age}
+                onChange={e => setAge(e)}
                 options={optionsAge}
                 styles={reactSelectStyles}
               />
@@ -756,10 +723,10 @@ const SubmitApp = () => {
             <TextareaAutosize
               name="appDescription"
               ref={register}
+              maxLength={5000}
               className={classes.textarea}
               aria-label="minimum height"
               rowsMin={6}
-              maxLength={5000}
               // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
               placeholder="Detailed summary of your app"
             />
@@ -782,8 +749,8 @@ const SubmitApp = () => {
               aria-label="minimum height"
               rowsMin={4}
               ref={register}
-              maxLength={5000}
               name="releaseNotes"
+              maxLength={5000}
               // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
               placeholder="Write your Comment"
             />
@@ -801,19 +768,18 @@ const SubmitApp = () => {
             <Grid container spacing={2}>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Controller
-                    isMulti={false}
-                    as={Select}
-                    ref={register}
-                    control={control}
-                    classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
-                    name="firstSocialLinkTitle"
-                    defaultValue={firstSocialLinkTitle}
-                    onChange={(e) => setfirstSocialLinkTitle(e.value)}
-                    options={socialOption}
-                    styles={reactSelectStyles}
-                  />
+                   <Select
+                        isMulti={false}
+                        ref={register}
+                        onChange={(e) => setfirstSocialLinkTitle(e)}
+                        options={socialOption}
+                        styles={reactSelectStyles}
+                        value={firstSocialLinkTitle}
+                        classNamePrefix="socialMedia"
+                        className={classes.socilaMediaSelect}
+                        name="firstSocialLinkTitle"
+                        defaultValue={firstSocialLinkTitle}
+                    />
                   <input
                     value={firstSocialLink}
                     placeholder=""
@@ -823,16 +789,16 @@ const SubmitApp = () => {
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Controller
+                  <Select
                     isMulti={false}
                     as={Select}
                     ref={register}
-                    control={control}
                     classNamePrefix="socialMedia"
                     className={classes.socilaMediaSelect}
                     name="secondSocialLinkTitle"
+                    value={secondSocialLinkTitle}
                     defaultValue={secondSocialLinkTitle}
-                    onChange={(e) => setSecondSocialLinkTitle(e.value)}
+                    onChange={(e) => setSecondSocialLinkTitle(e)}
                     options={socialOption}
                     styles={reactSelectStyles}
                   />
@@ -845,16 +811,16 @@ const SubmitApp = () => {
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
                 <Box display="flex" className={classes.socialOptionContainer}>
-                  <Controller
+                  <Select
                     isMulti={false}
-                    as={Select}
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
                     className={classes.socilaMediaSelect}
                     name="thirdSocialLinkTitle"
+                    value={thirdSocialLinkTitle}
                     defaultValue={thirdSocialLinkTitle}
-                    onChange={(e) => setThirdSocialLinkTitle(e.value)}
+                    onChange={(e) => setThirdSocialLinkTitle(e)}
                     options={socialOption}
                     styles={reactSelectStyles}
                   />
@@ -880,7 +846,7 @@ const SubmitApp = () => {
                       width={15}
                     />
                   ) : (
-                    "Submit"
+                    "Save"
                   )}
                 </Button>
               </Grid>
@@ -892,4 +858,4 @@ const SubmitApp = () => {
   );
 };
 
-export default SubmitApp;
+export default EditPublishApp;

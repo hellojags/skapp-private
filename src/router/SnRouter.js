@@ -1,5 +1,6 @@
 import Apps from '../components/AppsComp/Apps'
 import SubmitApp from '../components/SubmitApp/SubmitApp'
+import EditPublishApp from '../components/SubmitApp/EditPublishApp'
 import Error from '../components/ErrorPage/Error'
 import NoApps from '../components/NoApps/NoApps'
 import InstalledApps from '../components/AppsComp/InstalledApps'
@@ -47,6 +48,9 @@ const SnRouter = (props) => (
             </Route>
             <Route path='/submitapp/:appId?'>
                 <SubmitApp />
+            </Route>
+            <Route path='/editpublishapp/:appId'>
+                <EditPublishApp />
             </Route>
             <Route exact path='/error'>
                 <Error />
