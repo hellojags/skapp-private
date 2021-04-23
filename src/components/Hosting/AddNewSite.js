@@ -44,7 +44,7 @@ const socialOption = [
     { value: 'Twitter', label: 'Twitter' },
 ]
 
-const storageGatewayOption = getPortalList().map(portal => ({ "value": portal, "label": portal}));
+const storageGatewayOption = getPortalList().map(portal => ({ "value": portal, "label": portal }));
 
 const reactSelectStyles = {
     control: styles => ({
@@ -123,7 +123,7 @@ export default function AddNewSite() {
         });
     };
 
-    const setInfoModalParams = ({title, content, showClipboardCopy=false, clipboardCopyTooltip, open= true}) => {
+    const setInfoModalParams = ({ title, content, showClipboardCopy = false, clipboardCopyTooltip, open = true }) => {
         setInfoModalContent(content);
         setInfoModalTitle(title);
         setInfoModalShowCopyToClipboard(showClipboardCopy);
@@ -132,7 +132,7 @@ export default function AddNewSite() {
     };
 
     const onInfoModalClose = () => {
-        setInfoModalParams({open: false});
+        setInfoModalParams({ open: false });
         history.push("/hosting");
     };
 
@@ -160,188 +160,188 @@ export default function AddNewSite() {
 
     return (
         <>
-        <Box >
-            <Formik
-                initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
-                validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
-                validateOnChange={true}
-                validateOnBlur={true}
-                onSubmit={submitForm}>
-                {formik => (<form onSubmit={formik.handleSubmit}>
-                    <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                        <h1 className={classes.h1}>Submit New Site</h1>
-                        <Box className={classes.btnBox}>
-                            <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
-                            <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
+            <Box >
+                <Formik
+                    initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
+                    validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
+                    validateOnChange={true}
+                    validateOnBlur={true}
+                    onSubmit={submitForm}>
+                    {formik => (<form onSubmit={formik.handleSubmit}>
+                        <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
+                            <h1 className={classes.h1}>Submit New Site</h1>
+                            <Box className={classes.btnBox}>
+                                <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
+                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
+                            </Box>
                         </Box>
-                    </Box>
-                    <Box component="form">
-                        <Box>
-                            <label className={classes.label}>Site Logo</label>
-                            <div className="d-none">
-                                <SnUpload
-                                    name="files"
-                                    source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
-                                    ref={imgUploadEleRef}
-                                    directoryMode={false}
-                                    onUpload={(obj) => handleImgUpload(obj, formik)}
-                                />
-                            </div>
-                            <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
-                                {formik.values.imgThumbnailSkylink.trim()==="" && <ImgIcon />}
-                                {formik.values.imgThumbnailSkylink.trim()!=="" && <img
-                                    alt="app"
-                                    src={skylinkToUrl(formik.values.imgThumbnailSkylink)}
-                                    style={{
-                                        width: "250px",
-                                        height: "150px",
-                                        // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
-                                    }}
-                                    onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
-                                    name="1"
-                                />}
-                            </div>
-                            <div className={classes.inputGuide}>
-                                Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
+                        <Box component="form">
+                            <Box>
+                                <label className={classes.label}>Site Logo</label>
+                                <div className="d-none">
+                                    <SnUpload
+                                        name="files"
+                                        source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
+                                        ref={imgUploadEleRef}
+                                        directoryMode={false}
+                                        onUpload={(obj) => handleImgUpload(obj, formik)}
+                                    />
+                                </div>
+                                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                    {formik.values.imgThumbnailSkylink.trim() === "" && <ImgIcon />}
+                                    {formik.values.imgThumbnailSkylink.trim() !== "" && <img
+                                        alt="app"
+                                        src={skylinkToUrl(formik.values.imgThumbnailSkylink)}
+                                        style={{
+                                            width: "250px",
+                                            height: "150px",
+                                            // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                                        }}
+                                        onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                                        name="1"
+                                    />}
+                                </div>
+                                <div className={classes.inputGuide}>
+                                    Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
                 </div>
-                            <input type="text" hidden />
-                        </Box>
-                        <Box display='flex' className={`${classes.formRow} formSiteRow`}>
-                            <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
-                                <SnTextInput
-                                    label="App Name"
-                                    name="appName"
-                                    className={classes.input}
-                                    type="text" />
+                                <input type="text" hidden />
                             </Box>
-
-                        </Box>
-
-                        <Box display='flex' className={`${classes.formRow} formSiteRow`} style={{ maxWidth: 1100 }}>
-                            <Box className={`${classes.inputContainer}`} flex={1} >
-                                <label>Storage Gateway</label>
-                                <Box>
-                                    <SnSelect
-                                        label="Storage Gateway"
-                                        name="storageGateway"
-                                        options={storageGatewayOption}
-                                    />
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
+                                    <SnTextInput
+                                        label="App Name"
+                                        name="appName"
+                                        className={classes.input}
+                                        type="text" />
                                 </Box>
-                            </Box>
-                            <Box className={classes.inputContainer} flex={1} position="relative">
-                                <SnTextInput
-                                    label="Source Code"
-                                    name="sourceCode"
-                                    className={classes.input}
-                                    type="text" />
-                            </Box>
-                            <Box className={classes.inputContainer} flex={1}>
-                                <SnTextInput
-                                    label="Default Path"
-                                    name="defaultPath"
-                                    className={classes.input}
-                                    type="text" />
+
                             </Box>
 
-                        </Box>
-                        <div className={classes.OneRowInput}>
-                            <div className="d-none temp">
-                                <FormGroup>
-                                    <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
-                                        label={`Upload ${isFileUpload ? "File" : "Folder"}`}
-                                        control={<IOSSwitch
-                                            onChange={(evt) => setIsFileUpload(evt.target.checked)}
-                                            name="toggleFileUpload" />}
-
-                                    />
-                                </FormGroup>
-                            </div>
-
-                            <Grid container spacing={2}>
-                                <Grid item md={6} sm={12} xs={12}>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`} style={{ maxWidth: 1100 }}>
+                                <Box className={`${classes.inputContainer}`} flex={1} >
+                                    <label>Storage Gateway</label>
                                     <Box>
-                                        <div className="d-none">
-                                            <SnUpload
-                                                name="files"
-                                                source={UPLOAD_SOURCE_NEW_HOSTING}
-                                                ref={uploadEleRef}
-                                                directoryMode={!isFileUpload}
-                                                onUpload={(obj) => formik.setFieldValue("skylink", obj.skylink, true)}
-                                            />
+                                        <SnSelect
+                                            label="Storage Gateway"
+                                            name="storageGateway"
+                                            options={storageGatewayOption}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box className={classes.inputContainer} flex={1} position="relative">
+                                    <SnTextInput
+                                        label="Source Code"
+                                        name="sourceCode"
+                                        className={classes.input}
+                                        type="text" />
+                                </Box>
+                                <Box className={classes.inputContainer} flex={1}>
+                                    <SnTextInput
+                                        label="Default Path"
+                                        name="defaultPath"
+                                        className={classes.input}
+                                        type="text" />
+                                </Box>
 
-                                        </div>
-                                        <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
-                                            {/* <div><UploadIcon /></div>
+                            </Box>
+                            <div className={classes.OneRowInput}>
+                                <div className="d-none temp">
+                                    <FormGroup>
+                                        <FormControlLabel style={{ color: '#5A607F', marginBottom: 5 }}
+                                            label={`Upload ${isFileUpload ? "File" : "Folder"}`}
+                                            control={<IOSSwitch
+                                                onChange={(evt) => setIsFileUpload(evt.target.checked)}
+                                                name="toggleFileUpload" />}
+
+                                        />
+                                    </FormGroup>
+                                </div>
+
+                                <Grid container spacing={2}>
+                                    <Grid item md={6} sm={12} xs={12}>
+                                        <Box>
+                                            <div className="d-none">
+                                                <SnUpload
+                                                    name="files"
+                                                    source={UPLOAD_SOURCE_NEW_HOSTING}
+                                                    ref={uploadEleRef}
+                                                    directoryMode={!isFileUpload}
+                                                    onUpload={(obj) => formik.setFieldValue("skylink", obj.skylink, true)}
+                                                />
+
+                                            </div>
+                                            <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
+                                                {/* <div><UploadIcon /></div>
 
                                             <div>
                                                 Drop file here or <span style={{ color: '#1DBF73' }}>click here to upload</span>
                                             </div> */}
-                                            <DropzoneArea
-                                                showPreviewsInDropzone={false}
-                                                onDrop={(files) => {
-                                                    uploadEleRef.current.handleDrop(files)
-                                                }}
-                                                //  className={classes.dropZonArea}
-                                                Icon={"none"}
-                                                inputProps={{ webkitdirectory: true, mozdirectory: true }}
-                                                ref={dropZoneRef}
-                                                webkitdirectory={true}
-                                                mozdirectory={true}
-                                                maxFileSize={210000000}
-                                                // onDelete={delImg}
-                                                filesLimit={100}
-                                                showAlerts={false}
-                                                dropzoneText={
-                                                    <div id="dropzone-text" onClick={(evt) => handleDropZoneClick(evt, uploadEleRef)}>
-                                                        <div><UploadIcon /></div>
-
-                                                        <div style={{ color: '#5C757D' }}>
-                                                            Drag and drop files or folder here
-                                                </div>
-                                                        <Button className={classes.uploadBtn}>
-                                                            Select {isFileUpload ? "Files" : "Folder"}
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            />
-                                        </div>
-
-                                        <input type="text" hidden />
-                                    </Box>
-                                </Grid>
-                                <Grid item sm={12} xs={12}>
-                                    {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length > 0 && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING]
-                                        .filter((fileObj, idx) => idx === 0)
-                                        .map((fileObj) => (
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                className={classes.show_img_title_grid}
-                                                style={{ paddingTop: "20px", paddingBottom: "20px" }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        justifyContent: "space-between",
-                                                        width: "100%",
+                                                <DropzoneArea
+                                                    showPreviewsInDropzone={false}
+                                                    onDrop={(files) => {
+                                                        uploadEleRef.current.handleDrop(files)
                                                     }}
-                                                >
-                                                    <div >
+                                                    //  className={classes.dropZonArea}
+                                                    Icon={"none"}
+                                                    inputProps={{ webkitdirectory: true, mozdirectory: true }}
+                                                    ref={dropZoneRef}
+                                                    webkitdirectory={true}
+                                                    mozdirectory={true}
+                                                    maxFileSize={210000000}
+                                                    // onDelete={delImg}
+                                                    filesLimit={100}
+                                                    showAlerts={false}
+                                                    dropzoneText={
+                                                        <div id="dropzone-text" onClick={(evt) => handleDropZoneClick(evt, uploadEleRef)}>
+                                                            <div><UploadIcon /></div>
 
-                                                        <Typography className={classes.linkName}>
-                                                            <span>
-                                                                <DescriptionIcon className={classes.descIcon} />
-                                                            </span>
-                                                            {fileObj?.file?.path || fileObj?.file?.name}
-                                                        </Typography>
-                                                        {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
-                                                            Skylink: {fileObj?.url}
-                                                        </Typography>)}
-                                                        {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
-                                                            {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
-                                                        </Typography>)}
-                                                    </div>
-                                                    {/* <div style={{ display: "flex", alignItems: "center" }}>
+                                                            <div style={{ color: '#5C757D' }}>
+                                                                Drag and drop files or folder here
+                                                </div>
+                                                            <Button className={classes.uploadBtn}>
+                                                                Select {isFileUpload ? "Files" : "Folder"}
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                />
+                                            </div>
+
+                                            <input type="text" hidden />
+                                        </Box>
+                                    </Grid>
+                                    <Grid item sm={12} xs={12}>
+                                        {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length > 0 && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING]
+                                            .filter((fileObj, idx) => idx === 0)
+                                            .map((fileObj) => (
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    className={classes.show_img_title_grid}
+                                                    style={{ paddingTop: "20px", paddingBottom: "20px" }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            width: "100%",
+                                                        }}
+                                                    >
+                                                        <div >
+
+                                                            <Typography className={classes.linkName}>
+                                                                <span>
+                                                                    <DescriptionIcon className={classes.descIcon} />
+                                                                </span>
+                                                                {fileObj?.file?.path || fileObj?.file?.name}
+                                                            </Typography>
+                                                            {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
+                                                                Skylink: {fileObj?.url}
+                                                            </Typography>)}
+                                                            {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
+                                                                {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
+                                                            </Typography>)}
+                                                        </div>
+                                                        {/* <div style={{ display: "flex", alignItems: "center" }}>
                                                         {fileObj?.status === 'complete' && <FileCopyIcon
                                                             className={classes.descIcon}
                                                             style={{
@@ -350,45 +350,43 @@ export default function AddNewSite() {
                                                             onClick={() => copyToClipboard(fileObj?.url)}
                                                         />}
                                                     </div> */}
-                                                </div>
-                                            </Grid>))}
+                                                    </div>
+                                                </Grid>))}
+                                    </Grid>
                                 </Grid>
+                            </div>
+
+                            <Grid container spacing={2} style={{ maxWidth: 1000 }}>
+                                <Grid item md={8} sm={12} xs={12}>
+                                    <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
+                                        <SnTextInput
+                                            label="HNS Domain"
+                                            name="hns"
+                                            className={classes.input}
+                                            type="text" />
+                                    </Box>
+                                </Grid>
+                                <Grid item md={4} sm={12} xs={12}>
+                                    <Box className={`${classes.inputContainer}`}>
+                                        <label>Portal Min Version</label>
+                                        <SnSelect
+                                            label="Portal Min Version"
+                                            name="portalMinVersion"
+                                            options={versionOptions}
+                                        />
+                                    </Box>
+                                </Grid>
+
                             </Grid>
-                        </div>
-
-                        <Grid container spacing={2} style={{ maxWidth: 1000 }}>
-                            <Grid item md={8} sm={12} xs={12}>
-                                <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
-                                    <SnTextInput
-                                        label="HNS Domain"
-                                        name="hns"
-                                        className={classes.input}
-                                        type="text" />
-                                </Box>
-                            </Grid>
-                            <Grid item md={4} sm={12} xs={12}>
-                                <Box className={`${classes.inputContainer}`}>
-                                    <label>Portal Min Version</label>
-                                    <SnSelect
-                                        label="Portal Min Version"
-                                        name="portalMinVersion"
-                                        options={versionOptions}
-                                    />
-                                </Box>
-                            </Grid>
-
-                        </Grid>
 
 
-                    </Box>
+                        </Box>
 
 
-                </form>)}
-            </Formik>
-        </Box >
-        
-
-        <SnInfoModal
+                    </form>)}
+                </Formik>
+            </Box>
+            <SnInfoModal
                 open={showInfoModal}
                 onClose={onInfoModalClose}
                 title={infoModalTitle}
