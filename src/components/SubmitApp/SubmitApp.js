@@ -242,11 +242,7 @@ const SubmitApp = () => {
       obj.content.defaultPath = "index.html or EMPTY";
       obj.content.age = obj.content.age && obj.content.age.value;
       obj.content.previewVideo = videoObjt;
-      obj.content.appStatus =
-        obj.content.appStatus &&
-        obj.content.appStatus.map((i) => {
-          return i.value;
-        });
+      obj.content.appStatus = obj.content.appStatus && obj.content.appStatus.value;
       obj.content.tags = tags;
       obj.content.previewImages = imagesPrevieObj;
       obj.content.history = ["list of skylinks"];
