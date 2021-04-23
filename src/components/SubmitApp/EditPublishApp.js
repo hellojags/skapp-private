@@ -202,7 +202,7 @@ const EditPublishApp = () => {
   }, []);
 
   const handleReset = () => {
-    history.push('/apps');
+    history.goBack();
   }
 
   //manage loader to upload images
@@ -259,6 +259,7 @@ const EditPublishApp = () => {
       dispatch(publishAppAction(obj));
       setMandatory(false);
       setIsSubmit(false);
+      history.goBack();
     }
   };
 
