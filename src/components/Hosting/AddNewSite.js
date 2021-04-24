@@ -376,15 +376,13 @@ export default function AddNewSite() {
                                                                                 {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
-                                                                                {fileObj?.status && fileObj?.status === 'complete' && (
-                                                                                    <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e)=> cancelUpload(e, formik)}>
-                                                                                        Cancel
-                                                                                    </Button>)
-                                                                                }
-                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName} style={{ padding: 50 }}>
+                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
                                                                                     <><Loader type="Oval" color="#57C074" height={50}  width={50} /></> 
                                                                                     {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
+                                                                                <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e)=> cancelUpload(e, formik)}>
+                                                                                    Cancel
+                                                                                </Button>
                                                                             </div>
                                                                             {/* <div style={{ display: "flex", alignItems: "center" }}>
                                                                             {fileObj?.status === 'complete' && <FileCopyIcon
