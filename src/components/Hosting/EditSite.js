@@ -251,7 +251,7 @@ export default function EditSite() {
                                                 onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
                                                 name="1"
                                             />}
-                                            {isLogoUploaded && <Loader type="Oval" color="#FFFFFF" height={15} width={15} />}
+                                             {isLogoUploaded ? <Loader type="Oval" color="#57C074" height={50}  width={50} /> : null}
                                         </div>
                                         <div className={classes.inputGuide}>
                                             Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
