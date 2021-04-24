@@ -294,12 +294,11 @@ export default function EditSite() {
                                             </Box>
                                         </Box>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
-                                            <SnSelect
+                                            <SnTextInput
                                                 label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                                 name="portalMinVersion"
-                                                options={versionOptions}
-                                            />
+                                                className={classes.input}
+                                                type="text" />
                                         </Box>
                                     </Box>
                                     <Box display='flex' className={`${classes.formRow} formSiteRow`}>
