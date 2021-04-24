@@ -443,24 +443,36 @@ const SubmitApp = () => {
     // formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true)
   };
   const handleFirstImageUpload = (obj) => {
-    setIsImageUploadingFirstObj(obj);
-    forImagesPreview.push(obj);
+    let newObj = {
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
+    };
+    setIsImageUploadingFirstObj(newObj);
     setIsImageUploadingFirst(false);
   };
   const handleFirst1ImageUpload = (obj) => {
-    setIsImageUploadingFirstObj1(obj);
-    forImagesPreview.push(obj);
+    let newObj = {
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
+    };
+    setIsImageUploadingFirstObj1(newObj);
     setIsImageUploadingFirst1(false);
   };
   const handleSecondImageUpload = (obj) => {
-    setIsImageUploadingSecondObj(obj);
-    forImagesPreview.push(obj);
+    let newObj = {
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
+    };
+    setIsImageUploadingSecondObj(newObj);
     setIsImageUploadingSecond(false);
   };
 
   const handleThirdImageUpload = (obj) => {
-    setIsImageUploadingThirdObj(obj)
-    forImagesPreview.push(obj);
+    let newObj = {
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
+    };
+    setIsImageUploadingThirdObj(newObj);
     setIsImageUploadingThird(false);
   };
 
