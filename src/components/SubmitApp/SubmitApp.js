@@ -176,8 +176,8 @@ const SubmitApp = () => {
       setValue('appname', appName);
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
-      setValue('applogo', { thumbnail: imgThumbnailSkylink, image: imgSkylink });
-      setAppLogo({ thumbnail: imgThumbnailSkylink, image: imgSkylink });
+      setValue('applogo', { thumbnail: `sia:${imgThumbnailSkylink}`, image: `sia:${imgSkylink}` });
+      setAppLogo({ thumbnail: `sia:${imgThumbnailSkylink}`, image: `sia:${imgSkylink}` });
       setValue('verson', portalMinVersion);
       // setVersion(portalMinVersion);
     }
@@ -190,8 +190,8 @@ const SubmitApp = () => {
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
       setValue('verson', portalMinVersion);
-      setValue('applogo', { thumbnail: imgThumbnailSkylink, image: imgSkylink });
-      setAppLogo({ thumbnail: imgThumbnailSkylink, image: imgSkylink });
+      setValue('applogo', { thumbnail: `sia:${imgThumbnailSkylink}`, image: `sia:${imgSkylink}` });
+      setAppLogo({ thumbnail: `sia:${imgThumbnailSkylink}`, image: `sia:${imgSkylink}` });
     } else {
       setValue('appname', '');
       setValue('sourceCode', '');
@@ -434,8 +434,8 @@ const SubmitApp = () => {
   };
   const handleImgUpload = (obj) => {
     let newObj = {
-      thumbnail: obj.thumbnail,
-      image: obj.skylink,
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
     };
     setAppLogo(newObj);
     setIsLogoUploaded(false);

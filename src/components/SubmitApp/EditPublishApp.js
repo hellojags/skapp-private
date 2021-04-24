@@ -397,8 +397,8 @@ const EditPublishApp = () => {
 
   const handleImgUpload = (obj) => {
    let newObj = {
-      thumbnail: obj.thumbnail,
-      image: obj.skylink,
+      thumbnail: `sia:${obj.thumbnail}`,
+      image: `sia:${obj.skylink}`,
     };
     setAppLogo(newObj);
     setIsLogoUploaded(false);
