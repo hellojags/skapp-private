@@ -167,7 +167,9 @@ const SubmitApp = () => {
   const imgUploadEleRef2 = createRef();
   const imgUploadEleRef3 = createRef();
   const imgUploadEleRef4 = createRef();
-
+  
+  const SnLoader = useSelector((state) => state.snLoader);
+  
   useEffect(() => {
     if (appDetail?.content) {
       const { appName, sourceCode, hns, imgThumbnailSkylink, imgSkylink, portalMinVersion } = appDetail.content;
@@ -228,7 +230,7 @@ const SubmitApp = () => {
 
   //manage loader to upload images
   //form submit function
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
     if (appLogo === "" && appDetail?.content.imgThumbnailSkylink == "") {
       setIsAppLogoTrue(true);
@@ -289,10 +291,9 @@ const SubmitApp = () => {
         [thirdSocialLinkTitle]: thirdSocialLink,
       };
 
-      await dispatch(publishAppAction(obj));
+      dispatch(publishAppAction(obj));
       setMandatory(false);
       setIsSubmit(false);
-      
       setIsModelOpen(true);
     }
   };
@@ -504,7 +505,7 @@ const SubmitApp = () => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={false || isModelOpen}
+        open={false || (isModelOpen && !SnLoader)}
         onClose={(e)=>setIsModelOpen(false)}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -512,7 +513,7 @@ const SubmitApp = () => {
           timeout: 500,
         }}
       >
-        <Fade in={isModelOpen}>
+        <Fade in={(isModelOpen && !SnLoader)}>
           <Box className={classes.shareCardContainer}>
             <Typography component='h2' className={classes.modalTitle}>
               App Published Successfully
