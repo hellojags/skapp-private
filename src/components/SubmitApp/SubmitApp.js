@@ -5,7 +5,8 @@ import {
   makeStyles,
   Grid,
   TextareaAutosize,
-  Tooltip 
+  Typography,
+  Tooltip
 } from "@material-ui/core";
 import Select from "react-select";
 import { Add, HelpOutline } from "@material-ui/icons";
@@ -30,12 +31,16 @@ import "./taginput.css"; // If using WebPack and style-loader.
 import imageCompression from "browser-image-compression";
 import Alert from "@material-ui/lab/Alert";
 import Loader from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
 import { skylinkToUrl } from "../../utils/SnUtility";
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+
 
 const useStyles = makeStyles(styles);
 const optionsVersion = [
@@ -142,6 +147,7 @@ const SubmitApp = () => {
   const [appLogo, setAppLogo] = useState("");
   const [isLogoUploaded, setIsLogoUploaded] = useState(false);
 
+  const [isModelOpen, setIsModelOpen] = useState(false);
   //require
   const [isAppLogoTrue, setIsAppLogoTrue] = useState(false);
   const [isAppNameTrue, setIsAppNameTrue] = useState(false);
@@ -149,15 +155,17 @@ const SubmitApp = () => {
   const [isAppUrlTrue, setIsAppUrlTrue] = useState(false);
   const [isAppCatTrue, setIsAppCatTrue] = useState(false);
   const [isAppDetailDesTrue, setIsAppDetailDesTrue] = useState(false);
+  const history = useHistory();
 
   const imgUploadEleRef = createRef();
   useEffect(() => {
     if (appDetail?.content) {
-      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
+      const { appName, sourceCode, hns, imgThumbnailSkylink, imgSkylink, portalMinVersion } = appDetail.content;
       setValue('appname', appName);
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
-      setValue('applogo', imgThumbnailSkylink);
+      setValue('applogo', { thumbnail: imgThumbnailSkylink, image: imgSkylink });
+      setAppLogo({ thumbnail: imgThumbnailSkylink, image: imgSkylink });
       setValue('verson', portalMinVersion);
       // setVersion(portalMinVersion);
     }
@@ -165,12 +173,13 @@ const SubmitApp = () => {
 
   const handleReset = () => {
     if (appDetail?.content) {
-      const { appName, sourceCode, hns, imgThumbnailSkylink, portalMinVersion } = appDetail.content;
+      const { appName, sourceCode, hns, imgThumbnailSkylink, imgSkylink, portalMinVersion } = appDetail.content;
       setValue('appname', appName);
       setValue('sourceCode', sourceCode);
       setValue('appUrl', hns);
-      setValue('applogo', imgThumbnailSkylink);
       setValue('verson', portalMinVersion);
+      setValue('applogo', { thumbnail: imgThumbnailSkylink, image: imgSkylink });
+      setAppLogo({ thumbnail: imgThumbnailSkylink, image: imgSkylink });
     } else {
       setValue('appname', '');
       setValue('sourceCode', '');
@@ -206,7 +215,7 @@ const SubmitApp = () => {
   //manage loader to upload images
   //form submit function
   const onSubmit = (data) => {
-  console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
+    console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
     if (appLogo === "" && appDetail?.content.imgThumbnailSkylink == "") {
       setIsAppLogoTrue(true);
       // setMandatory(true);
@@ -257,6 +266,7 @@ const SubmitApp = () => {
       dispatch(publishAppAction(obj));
       setMandatory(false);
       setIsSubmit(false);
+      setIsModelOpen(true);
     }
   };
 
@@ -306,7 +316,7 @@ const SubmitApp = () => {
       img.src = oFREvent.target.result;
     };
 
-    UploadImagesAction(file, getUploadedFile, 
+    UploadImagesAction(file, getUploadedFile,
       id === "img1"
         ? firstImageLoader
         : id === "img2"
@@ -347,9 +357,9 @@ const SubmitApp = () => {
 
         const thumb = await imageCompression.canvasToFile(canvas, "image/jpeg");
 
-        
+
         UploadVideoAction(file, thumb, getUploadVideoFile, videoUploadLoader)
-        
+
         var success = image.length > 100000;
         if (success) {
           var img = document.createElement("img");
@@ -395,7 +405,7 @@ const SubmitApp = () => {
     // UploadAppLogo(file, setLogoUploaded, logoLoaderHandler);
   };
   const handleImgUpload = (obj) => {
-   let newObj = {
+    let newObj = {
       thumbnail: obj.thumbnail,
       image: obj.skylink,
     };
@@ -410,7 +420,7 @@ const SubmitApp = () => {
     // setIsLogoUploaded(true);
     dropZoneRef.current.gridRef.current.click();
   };
-  
+
   // get
 
   return (
@@ -440,34 +450,68 @@ const SubmitApp = () => {
         </Box>
       </Box>
 
+
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={false || isModelOpen}
+        onClose={(e)=>setIsModelOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={isModelOpen}>
+          <Box className={classes.shareCardContainer}>
+            <Typography component='h2' className={classes.modalTitle}>
+              App Published Successfully
+            </Typography>
+            <Typography component="p">
+              Now you will be redirected to AppStore page, If you want to stay on same page click Cancel Button
+            </Typography>
+            <Box style={{ textAlign: 'right' }}>
+              <Button onClick={(e)=> history.push('/')} className={classes.okBtn}>
+                Ok
+              </Button>
+              <Button onClick={(e)=>setIsModelOpen(false)} className={classes.closeBtn}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+
+
       <Box component="form">
         <Box>
           <label className={classes.label}>Site Logo</label>
           <div className="d-none">
             <SnUpload
-                name="files"
-                source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
-                ref={imgUploadEleRef}
-                directoryMode={false}
-                onUpload={(e) => handleImgUpload(e)}
-                uploadStarted={(e) => setIsLogoUploaded(e)}
+              name="files"
+              source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
+              ref={imgUploadEleRef}
+              directoryMode={false}
+              onUpload={(e) => handleImgUpload(e)}
+              uploadStarted={(e) => setIsLogoUploaded(e)}
             />
           </div>
           <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
             {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <ImgIcon />}
-            { !isLogoUploaded && (Object.keys(appLogo).length || appDetail) ? <img
-                alt="app"
-                src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
-                style={{
-                    width: "250px",
-                    height: "150px",
-                    // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
-                }}
-                onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
-                name="1"
-              /> : null 
+            {!isLogoUploaded && (Object.keys(appLogo).length || appDetail) ? <img
+              alt="app"
+              src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
+              style={{
+                width: "250px",
+                height: "150px",
+                // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+              }}
+              onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+              name="1"
+            /> : null
             }
-            { isLogoUploaded && (
+            {isLogoUploaded && (
               <Loader
                 type="Oval"
                 color="#57C074"
@@ -483,7 +527,7 @@ const SubmitApp = () => {
         </Box>
         {isAppLogoTrue && (
           <div className="required-field">This field is required</div>
-        )} 
+        )}
         <Box
           display="flex"
           className={`${classes.formRow} ${classes.formRow1}`}
@@ -492,7 +536,7 @@ const SubmitApp = () => {
             className={`${classes.inputContainer} ${classes.max33}`}
             flex={1}
           >
-            <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               className={classes.input}
               placeholder="Skylink"
@@ -504,7 +548,7 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={`${classes.inputContainer} ${classes.max33}`} flex={1}>
-            <label>App URL(Skylink) <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>App URL(Skylink) <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="appUrl"
               ref={register}
@@ -516,19 +560,19 @@ const SubmitApp = () => {
             )}
           </Box>
           <Box className={`${classes.inputContainer}`} flex={1}>
-            <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="verson"
               ref={register}
               className={classes.input}
               placeholder="Version"
             />
-            { isAppVersionTrue && (
+            {isAppVersionTrue && (
               <div className="required-field">This field is required</div>
             )}
           </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
                 isMulti={false}
@@ -550,7 +594,7 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow2}`}
         >
           <Box className={`${classes.inputContainer}`}>
-            <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -568,7 +612,7 @@ const SubmitApp = () => {
             </Box>
           </Box>
           <Box className={classes.inputContainerTag} flex={1}>
-            <label>Custom Tags <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>Custom Tags <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <TagsInput
               value={tags}
               className={`${classes.inputTag}`}
@@ -586,8 +630,8 @@ const SubmitApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-           <Box className={classes.inputContainer} flex={1}>
-            <label>Git URL <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+          <Box className={classes.inputContainer} flex={1}>
+            <label>Git URL <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="sourceCode"
               ref={register}
@@ -605,7 +649,7 @@ const SubmitApp = () => {
             />
           </Box>
           <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
-            <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
                 as={Select}
@@ -626,11 +670,11 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.previewImgLabel} >
-              Preview Video/Images 
+              Preview Video/Images
               <span>
                 {" "}
                 Max. size of 5 MB in: JPG or PNG. 1750x900 or larger recommended
-              </span> <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
+              </span> <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip>
             </label>
           </div>
           <Grid container spacing={2}>
@@ -745,7 +789,7 @@ const SubmitApp = () => {
           <div>
             <label className={classes.textareaLabel}>
               App Description
-              <span>Detailed summary of your app</span><Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
+              <span>Detailed summary of your app</span><Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip>
             </label>
           </div>
           <Box position="relative">
@@ -768,7 +812,7 @@ const SubmitApp = () => {
         <div className={classes.OneRowInput}>
           <div>
             <label className={classes.textareaLabel}>
-              Release Notes <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip>
+              Release Notes <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip>
               {/* <span>This will go on App Card.</span> */}
             </label>
           </div>
@@ -791,7 +835,7 @@ const SubmitApp = () => {
         </div>
         <div className={classes.OneRowInput}>
           <div>
-            <label className={classes.textareaLabel}>Social Connections <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+            <label className={classes.textareaLabel}>Social Connections <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
           </div>
           <Box position="relative">
             <Grid container spacing={2}>

@@ -1,6 +1,6 @@
 import GraphIcon from '../../img/icons/grahpIcon.svg'
 const SubmitAppStyles = () => ({
-    h1: {
+    h1: { 
         fontSize: '28px',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
@@ -8,6 +8,66 @@ const SubmitAppStyles = () => ({
     },
     btnBox: {
 
+    },
+    okBtn: {
+        border: '1px solid #ea052f',
+        marginRight: '10px',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none'
+    },
+    modalTitle: {
+        fontSize: 32,
+        color: '#333333',
+        fontWeight: 700,
+        marginBottom: '1rem'
+    },
+    shareCardContainer: {
+        background: '#fff',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        padding: '48px 60px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '40px 20px',
+            paddingTop: '50px'
+        },
+        '&:focus': {
+            outline: 0,
+            border: 0
+        },
+        width: '90%',
+        maxWidth: 500,
+        '& p': {
+            color: '#5A607F',
+            marginBottom: '5px'
+        },
+        '& .s-links-title': {
+            marginTop: '.4rem'
+        },
+        '& a': {
+            marginRight: '1rem',
+            '&:focus': {
+                textDecoration: 'none',
+                opacity: .8,
+                transition: '.25s ease'
+            }
+        }
+
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeBtn: {
+        border: '1px solid #1DBF73',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none'
     },
     cancelBtn: {
         background: '#FF6060!important',
