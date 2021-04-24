@@ -215,6 +215,10 @@ const SubmitApp = () => {
     setThirdSocialLink("");
     setValue('appDescription', '');
     setValue('releaseNotes', '');
+    setIsImageUploadingFirst1({});
+    setIsImageUploadingFirstObj({});
+    setIsImageUploadingSecondObj({});
+    setIsImageUploadingThirdObj({});
   }
   //manage submit loader
   const manageSubmitLoader = (val) => {
@@ -250,10 +254,22 @@ const SubmitApp = () => {
         ts: new Date().getTime(),
         content: data,
       };
-
+      let forImagesPreviewObj = [];
+      if (Object.keys(isImageUploadFirstObj1).length) {
+        forImagesPreviewObj.push(isImageUploadFirstObj1);
+      } 
+      if (Object.keys(isImageUploadFirstObj).length) {
+        forImagesPreviewObj.push(isImageUploadFirstObj);
+      } 
+      if (Object.keys(isImageUploadSecondObj).length) {
+        forImagesPreviewObj.push(isImageUploadSecondObj);
+      } 
+      if (Object.keys(isImageUploadThirdObj).length) {
+        forImagesPreviewObj.push(isImageUploadThirdObj);
+      } 
       let imagesPrevieObj = {
         aspectRatio: 0.5625,
-        images: forImagesPreview,
+        images: forImagesPreviewObj
       };
       obj.content.skappLogo = appLogo;
       obj.content.category = obj.content.category && obj.content.category.value;
@@ -537,8 +553,8 @@ const SubmitApp = () => {
               alt="app"
               src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
               style={{
-                width: "250px",
-                height: "150px",
+                width: "100%",
+                height: "160px",
                 // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
               }}
               onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
@@ -713,7 +729,7 @@ const SubmitApp = () => {
           </div>
           <Grid container spacing={2}>
             <Grid item md={3} sm={6} xs={6}>
-              <Box style={{ position: "relative" }} className={classes.placeholderImg}>
+              <Box style={{ position: "relative" }} >
               <div className="d-none">
                   <SnUpload
                     name="files"
@@ -724,7 +740,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst1(e)}
                   />
                 </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
                   {!isImageUploadFirst1 && !Object.keys(isImageUploadFirstObj1).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -758,7 +774,7 @@ const SubmitApp = () => {
 
             <Grid item md={3} sm={6} xs={6}>
               <Box style={{ position: "relative" }} 
-                className={classes.placeholderImg}>
+                >
                 <div className="d-none">
                   <SnUpload
                     name="files"
@@ -769,7 +785,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst(e)}
                   />
                 </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
                   {!isImageUploadFirst && !Object.keys(isImageUploadFirstObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -805,7 +821,7 @@ const SubmitApp = () => {
               <Box
                 style={{ position: "relative" }}
                 id="img2"
-                className={classes.placeholderImg}
+                
               >
                 <div className="d-none">
                   <SnUpload
@@ -817,7 +833,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingSecond(e)}
                   />
                 </div>
-                  <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
+                  <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
                     {!isImageUploadSecond && !Object.keys(isImageUploadSecondObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -853,7 +869,7 @@ const SubmitApp = () => {
               <Box
                 style={{ position: "relative" }}
                 id="img3"
-                className={classes.placeholderImg}
+                
               >
                 <div className="d-none">
                 <SnUpload
@@ -865,7 +881,7 @@ const SubmitApp = () => {
                   uploadStarted={(e) => setIsImageUploadingThird(e)}
                 />
               </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
                   {!isImageUploadThird && !Object.keys(isImageUploadThirdObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -897,7 +913,7 @@ const SubmitApp = () => {
               </Box>
             </Grid>
             {/* <Grid item md={3} sm={6} xs={6}>
-              <Box className={classes.placeholderImg}></Box>
+              <Box ></Box>
             </Grid> */}
           </Grid>
         </div>

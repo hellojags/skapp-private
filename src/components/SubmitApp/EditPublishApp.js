@@ -244,10 +244,22 @@ const EditPublishApp = () => {
         ts: new Date().getTime(),
         content: data,
       };
-
+      let forImagesPreviewObj = [];
+      if (Object.keys(isImageUploadFirstObj1).length) {
+        forImagesPreviewObj.push(isImageUploadFirstObj1);
+      } 
+      if (Object.keys(isImageUploadFirstObj).length) {
+        forImagesPreviewObj.push(isImageUploadFirstObj);
+      } 
+      if (Object.keys(isImageUploadSecondObj).length) {
+        forImagesPreviewObj.push(isImageUploadSecondObj);
+      } 
+      if (Object.keys(isImageUploadThirdObj).length) {
+        forImagesPreviewObj.push(isImageUploadThirdObj);
+      } 
       let imagesPrevieObj = {
         aspectRatio: 0.5625,
-        images: forImagesPreview,
+        images: forImagesPreviewObj,
       };
       obj.content.skappLogo = appLogo;
       obj.content.category = category && category.value ? category.value : "";
@@ -476,8 +488,8 @@ const EditPublishApp = () => {
                 alt="app"
                 src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.skappLogo.thumbnail)}
                 style={{
-                    width: "250px",
-                    height: "150px",
+                    width: "100%",
+                    height: "160px",
                     // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
                 }}
                 onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
@@ -656,7 +668,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst1(e)}
                   />
                 </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
                   {!isImageUploadFirst1 && !Object.keys(isImageUploadFirstObj1).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -667,8 +679,8 @@ const EditPublishApp = () => {
                     alt="app"
                     src={skylinkToUrl(isImageUploadFirstObj1?.thumbnail)}
                     style={{
-                      width: "250px",
-                      height: "150px",
+                      width: "100%",
+                      height: "160px",
                       // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
                     }}
                     onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)}
@@ -701,7 +713,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst(e)}
                   />
                 </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
                   {!isImageUploadFirst && !Object.keys(isImageUploadFirstObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -712,8 +724,8 @@ const EditPublishApp = () => {
                     alt="app"
                     src={skylinkToUrl(isImageUploadFirstObj?.thumbnail)}
                     style={{
-                      width: "250px",
-                      height: "150px",
+                      width: "100%",
+                      height: "160px",
                       // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
                     }}
                     onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)}
@@ -749,7 +761,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingSecond(e)}
                   />
                 </div>
-                  <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
+                  <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
                     {!isImageUploadSecond && !Object.keys(isImageUploadSecondObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -760,8 +772,8 @@ const EditPublishApp = () => {
                       alt="app"
                       src={skylinkToUrl(isImageUploadSecondObj?.thumbnail)}
                       style={{
-                        width: "250px",
-                        height: "150px",
+                        width: "100%",
+                        height: "160px",
                         // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
                       }}
                       onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)}
@@ -797,7 +809,7 @@ const EditPublishApp = () => {
                   uploadStarted={(e) => setIsImageUploadingThird(e)}
                 />
               </div>
-                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
+                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
                   {!isImageUploadThird && !Object.keys(isImageUploadThirdObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -808,8 +820,8 @@ const EditPublishApp = () => {
                     alt="app"
                     src={skylinkToUrl(isImageUploadThirdObj?.thumbnail)}
                     style={{
-                      width: "250px",
-                      height: "150px",
+                      width: "100%",
+                      height: "160px",
                       // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
                     }}
                     onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)}
