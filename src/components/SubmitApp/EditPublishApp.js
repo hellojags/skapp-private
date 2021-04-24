@@ -526,7 +526,7 @@ const EditPublishApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-          <Box className={`${classes.inputContainer}`}>
+          <Box className={`${classes.inputContainer}`}  flex={0.38}>
             <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Select
