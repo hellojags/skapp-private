@@ -167,6 +167,7 @@ const SubmitApp = () => {
   const imgUploadEleRef2 = createRef();
   const imgUploadEleRef3 = createRef();
   const imgUploadEleRef4 = createRef();
+
   useEffect(() => {
     if (appDetail?.content) {
       const { appName, sourceCode, hns, imgThumbnailSkylink, imgSkylink, portalMinVersion } = appDetail.content;
@@ -227,7 +228,7 @@ const SubmitApp = () => {
 
   //manage loader to upload images
   //form submit function
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("🚀 ~ file: SubmitApp.js ~ line 167 ~ onSubmit ~ data", data)
     if (appLogo === "" && appDetail?.content.imgThumbnailSkylink == "") {
       setIsAppLogoTrue(true);
@@ -288,9 +289,10 @@ const SubmitApp = () => {
         [thirdSocialLinkTitle]: thirdSocialLink,
       };
 
-      dispatch(publishAppAction(obj));
+      await dispatch(publishAppAction(obj));
       setMandatory(false);
       setIsSubmit(false);
+      
       setIsModelOpen(true);
     }
   };
@@ -519,7 +521,7 @@ const SubmitApp = () => {
               Now you will be redirected to AppStore page, If you want to stay on same page click Cancel Button
             </Typography>
             <Box style={{ textAlign: 'right' }}>
-              <Button onClick={(e)=> history.push('/')} className={classes.okBtn}>
+              <Button onClick={(e)=> history.push('/apps')} className={classes.okBtn}>
                 Ok
               </Button>
               <Button onClick={(e)=>setIsModelOpen(false)} className={classes.closeBtn}>
