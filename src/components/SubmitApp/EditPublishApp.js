@@ -176,7 +176,7 @@ const EditPublishApp = () => {
         if(appJSON) {
             await setAppDetail(appJSON);
             if (appJSON?.content) {
-                const { appname, sourceCode, appUrl, previewVideo, skappLogo, demoUrl, category, age, appStatus, tags, connections, appDescription, releaseNotes } = appJSON.content;
+                const { appname, sourceCode, appUrl, previewVideo, previewImages, skappLogo, demoUrl, category, age, appStatus, tags, connections, appDescription, releaseNotes } = appJSON.content;
                 setValue('appname', appname);
                 setValue('sourceCode', sourceCode);
                 setValue('appUrl', appUrl);
@@ -189,9 +189,20 @@ const EditPublishApp = () => {
                 setVideoObj(previewVideo);
                 setAppLogo(skappLogo);
                 setTags(tags);
-               
+                if (previewImages[0]) {
+                  setIsImageUploadingFirstObj1(previewImages[0]);
+                }
+                if (previewImages[1]) {
+                  setIsImageUploadingFirstObj(previewImages[1]);
+                }
+                if (previewImages[2]) {
+                  setIsImageUploadingSecondObj(previewImages[2]);
+                }
+                if (previewImages[3]) {
+                  setIsImageUploadingThirdObj(previewImages[3]);
+                }
                 if (Object.keys(connections)[0]) {
-                    setfirstSocialLinkTitle({value: Object.keys(connections)[0], label: Object.keys(connections)[0]});
+                  setfirstSocialLinkTitle({value: Object.keys(connections)[0], label: Object.keys(connections)[0]});
                 }
           
                 if (Object.keys(connections)[1]) {
