@@ -112,6 +112,15 @@ export default function AddNewSite() {
             dispatch(setUploadList(snUploadListStore));
         };
     }, []);
+    
+    const cancelUpload = (e, formik) => {
+        e.preventDefault();
+        e.stopPropagation();
+        snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length = 0;
+        dispatch(setUploadList(snUploadListStore));
+        formik.setFieldValue("skylink", '', false)
+        formik.setFieldValue("sourceCode", '', false)
+    }
 
     const submitForm = async (values) => {
         dispatch(setLoaderDisplay(true));
@@ -143,6 +152,9 @@ export default function AddNewSite() {
         evt.preventDefault();
         evt.stopPropagation();
         formik.resetForm();
+        snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length = 0;
+        snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING_IMG].length = 0;
+        dispatch(setUploadList(snUploadListStore));
     };
 
     const handleDropZoneClick = (evt, dropZoneRef) => {
@@ -161,6 +173,11 @@ export default function AddNewSite() {
         navigator.clipboard.writeText(url);
     };
 
+    const setValueOfForm = (obj, formik) => {
+        formik.setFieldValue("skylink", obj.skylink, true)
+        formik.setFieldValue("sourceCode", `https://siasky.net/${obj.skylink}`, true)
+    }
+    
     return (
         <>
             <Box >
@@ -292,7 +309,7 @@ export default function AddNewSite() {
                                                     source={UPLOAD_SOURCE_NEW_HOSTING}
                                                     ref={uploadEleRef}
                                                     directoryMode={!isFileUpload}
-                                                    onUpload={(obj) => formik.setFieldValue("skylink", obj.skylink, true)}
+                                                    onUpload={(obj) => setValueOfForm(obj, formik)}
                                                 />
 
                                             </div>
@@ -359,8 +376,14 @@ export default function AddNewSite() {
                                                                                 {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
+                                                                                {fileObj?.status && fileObj?.status === 'complete' && (
+                                                                                    <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e)=> cancelUpload(e, formik)}>
+                                                                                        Cancel
+                                                                                    </Button>)
+                                                                                }
                                                                                 {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName} style={{ padding: 50 }}>
-                                                                                    <Loader type="Oval" color="#57C074" height={50}  width={50} /> 
+                                                                                    <><Loader type="Oval" color="#57C074" height={50}  width={50} /></> 
+                                                                                    {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
                                                                             </div>
                                                                             {/* <div style={{ display: "flex", alignItems: "center" }}>

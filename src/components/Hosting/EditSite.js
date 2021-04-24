@@ -164,7 +164,7 @@ export default function EditSite() {
         }
         
     };
-
+    
     const setInfoModalParams = ({ title, content, showClipboardCopy = false, clipboardCopyTooltip, open = true }) => {
         setInfoModalContent(content);
         setInfoModalTitle(title);
@@ -200,7 +200,21 @@ export default function EditSite() {
     const copyToClipboard = (url) => {
         navigator.clipboard.writeText(url);
     };
+ 
+    const cancelUpload = (e, formik) => {
+        e.preventDefault();
+        e.stopPropagation();
+        snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length = 0;
+        dispatch(setUploadList(snUploadListStore));
+        formik.setFieldValue("skylink", '', false);
+        formik.setFieldValue("sourceCode", ``, false);
+    }
 
+    const setValueOfForm = (obj, formik) => {
+        formik.setFieldValue("skylink", obj.skylink, true)
+        formik.setFieldValue("sourceCode", `https://siasky.net/${obj.skylink}`, true)
+    }
+    
     return (
         <>
             <Box >
@@ -332,7 +346,7 @@ export default function EditSite() {
                                                             source={UPLOAD_SOURCE_NEW_HOSTING}
                                                             ref={uploadEleRef}
                                                             directoryMode={!isFileUpload}
-                                                            onUpload={(obj) => formik.setFieldValue("skylink", obj.skylink, true)}
+                                                            onUpload={(obj) => setValueOfForm(obj, formik)}
                                                         />
 
                                                     </div>
@@ -388,19 +402,21 @@ export default function EditSite() {
                                                                                 flexDirection: 'column'
                                                                             }}
                                                                         >
-                                                                            <div >
-
+                                                                            <div>
                                                                                 <Typography className={classes.linkName}>
-                                                                                    <span>
-                                                                                        <DescriptionIcon className={classes.descIcon} />
-                                                                                    </span>
-                                                                                    {fileObj?.file?.path || fileObj?.file?.name}
+                                                                                    Folder: {fileObj?.file?.path || fileObj?.file?.name}
                                                                                 </Typography>
                                                                                 {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
+                                                                                {fileObj?.status && fileObj?.status === 'complete' && (
+                                                                                    <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e)=> cancelUpload(e, formik)}>
+                                                                                        Cancel
+                                                                                    </Button>)
+                                                                                }
                                                                                 {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName} style={{ padding: 50 }}>
-                                                                                    <Loader type="Oval" color="#57C074" height={50}  width={50} /> 
+                                                                                    <><Loader type="Oval" color="#57C074" height={50}  width={50} /></> 
+                                                                                    {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
                                                                             </div>
                                                                             {/* <div style={{ display: "flex", alignItems: "center" }}>
