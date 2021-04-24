@@ -189,17 +189,17 @@ const EditPublishApp = () => {
                 setVideoObj(previewVideo);
                 setAppLogo(skappLogo);
                 setTags(tags);
-                if (previewImages[0]) {
-                  setIsImageUploadingFirstObj1(previewImages[0]);
+                if (previewImages.images[0]) {
+                  setIsImageUploadingFirstObj1(previewImages.images[0]);
                 }
-                if (previewImages[1]) {
-                  setIsImageUploadingFirstObj(previewImages[1]);
+                if (previewImages.images[1]) {
+                  setIsImageUploadingFirstObj(previewImages.images[1]);
                 }
-                if (previewImages[2]) {
-                  setIsImageUploadingSecondObj(previewImages[2]);
+                if (previewImages.images[2]) {
+                  setIsImageUploadingSecondObj(previewImages.images[2]);
                 }
-                if (previewImages[3]) {
-                  setIsImageUploadingThirdObj(previewImages[3]);
+                if (previewImages.images[3]) {
+                  setIsImageUploadingThirdObj(previewImages.images[3]);
                 }
                 if (Object.keys(connections)[0]) {
                   setfirstSocialLinkTitle({value: Object.keys(connections)[0], label: Object.keys(connections)[0]});
