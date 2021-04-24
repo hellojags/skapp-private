@@ -319,65 +319,68 @@ export default function AddNewSite() {
                                                     showAlerts={false}
                                                     dropzoneText={
                                                         <div id="dropzone-text" onClick={(evt) => handleDropZoneClick(evt, uploadEleRef)}>
-                                                            <div><UploadIcon /></div>
+                                                            {  snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length <= 0 && 
+                                                                <>
+                                                                    <div><UploadIcon /></div>
+                                                                    <div style={{ color: '#5C757D' }}>
+                                                                        Drag and drop files or folder here
+                                                                    </div>
+                                                                    <Button className={classes.uploadBtn}>
+                                                                        Select {isFileUpload ? "Files" : "Folder"}
+                                                                    </Button>
+                                                                </>
+                                                            }
+                                                            {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length > 0 && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING]
+                                                                .filter((fileObj, idx) => idx === 0)
+                                                                .map((fileObj) => (
+                                                                    <Grid
+                                                                        item
+                                                                        xs={12}
+                                                                        className={classes.show_img_title_grid}
+                                                                        style={{ paddingTop: "20px", paddingBottom: "20px" }}
+                                                                    >
+                                                                        <div
+                                                                            style={{
+                                                                                display: "flex",
+                                                                                justifyContent: "center",
+                                                                                width: "100%",
+                                                                                minHeight: 150,
+                                                                                flexDirection: 'column'
+                                                                            }}
+                                                                        >
+                                                                            <div >
 
-                                                            <div style={{ color: '#5C757D' }}>
-                                                                Drag and drop files or folder here
-                                                </div>
-                                                            <Button className={classes.uploadBtn}>
-                                                                Select {isFileUpload ? "Files" : "Folder"}
-                                                            </Button>
+                                                                                <Typography className={classes.linkName}>
+                                                                                    <span>
+                                                                                        <DescriptionIcon className={classes.descIcon} />
+                                                                                    </span>
+                                                                                    {fileObj?.file?.path || fileObj?.file?.name}
+                                                                                </Typography>
+                                                                                {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
+                                                                                    Skylink: {fileObj?.url}
+                                                                                </Typography>)}
+                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName} style={{ padding: 50 }}>
+                                                                                    <Loader type="Oval" color="#57C074" height={50}  width={50} /> 
+                                                                                </Typography>)}
+                                                                            </div>
+                                                                            {/* <div style={{ display: "flex", alignItems: "center" }}>
+                                                                            {fileObj?.status === 'complete' && <FileCopyIcon
+                                                                                className={classes.descIcon}
+                                                                                style={{
+                                                                                    cursor: "pointer",
+                                                                                }}
+                                                                                onClick={() => copyToClipboard(fileObj?.url)}
+                                                                            />}
+                                                                        </div> */}
+                                                                        </div>
+                                                                    </Grid>))}
+
                                                         </div>
                                                     }
                                                 />
                                             </div>
-
                                             <input type="text" hidden />
                                         </Box>
-                                    </Grid>
-                                    <Grid item sm={12} xs={12}>
-                                        {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length > 0 && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING]
-                                            .filter((fileObj, idx) => idx === 0)
-                                            .map((fileObj) => (
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    className={classes.show_img_title_grid}
-                                                    style={{ paddingTop: "20px", paddingBottom: "20px" }}
-                                                >
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            justifyContent: "space-between",
-                                                            width: "100%",
-                                                        }}
-                                                    >
-                                                        <div >
-
-                                                            <Typography className={classes.linkName}>
-                                                                <span>
-                                                                    <DescriptionIcon className={classes.descIcon} />
-                                                                </span>
-                                                                {fileObj?.file?.path || fileObj?.file?.name}
-                                                            </Typography>
-                                                            {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
-                                                                Skylink: {fileObj?.url}
-                                                            </Typography>)}
-                                                            {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
-                                                                {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
-                                                            </Typography>)}
-                                                        </div>
-                                                        {/* <div style={{ display: "flex", alignItems: "center" }}>
-                                                        {fileObj?.status === 'complete' && <FileCopyIcon
-                                                            className={classes.descIcon}
-                                                            style={{
-                                                                cursor: "pointer",
-                                                            }}
-                                                            onClick={() => copyToClipboard(fileObj?.url)}
-                                                        />}
-                                                    </div> */}
-                                                    </div>
-                                                </Grid>))}
                                     </Grid>
                                 </Grid>
                             </div>
