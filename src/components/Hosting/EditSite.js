@@ -255,7 +255,7 @@ export default function EditSite() {
                                         </div>
                                         <div className={classes.inputGuide}>
                                             Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
-                </div>
+                                        </div>
                                         <input type="text" hidden />
                                     </Box>
                                     <Box display='flex' className={`${classes.formRow} formSiteRow`}>
@@ -267,12 +267,24 @@ export default function EditSite() {
                                                 className={classes.input}
                                                 type="text" />
                                         </Box>
-
+                                        <Box className={classes.inputContainer} flex={1}>
+                                            <SnTextInput
+                                                label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                                name="defaultPath"
+                                                className={classes.input}
+                                                type="text" />
+                                        </Box>
                                     </Box>
-
-                                    <Box display='flex' className={`${classes.formRow} formSiteRow`} style={{ maxWidth: 1100 }}>
-                                        <Box className={`${classes.inputContainer}`} flex={1} >
-                                        <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                        <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
+                                            <SnTextInput
+                                                label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                                name="hns"
+                                                className={classes.input}
+                                                type="text" />
+                                        </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
                                             <Box>
                                                 <SnSelect
                                                     label="Storage Gateway"
@@ -281,6 +293,16 @@ export default function EditSite() {
                                                 />
                                             </Box>
                                         </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+                                            <SnSelect
+                                                label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                                name="portalMinVersion"
+                                                options={versionOptions}
+                                            />
+                                        </Box>
+                                    </Box>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                         <Box className={classes.inputContainer} flex={1} position="relative">
                                             <SnTextInput
                                                 label={<span>Source Code <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
@@ -288,14 +310,6 @@ export default function EditSite() {
                                                 className={classes.input}
                                                 type="text" />
                                         </Box>
-                                        <Box className={classes.inputContainer} flex={1}>
-                                            <SnTextInput
-                                                label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                                name="defaultPath"
-                                                className={classes.input}
-                                                type="text" />
-                                        </Box>
-
                                     </Box>
                                     <div className={classes.OneRowInput}>
                                         <div className="d-none temp">
@@ -408,31 +422,6 @@ export default function EditSite() {
                                             </Grid>
                                         </Grid>
                                     </div>
-
-                                    <Grid container spacing={2} style={{ maxWidth: 1000 }}>
-                                        <Grid item md={8} sm={12} xs={12}>
-                                            <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
-                                                <SnTextInput
-                                                    label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                                    name="hns"
-                                                    className={classes.input}
-                                                    type="text" />
-                                            </Box>
-                                        </Grid>
-                                        <Grid item md={4} sm={12} xs={12}>
-                                            <Box className={`${classes.inputContainer}`}>
-                                                <label>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
-                                                <SnSelect
-                                                    label={<span>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                                    name="portalMinVersion"
-                                                    options={versionOptions}
-                                                />
-                                            </Box>
-                                        </Grid>
-
-                                    </Grid>
-
-
                                 </Box>
 
 

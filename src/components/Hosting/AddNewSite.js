@@ -79,7 +79,7 @@ const formikObj = {
     storageGateway: ['', Yup.string().required('This field is required')],
     hns: ['', Yup.string().required('This field is required')],
     skylink: ['', Yup.string().required('This field is required')],
-    defaultPath: ['', Yup.string().required('This field is required')],
+    defaultPath: ['index.html', Yup.string().required('This field is required')],
     portalMinVersion: ['', Yup.string().required('This field is required')],
     sourceCode: ['', Yup.string().required('This field is required')],
     imgSkylink: [''],
@@ -139,10 +139,10 @@ export default function AddNewSite() {
     };
 
 
-    const onCancel = async (evt) => {
+    const onCancel = async (evt, formik) => {
         evt.preventDefault();
         evt.stopPropagation();
-        history.push("/hosting");
+        formik.resetForm();
     };
 
     const handleDropZoneClick = (evt, dropZoneRef) => {
@@ -174,8 +174,8 @@ export default function AddNewSite() {
                         <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
                             <h1 className={classes.h1}>Add New Site</h1>
                             <Box className={classes.btnBox}>
-                                <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
-                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
+                                <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}>Reset Form</Button>
+                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add />Submit</Button>
                             </Box>
                         </Box>
                         <Box component="form">
@@ -224,10 +224,22 @@ export default function AddNewSite() {
                                         className={classes.input}
                                         type="text" />
                                 </Box>
-
+                                <Box className={classes.inputContainer} flex={1}>
+                                    <SnTextInput
+                                        label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        name="defaultPath"
+                                        className={classes.input}
+                                        type="text" />
+                                </Box>
                             </Box>
-
-                            <Box display='flex' className={`${classes.formRow} formSiteRow`} style={{ maxWidth: 1100 }}>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        name="hns"
+                                        className={classes.input}
+                                        type="text" />
+                                </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1} >
                                     <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
                                     <Box>
@@ -238,21 +250,26 @@ export default function AddNewSite() {
                                         />
                                     </Box>
                                 </Box>
+                            
+                                <Box className={`${classes.inputContainer}`} flex={1} >
+                                    <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+                                    <SnSelect
+                                        label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        name="portalMinVersion"
+                                        options={versionOptions}
+                                    />
+                                </Box>
+                            </Box>
+
+
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={classes.inputContainer} flex={1} position="relative">
                                     <SnTextInput
-                                        label={<span>Source Code <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>Deployed Code Skylink <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="sourceCode"
                                         className={classes.input}
                                         type="text" />
                                 </Box>
-                                <Box className={classes.inputContainer} flex={1}>
-                                    <SnTextInput
-                                        label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                        name="defaultPath"
-                                        className={classes.input}
-                                        type="text" />
-                                </Box>
-
                             </Box>
                             <div className={classes.OneRowInput}>
                                 <div className="d-none temp">
@@ -365,31 +382,6 @@ export default function AddNewSite() {
                                     </Grid>
                                 </Grid>
                             </div>
-
-                            <Grid container spacing={2} style={{ maxWidth: 1000 }}>
-                                <Grid item md={8} sm={12} xs={12}>
-                                    <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
-                                        <SnTextInput
-                                            label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                            name="hns"
-                                            className={classes.input}
-                                            type="text" />
-                                    </Box>
-                                </Grid>
-                                <Grid item md={4} sm={12} xs={12}>
-                                    <Box className={`${classes.inputContainer}`}>
-                                        <label>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
-                                        <SnSelect
-                                            label={<span>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
-                                            name="portalMinVersion"
-                                            options={versionOptions}
-                                        />
-                                    </Box>
-                                </Grid>
-
-                            </Grid>
-
-
                         </Box>
 
 
