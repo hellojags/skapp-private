@@ -567,3 +567,12 @@ border-top: 0;
   overflow-x: hidden !important;
 
 }
+
+.iconLablel {
+  cursor: pointer;
+  font-size: 16px !important;
+}
+
+.iconLablel:hover {
+  color: #1DBF73 !important; 
+}

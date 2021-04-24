@@ -1,12 +1,12 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { Box, Button, makeStyles, Grid, FormGroup, FormControlLabel, Typography } from '@material-ui/core';
+import { Box, Button, makeStyles, Grid, FormGroup, FormControlLabel, Typography, Tooltip  } from '@material-ui/core';
 
 import Select from 'react-select';
 import { Field, Formik, useFormik } from 'formik';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from "@material-ui/icons/Description";
 import * as Yup from 'yup';
-import { Add } from '@material-ui/icons';
+import { Add, HelpOutline } from '@material-ui/icons';
 import Switch, { IOSSwitch } from './Switch';
 import styles from './AddNewSiteStyles';
 // img icon
@@ -26,6 +26,7 @@ import { setUploadList } from '../../redux/action-reducers-epic/SnUploadListActi
 import SnInfoModal from '../Modals/SnInfoModal';
 import { getPortalList } from '../../utils/SnNewObject';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
@@ -96,6 +97,7 @@ export default function AddNewSite() {
     const snUploadListStore = useSelector((state) => state.snUploadListStore);
 
     const [isFileUpload, setIsFileUpload] = useState(false);
+    const [isLogoUploaded, setIsLogoUploaded] = useState(false);
 
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoModalTitle, setInfoModalTitle] = useState("");
@@ -151,7 +153,8 @@ export default function AddNewSite() {
 
     const handleImgUpload = (obj, formik) => {
         formik.setFieldValue("imgSkylink", obj.skylink, true);
-        formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true)
+        formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true);
+        setIsLogoUploaded(false);
     };
 
     const copyToClipboard = (url) => {
@@ -169,7 +172,7 @@ export default function AddNewSite() {
                     onSubmit={submitForm}>
                     {formik => (<form onSubmit={formik.handleSubmit}>
                         <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                            <h1 className={classes.h1}>Submit New Site</h1>
+                            <h1 className={classes.h1}>Add New Site</h1>
                             <Box className={classes.btnBox}>
                                 <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
                                 <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Submit </Button>
@@ -185,11 +188,17 @@ export default function AddNewSite() {
                                         ref={imgUploadEleRef}
                                         directoryMode={false}
                                         onUpload={(obj) => handleImgUpload(obj, formik)}
+                                        uploadStarted={(e) => setIsLogoUploaded(e)}
                                     />
                                 </div>
                                 <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
-                                    {formik.values.imgThumbnailSkylink.trim() === "" && <ImgIcon />}
-                                    {formik.values.imgThumbnailSkylink.trim() !== "" && <img
+                                    {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() === "" && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
+                                    <Box style={{ position: "relative", textAlign: 'center' }}>
+                                        <ImgIcon />
+                                    </Box> 
+                                    <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                                    </Box>}
+                                    {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() !== "" && <img
                                         alt="app"
                                         src={skylinkToUrl(formik.values.imgThumbnailSkylink)}
                                         style={{
@@ -200,16 +209,17 @@ export default function AddNewSite() {
                                         onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
                                         name="1"
                                     />}
+                                    {isLogoUploaded && <Loader type="Oval" color="#FFFFFF" height={15} width={15} />}
                                 </div>
                                 <div className={classes.inputGuide}>
                                     Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
-                </div>
+                                </div>
                                 <input type="text" hidden />
                             </Box>
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
                                     <SnTextInput
-                                        label="App Name"
+                                        label={<span>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="appName"
                                         className={classes.input}
                                         type="text" />
@@ -219,7 +229,7 @@ export default function AddNewSite() {
 
                             <Box display='flex' className={`${classes.formRow} formSiteRow`} style={{ maxWidth: 1100 }}>
                                 <Box className={`${classes.inputContainer}`} flex={1} >
-                                    <label>Storage Gateway</label>
+                                    <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
                                     <Box>
                                         <SnSelect
                                             label="Storage Gateway"
@@ -230,14 +240,14 @@ export default function AddNewSite() {
                                 </Box>
                                 <Box className={classes.inputContainer} flex={1} position="relative">
                                     <SnTextInput
-                                        label="Source Code"
+                                        label={<span>Source Code <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="sourceCode"
                                         className={classes.input}
                                         type="text" />
                                 </Box>
                                 <Box className={classes.inputContainer} flex={1}>
                                     <SnTextInput
-                                        label="Default Path"
+                                        label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="defaultPath"
                                         className={classes.input}
                                         type="text" />
@@ -258,7 +268,7 @@ export default function AddNewSite() {
                                 </div>
 
                                 <Grid container spacing={2}>
-                                    <Grid item md={6} sm={12} xs={12}>
+                                    <Grid item md={12} sm={12} xs={12}>
                                         <Box>
                                             <div className="d-none">
                                                 <SnUpload
@@ -360,7 +370,7 @@ export default function AddNewSite() {
                                 <Grid item md={8} sm={12} xs={12}>
                                     <Box className={`${classes.inputContainer}`} flex={1} style={{ maxWidth: 700 }}>
                                         <SnTextInput
-                                            label="HNS Domain"
+                                            label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                             name="hns"
                                             className={classes.input}
                                             type="text" />
@@ -368,9 +378,9 @@ export default function AddNewSite() {
                                 </Grid>
                                 <Grid item md={4} sm={12} xs={12}>
                                     <Box className={`${classes.inputContainer}`}>
-                                        <label>Portal Min Version</label>
+                                        <label>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
                                         <SnSelect
-                                            label="Portal Min Version"
+                                            label={<span>Portal Min Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                             name="portalMinVersion"
                                             options={versionOptions}
                                         />
