@@ -144,6 +144,10 @@ const SubmitApp = () => {
   const [isImageUploadSecond, setIsImageUploadingSecond] = useState(false);
   const [isImageUploadThird, setIsImageUploadingThird] = useState(false);
 
+  const [isImageUploadFirstObj, setIsImageUploadingFirstObj] = useState({});
+  const [isImageUploadSecondObj, setIsImageUploadingSecondObj] = useState({});
+  const [isImageUploadThirdObj, setIsImageUploadingThirdObj] = useState({});
+
   const [appLogo, setAppLogo] = useState("");
   const [isLogoUploaded, setIsLogoUploaded] = useState(false);
 
@@ -414,6 +418,24 @@ const SubmitApp = () => {
     // formik.setFieldValue("imgSkylink", obj.skylink, true);
     // formik.setFieldValue("imgThumbnailSkylink", obj.thumbnail, true)
   };
+  const handleFirstImageUpload = (obj) => {
+    setIsImageUploadingFirstObj(obj);
+    forImagesPreview.push(obj);
+    setIsImageUploadingFirst(false);
+  };
+
+  const handleSecondImageUpload = (obj) => {
+    setIsImageUploadingSecondObj(obj);
+    forImagesPreview.push(obj);
+    setIsImageUploadingSecond(false);
+  };
+
+  const handleThirdImageUpload = (obj) => {
+    setIsImageUploadingThirdObj(obj)
+    forImagesPreview.push(obj);
+    setIsImageUploadingThird(false);
+  };
+
   const handleDropZoneClick = (evt, dropZoneRef) => {
     evt.preventDefault();
     evt.stopPropagation();
@@ -496,7 +518,12 @@ const SubmitApp = () => {
             />
           </div>
           <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
-            {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <ImgIcon />}
+            {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
+              <Box style={{ position: "relative", textAlign: 'center' }}>
+                <ImgIcon />
+              </Box> 
+              <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+              </Box>}
             {!isLogoUploaded && (Object.keys(appLogo).length || appDetail) ? <img
               alt="app"
               src={skylinkToUrl(appLogo?.thumbnail || appDetail?.content.imgThumbnailSkylink)}
@@ -703,28 +730,47 @@ const SubmitApp = () => {
             </Grid>
 
             <Grid item md={3} sm={6} xs={6}>
-              <Box style={{ position: "relative" }}>
-                <div id="img1" className={classes.previewImg}>
-                  {/* <ImgIcon /> */}
-                  <div style={{ position: "absolute" }}>
-                    {isImageUploadFirst && (
-                      <Loader
-                        type="Oval"
-                        color="#57C074"
-                        height={50}
-                        width={50}
-                      />
-                    )}
-                  </div>
+              <Box style={{ position: "relative" }} 
+                className={classes.placeholderImg}>
+                <div className="d-none">
+                  <SnUpload
+                    name="files"
+                    source={UPLOAD_SOURCE_DEPLOY}
+                    ref={imgUploadEleRef}
+                    directoryMode={false}
+                    onUpload={(e) => handleFirstImageUpload(e)}
+                    uploadStarted={(e) => setIsImageUploadingFirst(e)}
+                  />
                 </div>
-
-                <input
-                  accept=".png,.jpg"
-                  type="file"
-                  onChange={(e) => {
-                    onChangeHandlerForImages(e.target.files[0], "img1");
-                  }}
-                />
+                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                  {!isImageUploadFirst && !Object.keys(isImageUploadFirstObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
+                      <Box style={{ position: "relative", textAlign: 'center' }}>
+                        <ImgIcon />
+                      </Box> 
+                      <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                      </Box>}
+                  {!isImageUploadFirst && Object.keys(isImageUploadFirstObj).length ? <img
+                    alt="app"
+                    src={skylinkToUrl(isImageUploadFirstObj?.thumbnail)}
+                    style={{
+                      width: "250px",
+                      height: "150px",
+                      // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                    }}
+                    onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                    name="1"
+                  /> : null
+                  }
+                  {isImageUploadFirst && (
+                    <Loader
+                      type="Oval"
+                      color="#57C074"
+                      height={50}
+                      width={50}
+                    />
+                  )}
+                </div>
+                <input type="text" hidden />
               </Box>
             </Grid>
 
@@ -734,24 +780,47 @@ const SubmitApp = () => {
                 id="img2"
                 className={classes.placeholderImg}
               >
-                <div style={{ position: "absolute" }}>
-                  {isImageUploadSecond && (
-                    <Loader
-                      type="Oval"
-                      color="#57C074"
-                      height={50}
-                      width={50}
-                    />
-                  )}
+                <div className="d-none">
+                  <SnUpload
+                    name="files"
+                    source={UPLOAD_SOURCE_DEPLOY}
+                    ref={imgUploadEleRef}
+                    directoryMode={false}
+                    onUpload={(e) => handleSecondImageUpload(e)}
+                    uploadStarted={(e) => setIsImageUploadingSecond(e)}
+                  />
                 </div>
+                  <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                    {!isImageUploadSecond && !Object.keys(isImageUploadSecondObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
+                      <Box style={{ position: "relative", textAlign: 'center' }}>
+                        <ImgIcon />
+                      </Box> 
+                      <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                      </Box>}
+                    {!isImageUploadSecond && Object.keys(isImageUploadSecondObj).length ? <img
+                      alt="app"
+                      src={skylinkToUrl(isImageUploadSecondObj?.thumbnail)}
+                      style={{
+                        width: "250px",
+                        height: "150px",
+                        // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                      }}
+                      onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                      name="1"
+                    /> : null
+                    }
+                    {isImageUploadSecond && (
+                      <Loader
+                        type="Oval"
+                        color="#57C074"
+                        height={50}
+                        width={50}
+                      />
+                    )}
+                  </div>
+                  <input type="text" hidden />
               </Box>
-              <input
-                accept=".png,.jpg"
-                type="file"
-                onChange={(e) => {
-                  onChangeHandlerForImages(e.target.files[0], "img2");
-                }}
-              />
+
             </Grid>
             <Grid item md={3} sm={6} xs={6}>
               <Box
@@ -759,7 +828,35 @@ const SubmitApp = () => {
                 id="img3"
                 className={classes.placeholderImg}
               >
-                <div style={{ position: "absolute" }}>
+                <div className="d-none">
+                <SnUpload
+                  name="files"
+                  source={UPLOAD_SOURCE_DEPLOY}
+                  ref={imgUploadEleRef}
+                  directoryMode={false}
+                  onUpload={(e) => handleThirdImageUpload(e)}
+                  uploadStarted={(e) => setIsImageUploadingThird(e)}
+                />
+              </div>
+                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                  {!isImageUploadThird && !Object.keys(isImageUploadThirdObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
+                      <Box style={{ position: "relative", textAlign: 'center' }}>
+                        <ImgIcon />
+                      </Box> 
+                      <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                      </Box>}
+                  {!isImageUploadThird && Object.keys(isImageUploadThirdObj).length ? <img
+                    alt="app"
+                    src={skylinkToUrl(isImageUploadThirdObj?.thumbnail)}
+                    style={{
+                      width: "250px",
+                      height: "150px",
+                      // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                    }}
+                    onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                    name="1"
+                  /> : null
+                  }
                   {isImageUploadThird && (
                     <Loader
                       type="Oval"
@@ -769,14 +866,8 @@ const SubmitApp = () => {
                     />
                   )}
                 </div>
+                <input type="text" hidden />
               </Box>
-              <input
-                accept=".png,.jpg"
-                type="file"
-                onChange={(e) => {
-                  onChangeHandlerForImages(e.target.files[0], "img3");
-                }}
-              />
             </Grid>
             {/* <Grid item md={3} sm={6} xs={6}>
               <Box className={classes.placeholderImg}></Box>
