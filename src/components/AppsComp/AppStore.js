@@ -1,5 +1,5 @@
 import { Box, Button, InputBase } from '@material-ui/core'
-import React, { Fragment,useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 // import UtilitiesItem from './UtilitiesItem'
@@ -26,11 +26,13 @@ import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, ins
 
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import Fuse from 'fuse.js'
+import styles from "../../assets/jss/apps/AppListStyle"
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
 const useStyles = makeStyles(theme => (
     {
+        ...styles,
         search: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
@@ -86,8 +88,8 @@ const useStyles = makeStyles(theme => (
             },
             '@media (max-width: 1460px)': {
                 width: '100%'
-            }
-
+            },
+            paddingRight: '10px'
         },
 
         pageHeading: {
@@ -143,9 +145,9 @@ const useStyles = makeStyles(theme => (
             , '@media only screen and (max-width: 510px)': {
                 flexWrap: 'wrap',
                 "& > div": {
-                    width: '50%',
-                    minWidth: '50%',
-                    maxWidth: '50%',
+                    // width: '50%',
+                    // minWidth: '50%',
+                    // maxWidth: '50%',
                     marginBottom: '.75rem'
                 },
                 "& > div:nth-child(odd)": {
@@ -173,16 +175,48 @@ function AppStore() {
     const classes = useStyles();
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
     const { installedAppsStore, installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
-    
+    let tags = []
+    const [searchData, setSearchData] = useState([])
+    const [selectedTag, setSelectedTag] = useState('All')
+
     useEffect(async () => {
         // console.log("came here");
-        await dispatch(getAllPublishedAppsAction());
+        //await dispatch(getAllPublishedAppsAction());
+        await dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
+        setSearchData(publishedAppsStore)
         await dispatch(getMyInstalledAppsAction());
         if (installedAppsStoreForLogin) {
             await dispatch(installedAppAction(installedAppsStoreForLogin));
         }
       }, []);
-    
+    useEffect(() => {
+
+        setSearchData(publishedAppsStore)
+
+    }, [setSearchData, publishedAppsStore])
+    // publishedAppsStore.filter(item => {
+    //     if (item.content.category) {
+
+    //         tags = [...tags, ...tempTags]
+
+    //     }
+    // })
+    // tags = [...new Set(tags)]
+    let tagsWithCount = tags.reduce(function (obj, b) {
+        obj[b] = ++obj[b] || 1
+        return obj
+    }, {})
+   
+    // const [state, setstate] = useState(initialState)
+
+    // console.log(newD)
+
+    tagsWithCount = Object.keys(tagsWithCount)
+
+    tagsWithCount = Object.values(tagsWithCount)
+
+    tagsWithCount = Object.entries(tagsWithCount)
+  
     const history = useHistory();
     const stUserSession = useSelector((state) => state.userSession);
     
@@ -204,159 +238,322 @@ function AppStore() {
     // const selectedPage = true
     // This page code
     const { width } = useWindowDimensions()
-    
-    let showSlides = width > 1600 ? 1600 / 140 : width / 140
-    var settings = {
-        dots: false,
-        infinite: true,
-        speed: 500,
-        // slidesToShow: Math.floor(width / 140),
-        // slidesToShow: Math.floor(width / 140),
-        slidesToShow: showSlides,
-        slidesToScroll: 1,
-        nextArrow: <SlickNextArrow />,
-        prevArrow: <SlickPrevArrow />
-    }
+
+
+
     // console.log(width)
 
     // useInterval(async () => {
     //     dispatch(getAllPublishedAppsAction());
     // }, 30000);
 
-    const AppsComp = (<Fragment >
-        <Box display="flex" className='second-nav' alignItems="center">
-            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                <h1 className={classes.pageHeading}>Skynet Apps</h1>
-            </Box>
-            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-               <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
-            </Box>
-            {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
-                <Box>
-                    <div className={classes.searchIcon}>
-                        <SearchIcon />
-                    </div>
+    const searchHandler = (e) => {
+        const options = {
+            isCaseSensitive: false,
+            // includeScore: false,
+            shouldSort: true,
+            // includeMatches: false,
+            findAllMatches: true,
+            minMatchCharLength: 0,
+            // location: 0,
+            threshold: 0.0,
+            // distance: 100,
+            // useExtendedSearch: false,
+            // ignoreLocation: false,
+            // ignoreFieldNorm: false,
+            includeScore: true,
+            keys: [
+                "content.appname",
+                "content.category",
+                "content.tags"
+            ]
+        }
+
+        const fuse = new Fuse(publishedAppsStore, options)
+
+        // Change the pattern
+        const pattern = e.target.value
+        console.log(pattern)
+        if (pattern) {
+            let _newD = fuse.search(pattern)
+            _newD = _newD.map(_ => _.item)
+            setSearchData(_newD)
+            console.log(_newD)
+        } else {
+            setSearchData(publishedAppsStore)
+        }
+    }
+
+
+    // app list code
+    // const tagClickHandler = (e) => {
+    //     let storeApps = publishedAppsStore
+
+    //     if (selectedTag === e.target.dataset.tag) {
+    //         setSelectedTag("")
+    //         e.target.classList.remove("selected")
+    //         e.target.classList.add("notselected")
+    //         setSearchData(publishedAppsStore)
+    //     } else {
+    //         setSelectedTag(e.target.dataset.tag)
+    //         // selectedTag ? document.querySelector(`[data-value="${selectedTag}"]`).style.background = 'red' : null
+
+    //         storeApps = storeApps.filter(item => item.content.tags.includes(e.target.dataset.tag))
+    //         // e.target.classList
+    //         setSearchData(storeApps)
+    //         e.target.classList.add("selected")
+    //         // console.log("cls ", )
+    //         e.target.classList.remove("notselected")
+    //         // setSearchData 
+    //         // console.log()
+    //     }
+
+    // }
+    // catogires click handlers
+    document.querySelector(`button[data-cat="All"]`) && document.querySelector(`button[data-cat=${selectedTag}]`).classList.add('selected')
+
+    const catClickHandler = (e) => {
+        let storeApps = publishedAppsStore
+        if (e.target.dataset.cat == 'All') {
+            setSelectedTag('All')
+            setSearchData(publishedAppsStore)
+            Array.from(document.querySelectorAll('.tagButton')).forEach((el) => el.classList.remove('selected'))
+            e.target.classList.add("selected")
+            return 0
+        }
+        if (e.target.dataset.cat !== selectedTag && document.querySelector(".tagButton")) {
+            setSelectedTag(e.target.dataset.cat)
+            storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
+            setSearchData(storeApps)
+
+            Array.from(document.querySelectorAll('.tagButton')).forEach((el) => el.classList.remove('selected'))
+            e.target.classList.add("selected")
+            return 0
+        }
+        if (selectedTag === e.target.dataset.cat) {
+            setSelectedTag("All")
+            e.target.classList.remove("selected")
+            setSearchData(publishedAppsStore)
+
+        } else {
+
+            setSelectedTag(e.target.dataset.tag)
+
+            storeApps = storeApps.filter(item => item.content.category == e.target.dataset.cat)
+            setSearchData(storeApps)
+            e.target.classList.add("selected")
+        }
+    }
+    let categories = []
+    publishedAppsStore.filter(item => categories.push(item.content.category))
+    console.log("cates", categories)
+    let catWithCount = categories.reduce(function (obj, b) {
+        obj[b] = ++obj[b] || 1
+        return obj
+    }, {})
+
+
+    catWithCount = Object.entries(catWithCount)
+    catWithCount.unshift(['All', categories.length])
+    // console.log("catwithcount", catWithCount)
+
+    let sliderContainerWidth
+    if (document.querySelector('.appTagsButtons')) {
+        sliderContainerWidth = document.querySelector('.appTagsButtons').clientWidth
+    }
+    // enabling the slicker slider logically 
+    const sliderRef = React.createRef()
+    const [showSlider, setShowSlider] = React.useState(false)
+
+    React.useLayoutEffect(() => {
+        if (sliderRef.current.clientWidth < sliderRef.current.scrollWidth) {
+            setShowSlider(true)
+        }
+    }, [sliderRef])
+    // console.log(sliderRef.current.clientWidth, sliderRef.current.scrollWidth)
+    let showSlides = width > 1600 ? 1600 / 140 : width / 140
+    console.log("slided to show " + showSlides + "Width " + width)
+    let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
+    var settings = {
+        dots: false,
+        infinite: false,
+        speed: 500,
+        // slidesToShow: Math.floor(width / 140),
+        // slidesToShow: Math.floor(width / 140),
+        slidesToShow: width > 890 ? Math.round(showSlides) - 2 : showSlides,
+        slidesToScroll: 2,
+        nextArrow: <SlickNextArrow />,
+        prevArrow: <SlickPrevArrow />,
+        responsive: [
+
+            {
+                breakpoint: 10000, // a unrealistically big number to cover up greatest screen resolution
+                settings: slicky
+            }
+        ]
+    }
+    return (
+        // (width < 575)
+        //     ? <div className={classes.mobileSave}>{AppsComp}</div>
+        //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
+
+        <div><Fragment >
+            <Box display="flex" className='second-nav' alignItems="center">
+                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                    <h1 className={classes.pageHeading}>Skynet Apps</h1>
                 </Box>
-                <InputBase
-                    placeholder="Search Apps"
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                />
-            </div>}
-            <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-
-
-                {width > 1049 && <div className={classes.search}>
+                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                    <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
+                </Box>
+                {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                     </Box>
                     <InputBase
+
+                        onChange={searchHandler}
                         placeholder="Search Apps"
                         classes={{
                             root: classes.inputRoot,
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
+                        type="search"
+
                     />
                 </div>}
-                <Box>
-                    <ListFilter />
-                </Box>
-                {/* <Box>
+                <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
+
+
+                    {width > 1049 && <div className={classes.search}>
+                        <Box>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                        </Box>
+                        <InputBase
+                            onChange={searchHandler}
+                            placeholder="Search Apps"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            type="search"
+
+                        />
+                    </div>}
+                    <Box>
+                        <ListFilter />
+                    </Box>
+                    {/* <Box>
                     <SelectItem />
                 </Box> */}
-                {/* <Box>
+                    {/* <Box>
                     <SubmitBtn >
                         Add App
                     </SubmitBtn>
                 </Box> */}
+                </Box>
             </Box>
-        </Box>
 
-        {/* <div >
+            {/* <div >
             <Button className="tagButton">
                 Art & Design (5)
             </Button>
         </div> */}
-        <Slider {...settings} className="appTagsButtons">
-            <div>
+            <div ref={sliderRef}>
+
+
+                <Slider {...settings} id="appTagsButtons" className="appTagsButtons" >
+                    {/* {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
+                    <Button data-tag={tag[0]} onClick={tagClickHandler} className="tagButton">
+                        {tag[0]} ({tag[1]})
+                    </Button>
+                </div>)} */}
+
+                    {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
+                        <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
+                            <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
+                        </Button>
+                    </div>)}
+                    {/* <div>
                 <Button className="tagButton">
-                Social
+                    Social
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Video
+                    Video
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Pictures
+                    Pictures
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Music
+                    Music
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Productivity
+                    Productivity
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Utilities
+                    Utilities
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Games
+                    Games
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Blogs
+                    Blogs
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Software
+                    Software
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Livestream
+                    Livestream
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Books
+                    Books
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Marketplace
+                    Marketplace
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Finance
+                    Finance
             </Button>
             </div>
             <div>
                 <Button className="tagButton">
-                Portal
+                    Portal
             </Button>
+            </div> */}
+                </Slider>
             </div>
         </Slider>
-        <div>
-            <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} handleInstall={handleInstall} />
+        <div style={{ marginBottom: '2rem' }}>
+            <AppsList newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
             <Footer />
         </div>
     </Fragment>)
@@ -366,7 +563,9 @@ function AppStore() {
         //     ? <div className={classes.mobileSave}>{AppsComp}</div>
         //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
 
-        <div>{AppsComp}</div>
+                <Footer />
+            </div>
+        </Fragment></div>
     )
 }
 

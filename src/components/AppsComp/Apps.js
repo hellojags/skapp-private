@@ -146,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-}));
+}))
 
 function Apps() {
   const dispatch = useDispatch();
@@ -162,10 +162,10 @@ function Apps() {
     await dispatch(getMyInstalledAppsAction());
     setIsLoading(false);
   }, []);
-
   // temp var for selected page
-  const selectedPage = false;
+  const selectedPage = false
   // This page code
+
   const { width } = useWindowDimensions();
   const classes = useStyles();
     
@@ -176,6 +176,7 @@ function Apps() {
       dispatch(unInstalledAppAction(item.id));
     }
   }
+
 
   const AppsComp = (
     <Fragment>
@@ -262,14 +263,24 @@ function Apps() {
         <CustomPagination />
       </Box> */}
     </Fragment>
-  );
-
+  )
+  const finalComp = (publishedAppsStore.length ? AppsComp : (<NoApps
+    msg='No Published Apps to display in AppStore. Publish your App using "Publish App" BUTTON '
+    btnText="Publish App"
+    pageType="Published"
+    link="/submitapp"
+  />))
   return (
     // (width < 575)
     //     ? <div className={classes.mobileSave}>{AppsComp}</div>
     //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-    <div>{AppsComp}</div>
-  );
+    // <div>{AppsComp}
+    <>
+
+      { finalComp}
+
+    </>
+  )
 }
 
-export default Apps;
+export default Apps

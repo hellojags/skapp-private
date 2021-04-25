@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Paper, withStyles, Grid, Button, Link, Typography } from '@material-ui/core';
-import styles from "./SnLoginStyles";
-import { connect } from "react-redux";
-import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup } from '../../service/SnSkappService';
+import { Paper, withStyles, Grid, Button, Link, Typography } from '@material-ui/core'
+import styles from "./SnLoginStyles"
+import { connect } from "react-redux"
+import { bsGetImportedSpacesObj, getUserProfile, syncData, firstTimeUserSetup } from '../../service/SnSkappService'
 import skyId from '../../service/idp/SnSkyId'
-import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
-import SnDisclaimer from "../Utils/SnDisclaimer";
+import { ID_PROVIDER_SKYID } from "../../utils/SnConstants"
+import SnDisclaimer from "../Utils/SnDisclaimer"
 import useStyles from "./SnLoginStyles"
 import { useHistory } from "react-router-dom"
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
@@ -41,8 +41,8 @@ export default function SnLogin(props) {
     const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
     
     useEffect(() => {
-        console.log("skyid=" + skyId);
-    });
+        console.log("skyid=" + skyId)
+    })
 
     useEffect(() => {
         console.log("stUserSession=" + stUserSession);
@@ -90,8 +90,8 @@ export default function SnLogin(props) {
     //     }
     // }
     const loginSkyID = async () => {
-        skyId.sessionStart();
-       // dispatch(setLoaderDisplay(true));
+        skyId.sessionStart()
+        // dispatch(setLoaderDisplay(true));
     }
     // const onSkyIdLogout = async () => {
     //     try {
@@ -137,7 +137,7 @@ export default function SnLogin(props) {
     // }
     const handleChange = (event, newValue) => {
         setValue(newValue)
-    };
+    }
     return (
         <div style={{ paddingTop: 100 }}>
             <SnDisclaimer />
@@ -172,12 +172,12 @@ export default function SnLogin(props) {
                             </span>
                             <br />
                             <span>
-                                <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span class="fa fa-envelope"></span> hello@skyspaces.io</Link>
+                                <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span className="fa fa-envelope"></span> hello@skyspaces.io</Link>
                             </span>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
         </div>
-    );
-};
+    )
+}

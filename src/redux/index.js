@@ -1,8 +1,8 @@
-import { combineReducers, createStore } from "redux";
-import { combineEpics } from "redux-observable";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { combineReducers, createStore } from "redux"
+import { combineEpics } from "redux-observable"
+import { composeWithDevTools } from "redux-devtools-extension"
 
-import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer";
+import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer"
 // import SnPerson from "./sn.person.reducer"
 // import SnUserProfile from "./sn.userprofile.reducer"
 // import { snUserProfileEpic } from "./sn.userprofile.epic"
@@ -46,7 +46,7 @@ const rootReducer = combineReducers({
   snAppCommentsStore,
   snSelectedHostedAppStore,
   snShowHostingLinks
-});
+})
 
 const rootEpic = combineEpics(
   snGetAllPublishedAppsEpic,
@@ -57,7 +57,7 @@ const rootEpic = combineEpics(
   snSetUnInstallAppEpic,
   snSetAppStatsEpic,
   snGetAppStatsEpic,
-  snGetAppCommentsEpic, 
+  snGetAppCommentsEpic,
   snSetAppCommentEpic,
   // snPersonEpic,
   // logoutPersonEpic,
@@ -73,6 +73,6 @@ const store = createStore(
   rootReducer,
   composeWithDevTools(redux.applyMiddleware(observableMiddleware))
 )
-observableMiddleware.run(rootEpic);
+observableMiddleware.run(rootEpic)
 
-export default store;
+export default store
