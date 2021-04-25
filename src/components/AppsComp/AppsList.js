@@ -35,7 +35,7 @@ const useStyles = makeStyles(styles)
       //   this.setState({
       //     items: this.state.items.concat(Array.from({ length: 20 })),
       //   });
-    }, 1500)
+    }, 500)
   }
 
   return (

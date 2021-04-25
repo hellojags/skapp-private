@@ -41,11 +41,40 @@ const useStyles = makeStyles(styles)
 
 const appBg = {
   'Social': "rgb(29, 191, 115)",
-  'Pictures': "lightgray",
-  'Video': "gray",
-  'Utilities': "#8ad4c5",
-  'Productivity': "#cf4cac"
+  'Video': "lightgray",
+  'Pictures': "gray",
+  'Music': "#8ad4c5",
+  'Productivity': "#cf4cac",
+  'Utilities': "#cf4cac",
+  'Games': "#cf4cac",
+  'Blogs': "#cf4cac",
+  'Software': "#cf4cac",
+  'DAC': "#cf4cac",
+  'Livestream': "#cf4cac",
+  'Books': "#cf4cac",
+  'Marketplace': "#cf4cac",
+  'Finance': "#cf4cac",
+  'SkynetPortal': "#cf4cac",
+  'Portal': "#cf4cac",
 }
+// const appBg = {
+//   'Social': "#000000",
+//   'Video': "#000000",
+//   'Pictures': "#000000",
+//   'Music': "#000000",
+//   'Productivity': "#000000",
+//   'Utilities': "#000000",
+//   'Games': "#000000",
+//   'Blogs': "#000000",
+//   'Software':"#000000",
+//   'DAC': "#000000",
+//   'Livestream': "#000000",
+//   'Books': "#000000",
+//   'Marketplace': "#000000",
+//   'Finance': "#000000",
+//   'SkynetPortal': "#000000",
+//   'Portal': "#000000",
+// }
 
 const AppCard = ({ selectable, updated, item, handleInstall }) => {
   const dispatch = useDispatch();
@@ -255,6 +284,18 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                     </IconButton>
                   </Box>
                 </Box>
+                <Typography
+                  ref={descRef}
+                  variant="body2"
+                  color="textSecondary"
+                  component="p"
+                  className={`${classes.cardSmallText} ${classes.desc}`}
+
+                >
+                  {item.content.appDescription}
+                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
+
+                </Typography>
                 {(item.content.tags && allowToolTip) ?
                   <Box position="relative" className={`${classes.tags} tags-card`} ref={tagsRef} >
 
@@ -327,18 +368,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                     Utilities
                         </Typography>
                 </Box> */}
-                <Typography
-                  ref={descRef}
-                  variant="body2"
-                  color="textSecondary"
-                  component="p"
-                  className={`${classes.cardSmallText} ${classes.desc}`}
 
-                >
-                  {item.content.appDescription}
-                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
-
-                </Typography>
                 {/* <div
                   ref={descRef}
                   className={`${classes.cardSmallText} ${classes.desc}`}
@@ -440,7 +470,7 @@ Lorem ipsum dolor sit amet co
                 >
                   {(parseInt(appStats[2]) === parseInt(1)) ? (
                     <Tooltip title="Number of user liked this app" placement="top" arrow>
-                      { uiSpiner === null ? <ThumbUpAltIcon
+                      {uiSpiner === null ? <ThumbUpAltIcon
                         className={`${classes.cardFooterIcon} unlike`}
                         onClick={() => {
                           appStatsAction(EVENT_APP_LIKED_REMOVED)
@@ -497,21 +527,19 @@ Lorem ipsum dolor sit amet co
 
             </CardActions>
             <CardActions className={classes.footerBottom}>
-             <Box>
-              <Button
-                size="medium"
-                className={`${classes.installBtn} ${
-                  updated ? classes.bgUnistall : classes.bgUpdate
-                }`}
-                onClick={(e) => handleInstall(item, updated ? 'uninstall': 'install')}
-              >
-                {updated && "Uninstall"}
-                {updated === false && "Update"}
-                {updated === undefined && "Install"}
-              </Button>
-          </Box>
-              <Box className={`${classes.tags} tags-card`} display="flex" >
-
+              <Box>
+                <Button
+                  size="medium"
+                  className={`${classes.installBtn} ${updated ? classes.bgUnistall : classes.bgUpdate
+                    }`}
+                  onClick={(e) => handleInstall(item, updated ? 'uninstall' : 'install')}
+                >
+                  {updated && "Uninstall"}
+                  {updated === false && "Update"}
+                  {updated === undefined && "Install"}
+                </Button>
+              </Box>
+              {/* <Box className={`${classes.tags} tags-card`} display="flex" >
                 {item.content.tags && item.content.tags.map((item, index) => {
                   return (
                     <Typography variant="caption" component="span">
@@ -519,17 +547,7 @@ Lorem ipsum dolor sit amet co
                     </Typography>
                   )
                 })}
-                {/* <Typography variant="caption" component="span">
-                  Programms
-            </Typography>
-                <Typography variant="caption" component="span">
-                  |
-            </Typography>
-                <Typography variant="caption" component="span">
-                  Utilities
-            </Typography> */}
-              </Box>
-
+              </Box> */}
             </CardActions>
           </Card>
         }
@@ -537,5 +555,4 @@ Lorem ipsum dolor sit amet co
     </Box>
   )
 }
-
 export default AppCard

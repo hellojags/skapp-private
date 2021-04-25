@@ -31,6 +31,9 @@ import Sidebar from '../Sidebar/Sidebar'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import skyId from '../../service/idp/SnSkyId'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
+ import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
+ import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 import { useHistory } from "react-router-dom"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -194,11 +197,11 @@ export default function Navbar() {
     useEffect(() => {
         console.log("skyid=" + skyId)
     }, [])
-    const [person, setPerson] = useState({})
+    const [person, setPerson] = useState({username:"hardcoded"})
     const user = useSelector(state => state.userSession)
-    useEffect(() => {
-        setPerson(user?.person?.profile)
-    }, [setPerson, user])
+    // useEffect(() => {
+    //     setPerson(user?.person?.profile)
+    // }, [setPerson, user])
     console.log(person)
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
@@ -223,9 +226,23 @@ export default function Navbar() {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
-    const logoutSkyId = async () => {
-        skyId.sessionDestroy("/")
-        dispatch(setLoaderDisplay(true))
+    const handleMySkyLogout = async () => {
+        alert("logout")
+        try {
+            dispatch(setLoaderDisplay(true));
+            console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
+            await stUserSession.mySky.logout();
+            clearAllfromIDB({ store: IDB_STORE_SKAPP });
+            console.log("### 1");
+            BROWSER_STORAGE.clear();
+            console.log("### 2");
+            dispatch(setUserSession(null));
+            dispatch(setLoaderDisplay(false));
+            window.location.href = window.location.origin
+        } catch (e) {
+            console.log("Error during logout process." + e)
+            dispatch(setLoaderDisplay(false))
+        }
     }
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
@@ -248,7 +265,7 @@ export default function Navbar() {
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
             </MenuItem>
-            <MenuItem onClick={logoutSkyId} className={classes.MenuItem}>
+            <MenuItem onClick={handleMySkyLogout} className={classes.MenuItem}>
                 <LogoutIcon className={classes.menuIcon} />
                 <span className={classes.logoutText}>Logout</span>
             </MenuItem>
