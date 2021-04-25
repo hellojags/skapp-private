@@ -31,17 +31,10 @@ export const getUserSession = () => {
   try {
     session = JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY))
   }
-  catch(e)
-  {
+  catch (e) {
     return session
   }
   return session
-}
-export function getUserPublicKey() {
-  return getUserSession() ? getUserSession().person.appPublicKey : null
-}
-export function getUserPrivateKey() {
-  return getUserSession() ? getUserSession().person.appPrivateKey : null
 }
 // export function getSkappKeys() {
 //   return {
@@ -223,7 +216,7 @@ export const getContent = async (publicKey, dataKey, options) => {
 // sets JSON file in SkyDB
 export const putFile = async (publicKey, dataKey, content, options) => {
   // fetch private key from localstorage
-  const privateKey = options.privateKey ?? getUserPrivateKey();
+  const privateKey = options.privateKey;
   try {
     // get previous skylink 
     // create linked list to track history
@@ -270,8 +263,8 @@ export const setRegistryEntry = async (dataKey, content, options) => {
   let revision = 0;
   try {
     // fetch private key from localstorage
-    const privateKey = options.privateKey ?? getUserPrivateKey();
-    const publicKey = options.publicKey ?? getUserPublicKey();
+    const privateKey = options.privateKey ?? getProviderKeysByType("AGGREGATOR").privateKey;
+    const publicKey = options.publicKey ?? getProviderKeysByType("AGGREGATOR").publicKey;
     if (options?.maxRevisionFlag) {
       revision = REGISTRY_MAX_REVISION;
     }

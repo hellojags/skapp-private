@@ -205,7 +205,7 @@ const SnUpload = React.forwardRef((props, ref) => {
           });
           onFileStateChange(file, {
             status: "complete",
-            url: client.getSkylinkUrl(hashFromSkylinkUploadResponse(response)),
+            url: await client.getSkylinkUrl(hashFromSkylinkUploadResponse(response)),
           });
           props.onUploadEnd && props.onUploadEnd();
           //send event to parent

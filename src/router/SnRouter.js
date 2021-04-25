@@ -12,7 +12,6 @@ import StorageGateway from '../components/Hosting/StorageGateway'
 import Settings from '../components/Setting/Settings'
 import AppDetailsPage from '../components/AppDetails/AppDetailsPage'
 import DeploySite from '../components/Hosting/DeploySite'
-import SnLogin from '../components/Login/SnLogin'
 import DescoverDev from '../components/DescoverDev/DescoverDev'
 import AppStore from '../components/AppsComp/AppStore'
 import Login from '../components/Auth/Login'
@@ -39,9 +38,6 @@ const SnRouter = (props) => (
             {/* </Route> */}
             <Route exact path='/login'>
                   <Login />
-            </Route>
-            <Route exact path='/SnLogin'>
-                <SnLogin />
             </Route>
             <Route exact path='/appdetail/:appId'>
                 <AppDetailsPage />

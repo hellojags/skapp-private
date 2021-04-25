@@ -55,6 +55,7 @@ const appCatOptions = [
   { value: "Games", label: "Games" },
   { value: "Blogs", label: "Blogs" },
   { value: "Software", label: "Software" },
+  { value: "DAC", label: "DataAccessControl" },
   { value: "Livestream", label: "Livestream" },
   { value: "Books", label: "Books" },
   { value: "Marketplace", label: "Marketplace" },
