@@ -68,12 +68,17 @@ const Login = () => {
     useEffect(() => {
         console.log("skyid=" + skyId);
     },[]);
-
+    const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
+    
     useEffect(() => {
         console.log("stUserSession=" + stUserSession);
         if(stUserSession != null)
-        {
-            history.push('/apps');
+        {  
+             if (installedAppsStoreForLogin) {
+                history.push('/');
+            } else {
+                history.push('/apps');
+            }
         }
     },[stUserSession]);
 

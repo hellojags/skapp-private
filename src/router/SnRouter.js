@@ -1,5 +1,6 @@
 import Apps from '../components/AppsComp/Apps'
 import SubmitApp from '../components/SubmitApp/SubmitApp'
+import EditPublishApp from '../components/SubmitApp/EditPublishApp'
 import Error from '../components/ErrorPage/Error'
 import NoApps from '../components/NoApps/NoApps'
 import InstalledApps from '../components/AppsComp/InstalledApps'
@@ -15,6 +16,7 @@ import SnLogin from '../components/Login/SnLogin'
 import DescoverDev from '../components/DescoverDev/DescoverDev'
 import AppStore from '../components/AppsComp/AppStore'
 import Login from '../components/Auth/Login'
+import EditSite from '../components/Hosting/EditSite'
 import {
     Switch,
     Route,
@@ -47,13 +49,16 @@ const SnRouter = (props) => (
             <Route path='/submitapp/:appId?'>
                 <SubmitApp />
             </Route>
+            <Route path='/editpublishapp/:appId'>
+                <EditPublishApp />
+            </Route>
             <Route exact path='/error'>
                 <Error />
             </Route>
             <Route exact path='/noapp'>
                 <NoApps />
             </Route>
-            <Route exact path='/installedappps'>
+            <Route exact path='/installedapps'>
                 <InstalledApps />
             </Route>
             <Route exact path='/hosting'>
@@ -61,6 +66,9 @@ const SnRouter = (props) => (
             </Route>
             <Route exact path='/submitsite'>
                 <AddNewSite />
+            </Route>
+            <Route exact path='/editsite/:appId'>
+                <EditSite />
             </Route>
             <Route exact path='/domains'>
                 <Domains />

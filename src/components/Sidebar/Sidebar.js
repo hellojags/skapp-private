@@ -75,7 +75,7 @@ const Sidebar = (props) => {
               <ListItemText primary="My Published Apps" />
             </ListItem>
           </NavLink>
-          <NavLink exact to="/apps">
+          <NavLink exact to="/installedapps">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <MyAppIcon />

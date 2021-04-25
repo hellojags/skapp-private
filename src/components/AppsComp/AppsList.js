@@ -9,8 +9,9 @@ import { useSelector } from "react-redux"
 
 const useStyles = makeStyles(styles)
 
-const AppsList = ({ newData }) => {
-  const classes = useStyles()
+ const AppsList = ({ newData, handleInstall, updated, installedApps }) => {
+ const classes = useStyles();
+
   // const [data, setData] = useState(newData);
 
   const [items, setItems] = useState(Array.from({ length: 12 }))
@@ -54,7 +55,7 @@ const AppsList = ({ newData }) => {
             alldata.map((item, index) => {
               return (
                 <Grid item xs={6} sm={6} md={4} lg={3} xl={3} key={index}>
-                  <AppCard selectable={true} item={item} />
+                  <AppCard selectable={true} item={item} updated={installedApps.some(x => x && item && x.id == item.id) ? true : undefined } handleInstall={handleInstall}/>
                 </Grid>
               )
             })}

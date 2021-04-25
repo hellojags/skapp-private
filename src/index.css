@@ -679,6 +679,17 @@ button[data-cat="All"] .count-cat{
   }
 }
 
+
+
+.iconLablel {
+  cursor: pointer;
+  font-size: 16px !important;
+}
+
+.iconLablel:hover {
+  color: #1DBF73 !important; 
+ }
+
 /* material ui select */
 .MuiInput-underline:after {
   

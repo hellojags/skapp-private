@@ -47,10 +47,10 @@ const appBg = {
   'Productivity': "#cf4cac"
 }
 
-const AppCard = ({ selectable, updated, item }) => {
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const classes = useStyles()
+const AppCard = ({ selectable, updated, item, handleInstall }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false)
   const HandleShareModel = () => {
@@ -497,16 +497,37 @@ Lorem ipsum dolor sit amet co
 
             </CardActions>
             <CardActions className={classes.footerBottom}>
-              <Box>
-                <Button
-                  size="medium"
-                  className={`${classes.installBtn} ${updated ? classes.bgUnistall : classes.bgUpdate
-                    }`}
-                >
-                  {updated && "Uninstall"}
-                  {updated === false && "Update"}
-                  {updated === undefined && "Install"}
-                </Button>
+             <Box>
+              <Button
+                size="medium"
+                className={`${classes.installBtn} ${
+                  updated ? classes.bgUnistall : classes.bgUpdate
+                }`}
+                onClick={(e) => handleInstall(item, updated ? 'uninstall': 'install')}
+              >
+                {updated && "Uninstall"}
+                {updated === false && "Update"}
+                {updated === undefined && "Install"}
+              </Button>
+          </Box>
+              <Box className={`${classes.tags} tags-card`} display="flex" >
+
+                {item.content.tags && item.content.tags.map((item, index) => {
+                  return (
+                    <Typography variant="caption" component="span">
+                      #{item}
+                    </Typography>
+                  )
+                })}
+                {/* <Typography variant="caption" component="span">
+                  Programms
+            </Typography>
+                <Typography variant="caption" component="span">
+                  |
+            </Typography>
+                <Typography variant="caption" component="span">
+                  Utilities
+            </Typography> */}
               </Box>
 
             </CardActions>

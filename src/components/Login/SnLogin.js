@@ -38,17 +38,24 @@ export default function SnLogin(props) {
     const [value, setValue] = useState(1)
     const [isTemp, setIsTemp] = useState(true)
     //const [skyid, setSkyid] = useState(skyidObj)
-
+    const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
+    
     useEffect(() => {
         console.log("skyid=" + skyId)
     })
 
     useEffect(() => {
-        console.log("stUserSession=" + stUserSession)
-        if (stUserSession != null) {
-            history.push('/apps')
+        console.log("stUserSession=" + stUserSession);
+        if(stUserSession != null)
+        {
+            if (installedAppsStoreForLogin) {
+                history.push('/');
+            } else {
+                history.push('/apps');
+            }
         }
-    }, [stUserSession])
+        
+    },[stUserSession]);
 
     // // Run Only Once
     // useEffect(() => {

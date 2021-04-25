@@ -1,19 +1,23 @@
-import { Box, InputBase } from "@material-ui/core"
-import React, { Fragment, useEffect } from "react"
-import { fade, makeStyles } from "@material-ui/core/styles"
-import SearchIcon from "@material-ui/icons/Search"
-import UtilitiesItem from "./UtilitiesItem"
-import ListFilter from "./ListFilter"
-import SelectItem from "./SelectItem"
-import SubmitBtn from "./SubmitBtn"
-import AppsList from "./AppsList"
-import useWindowDimensions from "../../hooks/useWindowDimensions"
+import { Box, InputBase } from "@material-ui/core";
+import React, { Fragment, useEffect, useState } from "react";
+import { fade, makeStyles } from "@material-ui/core/styles";
+import SearchIcon from "@material-ui/icons/Search";
+import { useHistory } from "react-router-dom";
+import UtilitiesItem from "./UtilitiesItem";
+import ListFilter from "./ListFilter";
+import SelectItem from "./SelectItem";
+import SubmitBtn from "./SubmitBtn";
+import AppsList from "./AppsList";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 // import PerfectScrollbar from 'react-perfect-scrollbar'
-import CustomPagination from "./CustomPagination"
-import SelectedAppsHeader from "./SelectedAppsHeader"
-import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction"
-import { useDispatch, useSelector } from "react-redux"
-import NoApps from "../NoApps/NoApps"
+import CustomPagination from "./CustomPagination";
+import SelectedAppsHeader from "./SelectedAppsHeader";
+import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+import { useDispatch, useSelector } from "react-redux";
+import { installApp } from '../../service/SnSkappService'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import NoApps from '../NoApps/NoApps';
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -145,33 +149,52 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Apps() {
-  const dispatch = useDispatch()
-  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore)
-  useEffect(() => {
+  const dispatch = useDispatch();
+  const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
+  const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
+
+  useEffect(async () => {
     // console.log("came here");
-    dispatch(getMyPublishedAppsAction())
-  }, [])
-  console.log("published aaap ", publishedAppsStore.length)
+    setIsLoading(true);
+    await dispatch(getMyPublishedAppsAction());
+    await dispatch(getMyInstalledAppsAction());
+    setIsLoading(false);
+  }, []);
   // temp var for selected page
   const selectedPage = false
   // This page code
-  const { width } = useWindowDimensions()
-  const classes = useStyles()
+
+  const { width } = useWindowDimensions();
+  const classes = useStyles();
+    
+  const handleInstall = async (item, key) => {
+    if (key == "install") {
+      dispatch(installedAppAction(item));
+    } else {
+      dispatch(unInstalledAppAction(item.id));
+    }
+  }
+
 
   const AppsComp = (
     <Fragment>
       <Box display="flex" className="second-nav" alignItems="center">
         <Box
           display="flex"
+
           alignItems="center"
           className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}
         >
-          <h1 className={classes.pageHeading}>Apps</h1>
-          <small className={classes.smallText}>120 Results</small>
+          <h1 className={classes.pageHeading}>My Published Apps</h1>
+          <small className={classes.smallText}>{publishedAppsStore.length} Results</small>
         </Box>
         {width < 1250 && (
+          //remove the style property to show it again, in future
           <div
             className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}
+            style={{ display: 'none' }}
           >
             <Box>
               <div className={classes.searchIcon}>
@@ -200,7 +223,8 @@ function Apps() {
           </Box> */}
 
           {width > 1249 && (
-            <div className={classes.search}>
+            //remove the style property to show it again, in future
+            <div className={classes.search} style={{ display: 'none' }}>
               <Box>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
@@ -223,15 +247,18 @@ function Apps() {
             {selectedPage && <SelectItem />}
           </Box>
           <Box>
-            <SubmitBtn>Publish App</SubmitBtn>
+            <SubmitBtn onClick={(e) => history.push('/submitapp')}>Publish App</SubmitBtn>
           </Box>
         </Box>
       </Box>
       {/* When items are selectable */}
       {selectedPage && <SelectedAppsHeader />}
-      <div>
-        {<AppsList newData={publishedAppsStore} />}
-      </div>
+      { !isLoading && publishedAppsStore.length > 0 ?
+        <div>
+          <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} updated={undefined} handleInstall={handleInstall}/>
+        </div>
+        : <NoApps showTitle={true} pageTitle="My Published Apps" heading="No Published Apps to display" pharase="Publish your App using 'Publish App' BUTTON" />
+      }
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />
       </Box> */}

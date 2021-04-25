@@ -21,8 +21,11 @@ import "slick-carousel/slick/slick-theme.css"
 import SlickNextArrow from '../slickarrows/SlickNextArrow'
 import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
-import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction"
-import { useDispatch, useSelector } from "react-redux"
+import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
+import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, installedAppActionForLogin } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Fuse from 'fuse.js'
 import styles from "../../assets/jss/apps/AppListStyle"
 // import classes from '*.module.css'
@@ -168,22 +171,29 @@ const useStyles = makeStyles(theme => (
 
 // get div with
 function AppStore() {
-    const dispatch = useDispatch()
-    const classes = useStyles()
+    const dispatch = useDispatch();
+    const classes = useStyles();
+    let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
+    const { installedAppsStore, installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
     let tags = []
-    let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore)
-
     const [searchData, setSearchData] = useState([])
     const [selectedTag, setSelectedTag] = useState('All')
 
-    useEffect(() => {
+    useEffect(async () => {
         // console.log("came here");
-
-        dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
+        //await dispatch(getAllPublishedAppsAction());
+        await dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
         setSearchData(publishedAppsStore)
-    }, [])
+        await dispatch(getMyInstalledAppsAction());
+        if (installedAppsStoreForLogin) {
+            await dispatch(installedAppAction(installedAppsStoreForLogin));
+        }
+      }, []);
+    useEffect(() => {
 
-    console.log('searched data', searchData)
+        setSearchData(publishedAppsStore)
+
+    }, [setSearchData, publishedAppsStore])
     // publishedAppsStore.filter(item => {
     //     if (item.content.category) {
 
@@ -196,11 +206,7 @@ function AppStore() {
         obj[b] = ++obj[b] || 1
         return obj
     }, {})
-    useEffect(() => {
-
-        setSearchData(publishedAppsStore)
-
-    }, [setSearchData, publishedAppsStore])
+   
     // const [state, setstate] = useState(initialState)
 
     // console.log(newD)
@@ -210,7 +216,24 @@ function AppStore() {
     tagsWithCount = Object.values(tagsWithCount)
 
     tagsWithCount = Object.entries(tagsWithCount)
-    console.log("dfdfd", tagsWithCount)
+  
+    const history = useHistory();
+    const stUserSession = useSelector((state) => state.userSession);
+    
+    const handleInstall = async (item, key) => {
+        if (stUserSession) {
+            if (key == "install") {
+                dispatch(installedAppAction(item));
+            } else {
+                dispatch(unInstalledAppAction(item.id));
+            }
+        } else {
+            if (key == "install") {
+                await dispatch(installedAppActionForLogin(item));
+                history.push('/login');
+            }
+        } 
+    }
     // temp var for selected page
     // const selectedPage = true
     // This page code
@@ -528,8 +551,17 @@ function AppStore() {
             </div> */}
                 </Slider>
             </div>
-            <div style={{ marginBottom: '2rem' }}>
-                <AppsList newData={searchData} />
+        </Slider>
+        <div style={{ marginBottom: '2rem' }}>
+            <AppsList newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
+            <Footer />
+        </div>
+    </Fragment>)
+
+    return (
+        // (width < 575)
+        //     ? <div className={classes.mobileSave}>{AppsComp}</div>
+        //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
 
                 <Footer />
             </div>

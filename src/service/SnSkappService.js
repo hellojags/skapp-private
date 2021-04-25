@@ -31,6 +31,8 @@ import {
   USERSETTINGS_FILEPATH,
   DK_HOSTED_APPS,
   DK_PUBLISHED_APPS,
+  DK_INSTALLED_APPS,
+  DK_UNINSTALLED_APPS,
   SKAPP_FOLLOWING_FILEPATH,
   SKAPP_SHARED_APPS_FILEPATH,
   SKAPP_SHARED_APPS_KEY_SEPERATOR,
@@ -43,6 +45,8 @@ import {
   EVENT_APP_FAVORITE_REMOVED,
   EVENT_APP_COMMENT,
   FAVORITE_REMOVED,
+  EVENT_APP_INSTALLED,
+  EVENT_APP_UNINSTALLED,
   ANONYMOUS,
 } from '../utils/SnConstants';
 import {
@@ -59,6 +63,7 @@ import store from "../redux"
 import imageCompression from "browser-image-compression";
 import { v4 as uuidv4 } from "uuid";
 import { emitEvent } from "./SnSkyMQEventEmitter";
+import { isNull } from 'lodash';
 var _ = require('lodash');
 
 // TODO: implement actual logic
@@ -197,15 +202,20 @@ export const getMyPublishedApps = async () => {
 
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
-  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+  //let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { skydb: true  });
+  
   if (publishedAppsIdList) {
-    publishedAppsIdList.push(appJSON.id);
+    if (!publishedAppsIdList.includes(appJSON.id)) {
+      // update Index value
+      publishedAppsIdList.push(appJSON.id);
+    }
   }
   else {
     publishedAppsIdList = [appJSON.id];
   }
-  // update Index value
-  await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+   // update Index value
+   await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
   // update existing published app
   // add additional logic to link previously published App
   await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
@@ -214,6 +224,92 @@ export const publishApp = async (appJSON) => {
   //await addToSkappUserFollowing(userPubKey);
   //await addToSharedApps(userPubKey, appJSON.id);
   return publishedAppsMap;
+}
+
+export const republishApp = async (appJSON) => {
+  let publishedAppsIdList = await getFile(getUserPublicKey(), DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+  // check if appid is present in publishedAppsIdList.
+  if (publishedAppsIdList && !publishedAppsIdList.includes(appJSON.id)) {
+    // update Index value
+    await putFile(getUserPublicKey(), DK_PUBLISHED_APPS, publishedAppsIdList, { store: IDB_STORE_SKAPP });
+    // update existing published app
+    // add additional logic to link previously published App
+    await putFile(getUserPublicKey(), appJSON.id, appJSON, { store: IDB_STORE_SKAPP })
+    await emitEvent(appJSON.id, EVENT_PUBLISHED_APP);
+    //await addToSkappUserFollowing(userPubKey);
+    //await addToSharedApps(userPubKey, appJSON.id);
+  }
+  else {
+    console.log("app is not published. first publish app, then only you can EDIT app");
+  }
+  const publishedAppsMap = await getMyPublishedApps();
+  return publishedAppsMap;
+}
+export const installApp = async (appJSON) => {
+  let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+  if (installedAppsIdList) {
+    //app should not already be installed
+    if (!installedAppsIdList.includes(appJSON.id)) {
+      installedAppsIdList.push(appJSON.id);
+    }
+    else {
+      const installedAppsMap = await getMyInstalledApps();
+      //await addToSkappUserFollowing(userPubKey);
+      //await addToSharedApps(userPubKey, appJSON.id);
+      return installedAppsMap;
+    }
+  }
+  else {
+    installedAppsIdList = [appJSON.id];
+  }
+  // update Index value
+  await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
+  // update existing published app
+  // add additional logic to link previously published App
+  await putFile(getUserPublicKey(), `${appJSON.id}#installed`, appJSON, { store: IDB_STORE_SKAPP })
+  await emitEvent(appJSON.id, EVENT_APP_INSTALLED);
+  const installedAppsMap = await getMyInstalledApps();
+  //await addToSkappUserFollowing(userPubKey);
+  //await addToSharedApps(userPubKey, appJSON.id);
+  return installedAppsMap;
+}
+
+export const uninstallApp = async (appId) => {
+  let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+  if (installedAppsIdList) {
+    //app should already be installed for uninstall
+    if (installedAppsIdList.includes(appId)) {
+      installedAppsIdList.splice(installedAppsIdList.indexOf(appId), 1);
+      //set updated list
+      await putFile(getUserPublicKey(), DK_INSTALLED_APPS, installedAppsIdList, { store: IDB_STORE_SKAPP });
+      // update existing published app
+      // add additional logic to link previously published App// set empty value
+      await putFile(getUserPublicKey(), `${appId}#installed`, {}, { store: IDB_STORE_SKAPP })
+      await emitEvent(appId, EVENT_APP_UNINSTALLED);
+    }
+  }
+  const installedAppsMap = await getMyInstalledApps();
+  //await addToSkappUserFollowing(userPubKey);
+  //await addToSharedApps(userPubKey, appJSON.id);
+  return installedAppsMap;
+}
+
+export const getMyInstalledApps = async () => {
+  //let publishedAppsMap = new Map();
+  let installedAppsMap = [];
+  try {
+    let installedAppsIdList = await getFile(getUserPublicKey(), DK_INSTALLED_APPS, { store: IDB_STORE_SKAPP });
+    if (installedAppsIdList) {
+      await Promise.all(installedAppsIdList.map(async (appId) => {
+        installedAppsMap.push((await getFile(getUserPublicKey(), `${appId}#installed`, { store: IDB_STORE_SKAPP })));
+      }));
+      console.log("getMyInstalledAppsMap: " + installedAppsMap);
+    }
+  } catch (err) {
+    console.log(err);
+    return installedAppsMap;
+  }
+  return installedAppsMap;
 }
 
 // export const addToSkappUserFollowing = async (userPublicKey) => {
@@ -470,7 +566,7 @@ export const getMyHostedApps = async (appIds) => {
       appIds = appIds?.length === 0 ? data : appIds;
     }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      hostedAppIdList.appDetailsList[appId] = (await getFile(getUserPublicKey(), `hosted${appId}`, { store: IDB_STORE_SKAPP }));
+      hostedAppIdList.appDetailsList[appId] = (await getFile(getUserPublicKey(), `${appId}#hosted`, { store: IDB_STORE_SKAPP }));
     }));
     return hostedAppIdList;
   } catch (err) {
@@ -506,10 +602,28 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     },
     ts
   };
-  await putFile(getUserPublicKey(), `hosted${id}`, hostedAppJSON, { store: IDB_STORE_SKAPP });
-  await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
-
+  //alert("previousId" + previousId);
+  await putFile(getUserPublicKey(), `${id}#hosted`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  if (previousId === "" || previousId === null || previousId === undefined) {
+    //alert("adding in array" + previousId);
+    await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList, id], { store: IDB_STORE_SKAPP });
+  }
   return hostedAppJSON;
+}
+
+export const deleteMyHostedApp = async (appId) => {
+  let status = false;
+  try {
+    const hostedAppIdList = (await getMyHostedApps())?.appIdList || [];
+    hostedAppIdList.splice(hostedAppIdList.indexOf(appId), 1);
+    await putFile(getUserPublicKey(), `${appId}#hosted`, {}, { store: IDB_STORE_SKAPP });
+    await putFile(getUserPublicKey(), DK_HOSTED_APPS, [...hostedAppIdList], { store: IDB_STORE_SKAPP });
+    status = true;
+  }
+  catch (e) {
+    console.log("deleteMyHostedApp : Error deleting  = " + appId)
+  }
+  return status;
 }
 
 //set HNS Entry. Everytime app is deployed this method must be called. else handshake name wont be updated with new skylink
