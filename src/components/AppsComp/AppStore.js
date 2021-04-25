@@ -188,7 +188,7 @@ function AppStore() {
         if (installedAppsStoreForLogin) {
             await dispatch(installedAppAction(installedAppsStoreForLogin));
         }
-      }, []);
+    }, []);
     useEffect(() => {
 
         setSearchData(publishedAppsStore)
@@ -206,7 +206,7 @@ function AppStore() {
         obj[b] = ++obj[b] || 1
         return obj
     }, {})
-   
+
     // const [state, setstate] = useState(initialState)
 
     // console.log(newD)
@@ -216,10 +216,10 @@ function AppStore() {
     tagsWithCount = Object.values(tagsWithCount)
 
     tagsWithCount = Object.entries(tagsWithCount)
-  
+
     const history = useHistory();
     const stUserSession = useSelector((state) => state.userSession);
-    
+
     const handleInstall = async (item, key) => {
         if (stUserSession) {
             if (key == "install") {
@@ -232,7 +232,7 @@ function AppStore() {
                 await dispatch(installedAppActionForLogin(item));
                 history.push('/login');
             }
-        } 
+        }
     }
     // temp var for selected page
     // const selectedPage = true
@@ -479,94 +479,14 @@ function AppStore() {
                             <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
                         </Button>
                     </div>)}
-                    {/* <div>
-                <Button className="tagButton">
-                    Social
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Video
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Pictures
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Music
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Productivity
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Utilities
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Games
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Blogs
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Software
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Livestream
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Books
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Marketplace
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Finance
-            </Button>
-            </div>
-            <div>
-                <Button className="tagButton">
-                    Portal
-            </Button>
-            </div> */}
                 </Slider>
             </div>
-        </Slider>
-        <div style={{ marginBottom: '2rem' }}>
-            <AppsList newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
-            <Footer />
-        </div>
-    </Fragment>)
-
-    return (
-        // (width < 575)
-        //     ? <div className={classes.mobileSave}>{AppsComp}</div>
-        //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-
-                <Footer />
+            <div style={{ marginBottom: '2rem' }}>
+                <AppsList newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
+                <Footer/>
             </div>
-        </Fragment></div>
+        </Fragment>
+        </div>
     )
 }
-
 export default AppStore
