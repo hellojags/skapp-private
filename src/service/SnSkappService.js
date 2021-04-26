@@ -91,11 +91,13 @@ export const setProfile = async (profileJSON) => {
 
 export const getPreferences = async () => {
   //set options
-  return await getFile_MySky( "userPreferences", { skydb: true })
+  return JSON.parse(BROWSER_STORAGE.getItem('userPreferences'));
+  // return await getFile_MySky( "userPreferences", { skydb: true })
+
 }
 export const setPreferences = async (preferencesJSON) => {
   //set options
-  await putFile_MySky("userPreferences", preferencesJSON, { skydb: true });
+  BROWSER_STORAGE.setItem("userPreferences", JSON.stringify(preferencesJSON));
 }
 // ### Following/Followers Functionality ###
 

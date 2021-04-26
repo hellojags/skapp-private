@@ -9,9 +9,11 @@ import { Button, Snackbar } from '@material-ui/core';
 import Alert from "@material-ui/lab/Alert";
 // import { Add } from '@material-ui/icons'
 import Profile from './Profile';
+import GlobalPrefrences from './globalPrefrences';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { getProfile, setProfile } from '../../service/SnSkappService';
+import { getProfile, setProfile, getPreferences, setPreferences } from '../../service/SnSkappService';
 import * as Yup from 'yup';
 
 function TabPanel(props) {
@@ -115,6 +117,11 @@ const formikObj = {
     
 };
 
+const formikObjGP = {
+    darkmode: [false],
+    portal: ['']
+};
+
 const Settings = () => {
     const classes = useStyles()
     const [value, setValue] = React.useState(0);
@@ -129,6 +136,8 @@ const Settings = () => {
     const handleChange = (event, newValue) => {
         if (newValue == 0) {
             loadProfile();
+        } else if(newValue == 1) {
+            loadGeneralPrefrences();
         }
         setValue(newValue)
     }
@@ -139,6 +148,15 @@ const Settings = () => {
             loadProfile();
         };
     }, []);
+
+    const loadGeneralPrefrences = async () => {
+        dispatch(setLoaderDisplay(true));
+        setIsLoading(true);
+        const profile = await getPreferences();
+        setFormicObjGP(profile);
+        dispatch(setLoaderDisplay(false));
+        setIsLoading(false);
+    }
 
     const loadProfile = async () => {
         dispatch(setLoaderDisplay(true));
@@ -169,8 +187,22 @@ const Settings = () => {
         setIsSuccess(true);
         dispatch(setLoaderDisplay(false));
     };
-
     
+    const submitFormGP = async (values) => {
+        dispatch(setLoaderDisplay(true));
+        await setPreferences(values);
+        setIsSuccess(true);
+        dispatch(setLoaderDisplay(false));
+    };
+    
+    const setFormicObjGP = (profile) => {
+        console.log(profile);
+        if (profile) {
+            formikObjGP.darkmode[0] = `${profile?.darkmode}`;
+            formikObjGP.portal[0] = `${profile?.portal}`;
+        }
+    }
+
     const setFormicObj = (profile) => {
         if (profile) {
             formikObj.username[0] = `${profile?.username}`;
@@ -215,7 +247,7 @@ const Settings = () => {
                     <Profile formikObj={formikObj} submitForm={submitForm} isSuccess={isSuccess} setIsSuccess={setIsSuccess} isError={isError} setIsError={setIsError} isLoading={isLoading}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <h4>Global Preferences</h4>
+                    <GlobalPrefrences formikObj={formikObjGP} submitForm={submitFormGP} isSuccess={isSuccess} setIsSuccess={setIsSuccess} isError={isError} setIsError={setIsError} isLoading={isLoading}/>
                 </TabPanel>
                 {/* <TabPanel value={value} index={2}>
                     <h4>Billing</h4>

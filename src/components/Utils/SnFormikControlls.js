@@ -3,7 +3,7 @@ import { Formik, Form, useField, useFormikContext } from 'formik';
 import Select from 'react-select';
 import TagsInput from "react-tagsinput";
 import '../SubmitApp/taginput.css';
-import { TextareaAutosize, InputBase, Box } from '@material-ui/core';
+import { TextareaAutosize, InputBase, Box, Switch  } from '@material-ui/core';
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 
@@ -151,6 +151,20 @@ export const SnTextInput = ({ label, className, showError, ...props }) => {
   );
 };
 
+
+export const SnSwitch = ({ label, className, showError, ...props }) => {
+  const [field, meta] = useField(props);
+  const { submitCount } = useFormikContext();
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <Switch defaultChecked={field.value} {...field} {...props} />
+      {(showError ?? true) && submitCount>0 && meta.error ? (
+        <div className="required-field">{meta.error}</div>
+      ) : null}
+    </>
+  );
+};
 
 export const SnTextArea = ({ label, className, showError, ...props }) => {
   const [field, meta] = useField(props);
