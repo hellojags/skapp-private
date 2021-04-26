@@ -1,8 +1,8 @@
 
 import React, { createRef, useEffect, useState } from 'react'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
-
+import { Box, Button, makeStyles, Typography, Snackbar } from '@material-ui/core';
+import Alert from "@material-ui/lab/Alert";
 import { Formik } from 'formik';
 import { SnTextInput, SnTextInputTag, SnTextArea, SnInputWithIcon } from '../Utils/SnFormikControlls';
 import SnUpload from '../../uploadUtil/SnUpload';
@@ -212,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const Profile = ({ isLoading, submitForm, formikObj }) => {
+const Profile = ({ isLoading, submitForm, formikObj, isSuccess, setIsSuccess, isError, setIsError,  }) => {
     const classes = useStyles()
     let history = useHistory();
     const dispatch = useDispatch();
@@ -226,15 +226,28 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
     };
 
     const handleImgUpload = (obj, formik) => {
-        console.log('setting', obj)
         formik.setFieldValue("avatar", { url: `sia:${obj.thumbnail}` }, true);
         setIsLogoUploaded(false);
     };
 
 
     return (
+        
         <div className={classes.ProfileRoot}>
             <Box>
+                
+            {isSuccess && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000} onClose={setIsSuccess(false)}>
+                <Alert onClose={setIsSuccess(false)} severity="success">
+                    Profile Successfully Saved!
+                </Alert>
+            </Snackbar>
+            }
+            {isError && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isError} autoHideDuration={6000} onClose={setIsError(false)}>
+                <Alert onClose={setIsError(false)} severity="error">
+                    Error Occurred while saving profile!
+                </Alert>
+            </Snackbar>
+            }
                 {
                     !isLoading ?
                         <Formik
@@ -245,7 +258,7 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
                             onSubmit={submitForm}>
                             {formik => (<form onSubmit={formik.handleSubmit}>
                                 <h2>Account  <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save Changes </Button>
-                            </h2>
+                                </h2>
                                 <Typography className={classes.textInfo}>
                                     This information can be edited from your profile page.
                                 </Typography>

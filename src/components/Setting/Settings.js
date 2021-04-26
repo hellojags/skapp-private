@@ -5,7 +5,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
-import { Button } from '@material-ui/core'
+import { Button, Snackbar } from '@material-ui/core';
+import Alert from "@material-ui/lab/Alert";
 // import { Add } from '@material-ui/icons'
 import Profile from './Profile';
 import { useDispatch, useSelector } from 'react-redux';
@@ -120,6 +121,9 @@ const Settings = () => {
         
     const [profileObj, setProfileObj] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isError, setIsError] = useState(false);
+
     const dispatch = useDispatch();
 
     const handleChange = (event, newValue) => {
@@ -162,6 +166,7 @@ const Settings = () => {
         }
         dispatch(setLoaderDisplay(true));
         await setProfile(profileJSON);
+        setIsSuccess(true);
         dispatch(setLoaderDisplay(false));
     };
 
@@ -197,6 +202,7 @@ const Settings = () => {
                     <Button className={classes.submitBtn}>Save Changes</Button>
                 </Box>
             </Box> */}
+            
             <div className={classes.root}>
                 <AppBar className={classes.tabNavigation} position="static" color="default" >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" >
@@ -206,7 +212,7 @@ const Settings = () => {
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
-                    <Profile formikObj={formikObj} submitForm={submitForm} isLoading={isLoading}/>
+                    <Profile formikObj={formikObj} submitForm={submitForm} isSuccess={isSuccess} setIsSuccess={setIsSuccess} isError={isError} setIsError={setIsError} isLoading={isLoading}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <h4>Global Preferences</h4>
