@@ -70,12 +70,25 @@ function generateSkappId(prop) {
 
 // ### User Profile Functionality ###
 // null or publicKey
-export const getProfile = (publicKey) => {
+export const getProfile = async () => {
   //set options
+  return await getFile(getUserPublicKey(), "userProfile", { skydb: true })
 }
 
-// set Profile
-export const setProfile = (profileJSON) => { }
+export const setProfile = async (profileJSON) => {
+  //set options
+  await putFile(getUserPublicKey(), "userProfile", profileJSON, {  skydb: true  });
+}
+
+export const getPreferences = async () => {
+  //set options
+  return await getFile(getUserPublicKey(), "userPreferences", { skydb: true })
+}
+
+export const setPreferences = async  (preferencesJSON) => {
+  //set options
+  await putFile(getUserPublicKey(), "userPreferences", preferencesJSON, {  skydb: true  });
+}
 
 // ### Following/Followers Functionality ###
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Formik, Form, useField, useFormikContext } from 'formik';
 import Select from 'react-select';
+import TagsInput from "react-tagsinput";
+import "react-tagsinput/react-tagsinput.css";
 
 export const SnTextInput = ({ label, className, showError, ...props }) => {
   const [field, meta] = useField(props);
@@ -16,6 +18,27 @@ export const SnTextInput = ({ label, className, showError, ...props }) => {
   );
 };
 
+export const SnTextInputTag = ({ label, className, showError, ...props }) => {
+  const [field, meta, helpers] = useField(props);
+  const { touched, error, value } = meta;
+  const { setValue } = helpers;
+  const { submitCount } = useFormikContext();
+
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <TagsInput
+        {...field} {...props}
+          onChange={(tags) => setValue(tags)}
+          instanceId={props.iid}
+          className={className}
+        />
+        {(showError ?? true) && submitCount>0 && meta.error ? (
+          <div className="required-field">{meta.error}</div>
+        ) : null}
+    </>  
+  );
+};
 
 const reactSelectStyles = {
   control: styles => ({

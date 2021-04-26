@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -7,7 +7,11 @@ import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
 import { Button } from '@material-ui/core'
 // import { Add } from '@material-ui/icons'
-import Profile from './Profile'
+import Profile from './Profile';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import { getProfile, setProfile } from '../../service/SnSkappService';
+import * as Yup from 'yup';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props
@@ -88,39 +92,120 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: 'none'
     }
 }))
+
+
+
+const formikObj = {
+    username: ['', Yup.string().required('This field is required')],
+    emailID: ['', Yup.string().required('This field is required')],
+    firstName: [''],
+    lastName: [''],
+    contact: [''],
+    aboutMe: [''],
+    location: [''],
+    topicsHidden: [[]],
+    topicsDiscoverable: [[]],
+    avatar: [{}],  
+    facebook: [''],
+    twitter: [''],
+    github: ['']
+};
+
 const Settings = () => {
     const classes = useStyles()
-    const [value, setValue] = React.useState(0)
+    const [value, setValue] = React.useState(0);
+        
+    const [profileObj, setProfileObj] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const handleChange = (event, newValue) => {
+        if (newValue == 0) {
+            loadProfile();
+        }
         setValue(newValue)
+    }
+
+    
+    useEffect(() => {
+        return () => {
+            loadProfile();
+        };
+    }, []);
+
+    const loadProfile = async () => {
+        dispatch(setLoaderDisplay(true));
+        setIsLoading(true);
+        const profile = await getProfile();
+        await setProfileObj(profile);
+        setFormicObj(profile);
+        dispatch(setLoaderDisplay(false));
+        setIsLoading(false);
+    };
+    
+    const submitForm = async (values) => {
+        let profileJSON = {
+            username: values.username,
+            emailID: values.emailID,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            contact: values.contact,
+            location: values.location,
+            aboutMe: values.aboutMe,
+            connections: [{ twitter: values.twitter, facebook: values.facebook, github: values.github }],
+            topicsHidden: values.topicsHidden,
+            topicsDiscoverable: values.topicsDiscoverable,
+            avatar: [values.avatar],
+        }
+        dispatch(setLoaderDisplay(true));
+        await setProfile(profileJSON);
+        dispatch(setLoaderDisplay(false));
+    };
+
+    
+    const setFormicObj = (profile) => {
+        formikObj.username[0] = `${profile?.username}`;
+        formikObj.emailID[0] = `${profile?.emailID}`;
+        formikObj.firstName[0] = `${profile?.firstName}`;
+        formikObj.lastName[0] = `${profile?.lastName}`;
+        formikObj.contact[0] = `${profile?.contact}`;
+        formikObj.location[0] = `${profile?.location}`;
+        formikObj.aboutMe[0] = `${profile?.aboutMe}`;
+        formikObj.facebook[0] = `${profile?.connections?.facebook}`;
+        formikObj.twitter[0] = `${profile?.connections?.twitter}`;
+        formikObj.github[0] = `${profile?.connections?.github}`;
+        formikObj.topicsHidden[0] = profile?.topicsHidden;
+        formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
+        if (profile?.avatar && profile?.avatar?.length > 0) {
+            formikObj.avatar[0] = profile?.avatar[0];
+        }
     }
 
     return (
         <Fragment>
-            <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
+            {/* <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
                 <h1 className={classes.h1}>Settings</h1>
                 <Box className={classes.btnBox}>
                     <Button className={classes.submitBtn}>Save Changes</Button>
                 </Box>
-            </Box>
+            </Box> */}
             <div className={classes.root}>
                 <AppBar className={classes.tabNavigation} position="static" color="default" >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" >
                         <Tab label="Profile" {...a11yProps(0)} />
-                        <Tab label="Payment" {...a11yProps(1)} />
-                        <Tab label="Billing" {...a11yProps(2)} />
+                        <Tab label="Global Preferences" {...a11yProps(1)} />
+                        {/* <Tab label="Billing" {...a11yProps(2)} /> */}
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
-                    <Profile />
+                    <Profile formikObj={formikObj} submitForm={submitForm} isLoading={isLoading}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <h4>Payment</h4>
+                    <h4>Global Preferences</h4>
                 </TabPanel>
-                <TabPanel value={value} index={2}>
+                {/* <TabPanel value={value} index={2}>
                     <h4>Billing</h4>
-                </TabPanel>
+                </TabPanel> */}
             </div>
         </Fragment>
     )
