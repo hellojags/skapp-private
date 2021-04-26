@@ -4,14 +4,14 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 
 import { Formik } from 'formik';
-import { SnTextInput, SnTextInputTag } from '../Utils/SnFormikControlls';
+import { SnTextInput, SnTextInputTag, SnTextArea, SnInputWithIcon } from '../Utils/SnFormikControlls';
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 
 import * as Yup from 'yup';
-import { Add } from '@material-ui/icons';
+import { Add, Search, GitHub, Facebook, Reddit, Twitter, Telegram } from '@material-ui/icons';
 import { skylinkToUrl } from "../../utils/SnUtility";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
 import { useHistory } from 'react-router-dom';
@@ -219,46 +219,6 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
     const imgUploadEleRef = createRef();
     const [isLogoUploaded, setIsLogoUploaded] = useState(false);
     
-    // const [profileObj, setProfileObj] = useState();
-    // const [isLoading, setIsLoading] = useState(false);
-
-    // useEffect(() => {
-    //     return () => {
-    //         loadProfile();
-    //     };
-    // }, []);
-
-    // const loadProfile = async () => {
-    //     dispatch(setLoaderDisplay(true));
-    //     setIsLoading(true);
-    //     const profile = await getProfile();
-    //     await setProfileObj(profile);
-    //     setFormicObj(profile);
-    //     dispatch(setLoaderDisplay(false));
-    //     setIsLoading(false);
-    // };
-
-    // const submitForm = async (values) => {
-    //     let profileJSON = {
-    //         username: values.username,
-    //         emailID: values.emailID,
-    //         firstName: values.firstName,
-    //         lastName: values.lastName,
-    //         contact: values.contact,
-    //         location: values.location,
-    //         aboutMe: values.aboutMe,
-    //         connections: [{ twitter: values.twitter, facebook: values.facebook, github: values.github }],
-    //         topicsHidden: values.topicsHidden,
-    //         topicsDiscoverable: values.topicsDiscoverable,
-    //         avatar: [values.avatar],
-    //     }
-    //     console.log(profileJSON);
-    //     dispatch(setLoaderDisplay(true));
-    //     await setProfile(profileJSON);
-    //     dispatch(setLoaderDisplay(false));
-    // };
-
-
     const handleDropZoneClick = (evt, dropZoneRef) => {
         evt.preventDefault();
         evt.stopPropagation();
@@ -266,7 +226,9 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
     };
 
     const handleImgUpload = (obj, formik) => {
+        console.log('setting', obj)
         formik.setFieldValue("avatar", { url: `sia:${obj.thumbnail}` }, true);
+        setIsLogoUploaded(false);
     };
 
 
@@ -321,22 +283,12 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
                                     <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
                                             <SnTextInput
-                                                label="Username"
+                                                label={<span> Username <span style={{color: 'red' }}>*</span></span>}
                                                 name="username"
                                                 className={classes.input}
                                                 type="text" 
                                             />
                                         </Box>
-                                        <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
-                                                label="Email"
-                                                name="emailID"
-                                                className={classes.input}
-                                                type="text" 
-                                            />
-                                        </Box>
-                                    </Box>
-                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
                                             <SnTextInput
                                                 label="First Name"
@@ -357,54 +309,35 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
                                     <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
                                             <SnTextInput
-                                                label="Contact"
-                                                name="contact"
-                                                className={classes.input}
-                                                type="text" 
-                                            />
-                                        </Box>
-                                        <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
                                                 label="Location"
                                                 name="location"
                                                 className={classes.input}
                                                 type="text" 
                                             />
                                         </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnTextInput
+                                                label="Email"
+                                                name="emailID"
+                                                className={classes.input}
+                                                type="text" 
+                                            />
+                                        </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnTextInput
+                                                label="Contact"
+                                                name="contact"
+                                                className={classes.input}
+                                                type="text" 
+                                            />
+                                        </Box>
                                     </Box>
                                     <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
+                                            <SnTextArea
                                                 label="About me"
                                                 name="aboutMe"
                                                 className={classes.input}
-                                                type="text" 
-                                            />
-                                        </Box>
-                                        <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
-                                                label="Github"
-                                                name="github"
-                                                className={classes.input}
-                                                type="text" 
-                                            />
-                                        </Box>
-                                    </Box>
-                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
-                                        <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
-                                                label="Twitter"
-                                                name="twitter"
-                                                className={classes.input}
-                                                type="text" 
-                                            />
-                                        </Box>
-                                        <Box className={`${classes.inputContainer}`} flex={1}>
-                                            <SnTextInput
-                                                label="Facebook"
-                                                name="facebook"
-                                                className={classes.input}
-                                                type="text" 
                                             />
                                         </Box>
                                     </Box>
@@ -421,6 +354,57 @@ const Profile = ({ isLoading, submitForm, formikObj }) => {
                                                 label="Topics Discoverable"
                                                 name="topicsDiscoverable"
                                                 className={classes.input}
+                                            />
+                                        </Box>
+                                    </Box>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <label>Social Connections</label>
+                                        </Box>
+                                    </Box>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnInputWithIcon
+                                                icon={<GitHub />}
+                                                label="Github"
+                                                name="github"
+                                                type="text" 
+                                            />
+                                        </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnInputWithIcon
+                                                icon={<Twitter />}
+                                                label="Twitter"
+                                                name="twitter"
+                                                type="text" 
+                                            />
+                                        </Box>
+                                    </Box>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnInputWithIcon
+                                                icon={<Facebook />}
+                                                label="Facebook"
+                                                name="facebook"
+                                                type="text" 
+                                            />
+                                        </Box>
+                                        <Box className={`${classes.inputContainer}`} flex={1}>
+                                            <SnInputWithIcon
+                                                icon={<Reddit />}
+                                                label="Reddit"
+                                                name="reddit"
+                                                type="text" 
+                                            />
+                                        </Box>
+                                    </Box>
+                                    <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                        <Box className={`${classes.inputContainer}`} flex={0.5}>
+                                            <SnInputWithIcon
+                                                icon={<Telegram />}
+                                                label="Telegram"
+                                                name="telegram"
+                                                type="text" 
                                             />
                                         </Box>
                                     </Box>

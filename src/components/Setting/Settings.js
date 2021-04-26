@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
 
 const formikObj = {
     username: ['', Yup.string().required('This field is required')],
-    emailID: ['', Yup.string().required('This field is required')],
+    emailID: [''],
     firstName: [''],
     lastName: [''],
     contact: [''],
@@ -108,7 +108,10 @@ const formikObj = {
     avatar: [{}],  
     facebook: [''],
     twitter: [''],
-    github: ['']
+    github: [''],
+    reddit: [''],
+    telegram: [''],
+    
 };
 
 const Settings = () => {
@@ -152,7 +155,7 @@ const Settings = () => {
             contact: values.contact,
             location: values.location,
             aboutMe: values.aboutMe,
-            connections: [{ twitter: values.twitter, facebook: values.facebook, github: values.github }],
+            connections: [{ twitter: values.twitter}, {facebook: values.facebook}, {github: values.github}, {reddit: values.reddit}, {telegram: values.telegram}],
             topicsHidden: values.topicsHidden,
             topicsDiscoverable: values.topicsDiscoverable,
             avatar: [values.avatar],
@@ -164,21 +167,26 @@ const Settings = () => {
 
     
     const setFormicObj = (profile) => {
-        formikObj.username[0] = `${profile?.username}`;
-        formikObj.emailID[0] = `${profile?.emailID}`;
-        formikObj.firstName[0] = `${profile?.firstName}`;
-        formikObj.lastName[0] = `${profile?.lastName}`;
-        formikObj.contact[0] = `${profile?.contact}`;
-        formikObj.location[0] = `${profile?.location}`;
-        formikObj.aboutMe[0] = `${profile?.aboutMe}`;
-        formikObj.facebook[0] = `${profile?.connections?.facebook}`;
-        formikObj.twitter[0] = `${profile?.connections?.twitter}`;
-        formikObj.github[0] = `${profile?.connections?.github}`;
-        formikObj.topicsHidden[0] = profile?.topicsHidden;
-        formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
-        if (profile?.avatar && profile?.avatar?.length > 0) {
-            formikObj.avatar[0] = profile?.avatar[0];
+        if (profile) {
+            formikObj.username[0] = `${profile?.username}`;
+            formikObj.emailID[0] = `${profile?.emailID}`;
+            formikObj.firstName[0] = `${profile?.firstName}`;
+            formikObj.lastName[0] = `${profile?.lastName}`;
+            formikObj.contact[0] = `${profile?.contact}`;
+            formikObj.location[0] = `${profile?.location}`;
+            formikObj.aboutMe[0] = `${profile?.aboutMe}`;
+            formikObj.facebook[0] = `${profile?.connections?.find(({facebook}) => facebook).facebook}`;
+            formikObj.twitter[0] = `${profile?.connections?.find(({twitter}) => twitter).twitter}`;
+            formikObj.github[0] = `${profile?.connections?.find(({github}) => github).github}`;
+            formikObj.reddit[0] = `${profile?.connections?.find(({reddit}) => reddit).reddit}`;
+            formikObj.telegram[0] = `${profile?.connections?.find(({telegram}) => telegram).telegram}`;
+            formikObj.topicsHidden[0] = profile?.topicsHidden;
+            formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
+            if (profile?.avatar && profile?.avatar?.length > 0) {
+                formikObj.avatar[0] = profile?.avatar[0];
+            }
         }
+        
     }
 
     return (

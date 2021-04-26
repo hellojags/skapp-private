@@ -79,12 +79,16 @@ function generateSkappId(prop) {
 // null or publicKey
 export const getProfile = async () => {
   //set options
-  return await getFile_MySky( "userProfile", { skydb: true })
+  return JSON.parse(BROWSER_STORAGE.getItem('userProfile'));
+  // getFile_MySky( "userProfile", { skydb: true })
 }
+
 export const setProfile = async (profileJSON) => {
   //set options
-  await putFile_MySky("userProfile", profileJSON, { skydb: true });
+  BROWSER_STORAGE.setItem('userProfile', JSON.stringify(profileJSON));
+  // await putFile_MySky("userProfile", profileJSON, { skydb: true });
 }
+
 export const getPreferences = async () => {
   //set options
   return await getFile_MySky( "userPreferences", { skydb: true })
