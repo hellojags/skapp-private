@@ -23,6 +23,7 @@ import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
 import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
 import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, installedAppActionForLogin } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+import {getAggregatedAppStatsAction} from "../../redux/action-reducers-epic/SnAggregatedAppStatsAction"
 
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -183,12 +184,14 @@ function AppStore() {
         // console.log("came here");
         //await dispatch(getAllPublishedAppsAction());
         await dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
+        await dispatch(getAggregatedAppStatsAction()) // I can do pagination here
         setSearchData(publishedAppsStore)
         await dispatch(getMyInstalledAppsAction());
         if (installedAppsStoreForLogin) {
             await dispatch(installedAppAction(installedAppsStoreForLogin));
         }
     }, []);
+
     useEffect(() => {
 
         setSearchData(publishedAppsStore)

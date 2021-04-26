@@ -195,9 +195,9 @@ const AppDetailsHeader = ({ data }) => {
     setAggregatedAppStats(result)
   }
 
-  const appStatsAction = (eventType) => {
+  const appStatsAction = async (eventType) => {
     // EVENT_APP_FAVORITE, EVENT_APP_FAVORITE_REMOVED
-    dispatch(setAppStatsAction(eventType, data.id))
+    await dispatch(setAppStatsAction(eventType, data.id))
   }
 
   // useEffect(() => {

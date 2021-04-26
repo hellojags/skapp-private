@@ -122,6 +122,9 @@ export const DK_INSTALLED_APPS = "installedApps";
 export const DK_PUBLISHED_APPS = "publishedApps";
 export const DK_HOSTED_APPS = "hostedApps";
 
+export const DK_AGGREGATED_PUBLISHED_APPS = "aggregatedPublishedApps";
+export const DK_AGGREGATED_PUBLISHED_APPS_STATS = "aggregatedPublishedAppsStats";
+
 //Stats Action Type
 // export const VIEW_COUNT = "view";
 // export const ACCESS_COUNT = "access";

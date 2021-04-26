@@ -223,7 +223,7 @@ export default function Navbar() {
         setMobileMoreAnchorEl(event.currentTarget)
     }
     const handleMySkyLogout = async () => {
-        alert("logout")
+        //alert("logout")
         try {
             dispatch(setLoaderDisplay(true));
             console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
