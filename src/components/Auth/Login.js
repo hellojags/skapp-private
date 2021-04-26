@@ -4,10 +4,16 @@ import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Link, Typography } from '@material-ui/core';
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoGray.svg'
-import skyId from '../../service/idp/SnSkyId'
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import { handleMySkyLogin } from '../../service/skynet-api';
+import { getUserProfile } from '../../service/SnSkappService';
+import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
+
+import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
+import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
+import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 
 const useStyles = makeStyles({
     input: {
@@ -57,52 +63,62 @@ const Login = () => {
     const classes = useStyles()
     const dispatch = useDispatch()
     const history = useHistory()
-    const person = useSelector((state) => state.person)
     const stUserSession = useSelector((state) => state.userSession)
 
-    const [seed, setSeed] = useState('')
-    const [value, setValue] = useState(1)
-    const [isTemp, setIsTemp] = useState(true)
-    //const [skyid, setSkyid] = useState(skyidObj)
+    const [userID, setUserID] = useState();
+    // choose a data domain for saving files in MySky
+    const dataDomain = 'localhost';
 
     useEffect(() => {
-        console.log("skyid=" + skyId);
-    },[]);
+    }, []);
+
+    const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
 
     useEffect(() => {
         console.log("stUserSession=" + stUserSession);
-        if(stUserSession != null)
-        {
-            history.push('/apps');
+        if (stUserSession?.mySky != null) {
+            if (installedAppsStoreForLogin) {
+                history.push('/');
+            } else {
+                history.push('/apps');
+            }
         }
-    },[stUserSession]);
-
-    const loginSkyID = async () => {
-        skyId.sessionStart();
+    }, [stUserSession]);
+    const handleLogin = async () => {
+        const result = await handleMySkyLogin();
+        setUserID(result.userID);
+        alert("result.userID : " + result.userID)
+        await onMySkySuccess(result.mySky, result.userID);
         dispatch(setLoaderDisplay(true));
     }
-    const handleChange = (event, newValue) => {
-        setValue(newValue)
-    };
+    // login - helper functions
+    const onMySkySuccess = async (mySky,userID) => {
+        try {
+            // create userSession Object
+            let userSession = { idp: ID_PROVIDER_SKYID, mySky};
+            const userProfileObj = await getUserProfile(userID);// dont proceed without pulling profile
+            userSession = { ...userSession, userProfile: userProfileObj };
+            dispatch(setUserSession(userSession));
+            // get userFollowers
+            dispatch(getMyFollowersAction(null));
+            // get userFollowings
+            dispatch(getMyFollowingsAction(null));
+            dispatch(setLoaderDisplay(false));
+            //window.history.pushState({}, '', '/appdetail')
+        }
+        catch (error) {
+            console.log("Error during login process. login failed");
+            dispatch(setLoaderDisplay(false));
+        }
+    }
     return (
         <div className={classes.loginFormContainer}>
             <form className="login-form">
                 <div>
                     <Logo />
                     <h3>Sign In to Skapp</h3>
-                    {/* <p>
-                        <small>
-                            Enter your secret key to continue <span className="secrect-key">Create a Secret Key</span>
-                        </small>
-
-                    </p> 
-                    <input className={classes.input} type="text" placeholder="12 - Word Secret Key" />*/}
-                    {/* type="submit" */}
-                    <Button onClick={loginSkyID}> Login using SkyID
-                   {/* <Link to="/apps" className="link" /> */}
-
+                    <Button onClick={handleLogin}> Login using MySky
                     </Button>
-
                     <div className={classes.poweredBy}>
                         <span>Powered by </span><SiteLogoGray />
                     </div>
@@ -111,5 +127,4 @@ const Login = () => {
         </div>
     )
 }
-
 export default Login

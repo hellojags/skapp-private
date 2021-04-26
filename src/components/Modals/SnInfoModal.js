@@ -9,14 +9,38 @@ import DoneIcon from "@material-ui/icons/Done";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
+import { makeStyles } from '@material-ui/core/styles'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const useStyles = makeStyles(theme => ({
+  submitBtn: {
+    background: '#1DBF73!important',
+    color: '#fff',
+    paddingLeft: '1rem',
+    paddingRight: '1rem',
+    display: 'inlin-flex',
+    alignItems: 'center',
+    minWidth: 130,
+    '& svg': {
+      fontSize: '19px',
+      marginRight: '5px'
+    },
+    '@media only screen and (max-width: 575px)': {
+      fontSize: '12px',
 
-export default function SnInfoModal({ open, onClose, type, title, content, showClipboardCopy=false, clipboardCopyTooltip, ...props }) {
+      paddingLeft: '.5rem',
+      paddingRight: '.5rem',
+      minWidth: 70,
+    }
+  },
+}));
+
+export default function SnInfoModal({ open, onClose, type, title, content, showClipboardCopy = false, clipboardCopyTooltip, ...props }) {
   // class SnInfoModal extends React.Component {
+  const classes = useStyles();
   const displayContent = () => {
     switch (type) {
       case 'public-share':
@@ -73,8 +97,7 @@ export default function SnInfoModal({ open, onClose, type, title, content, showC
           onClick={onClose}
           autoFocus
           variant="contained"
-          color="primary"
-          className="btn-bg-color"
+          className={classes.submitBtn}
           startIcon={<DoneIcon />}
         >
           OK

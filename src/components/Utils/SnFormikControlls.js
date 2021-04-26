@@ -90,10 +90,11 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
   const { touched, error, value } = meta;
   const { setValue } = helpers;
   const { submitCount } = useFormikContext();
-
   return (
+
     <div>
       <Select
+        value={{ label: field.value, value: field.value } }
         options={options}
         name={field.name}
         onChange={(option) => setValue(option.value)}

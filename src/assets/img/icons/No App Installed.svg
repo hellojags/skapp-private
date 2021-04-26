@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="107" height="107" viewBox="0 0 107 107">
+  <defs>
+    <filter id="Rectangle_341" x="0" y="0" width="107" height="107" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feFlood flood-opacity="0.051"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_67905" data-name="Group 67905" transform="translate(-925.972 -337.972)">
+    <g transform="matrix(1, 0, 0, 1, 925.97, 337.97)" filter="url(#Rectangle_341)">
+      <rect id="Rectangle_341-2" data-name="Rectangle 341" width="97" height="97" rx="25" transform="translate(5 3)" fill="#1dbf73" stroke="#1dbf73" stroke-width="1"/>
+    </g>
+    <g id="Group_67907" data-name="Group 67907">
+      <rect id="Rectangle_332" data-name="Rectangle 332" width="15" height="15" rx="5" transform="translate(947.472 357.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_333" data-name="Rectangle 333" width="15" height="15" rx="5" transform="translate(971.472 357.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_334" data-name="Rectangle 334" width="15" height="15" rx="5" transform="translate(996.472 357.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_335" data-name="Rectangle 335" width="15" height="15" rx="5" transform="translate(947.472 381.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_336" data-name="Rectangle 336" width="15" height="15" rx="5" transform="translate(971.472 381.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3"/>
+      <rect id="Rectangle_337" data-name="Rectangle 337" width="15" height="15" rx="5" transform="translate(996.472 381.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_338" data-name="Rectangle 338" width="15" height="15" rx="5" transform="translate(947.472 406.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_339" data-name="Rectangle 339" width="15" height="15" rx="5" transform="translate(971.472 406.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+      <rect id="Rectangle_340" data-name="Rectangle 340" width="15" height="15" rx="5" transform="translate(996.472 406.472)" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" opacity="0.54"/>
+    </g>
+  </g>
+</svg>

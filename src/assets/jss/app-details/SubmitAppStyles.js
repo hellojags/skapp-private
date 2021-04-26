@@ -1,6 +1,6 @@
 import GraphIcon from '../../img/icons/grahpIcon.svg'
 const SubmitAppStyles = () => ({
-    h1: {
+    h1: { 
         fontSize: '28px',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
@@ -8,6 +8,66 @@ const SubmitAppStyles = () => ({
     },
     btnBox: {
 
+    },
+    okBtn: {
+        border: '1px solid #ea052f',
+        marginRight: '10px',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none'
+    },
+    modalTitle: {
+        fontSize: 32,
+        color: '#333333',
+        fontWeight: 700,
+        marginBottom: '1rem'
+    },
+    shareCardContainer: {
+        background: '#fff',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        padding: '48px 60px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '40px 20px',
+            paddingTop: '50px'
+        },
+        '&:focus': {
+            outline: 0,
+            border: 0
+        },
+        width: '90%',
+        maxWidth: 500,
+        '& p': {
+            color: '#5A607F',
+            marginBottom: '5px'
+        },
+        '& .s-links-title': {
+            marginTop: '.4rem'
+        },
+        '& a': {
+            marginRight: '1rem',
+            '&:focus': {
+                textDecoration: 'none',
+                opacity: .8,
+                transition: '.25s ease'
+            }
+        }
+
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeBtn: {
+        border: '1px solid #1DBF73',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none'
     },
     cancelBtn: {
         background: '#FF6060!important',
@@ -101,6 +161,28 @@ const SubmitAppStyles = () => ({
         }
 
     },
+    inputTag: {
+        background: '#fff',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 10,
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 10,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+
+    },
     inputContainer: {
         '& > label': {
             display: 'block',
@@ -125,6 +207,27 @@ const SubmitAppStyles = () => ({
 
         },
 
+    },
+    inputContainerTag: {
+        '& > label': {
+            display: 'block',
+            color: '#5A607F',
+            marginBottom: 7
+        },
+        '& input:focus, & select:focus': {
+            outline: 'none!important',
+        },
+        marginTop: '25px',
+        '&': {
+            marginRight: '1rem'
+        },
+        '& input, & input': {
+            fontSize: 16
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '16px',
+            marginRight: '10px'
+        },
     },
     max33: {
         maxWidth: 'calc(33.33% - 1rem)',
@@ -219,18 +322,9 @@ const SubmitAppStyles = () => ({
     formRow1: {
         '@media only screen and (max-width: 575px)': {
             flexWrap: "wrap",
-            '& > div:first-child, & > div:nth-child(3)': {
+            '& > div': {
                 maxWidth: 'calc(100% - 1rem)',
                 flex: 'calc(100% - 1rem)'
-            }
-            ,
-            '& > div:nth-child(3)': {
-                order: 4,
-
-            },
-            '& > div:nth-child(2), & > div:nth-child(4)': {
-                maxWidth: 'calc(50% - 13px)',
-                flex: 'calc(50% - 13px)'
             }
         }
     },
