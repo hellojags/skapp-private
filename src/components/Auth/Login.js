@@ -87,7 +87,7 @@ const Login = () => {
     const handleLogin = async () => {
         const result = await handleMySkyLogin();
         setUserID(result.userID);
-        alert("result.userID : " + result.userID)
+        //alert("result.userID : " + result.userID)
         await onMySkySuccess(result.mySky, result.userID);
         dispatch(setLoaderDisplay(true));
     }

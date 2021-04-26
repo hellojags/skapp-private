@@ -64,6 +64,12 @@ export function getProviderKeysByType(keyType) {
   return keys;
 }
 
+export const getFile_SkyDB = async (publicKey, dataKey, options) => {
+  return await skynetClient.db.getJSON(publicKey, dataKey);
+}
+export const putFile_SkyDB = async (publicKey, dataKey, content, options) => {
+  await skynetClient.db.setJSON(options.privateKey, dataKey, content)
+}
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
   // Get User Public Key
@@ -112,7 +118,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         //Step4: Update, "IDB_STORE_SKAPP"
         //Step5: return;
         // Fetch value for [DataKey] from IndexedDB
-        let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })
+        let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })// TODO: need to fix IDB store. we cant hardcode store value. must take from options
         // get revision number using dataKey - getEntry method
         let registryEntry = await getRegistryEntry(publicKey, dataKey)
         const skyDBRevisionNo =
@@ -142,7 +148,7 @@ export const getFile = async (publicKey, dataKey, options) => {
           // }
           await setJSONinIDB(dataKey, [skyDBRevisionNo, data], {
             store: IDB_STORE_SKAPP,
-          })
+          }) // TODO: need to fix IDB store. we cant hardcode store value. must take from options
           // TODO: decrypt method
           return data
         }

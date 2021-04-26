@@ -1,6 +1,7 @@
 import { SkynetClient } from "skynet-js";
 import { ContentRecordDAC } from "@skynetlabs/content-record-library";
 import { UserProfileDAC, Profile } from '@skynethub/userprofile-library';
+import {FeedDAC} from "feed-dac-library";
 import { getUserSession } from "../utils/SnUtility"
 import {
     getJSONfromIDB,
@@ -13,14 +14,22 @@ const client = new SkynetClient("https://siasky.net/");
 //const hostApp = "skapp.hns";
 const hostApp = "localhost";
 
-export function getUserPublicKey() {
-    return getUserSession() ? getUserSession()?.userProfile?.userID : null
+export function getUserID() {
+    return getUserSession()?.userProfile?.userID ?? null
 }
 
 export function getMySky() {
     return getUserSession() ? getUserSession().mySky : null
 }
-
+export function getContentDAC() {
+    return getUserSession() ? getUserSession().dacs?.contentDAC : null
+}
+export function getProfileDAC() {
+    return getUserSession() ? getUserSession().dacs?.userProfileDAC : null
+}
+export function getFeedDAC() {
+    return getUserSession() ? getUserSession().dacs?.feedDAC : null
+}
 export const handleMySkyLogin = async () => {
     try {
         // Initialize MySky.
@@ -40,10 +49,11 @@ export const handleMySkyLogin = async () => {
         // Initialize DAC, auto-adding permissions.
         const contentDAC = new ContentRecordDAC();
         const userProfileDAC = new UserProfileDAC();
-        await mySky.loadDacs(contentDAC,userProfileDAC);
+        const feedDAC = new FeedDAC();
+        await mySky.loadDacs(contentDAC,userProfileDAC,feedDAC);
         let userID = await mySky.userID();
         await testUserProfile(userProfileDAC);
-        return { mySky, dacs: {contentDAC, userProfileDAC}, userID };
+        return { mySky, dacs: {contentDAC, userProfileDAC,feedDAC}, userID };
     } catch (error) {
         console.log(error);
         return {mySky:null, dacs: {}, userID:null};
@@ -88,10 +98,9 @@ export const testUserProfile = async (contentRecord) => {
 export const getFile_MySky = async (dataKey, options) => {
     let result = null;
     try {
-        let tempKey = options.publicKey + "#" + dataKey
         // Below condition means, we are fetching other user's data
-        if (options?.publicKey) {
-            result = await client.file.getJSON(options.publicKey, dataKey);
+        if (options?.userID) {
+            result = await client.file.getJSON(options.userID, dataKey);
         }
         else {
             result = await getMySky().getJSON(dataKey);
@@ -120,7 +129,7 @@ export const putFile_MySky = async (dataKey, content, options) => {
             //const cypherContent = await encryptData(privateKey, publicKey, JSON.stringify(content))
             //status = await skynetClient.db.setJSON(privateKey, dataKey, cypherContent)
         } else {
-            status = await getMySky().setJSON(dataKey, content)
+            const result = await getMySky().setJSON(dataKey, content)
         }
         await setJSONinIDB(dataKey, content, { store: IDB_STORE_SKAPP })
         return true

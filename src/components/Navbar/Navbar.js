@@ -29,7 +29,6 @@ import { Box, Button, Tooltip, Typography } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
-import skyId from '../../service/idp/SnSkyId'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
  import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
@@ -194,9 +193,6 @@ export default function Navbar() {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
     const stUserSession = useSelector((state) => state.userSession)
 
-    useEffect(() => {
-        console.log("skyid=" + skyId)
-    }, [])
     const [person, setPerson] = useState({username:"hardcoded"})
     const user = useSelector(state => state.userSession)
     // useEffect(() => {
@@ -227,7 +223,7 @@ export default function Navbar() {
         setMobileMoreAnchorEl(event.currentTarget)
     }
     const handleMySkyLogout = async () => {
-        alert("logout")
+        //alert("logout")
         try {
             dispatch(setLoaderDisplay(true));
             console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
