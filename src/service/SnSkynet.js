@@ -11,7 +11,6 @@ import {
 } from "./SnIndexedDB"
 import { encryptData, decryptData } from "./SnEncryption"
 import { getPortal } from '../utils/SnUtility'
-import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../utils/SnConstants"
 /* global BigInt */
 //above comment is required to enable BigInt
 // ################################ SkyDB Methods ######################
@@ -26,16 +25,6 @@ let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // decrypt = true|false
 // contentOnly = true|false  // If true will return onlu content from SkyDB (not revision number)
 // store = IDB_STORE_SKAPP | IDB_STORE_SKYDB_CACHE , IDB_STORE_SKAPP =  loggedin users Key/value. IDB_STORE_SKYDB_CACHE = otehr users key/Value
-export const getUserSession = () => {
-  let session = null;
-  try {
-    session = JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY))
-  }
-  catch (e) {
-    return session
-  }
-  return session
-}
 // export function getSkappKeys() {
 //   return {
 //       publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
@@ -279,7 +268,7 @@ export const setRegistryEntry = async (dataKey, content, options) => {
       revision = entry && entry != "undefined" && entry?.revision != NaN && entry.revision != "undefined" ? entry.revision : 0
       revision++;
     }
-    let entry = { datakey: dataKey, data: content + "", revision: BigInt(revision) };
+    let entry = { dataKey: dataKey, data: content + "", revision: BigInt(revision) };
     await skynetClient.registry.setEntry(privateKey, entry);
     if (options.skipIDB && options.skipIDB != true) {
       await setJSONinIDB(dataKey, [BigInt(revision), content], options)

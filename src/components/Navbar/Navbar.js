@@ -31,9 +31,10 @@ import Sidebar from '../Sidebar/Sidebar'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
- import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
- import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
+import { BROWSER_STORAGE } from "../../utils/SnConstants"
+import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 import { useHistory } from "react-router-dom"
+
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#fff',
@@ -191,14 +192,13 @@ export default function Navbar() {
 
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-    const stUserSession = useSelector((state) => state.userSession)
-
-    const [person, setPerson] = useState({username:"hardcoded"})
-    const user = useSelector(state => state.userSession)
-    // useEffect(() => {
-    //     setPerson(user?.person?.profile)
-    // }, [setPerson, user])
-    console.log(person)
+    const userSession = useSelector((state) => state.userSession)
+    // alert("NAV--userSession"+userSession);
+    // alert("NAV--userSession:userID"+userSession?.userID);
+    // alert("NAV--userSession:mysky"+userSession?.mySky);
+    // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
+    const [person, setPerson] = useState({ username: "hardcoded" })
+    
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -214,7 +214,7 @@ export default function Navbar() {
     const handleSettings = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
-        if (stUserSession != null) {
+        if (userSession != null) {
             history.push('/settings')
         }
     }
@@ -222,19 +222,25 @@ export default function Navbar() {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
+
+
     const handleMySkyLogout = async () => {
-        //alert("logout")
         try {
             dispatch(setLoaderDisplay(true));
-            console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
-            await stUserSession.mySky.logout();
-            clearAllfromIDB({ store: IDB_STORE_SKAPP });
-            console.log("### 1");
+            if (userSession?.mySky) {
+                try {
+                    await userSession.mySky.logout();
+                }
+                catch (e) {
+                    console.log("Error during logout process." + e)
+                }
+            }
+            await clearAllfromIDB({ store: IDB_STORE_SKAPP });
             BROWSER_STORAGE.clear();
-            console.log("### 2");
-            dispatch(setUserSession(null));
+            await dispatch(setUserSession(null));
             dispatch(setLoaderDisplay(false));
             window.location.href = window.location.origin
+
         } catch (e) {
             console.log("Error during logout process." + e)
             dispatch(setLoaderDisplay(false))

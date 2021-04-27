@@ -375,7 +375,7 @@ function AppStore() {
     }, [sliderRef])
     // console.log(sliderRef.current.clientWidth, sliderRef.current.scrollWidth)
     let showSlides = width > 1600 ? 1600 / 140 : width / 140
-    console.log("slided to show " + showSlides + "Width " + width)
+    //console.log("slided to show " + showSlides + "Width " + width)
     let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
     var settings = {
         dots: false,

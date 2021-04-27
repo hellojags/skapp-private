@@ -604,7 +604,7 @@ const SubmitApp = () => {
             <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               className={classes.input}
-              placeholder="Skylink"
+              placeholder=""
               name="appname"
               ref={register}
             />

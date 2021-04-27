@@ -23,10 +23,10 @@ const ANONYMOUS = "anonymous";
 // EVENT_APP_FAVORITE =  '4';
 // EVENT_APP_COMMENT =  '5';
 // This method can go in ServiceWorker
-export const emitEvent = async (appId, eventType) => {
+export const emitEvent = async (userID, appId, eventType) => {
     //DataKey -> PublicKey#AppID#EVENT_NAME OR anonymous#AppID#EVENT_NAME
     //let eventData = publicKey + "#" + appId + "#" + eventType;
-    let eventData = getUserID() + "#" + appId + "#" + eventType;
+    let eventData = userID + "#" + appId + "#" + eventType;
     let isSuccess = false;
     let isleqSuccess = false;
     //STEP1: Get Current Cursor Position of "GEQ"
@@ -41,7 +41,7 @@ export const emitEvent = async (appId, eventType) => {
         isSuccess = result?.resultFlag;
         revision = result?.revision;
         console.log("setRegistryEntry(): GEQ eventData= " + eventData + " revision=" + revision + " isSuccess=" + isSuccess);
-        if (isSuccess == true && getUserID() != ANONYMOUS) {
+        if (isSuccess == true && userID != ANONYMOUS) {
             //STEP3: on GEQ PUSH success, PUSH USER ACTION EVENT in "LEQ". Its important to set maxRevisionFlag = true
             //(with DAC this STEP 3 is not required)
             // let leqResult = await setRegistryEntry((cursorPositionOfGEQ).toString(), eventData, { publicKey, privateKey, maxRevisionFlag: true, skipIDB: true });
