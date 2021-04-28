@@ -4,10 +4,10 @@ import { composeWithDevTools } from "redux-devtools-extension"
 
 import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer"
 // import SnPerson from "./sn.person.reducer"
-// import SnUserProfile from "./sn.userprofile.reducer"
-// import { snUserProfileEpic } from "./sn.userprofile.epic"
-// import SnUserMasterProfile from "./sn.usermasterprofile.reducer"
-// import { snUserMasterProfileEpic } from "./sn.usermasterprofile.epic"
+import SnUserProfile from "./action-reducers-epic/SnUserProfileReducer"
+import { snUserProfileEpic } from "./action-reducers-epic/SnUserProfileEpic"
+import SnUserPreferences from "./action-reducers-epic/SnUserPreferencesReducer"
+import { snUserPreferencesEpic } from "./action-reducers-epic/SnUserPreferencesEpic"
 // import SnMyFollowers from "./sn.myFollowers.reducer"
 // import { snMyFollowersEpic } from "./sn.myFollowers.epic"
 // import SnMyFollowings from "./sn.myFollowings.reducer"
@@ -34,8 +34,8 @@ const rootReducer = combineReducers({
   snLoader: SnLoaderReducer,
   userSession: SnUserSessionReducer,
   // person: SnPerson,
-  // snUserProfile: SnUserProfile,
-  // snUserMasterProfile: SnUserMasterProfile,
+  snUserProfile: SnUserProfile,
+  snUserPreferences: SnUserPreferences,
   // snMyFollowers: SnMyFollowers,
   // snMyFollowings: SnMyFollowings,
   snUploadListStore: SnUploadListReducer,
@@ -61,8 +61,8 @@ const rootEpic = combineEpics(
   snSetAppCommentEpic,
   // snPersonEpic,
   // logoutPersonEpic,
-  // snUserProfileEpic,
-  // snUserMasterProfileEpic,
+  snUserProfileEpic,
+  snUserPreferencesEpic,
   // snMyFollowersEpic,
   // snMyFollowingsEpic
 )

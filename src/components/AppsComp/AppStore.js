@@ -349,7 +349,7 @@ function AppStore() {
     }
     let categories = []
     publishedAppsStore.filter(item => categories.push(item.content.category))
-    console.log("cates", categories)
+    //console.log("cates", categories)
     let catWithCount = categories.reduce(function (obj, b) {
         obj[b] = ++obj[b] || 1
         return obj

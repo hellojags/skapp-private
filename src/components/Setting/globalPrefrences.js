@@ -15,8 +15,9 @@ import { Add, Search, GitHub, Facebook, Reddit, Twitter, Telegram } from '@mater
 import { skylinkToUrl } from "../../utils/SnUtility";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
 import { useHistory } from 'react-router-dom';
-import { getProfile, setProfile } from '../../service/SnSkappService';
+import { getPreferences, setPreferences } from '../../service/SnSkappService';
 import Loader from "react-loader-spinner";
+import { setUserPreferencesAction } from "../../redux/action-reducers-epic/SnUserPreferencesAction"
 
 const useStyles = makeStyles((theme) => ({
     ProfileRoot: {
@@ -214,36 +215,66 @@ const useStyles = makeStyles((theme) => ({
 
 const portalOptions = [
     { value: 'https://siasky.net/', label: 'https://siasky.net/' },
-    { value: 'https://siasky.net/', label: 'https://siasky.net/' }
+    { value: 'https://skyportal.xyz', label: 'https://skyportal.xyz' }
 ]
-const GlobalPrefrences = ({ isLoading, submitForm, formikObj, isSuccess, setIsSuccess, isError, setIsError }) => {
-    const classes = useStyles();
+const GlobalPrefrences = () => {
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isError, setIsError] = useState(false);
+
+    const classes = useStyles();
+    const userPreferences = useSelector((state) => state.snUserPreferences)
+    const dispatch = useDispatch();
+    let formikObjGP = {
+        darkmode: [false],
+        portal: ['']
+    };
+
+    useEffect(() => {
+        setPreferencesFormicOb(userPreferences);
+    }, []);
+
+    const submitGlobalPreferencesForm = async (values) => {
+        dispatch(setLoaderDisplay(true));
+        await setPreferences(values);
+        dispatch(setUserPreferencesAction(values))
+        setIsSuccess(true);
+        dispatch(setLoaderDisplay(false));
+    };
+
+    const setPreferencesFormicOb = (profile) => {
+        //console.log(profile);
+        if (profile) {
+            formikObjGP.darkmode[0] = `${profile?.darkmode}`;
+            formikObjGP.portal[0] = `${profile?.portal}`;
+        }
+    }
     return (
-        
+
         <div className={classes.ProfileRoot}>
             <Box>
-                
-            {isSuccess && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000} onClose={setIsSuccess(false)}>
-                <Alert onClose={setIsSuccess(false)} severity="success">
-                    Profile Successfully Saved!
-                </Alert>
-            </Snackbar>
-            }
-            {isError && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isError} autoHideDuration={6000} onClose={setIsError(false)}>
-                <Alert onClose={setIsError(false)} severity="error">
-                    Error Occurred while saving profile!
-                </Alert>
-            </Snackbar>
-            }
+
+                {isSuccess && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000}>
+                    <Alert severity="success">
+                        Profile Successfully Saved!
+                    </Alert>
+                </Snackbar>
+                }
+                {isError && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isError} autoHideDuration={6000}>
+                    <Alert severity="error">
+                        Error Occurred while saving profile!
+                    </Alert>
+                </Snackbar>
+                }
                 {
                     !isLoading ?
                         <Formik
-                            initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
-                            validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
+                            initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObjGP).initialValues}
+                            validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObjGP).validationSchema)}
                             validateOnChange={true}
                             validateOnBlur={true}
-                            onSubmit={submitForm}>
+                            onSubmit={submitGlobalPreferencesForm}>
                             {formik => (<form onSubmit={formik.handleSubmit}>
                                 <h2>General Prefrences  <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save Changes </Button>
                                 </h2>
@@ -270,7 +301,7 @@ const GlobalPrefrences = ({ isLoading, submitForm, formikObj, isSuccess, setIsSu
                                 </Box>
                             </form>)}
                         </Formik>
-                    : null
+                        : null
                 }
             </Box >
         </div>

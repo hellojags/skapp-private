@@ -8,9 +8,9 @@ import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 import { initMySky } from '../../service/skynet-api';
-import { getUserProfile } from '../../service/SnSkappService';
-import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
-
+import { getProfile, getPreferences } from '../../service/SnSkappService';
+import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
+import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
 import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
 import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
@@ -71,7 +71,7 @@ const Login = () => {
     const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
 
     useEffect(() => {
-        console.log("userSession=" + userSession);
+        console.log("##### checkActiveLogin :: userSession = " + userSession);
         if (userSession?.mySky != null) {
             if (installedAppsStoreForLogin) {
                 history.push('/');
@@ -80,9 +80,8 @@ const Login = () => {
             }
         }
     }, [userSession]);
-
     const handleLogin = async () => {
-        let result =null;
+        let result = null;
         try {
             dispatch(setLoaderDisplay(true));
             //console.log("BEFORE: userSession" + userSession);
@@ -102,11 +101,16 @@ const Login = () => {
                     result.userSession.userID = userID;
                 }
             }
-            await dispatch(setUserSession(result.userSession));
+            //innocent motherly hull focus gnaw elapse custom sipped dazed eden sifting jump lush inkling
+            dispatch(setUserSession(result.userSession));
             // on success do following
             //alert("handleLogin: newSession " + result.userSession);
             //alert("handleLogin: newSession " + result.userSession.userID);
-            const userProfileObj = await getUserProfile(result.userSession);// dont proceed without pulling profile
+            const userProfile = await getProfile();
+            dispatch(setUserProfileAction(userProfile));
+            const userPrefrences = await getPreferences();
+            dispatch(setUserPreferencesAction(userPrefrences));
+            //const userProfileObj = await getUserProfile(result.userSession);// dont proceed without pulling profile
             //newSession = { ...newSession, userProfile: userProfileObj};
             //alert("AFTER: userSession(old)" + userSession);
             //history.push('/apps');

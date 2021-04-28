@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 //Action
 import { logoutPerson, setPersonGetOtherData } from "../../redux/action-reducers-epic/SnPersonAction"
 import { getUserProfileAction } from "../../redux/action-reducers-epic/SnUserProfileAction"
-import { getUserMasterProfileAction } from "../../redux/action-reducers-epic/SnUserMasterProfileAction"
+import { getUserPreferencesAction } from "../../redux/action-reducers-epic/SnUserPreferencesAction"
 import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
 import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
 import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
@@ -84,7 +84,7 @@ const onSkyIdSuccess = async () => {
         //dispatch(setImportedSpace(await bsGetImportedSpacesObj(userSession)));
         // get app profile
         store.dispatch(getUserProfileAction(userSession));
-        store.dispatch(getUserMasterProfileAction(userSession));
+        store.dispatch(getUserPreferencesAction(userSession));
         // get userFollowers
         store.dispatch(getMyFollowersAction(null));
         // get userFollowings

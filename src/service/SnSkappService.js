@@ -45,25 +45,57 @@ function generateSkappId(prop) {
 // ### User Profile Functionality ###
 // null or publicKey
 export const getProfile = async () => {
-  //set options
-
-  //return await getFile_MySky("userProfile", { skydb: true })?.data
-  return JSON.parse(BROWSER_STORAGE.getItem('userProfile'));
+  try {
+    //set options
+    const profileDAC = await getProfileDAC();
+    //return await getFile_MySky("userProfile", { skydb: true })?.data
+    const userID = await getUserID()
+    return await profileDAC.getProfile(userID);
+    //return JSON.parse(BROWSER_STORAGE.getItem('userProfile'));
+  }
+  catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e)
+    return null;
+  }
   // getFile_MySky( "userProfile", { skydb: true })
 }
 
 export const setProfile = async (profileJSON) => {
   //set options
   //const resultObj = await putFile_MySky("userProfile", profileJSON, { skydb: true });
-  //await getContentDAC().recordNewContent({ skylink: resultObj.skylink, metadata: { "contentType": "userprofile", "action": "update" } });
-  BROWSER_STORAGE.setItem('userProfile', JSON.stringify(profileJSON));
+  //BROWSER_STORAGE.setItem('userProfile', JSON.stringify(profileJSON));
+  let resultObj = null;
+  try {
+    const profileDAC = await getProfileDAC();
+    resultObj = await profileDAC.setProfile(profileJSON);
+    const profile = await getProfile();
+    console.log("profileDAC.setProfile : After write : =" + profile)
+    //await getContentDAC().recordNewContent({ skylink: resultObj.skylink, metadata: { "contentType": "userprofile", "action": "update" } });
+    return profileJSON;
+  }
+  catch (e) {
+    console.log("profileDAC.setProfile : failed =" + e)
+  }
+  return {};
   // await putFile_MySky("userProfile", profileJSON, { skydb: true });
 }
 
 export const getPreferences = async () => {
   //set options
-  return JSON.parse(BROWSER_STORAGE.getItem('userPreferences'));
+  //return JSON.parse(BROWSER_STORAGE.getItem('userPreferences'));
   // return await getFile_MySky( "userPreferences", { skydb: true })
+  try {
+    //set options
+    const profileDAC = await getProfileDAC();
+    //return await getFile_MySky("userProfile", { skydb: true })?.data
+    const userID = await getUserID()
+    return await profileDAC.getPreferences(userID);
+    //return JSON.parse(BROWSER_STORAGE.getItem('userProfile'));
+  }
+  catch (e) {
+    console.log("profileDAC.getPreferences : failed =" + e)
+    return null;
+  }
 
 }
 //export const setPreferences = async (preferencesJSON) => {
@@ -72,8 +104,18 @@ export const getPreferences = async () => {
 //await getContentDAC().recordNewContent({ skylink: resultObj.skylink, metadata: { "contentType": "preferences", "action": "update" } });
 //}
 export const setPreferences = async (preferencesJSON) => {
-  //set options
-  BROWSER_STORAGE.setItem("userPreferences", JSON.stringify(preferencesJSON));
+  let resultObj = null;
+  try {
+    const profileDAC = await getProfileDAC();
+    //set options
+    resultObj = await profileDAC.setPreferences(preferencesJSON);
+    //await getContentDAC().recordNewContent({ skylink: resultObj.skylink, metadata: { "contentType": "preferences", "action": "update" } });
+    return preferencesJSON;
+  }
+  catch (e) {
+    console.log("profileDAC.setPreferences : failed =" + e)
+  }
+  return {};
 }
 // ### Following/Followers Functionality ###
 
@@ -641,43 +683,43 @@ export const backupLocalDatabaseOnSkyDB = async () => {
   } catch (e) { }
 }
 
-export const getUserProfile = async (userSession) => {
-  await userProfileDacTest(userSession)
-  /// LoadDac
-  // let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
-  let userProfileObj = createDummyUserProfileObject();
-  //userProfileObj.userID = userID;
-  //await getContentDAC().recordNewContent({skylink: resultObj.skylink,metadata: {"contentType":"skapp","contentSubType":"hosted","skappID":appJSON.id,"action":"removed"}});
-  //TODO: KUSHAL - call userprofile DAC
+// export const getUserProfile = async (userSession) => {
+//   await userProfileDacTest(userSession)
+//   /// LoadDac
+//   // let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
+//   let userProfileObj = createDummyUserProfileObject();
+//   //userProfileObj.userID = userID;
+//   //await getContentDAC().recordNewContent({skylink: resultObj.skylink,metadata: {"contentType":"skapp","contentSubType":"hosted","skappID":appJSON.id,"action":"removed"}});
+//   //TODO: KUSHAL - call userprofile DAC
 
-  //const response = await getFile(session.mySky.userID, SKYID_PROFILE_PATH, { skydb: true })
-  // if (response == "" || response == undefined) {
-  //   // file not found
-  //   console.log("Profile not found;, please check your connection and retry")
-  // } else {
-  //   // success
-  //   //let temp = JSON.stringify(response);
-  //   let skyIdProfileObj = JSON.parse(response);
-  //   const { publicKey, privateKey } = snKeyPairFromSeed(session.skyid.seed)
-  //   personObj = {
-  //     masterPublicKey: session.skyid.userId, // public key derived from "master seed". we pull profile using this public key
-  //     appSeed: session.skyid.seed, // App specific seed derived from "Master Seed"
-  //     appId: session.skyid.appId,
-  //     appImg: session.skyid.appImg,
-  //     appPublicKey: publicKey,
-  //     appPrivateKey: privateKey,
-  //     profile: {
-  //       username: skyIdProfileObj.username, // user name is associated with master Key
-  //       did: skyIdProfileObj.username, // this is place holder for Decentralized Id (DID)
-  //       aboutme: skyIdProfileObj.aboutMe,
-  //       location: skyIdProfileObj.location,
-  //       avatar: skyIdProfileObj.avatar,
-  //       profilePicture: skyIdProfileObj.profilePicture,
-  //     },
-  //   }
-  // }
-  return userProfileObj
-}
+//   //const response = await getFile(session.mySky.userID, SKYID_PROFILE_PATH, { skydb: true })
+//   // if (response == "" || response == undefined) {
+//   //   // file not found
+//   //   console.log("Profile not found;, please check your connection and retry")
+//   // } else {
+//   //   // success
+//   //   //let temp = JSON.stringify(response);
+//   //   let skyIdProfileObj = JSON.parse(response);
+//   //   const { publicKey, privateKey } = snKeyPairFromSeed(session.skyid.seed)
+//   //   personObj = {
+//   //     masterPublicKey: session.skyid.userId, // public key derived from "master seed". we pull profile using this public key
+//   //     appSeed: session.skyid.seed, // App specific seed derived from "Master Seed"
+//   //     appId: session.skyid.appId,
+//   //     appImg: session.skyid.appImg,
+//   //     appPublicKey: publicKey,
+//   //     appPrivateKey: privateKey,
+//   //     profile: {
+//   //       username: skyIdProfileObj.username, // user name is associated with master Key
+//   //       did: skyIdProfileObj.username, // this is place holder for Decentralized Id (DID)
+//   //       aboutme: skyIdProfileObj.aboutMe,
+//   //       location: skyIdProfileObj.location,
+//   //       avatar: skyIdProfileObj.avatar,
+//   //       profilePicture: skyIdProfileObj.profilePicture,
+//   //     },
+//   //   }
+//   // }
+//   return userProfileObj
+// }
 
 
 //#################### SkyDB Methods #########################

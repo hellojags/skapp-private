@@ -38,7 +38,7 @@ export default function SnProfile(props) {
   // const [userProfile, setUserProfile] = useState(null);
   const [errorObj, setErrorObj] = useState(createEmptyErrObj())
   // const [data, setData] = useState();
-  // const [masterProfile, setMasterProfile] = useState({});
+  // const [masterProfile, setPreferences] = useState({});
   const [state, setState] = React.useState({
     open: false,
     vertical: "top",
@@ -49,7 +49,7 @@ export default function SnProfile(props) {
 
   // Store
   const userProfile = useSelector((state) => state.snUserProfile)
-  const userMasterProfile = useSelector((state) => state.snUserMasterProfile)
+  const userPreferences = useSelector((state) => state.snUserPreferences)
   const userSession = useSelector((state) => state.userSession)
 
   // Effects
@@ -57,9 +57,9 @@ export default function SnProfile(props) {
   //   //   //setData(defaultValues);
   //   //   // fetchProfile JSON
   //   //   // If not found Initialize it and show on UI
-  //   //   //dispatch(getUserMasterProfileAction(userSession));
+  //   //   //dispatch(getUserPreferencesAction(userSession));
   //   //   //dispatch(getUserProfileAction(userSession));
-  // }, [userProfile, userMasterProfile])
+  // }, [userProfile, userPreferences])
 
   const handleClick = (newState) => () => {
     setState({ open: true, ...newState })
@@ -104,8 +104,8 @@ export default function SnProfile(props) {
                 >
                   <Grid item xs={2} sm={2} md={1} lg={1}>
                     <Avatar
-                      alt={userMasterProfile?.username}
-                      src={`${DEFAULT_PORTAL}/${userMasterProfile.avatar}`}
+                      alt={userPreferences?.username}
+                      src={`${DEFAULT_PORTAL}/${userPreferences.avatar}`}
                       className={classes.large}
                     />
                   </Grid>
@@ -114,7 +114,7 @@ export default function SnProfile(props) {
                       disabled
                       id="standard-basic"
                       label="username"
-                      defaultValue={userMasterProfile?.username}
+                      defaultValue={userPreferences?.username}
                       fullWidth
                     />
                   </Grid>
@@ -123,7 +123,7 @@ export default function SnProfile(props) {
                       disabled
                       id="standard-basic"
                       label="location"
-                      defaultValue={userMasterProfile?.location}
+                      defaultValue={userPreferences?.location}
                       fullWidth
                     />
                   </Grid>
@@ -132,7 +132,7 @@ export default function SnProfile(props) {
                       disabled
                       id="standard-basic"
                       label="Aboutme"
-                      defaultValue={userMasterProfile?.aboutMe}
+                      defaultValue={userPreferences?.aboutMe}
                       fullWidth
                     />
                   </Grid>

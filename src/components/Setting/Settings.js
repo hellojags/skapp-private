@@ -13,7 +13,7 @@ import GlobalPrefrences from './globalPrefrences';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { getProfile, setProfile, getPreferences, setPreferences } from '../../service/SnSkappService';
+
 import * as Yup from 'yup';
 
 function TabPanel(props) {
@@ -51,7 +51,6 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-
         backgroundColor: 'transparent',
         '& .MuiTabs-indicator': {
             backgroundColor: 'transparent',
@@ -97,135 +96,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-
-const formikObj = {
-    username: ['', Yup.string().required('This field is required')],
-    emailID: [''],
-    firstName: [''],
-    lastName: [''],
-    contact: [''],
-    aboutMe: [''],
-    location: [''],
-    topicsHidden: [[]],
-    topicsDiscoverable: [[]],
-    avatar: [{}],  
-    facebook: [''],
-    twitter: [''],
-    github: [''],
-    reddit: [''],
-    telegram: [''],
-    
-};
-
-const formikObjGP = {
-    darkmode: [false],
-    portal: ['']
-};
-
 const Settings = () => {
     const classes = useStyles()
     const [value, setValue] = React.useState(0);
-        
-    const [profileObj, setProfileObj] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [isError, setIsError] = useState(false);
-
-    const dispatch = useDispatch();
-
     const handleChange = (event, newValue) => {
-        if (newValue == 0) {
-            loadProfile();
-        } else if(newValue == 1) {
-            loadGeneralPrefrences();
-        }
         setValue(newValue)
     }
-
-    
-    useEffect(() => {
-        return () => {
-            loadProfile();
-        };
-    }, []);
-
-    const loadGeneralPrefrences = async () => {
-        dispatch(setLoaderDisplay(true));
-        setIsLoading(true);
-        const profile = await getPreferences();
-        setFormicObjGP(profile);
-        dispatch(setLoaderDisplay(false));
-        setIsLoading(false);
-    }
-
-    const loadProfile = async () => {
-        dispatch(setLoaderDisplay(true));
-        setIsLoading(true);
-        const profile = await getProfile();
-        await setProfileObj(profile);
-        setFormicObj(profile);
-        dispatch(setLoaderDisplay(false));
-        setIsLoading(false);
-    };
-    
-    const submitForm = async (values) => {
-        let profileJSON = {
-            username: values.username,
-            emailID: values.emailID,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            contact: values.contact,
-            location: values.location,
-            aboutMe: values.aboutMe,
-            connections: [{ twitter: values.twitter}, {facebook: values.facebook}, {github: values.github}, {reddit: values.reddit}, {telegram: values.telegram}],
-            topicsHidden: values.topicsHidden,
-            topicsDiscoverable: values.topicsDiscoverable,
-            avatar: [values.avatar],
-        }
-        dispatch(setLoaderDisplay(true));
-        await setProfile(profileJSON);
-        setIsSuccess(true);
-        dispatch(setLoaderDisplay(false));
-    };
-    
-    const submitFormGP = async (values) => {
-        dispatch(setLoaderDisplay(true));
-        await setPreferences(values);
-        setIsSuccess(true);
-        dispatch(setLoaderDisplay(false));
-    };
-    
-    const setFormicObjGP = (profile) => {
-        console.log(profile);
-        if (profile) {
-            formikObjGP.darkmode[0] = `${profile?.darkmode}`;
-            formikObjGP.portal[0] = `${profile?.portal}`;
-        }
-    }
-
-    const setFormicObj = (profile) => {
-        if (profile) {
-            formikObj.username[0] = `${profile?.username}`;
-            formikObj.emailID[0] = `${profile?.emailID}`;
-            formikObj.firstName[0] = `${profile?.firstName}`;
-            formikObj.lastName[0] = `${profile?.lastName}`;
-            formikObj.contact[0] = `${profile?.contact}`;
-            formikObj.location[0] = `${profile?.location}`;
-            formikObj.aboutMe[0] = `${profile?.aboutMe}`;
-            formikObj.facebook[0] = `${profile?.connections?.find(({facebook}) => facebook).facebook}`;
-            formikObj.twitter[0] = `${profile?.connections?.find(({twitter}) => twitter).twitter}`;
-            formikObj.github[0] = `${profile?.connections?.find(({github}) => github).github}`;
-            formikObj.reddit[0] = `${profile?.connections?.find(({reddit}) => reddit).reddit}`;
-            formikObj.telegram[0] = `${profile?.connections?.find(({telegram}) => telegram).telegram}`;
-            formikObj.topicsHidden[0] = profile?.topicsHidden;
-            formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
-            if (profile?.avatar && profile?.avatar?.length > 0) {
-                formikObj.avatar[0] = profile?.avatar[0];
-            }
-        }
-        
-    }
-
     return (
         <Fragment>
             {/* <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
@@ -234,7 +110,7 @@ const Settings = () => {
                     <Button className={classes.submitBtn}>Save Changes</Button>
                 </Box>
             </Box> */}
-            
+
             <div className={classes.root}>
                 <AppBar className={classes.tabNavigation} position="static" color="default" >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" >
@@ -244,10 +120,10 @@ const Settings = () => {
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
-                    <Profile formikObj={formikObj} submitForm={submitForm} isSuccess={isSuccess} setIsSuccess={setIsSuccess} isError={isError} setIsError={setIsError} isLoading={isLoading}/>
+                    <Profile/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <GlobalPrefrences formikObj={formikObjGP} submitForm={submitFormGP} isSuccess={isSuccess} setIsSuccess={setIsSuccess} isError={isError} setIsError={setIsError} isLoading={isLoading}/>
+                    <GlobalPrefrences/>
                 </TabPanel>
                 {/* <TabPanel value={value} index={2}>
                     <h4>Billing</h4>

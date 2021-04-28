@@ -34,7 +34,9 @@ import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
 import { BROWSER_STORAGE } from "../../utils/SnConstants"
 import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 import { useHistory } from "react-router-dom"
-
+import { getProfile, getPreferences } from '../../service/SnSkappService';
+import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
+import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#fff',
@@ -197,8 +199,34 @@ export default function Navbar() {
     // alert("NAV--userSession:userID"+userSession?.userID);
     // alert("NAV--userSession:mysky"+userSession?.mySky);
     // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
-    const [person, setPerson] = useState({ username: "hardcoded" })
-    
+    const [person, setPerson] = useState({ username: "MySky User" })
+
+    const userProfile = useSelector((state) => state.snUserProfile)
+    const userPreferences = useSelector((state) => state.snUserPreferences)
+    useEffect(() => {
+        setPerson({ username: userProfile?.username })
+    }, [userProfile]);
+
+    useEffect(() => {
+        const reloadReduxState = async () => {
+            if (userSession?.mySky != null) {
+                console.log("#### On Refresh : Reload Redux State ####");
+                if (!userProfile) {
+                    console.log("#### On Refresh : Reload Redux State #### [userProfile]");
+                    const userProfile = await getProfile();
+                    setPerson({ username: userProfile?.username })
+                    dispatch(setUserProfileAction(userProfile));
+                }
+                if (!userPreferences) {
+                    console.log("#### On Refresh : Reload Redux State #### [userPrefrences]");
+                    const userPrefrences = await getPreferences();
+                    dispatch(setUserPreferencesAction(userPrefrences));
+                }
+            }
+        }
+        reloadReduxState();
+    }, []);
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
