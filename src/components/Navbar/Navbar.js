@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -25,19 +25,20 @@ import { ReactComponent as EditProfileIcon } from '../../assets/img/icons/edit-p
 import { ReactComponent as LogoutIcon } from '../../assets/img/icons/exit-log-out.2.svg'
 import { ReactComponent as NotificationIcon } from '../../assets/img/icons/notification.svg'
 import { ReactComponent as CustomMenuIcon } from '../../assets/img/icons/Icon ionic-ios-menu.svg'
-import { Box, Button } from '@material-ui/core'
+import { Box, Button, Tooltip, Typography } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
-import skyId from '../../service/idp/SnSkyId'
-import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { useHistory } from "react-router-dom";
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
+ import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
+ import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
+import { useHistory } from "react-router-dom"
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: '#fff',
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
-
     },
     toolBarRoot: {
         justifyContent: 'space-between',
@@ -92,12 +93,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#B4C6CC'
+        color: '#fff',
+        background: '#fff',
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
+        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -127,11 +130,15 @@ const useStyles = makeStyles((theme) => ({
         height: '28px',
         minWidth: 'auto',
         backgroundColor: '#7e84a31c',
-        borderRadius: "50%"
+        borderRadius: "4px",
+        padding: 0
     },
     userName: {
         paddingLeft: "10px",
-        paddingRight: "1rem"
+        paddingRight: "1rem",
+        textTransform: 'capitalize',
+        maxWidth: 110,
+        color: '#fff'
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -177,7 +184,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
     const dispatch = useDispatch()
-    const history = useHistory();
+    const history = useHistory()
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -187,9 +194,12 @@ export default function Navbar() {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
     const stUserSession = useSelector((state) => state.userSession)
 
-    useEffect(() => {
-        console.log("skyid=" + skyId);
-    },[]);
+    const [person, setPerson] = useState({username:"hardcoded"})
+    const user = useSelector(state => state.userSession)
+    // useEffect(() => {
+    //     setPerson(user?.person?.profile)
+    // }, [setPerson, user])
+    console.log(person)
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -205,18 +215,31 @@ export default function Navbar() {
     const handleSettings = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
-        if(stUserSession != null)
-        {
-            history.push('/settings');
+        if (stUserSession != null) {
+            history.push('/settings')
         }
     }
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
-    const logoutSkyId = async () => {
-        skyId.sessionDestroy("/");
-        dispatch(setLoaderDisplay(true));
+    const handleMySkyLogout = async () => {
+        alert("logout")
+        try {
+            dispatch(setLoaderDisplay(true));
+            console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
+            await stUserSession.mySky.logout();
+            clearAllfromIDB({ store: IDB_STORE_SKAPP });
+            console.log("### 1");
+            BROWSER_STORAGE.clear();
+            console.log("### 2");
+            dispatch(setUserSession(null));
+            dispatch(setLoaderDisplay(false));
+            window.location.href = window.location.origin
+        } catch (e) {
+            console.log("Error during logout process." + e)
+            dispatch(setLoaderDisplay(false))
+        }
     }
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
@@ -239,7 +262,7 @@ export default function Navbar() {
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
             </MenuItem>
-            <MenuItem onClick={logoutSkyId} className={classes.MenuItem}>
+            <MenuItem onClick={handleMySkyLogout} className={classes.MenuItem}>
                 <LogoutIcon className={classes.menuIcon} />
                 <span className={classes.logoutText}>Logout</span>
             </MenuItem>
@@ -273,9 +296,13 @@ export default function Navbar() {
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <Button className={classes.usrIcon}>
-                    <PersonOutlineIcon className={classes.avatarIcon} />
+                    {/* <PersonOutlineIcon className={classes.avatarIcon} /> */}
+                    <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
+                        alt="" />
                 </Button>
-                <p className={classes.userName}>Fernando Cabral</p>
+                <Tooltip title={person.username} placement="top" arrow >
+                    <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                </Tooltip>
                 <KeyboardArrowDownIcon className={classes.AngleDown} />
             </MenuItem>
         </Menu>
@@ -313,7 +340,7 @@ export default function Navbar() {
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo />
+                        <Logo1 />
                     </div>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
@@ -344,10 +371,15 @@ export default function Navbar() {
                         </Box>
 
                         <Box display="flex" alignItems="center" onClick={handleProfileMenuOpen}>
-                            <Button className={classes.usrIcon}>
-                                <PersonOutlineIcon className={classes.avatarIcon} />
+                            <Button className={classes.usrIcon} >
+                                {/* <PersonOutlineIcon className={classes.avatarIcon} />
+                                 */}
+                                <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
+                                    alt="" />
                             </Button>
-                            <p className={classes.userName}>Fernando Cabral</p>
+                            <Tooltip title={person.username} placement="top" arrow >
+                                <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                            </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>
                     </div>

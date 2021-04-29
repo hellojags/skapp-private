@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect } from "react";
-import { Box, makeStyles, Typography } from "@material-ui/core";
+import { Box, makeStyles, Typography, Button } from "@material-ui/core";
 import ScreenShot from "../../assets/img/sc.jpg";
 // import SimilarApps from "./SimilarApps";
 import AppComments from "./AppComments";
+import { useHistory } from  'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +19,26 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 20,
       marginTop: 10,
     },
+  },
+  submitBtn: {
+    background: '#1DBF73!important',
+    color: '#fff',
+    paddingLeft: '1rem',
+    paddingRight: '1rem',
+    display: 'inlin-flex',
+    alignItems: 'center',
+    minWidth: 130,
+    '& svg': {
+      fontSize: '19px',
+      marginRight: '5px'
+    },
+    '@media only screen and (max-width: 575px)': {
+      fontSize: '12px',
+
+      paddingLeft: '.5rem',
+      paddingRight: '.5rem',
+      minWidth: 70,
+    }
   },
   subHeading: {
     color: "#7E84A3",
@@ -104,12 +125,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AppInfo = ({ data }) => {
+const AppInfo = ({ data, appId }) => {
   const classes = useStyles();
+  const history = useHistory();
   return (
     <Fragment>
       <Typography component="h2" className={`${classes.h2} ${classes.mb0}`}>
-        App Details
+        App Details <Button style={{ float: 'right' }} className={classes.submitBtn} onClick={(e) => history.push(`/editpublishapp/${appId}`)}> Edit </Button>
       </Typography>
 
       <Box display="flex" className={classes.informationContainer}>

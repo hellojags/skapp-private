@@ -71,7 +71,8 @@ const useStyles = makeStyles(theme => (
         },
 
         pageHeading: {
-            color: '#131523',
+            // color: '#131523',
+            color: '#fff',
             fontSize: '28px',
         },
         smallText: {

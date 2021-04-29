@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -30,6 +30,7 @@ import { Box, Button } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -127,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
         height: '28px',
         minWidth: 'auto',
         backgroundColor: '#7e84a31c',
-        borderRadius: "50%"
+        borderRadius: "4px"
     },
     userName: {
         paddingLeft: "10px",
@@ -175,25 +176,36 @@ const useStyles = makeStyles((theme) => ({
     },
     signupBtn: {
         background: 'transparent',
-        border: '1px solid #1DBF73',
+        border: '2px solid #1DBF73',
+        color: '#1DBF73',
         height: 38,
         width: 135,
+        fontSize: 15,
+        fontWeight: 700,
+
         '@media(max-width: 575px)': {
             width: 75,
             height: 36,
+        },
+        '&:hover': {
+            background: "#1DBF73!important",
+            color: '#fff!important'
         }
     },
     loginBtn: {
-        background: ' #1DBF73!important',
+        background: '#1DBF73!important',
         height: 38,
         width: 135,
         color: '#fff',
         marginLeft: '1rem',
+        fontSize: 15,
+        fontWeight: 700,
         '@media(max-width: 575px)': {
             width: 75,
             height: 36,
             marginLeft: '10px',
-        }
+        },
+
     }
 }))
 

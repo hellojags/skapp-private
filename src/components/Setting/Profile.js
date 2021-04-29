@@ -5,7 +5,8 @@ import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core'
 import { ReactComponent as ImgIcon } from '../../assets/img/icons/imgPlace.svg'
 const useStyles = makeStyles((theme) => ({
     ProfileRoot: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
+        backgroundColor: '#12141D',
         boxShadow: '0px 2px 5px #15223214',
         borderRadius: 6,
         padding: '50px 30px',
@@ -13,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
             padding: '20px 10px',
         },
         '& h2': {
-            color: '#242F57',
+            // color: '#242F57',
+            color: '#fff',
             marginBottom: '1rem',
             '@media only screen and (max-width: 575px)': {
                 fontSize: 22,
@@ -21,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     textInfo: {
-        color: '#000',
+        color: '#fff',
+        opacity: '0.6',
         fontSize: 14,
         '@media only screen and (max-width: 575px)': {
             fontSize: 13,
@@ -30,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
     profilePlaceholder: {
         width: 100,
         height: 100,
-        background: '#EFF5F7',
+        // background: '#EFF5F7',
+        background: '#12141D',
         display: 'flex',
         borderRadius: '50%',
         justifyContent: 'center',
@@ -53,7 +57,8 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     btnUpload: {
-        backgroundColor: '#869EA6!important',
+        // backgroundColor: '#869EA6!important',
+        backgroundColor: '#12141D!important',
         color: '#fff',
         fontSize: 14,
         minWidth: 150,
@@ -67,7 +72,9 @@ const useStyles = makeStyles((theme) => ({
     },
     textHelper: {
         fontSize: 13,
-        color: '#5C757D',
+        // color: '#5C757D',
+        color: '#fff',
+        opacity: '0.6',
         marginTop: 5,
         '@media only screen and (max-width: 575px)': {
             fontSize: 12,
@@ -77,6 +84,8 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 20
     },
     label: {
+        color: '#fff',
+        opacity: '0.6',
         display: 'block',
         marginTop: 10,
         marginBottom: 8,
@@ -88,7 +97,10 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     input: {
-        border: '1px solid #E4EDF0',
+        // border: '1px solid #E4EDF0',
+        border: '1px solid #48494E',
+        background: '#1E2029',
+        color: '#fff',
         borderRadius: 8,
         height: 45,
         padding: 10,
