@@ -45,7 +45,7 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
     root: {
 
-        // backgroundColor: 'transparent',
+        backgroundColor: 'transparent',
         '& .MuiTabs-indicator': {
             backgroundColor: 'transparent',
         },
@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
     },
     h1: {
         fontSize: '28px',
-        color: '#fff',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
         }
@@ -86,15 +85,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     tabNavigation: {
-        boxShadow: 'none',
-        color: '#fff',
-        background: '#12141D',
-        '& button span': {
-            color: '#fff'
-        }
-    },
-    'h4': {
-        color: '#fff'
+        boxShadow: 'none'
     }
 }))
 const Settings = () => {

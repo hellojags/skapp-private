@@ -49,7 +49,7 @@ export default function UploadFile({ file, url, status, progress, error }) {
     <div className="upload-file">
       <div className="upload-file-icon">{getIcon()}</div>
       <div className="upload-file-text">
-        <h3>{file?.name}</h3>
+        <h3>{file.name}</h3>
         <p>
           {status === "uploading" && getProgressText(progress)}
           {status === "processing" && "Processing..."}

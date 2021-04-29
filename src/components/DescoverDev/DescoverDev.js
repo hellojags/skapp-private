@@ -8,8 +8,7 @@ import DevTable from './DevTable'
 import UserCard from './UserCard'
 const useStyles = makeStyles(theme => ({
     pageHeading: {
-        // color: '#131523',
-        color: '#fff',
+        color: '#131523',
         fontSize: '28px',
     },
     UserProfile: {
@@ -23,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     },
     h3: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     p: {
         fontSize: 14,
@@ -31,8 +30,7 @@ const useStyles = makeStyles(theme => ({
     },
     boxHalf: {
         boxShadow: '0px 1px 3px #00000012',
-        background: '#2A2C34',
-        color: '#fff',
+        background: '#fff',
         padding: ' 10px 1.5rem',
         '& ._details': {
             marginLeft: '1rem'
@@ -43,7 +41,6 @@ const useStyles = makeStyles(theme => ({
     },
     // search
     search: {
-        background: '#1E2029',
         position: 'relative',
         marginLeft: 0,
         width: '100%',
@@ -68,8 +65,7 @@ const useStyles = makeStyles(theme => ({
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        // background: '#f0f5f78a',
-        background: '#12141D',
+        background: '#f0f5f78a',
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
@@ -82,11 +78,10 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 4
     },
     tableSearch: {
-        background: '#2A2C34'
+        background: '#fff'
     },
     tableContent: {
-        color: '#fff',
-        background: '#2A2C34',
+        background: '#fff',
         paddingLeft: '1rem',
         paddingRight: '1rem'
     },

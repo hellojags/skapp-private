@@ -1,7 +1,6 @@
 import GraphIcon from '../../assets/img/icons/grahpIcon.svg';
 const AddNewSiteStyles = () => ({
     h1: {
-        color: '#fff',
         fontSize: '28px',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
@@ -46,14 +45,14 @@ const AddNewSiteStyles = () => ({
         }
     },
     siteLogo: {
-        background: '#1E2029',
+        background: '#fff',
         cursor: 'pointer',
         height: 160,
         width: 260,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid rgba(0,0,0,0.4)',
+        border: '1px solid #D9E1EC',
         borderRadius: 8,
         marginBottom: 10,
         '@media only screen and (max-width: 575px)': {
@@ -81,9 +80,8 @@ const AddNewSiteStyles = () => ({
         }
     },
     input: {
-        background: '#1E2029',
-        color: '#fff',
-        border: '1px solid rgba(0, 0, 0, 0.4)',
+        background: '#fff',
+        border: '1px solid #D9E1EC',
         borderRadius: 8,
         height: 55,
         width: '100%',

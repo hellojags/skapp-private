@@ -1,8 +1,7 @@
 const noAppsStyle = {
     h1: {
         fontSize: 28,
-        // color: '#131523',
-        color: '#fff',
+        color: '#131523',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18,
         }
@@ -21,8 +20,7 @@ const noAppsStyle = {
     },
     h2: {
         fontSize: 32,
-        // color: '#333333',
-        color: '#fff',
+        color: '#333333',
         fontWeight: 800,
         '@media only screen and (max-width: 575px)': {
             fontSize: 25,
@@ -31,8 +29,6 @@ const noAppsStyle = {
     },
     p: {
         color: '#5A607F',
-        maxWidth: 425,
-        textAlign: "center",
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
         }

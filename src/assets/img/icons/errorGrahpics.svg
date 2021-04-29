@@ -16,7 +16,7 @@
   <path id="Rectangle_Copy_18" data-name="Rectangle Copy 18" d="M0,5A5,5,0,0,1,5,0H195a5,5,0,0,1,5,5V78L163.249,94.953,126.517,78,94.439,94.953,61.795,78l-31.65,23.92L0,78Z" transform="translate(77 58)" fill="#1dbf73" stroke="#1dbf73" stroke-miterlimit="10" stroke-width="3" opacity="0.28"/>
   <circle id="Oval-3" data-name="Oval" cx="5" cy="5" r="5" transform="translate(90 68)" fill="#1dbf73"/>
   <circle id="Oval_Copy_20" data-name="Oval Copy 20" cx="5" cy="5" r="5" transform="translate(104 68)" fill="#1dbf73"/>
-  <rect id="Rectangle-2" data-name="Rectangle" width="137" height="10" rx="3" transform="translate(125 68)" fill="#12141D"/>
+  <rect id="Rectangle-2" data-name="Rectangle" width="137" height="10" rx="3" transform="translate(125 68)" fill="#fff"/>
   <path id="Path_30_Copy" data-name="Path 30 Copy" d="M0,0H86a2,2,0,0,1,2,2h0" transform="translate(318 73) rotate(180)" fill="none" stroke="#1dbf73" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3" stroke-dasharray="10 15"/>
   <path id="Path_30" data-name="Path 30" d="M0,0H99a16,16,0,0,1,16,16V92" transform="translate(44.351 25.385)" fill="none" stroke="#1dbf73" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3" stroke-dasharray="10 15"/>
   <g id="Group" transform="translate(256.557 88.163) rotate(45)">

@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme) => ({
     modalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
-        // color: '#333333',
-        color: '#fff',
+        color: '#333333',
         borderBottom: '1px solid #70707085',
         padding: '1.3rem',
         '@media only screen and (max-width: 1440px)': {
@@ -29,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         opacity: 1,
         '&, &:focus': {
-            // background: '#fff',
-            background: '#1E2029',
+            background: '#fff',
             border: 0,
             outline: 0,
 
@@ -44,14 +42,11 @@ const useStyles = makeStyles((theme) => ({
             paddingRight: '1rem',
             flex: 1,
             height: 60,
-            color: '#fff',
-            background: '#2A2C34',
             '@media only screen and (max-width: 575px)': {
                 flex: '100%',
                 marginBottom: '1rem', borderRadius: 10
             },
-            // border: '1px solid #D9E1EC',
-            border: '1px solid rgba(0, 0, 0, 0.4)',
+            border: '1px solid #D9E1EC',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -69,8 +64,7 @@ const useStyles = makeStyles((theme) => ({
     },
     label: {
         fontSize: 21,
-        // color: '#000',
-        color: '#fff',
+        color: '#000',
         marginBottom: 10,
         display: 'block',
         '@media only screen and (max-width: 1440px)': {

@@ -20,12 +20,10 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
         alignItems: 'center',
         justifyContent: 'center',
-        
     },
 
     userCard: {
-        // background: '#fff',
-        background: '#2A2C34',
+        background: '#fff',
         paddingTop: '4rem',
         paddingBottom: '3rem',
         width: 460,
@@ -49,13 +47,11 @@ const useStyles = makeStyles((theme) => ({
     cardUserName: {
         fontSize: 18,
         fontWeight: 800,
-        // color: '#4E4E4E'
-        color: '#fff'
+        color: '#4E4E4E'
     },
     cardUserAd: {
         fontSize: 18,
-        // color: '#4E4E4E'
-        color: '#fff'
+        color: '#4E4E4E'
     },
     userProfile: {
         marginBottom: '6px',
@@ -66,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     ul: {
-        color: '#48494E',
         marginTop: '.4rem',
         justifyContent: 'center',
         '& li:not(:last-child)': {
@@ -75,12 +70,11 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         listStyle: 'none',
         '& span': {
-            // color: '#2a2c3499',
-            color: '#48494E',
+            color: '#2a2c3499',
             fontSize: 13,
             display: 'block',
             '&:first-child': {
-                color: '#6A6F89',
+                color: '#2A2C34',
                 fontWeight: 'bold',
                 fontSize: 15
             }
@@ -90,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "center"
     },
     userDetailsList: {
-        
         listStyle: "none",
         margin: '1rem auto',
         '& li': {
@@ -101,8 +94,7 @@ const useStyles = makeStyles((theme) => ({
             '& span': {
                 fontSize: 18,
                 lineHeight: 1.6,
-                // color: '#4E4E4E',
-                color: '#6A6F89',
+                color: '#4E4E4E',
                 '&:last-child': {
                     fontWeight: 'bold'
                 }
@@ -119,8 +111,7 @@ const useStyles = makeStyles((theme) => ({
     closeBtn: {
         position: 'absolute',
         right: 10,
-        top: 10,
-        color: '#6A6F89',
+        top: 10
     }
 }))
 const UserCard = () => {

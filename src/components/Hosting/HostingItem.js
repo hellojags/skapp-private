@@ -12,10 +12,8 @@ import moment from 'moment'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setSelectedHostedApp } from '../../redux/action-reducers-epic/SnSelectedHostedAppAction'
-import { Delete } from '@material-ui/icons';
-
 const useStyles = makeStyles(styles)
-const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
+const HostingItem = ({ ActiveSite, app }) => {
     const classes = useStyles();
     let history = useHistory();
     const dispatch = useDispatch();
@@ -30,11 +28,6 @@ const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
     const onPublish = (evt) => {
         dispatch(setSelectedHostedApp(app.id));
         history.push(`/submitapp/${app.id}`);
-    };
-
-    const onEdit = (evt) => {
-        dispatch(setSelectedHostedApp(app.id));
-        history.push(`/editsite/${app.id}`);
     };
 
     return (
@@ -79,12 +72,6 @@ const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
                     }
                     <Button className={classes.manageBtn} onClick={onPublish}>
                         <span>Publish</span>
-                    </Button>
-                    <Button className={classes.manageBtn} onClick={onEdit}>
-                        <span>Edit</span>
-                    </Button>
-                    <Button className={classes.trashBtn} onClick={()=> handleOpen(appContent, id)}>
-                        <Delete />
                     </Button>
                     <Button className={classes.manageBtn} onClick={onManageDeployment}>
                         <FolderIcon />

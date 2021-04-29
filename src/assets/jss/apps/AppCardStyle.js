@@ -4,7 +4,6 @@ const appCardStyle = {
     root: {
         maxWidth: 'auto',
         borderRadius: 10,
-        background: '#2A2C34',
         boxShadow: ' 0px 1px 4px #15223214',
     },
     media: {
@@ -42,13 +41,11 @@ const appCardStyle = {
         '&:hover': {
             // background: '#fff!important',
             opacity: 1
-        },
-        cursor: 'context-menu'
+        }
     },
     cardH2: {
         fontWeight: 700,
-        textTransform: 'capitalize',
-        color: '#FFF',
+        color: '#000',
         '@media only screen and (max-width: 575px)': {
             fontSize: '15px'
         }
@@ -67,7 +64,7 @@ const appCardStyle = {
     },
     cardFooterIcon: {
         // width: '17px',
-        cursor: "pointer",
+        cursor:"pointer",
         marginRight: '5px',
         '@media only screen and (max-width: 575px)': {
             marginRight: '0',
@@ -95,18 +92,13 @@ const appCardStyle = {
     versionBtn: {
         height: 22,
         backgroundColor: '#9d9d9d33',
-        // color: '#9D9D9D',
-        color: '#1DBF73',
-        marginLeft: "1rem",
-        fontSize: 12,
+        color: '#9D9D9D',
         '@media only screen and (max-width: 575px)': {
             fontSize: 7,
             minWidth: 55
         }
     },
     cardSmallText: {
-        // padding: " 0!important",
-        marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
         },
@@ -115,6 +107,7 @@ const appCardStyle = {
         }
     },
     shareAndSaveBtn: {
+
         '@media only screen and (max-width: 575px)': {
             display: 'flex'
         }
@@ -161,10 +154,10 @@ const appCardStyle = {
     tags: {
         marginTop: 3,
         color: '#9D9D9D',
-        width: '100%',
-        justifyContent: 'flex-start',
+        width: '155px',
+        justifyContent: 'space-between',
         marginRight: 'auto!important',
-        // marginLeft: '15px',
+        marginLeft: '15px',
         '@media only screen and (max-width: 575px)': {
             // marginRight: 'auto!important',
             marginRight: '0!important',
@@ -173,7 +166,7 @@ const appCardStyle = {
     },
     footerBottom: {
         padding: '.6rem .9rem',
-        paddingTop: '8px',
+        paddingTop: '5px',
         paddingBottom: ".75rem",
         '@media only screen and (max-width: 575px)': {
             flexDirection: 'column-reverse',
@@ -210,26 +203,8 @@ const appCardStyle = {
         color: '#1DBF73!important',
         width: 24,
         transform: 'translateX(-8px)'
-    },
-    desc: {
-        maxWidth: "100%",
-        overflow: "hidden",
-        position: "relative",
-        lineHeight: "1.2em",
-        maxHeight: "2.4em",
-        textAlign: "justify",
-        marginRight: "-5em",
-        paddingRight: "1em",
-        marginBottom: "0.5em",
-        // whiteSpace: "nowrap"
-    },
-    moreDescBtn: {
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        background: '#fff',
-        cursor: 'pointer'
     }
+
 
 }
 export default appCardStyle
