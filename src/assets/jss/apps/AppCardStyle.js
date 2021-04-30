@@ -106,6 +106,7 @@ const appCardStyle = {
     },
     cardSmallText: {
         // padding: " 0!important",
+        color: '#fff',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
@@ -126,6 +127,7 @@ const appCardStyle = {
 
     },
     detailsArea: {
+        color: '#fff',
         paddingTop: 4,
         paddingBottom: 0,
         '& .MuiBox-root': {

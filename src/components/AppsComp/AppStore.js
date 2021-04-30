@@ -1,7 +1,7 @@
 import { Box, Button, InputBase } from '@material-ui/core'
 import React, { Fragment, useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
-import SearchIcon from '@material-ui/icons/Search'
+// import SearchIcon from '@material-ui/icons/Search'
 // import UtilitiesItem from './UtilitiesItem'
 import ListFilter from './ListFilter'
 import SelectItem from './SelectItem'
@@ -27,6 +27,7 @@ import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, ins
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Fuse from 'fuse.js'
+import searchIcon from '../../assets/img/icons/search.svg'
 import styles from "../../assets/jss/apps/AppListStyle"
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
@@ -412,7 +413,8 @@ function AppStore() {
                 {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
-                            <SearchIcon />
+                            {/* <SearchIcon /> */}
+                            <searchIcon />
                         </div>
                     </Box>
                     <InputBase
@@ -434,7 +436,8 @@ function AppStore() {
                     {width > 1049 && <div className={classes.search}>
                         <Box>
                             <div className={classes.searchIcon}>
-                                <SearchIcon />
+                                {/* <SearchIcon /> */}
+                                <searchIcon />
                             </div>
                         </Box>
                         <InputBase

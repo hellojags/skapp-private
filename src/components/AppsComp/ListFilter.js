@@ -35,7 +35,16 @@ const useStyles = makeStyles(theme => ({
         // color: '#fff'
     },
     popper: {
-        zIndex: 9
+        zIndex: 9,
+
+        '& ul': {
+            background: '#2A2C34',
+            color: '#7E84A3',
+            '& li:hover': {
+                background: '#1DBF73',
+                color: '#fff'
+            }
+        }
     }
 }))
 function ListFilter() {

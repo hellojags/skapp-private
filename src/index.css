@@ -498,7 +498,8 @@ button[data-cat="All"] .count-cat{
   display: flex;
   position: fixed;
   bottom: 0;
-  background: #f5f6fa;
+  /* background: #f5f6fa; */
+  background: #12141D;
   width: 100%;
   height: 50px;
   z-index: 9;
@@ -661,7 +662,8 @@ button[data-cat="All"] .count-cat{
 } */
 /* categoryOnAppCard */
 .categoryOnAppCard span{
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
+  background-color: #2A2C34;
     position: absolute;
     /* right: 0; */
     left: 16px;

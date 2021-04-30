@@ -17,8 +17,8 @@ import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 import AppImg from "../../assets/img/placeholderImg.png"
 import { Box, IconButton, Tooltip } from "@material-ui/core"
-import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg"
-import { ReactComponent as ShareIcon } from "../../assets/img/icons/share.1.svg"
+import { ReactComponent as Heart1Icon } from "../../assets/img/icons/Heart1.svg"
+import { ReactComponent as Share12Icon } from "../../assets/img/icons/share.12.svg"
 import { ReactComponent as MsgIcon } from "../../assets/img/icons/Messages, Chat.15.svg"
 import { ReactComponent as StarIcon } from "../../assets/img/icons/star-favorite.svg"
 // import { ReactComponent as OutLineStarIcon } from "../../assets/img/icons/starOutlinedIcon.svg";
@@ -273,7 +273,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                       color="#fff"
                       className={classes.heartBtn}
                     >
-                      <HeartIcon />
+                      <Heart1Icon />
                     </IconButton>
                     <IconButton
                       onClick={HandleShareModel}
@@ -282,7 +282,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                       color="#fff"
                       className={classes.shareBtn}
                     >
-                      <ShareIcon />
+                      <Share12Icon />
                     </IconButton>
                   </Box>
                 </Box>
