@@ -72,10 +72,10 @@ const useStyles = makeStyles({
         marginLeft: 10
     },
     menuAction: {
-
-
         marginTop: '3.4rem',
         '& ul': {
+            background: '#1E2029',
+            color: '#fff',
             minWidth: 230,
             '& li': {
                 fontSize: 18,
@@ -87,7 +87,9 @@ const useStyles = makeStyles({
         },
         '& .MuiPaper-root': {
             boxShadow: '0px 3px 6px #00000029',
-            border: '1px solid #7070704F', overflow: 'visible'
+            // border: '1px solid #7070704F',
+            border: '1px solid #48494E',
+            overflow: 'visible'
         },
         '& .MuiPaper-root::before': {
             content: '""',

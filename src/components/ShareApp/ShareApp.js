@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     shareCardContainer: {
-        background: '#fff',
+        background: '#1E2029',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
         padding: '48px 60px',
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     },
     modalTitle: {
         fontSize: 32,
-        color: '#333333',
+        color: '#fff',
         fontWeight: 700,
         marginBottom: '1rem'
     },
@@ -60,10 +60,13 @@ const useStyles = makeStyles((theme) => ({
         height: 48,
         padding: '10px 15px',
         paddingRight: 50,
-        border: '2px solid #D9E1EC',
+        // border: '2px solid #D9E1EC',
+        border: '2px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 4,
         width: '100%',
-        color: '#363947',
+        // color: '#363947',
+        background: '#2A2C34',
+        color: '#fff',
         fontSize: 16,
         '&:focus': {
             outlineColor: '#1DBF73'
@@ -81,6 +84,8 @@ const useStyles = makeStyles((theme) => ({
     },
     closeBtn: {
         border: '1px solid #1DBF73',
+        background: '#1DBF73',
+        color: '#fff',
         minWidth: '100%',
         borderRadius: '5px',
         boxShadow: '0px 2px 5px #15223221',

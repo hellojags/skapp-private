@@ -39,10 +39,13 @@ const data = [
 ];
 const useStyles = makeStyles((theme) => ({
   dropArrow: {
-    color: "#323232",
+    // color: "#323232",
+    color: "#7E84A3",
   },
   utilBtn: {
-    background: "#fff",
+    // background: "#fff",
+    color: '#7E84A3',
+    background: "#2A2C34",
     textTransform: "none",
     minWidth: "155px",
     display: "flex",
@@ -51,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 1px 2px #15223214",
     border: "1px solid #7070701A;",
     "&:hover": {
-      background: "#fff",
+      background: "#1E2029",
     },
   },
   popper: {
