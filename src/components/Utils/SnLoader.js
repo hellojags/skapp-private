@@ -11,7 +11,7 @@ export default function SnLoader(props) {
         //   <div className="loader" />
         // </div>
         <div className="sn-loader-overlay">
-          <div className="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
         </div>
       )}
     </>

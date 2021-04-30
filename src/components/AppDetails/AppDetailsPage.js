@@ -30,7 +30,7 @@ const AppDetailsPage = () => {
   return (
     <div>
       <AppDetailsHeader data={data} />
-      <AppInfo data={data} appId={appId}/>
+      <AppInfo data={data}/>
     </div>
   );
 };
