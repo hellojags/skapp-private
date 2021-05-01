@@ -348,7 +348,7 @@ export default function LandingPageNavbar() {
                         </Box> */}
                         <Box>
                             <Button className={classes.signupBtn}>
-                                Login
+                                Login 
                                 <Link className="link" to="/login" />
                             </Button>
                         </Box>
@@ -372,11 +372,12 @@ export default function LandingPageNavbar() {
                         </Box>
                         <Box>
                             <Button className={classes.loginBtn}>
-                                Login
+                                Login 
                                 <Link className="link" to="/login" />
                             </Button>
 
                         </Box>
+                       
                     </Box>}
 
                 </Toolbar>

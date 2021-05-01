@@ -1,7 +1,8 @@
 const sideabrStyle = theme => (
     {
         root: {
-            padding: 0
+            padding: 0,
+            backgroundColor:'black'
         },
         nested: {
             paddingLeft: theme.spacing(4),

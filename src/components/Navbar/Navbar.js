@@ -6,10 +6,19 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import Badge from '@material-ui/core/Badge'
+import Paper from '@material-ui/core/Paper'
+import Switch from "@material-ui/core/Switch";
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
+import {
+    orange,
+    lightBlue,
+    deepPurple,
+    deepOrange
+  } from "@material-ui/core/colors";
 // import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 // import MailIcon from '@material-ui/icons/Mail'
@@ -27,18 +36,21 @@ import { ReactComponent as NotificationIcon } from '../../assets/img/icons/notif
 import { ReactComponent as CustomMenuIcon } from '../../assets/img/icons/Icon ionic-ios-menu.svg'
 import { Box, Button, Tooltip, Typography } from '@material-ui/core'
 import Sidebar from '../Sidebar/Sidebar'
+
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
- import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
- import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
+import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
+import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 import { useHistory } from "react-router-dom"
+
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#fff',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
+        display:'flex'
 
     },
     toolBarRoot: {
@@ -182,10 +194,23 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Navbar() {
+   
+    
+    const [darkMode,setDarkMode]=useState(false);
+  const DarkTheme=createMuiTheme(
+    {
+      palette:{
+        type: 'dark',
+      }
+    }
+  ) 
+  const LightTheme=createMuiTheme({})
+   
     const dispatch = useDispatch()
     const history = useHistory()
     const { width } = useWindowDimensions()
     const classes = useStyles()
+    
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
@@ -193,7 +218,7 @@ export default function Navbar() {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
     const stUserSession = useSelector((state) => state.userSession)
 
-    const [person, setPerson] = useState({username:"hardcoded"})
+    const [person, setPerson] = useState({ username: "hardcoded" })
     const user = useSelector(state => state.userSession)
     // useEffect(() => {
     //     setPerson(user?.person?.profile)
@@ -312,6 +337,8 @@ export default function Navbar() {
         menuIsOpen ? setMenuIsOpen(false) : setMenuIsOpen(true)
     }
     return (
+       <ThemeProvider theme={darkMode ? DarkTheme :LightTheme}>
+           <Paper>
         <Fragment>
             {width <= 890 &&
                 <Sidebar style={{
@@ -344,6 +371,7 @@ export default function Navbar() {
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
+
                         </div>
                         <InputBase
                             placeholder="Search…"
@@ -354,8 +382,14 @@ export default function Navbar() {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>
-
+                    <div>DarkModeToggle
+                    
+                           <Switch color="primary" checked={darkMode}  onChange={()=>setDarkMode(!darkMode)}/>
+                           
+                        
+                    </div>
                     <div className={classes.sectionDesktop}>
+
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
@@ -381,6 +415,7 @@ export default function Navbar() {
                             </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>
+
                     </div>
                     <div className={classes.sectionMobile}>
                         <IconButton
@@ -398,5 +433,8 @@ export default function Navbar() {
             {renderMobileMenu}
             {renderMenu}
         </Fragment>
+        </Paper>
+        </ThemeProvider>
+        
     )
 }

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import "react-perfect-scrollbar/dist/css/styles.css"
 import { makeStyles } from "@material-ui/core/styles"
@@ -7,8 +7,12 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
+import Switch from "@material-ui/core/Switch";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import Collapse from "@material-ui/core/Collapse"
 import { useLocation } from 'react-router-dom'
+
+// import DarkModeToggle from "react-dark-mode-toggle";
 // Custom Icons Imports
 import { ReactComponent as DashboardIcon } from "../../assets/img/icons/dashboardIcon.svg"
 import { ReactComponent as SubmitAppIcon } from "../../assets/img/icons/submitIcon.svg"
@@ -40,7 +44,7 @@ const Sidebar = (props) => {
   const handleClick = () => {
     setOpen(!open)
   }
-
+ 
   let location = useLocation()
 
   let sidebar = (
@@ -182,7 +186,9 @@ const Sidebar = (props) => {
               <ProductUpdateIcon />
             </ListItemIcon>
             <ListItemText primary="Product Updates" />
+            
           </ListItem>
+
         </List>
         {/* Settings section */}
         <List
@@ -195,6 +201,7 @@ const Sidebar = (props) => {
           aria-labelledby="nested-list-subheader"
           className={classes.root}
         >
+
           <NavLink exact to="/settings">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>

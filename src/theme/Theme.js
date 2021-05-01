@@ -10,4 +10,7 @@ export const skappTheme = createMuiTheme({
             lineHeight: '1.25'
         }
     },
+    palette: {
+        type: 'dark',
+      },
 })
