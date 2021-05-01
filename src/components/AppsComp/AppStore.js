@@ -49,7 +49,8 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            border: '1px solid #7070701A;',
+            // border: '1px solid #7070701A;',
+            border: '1px solid #2A2C34;',
             // hieght: '41px',
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -65,10 +66,12 @@ const useStyles = makeStyles(theme => (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#B4C6CC'
+            // color: '#B4C6CC',
+            color: '#2A2C34'
         },
         inputRoot: {
             color: 'inherit',
+            background: '#2A2C34',
         },
         inputInput: {
             // padding: theme.spacing(1, 1, 1, 0),
@@ -93,7 +96,8 @@ const useStyles = makeStyles(theme => (
         },
 
         pageHeading: {
-            color: '#131523',
+            // color: '#131523',
+            color: '#fff',
             fontSize: '28px',
         },
         smallText: {

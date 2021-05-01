@@ -2,6 +2,7 @@ import GraphIcon from '../../img/icons/grahpIcon.svg'
 const SubmitAppStyles = () => ({
     h1: { 
         fontSize: '28px',
+        color: '#fff',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
         }
@@ -105,14 +106,15 @@ const SubmitAppStyles = () => ({
         }
     },
     siteLogo: {
-        background: '#fff',
+        background: '#1E2029',
         cursor: 'pointer',
         height: 160,
         width: 260,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid #48494E',
         borderRadius: 8,
         marginBottom: 10,
         '@media only screen and (max-width: 575px)': {
@@ -189,9 +191,12 @@ const SubmitAppStyles = () => ({
             color: '#5A607F',
             marginBottom: 7
         },
-        '& input:focus, & select:focus': {
+        '& input, input:focus, & select:focus': {
             outline: 'none!important',
-            border: '1px solid #1DBF73'
+            // border: '1px solid #1DBF73',
+            color: '#fff',
+            border: '1px solid #48494E',
+            background: '#1E2029',
         },
         marginTop: '25px',
         '&': {
@@ -207,6 +212,9 @@ const SubmitAppStyles = () => ({
 
         },
 
+    },
+    '.css-h0f0jv-control': {
+        background: '#1E2029'
     },
     inputContainerTag: {
         '& > label': {
@@ -387,17 +395,24 @@ const SubmitAppStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid #1E2029',
         borderRadius: 8,
         marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#1E2029'
+        },
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
     },
     textarea: {
-        background: '#fff',
+        // background: '#fff',
+        background: '#1E2029',
         boxShadow: '0px 1px 2px #15223214',
-        border: '1px solid #7070701A',
+        // border: '1px solid #7070701A',
+        color: '#fff !important',
+        border: '1px solid #48494E',
         borderRadius: '8px',
         // minHeight: '90px',
         width: `100%`,
@@ -406,8 +421,9 @@ const SubmitAppStyles = () => ({
         padding: "1rem",
         color: '#000',
         '&:focus': {
+            color: '#fff',
             outline: 'none!important',
-            border: '1px solid #1DBF73',
+            border: '1px solid #48494E',
         },
         '&:placeholder': {
             color: 'rgba(126, 132, 163 , .32)'
@@ -554,8 +570,9 @@ const SubmitAppStyles = () => ({
         marginTop: 15
     },
     DNSContainer: {
-        background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+        background: '#1E2029',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '45px 35px',
         '@media only screen and (max-width: 1440px)': {
@@ -588,8 +605,10 @@ const SubmitAppStyles = () => ({
         minHeight: 190,
         height: 200,
         overflowY: 'auto',
-        background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+        // background: '#FFFFFF',
+        background: '#1E2029',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '15px 0',
         '@media only screen and (max-width: 1440px)': {
@@ -626,11 +645,13 @@ const SubmitAppStyles = () => ({
     },
     graphText: {
         fontSize: 14,
-        color: '#1DBF73'
+        // color: '#1DBF73'
+        color: '#fff'
     },
     StatValue: {
         fontSize: 32,
-        color: '#242F57',
+        // color: '#242F57',
+        color: '#fff',
         fontWeight: 'bold'
     },
     StatTitle: {
@@ -645,8 +666,10 @@ const SubmitAppStyles = () => ({
     },
     StatsContainer: {
         minHeight: 190,
-        background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+        // background: '#FFFFFF',
+        background: '#1E2029',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '30px 15px',
         '@media only screen and (max-width: 1440px)': {

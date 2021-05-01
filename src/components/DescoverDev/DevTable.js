@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH as MoreIcon } from '@fortawesome/free-solid-svg-icons'
 // import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
-import { ReactComponent as Arrows } from '../../assets/img/icons/arrows-diagrams-02.svg'
+import { ReactComponent as Arrows } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
 
 import { Box, Button, Checkbox, IconButton } from '@material-ui/core'
 import Spiner from '../AppsComp/Spiner'
@@ -20,9 +20,11 @@ const useStyles = makeStyles({
         minWidth: 850,
     },
     paper: {
+        background: '#2A2C34!important',
         marginTop: 10,
         "& th, & td": {
-            border: 0
+            border: 0,
+            background: '#2A2C34',
         },
         '& tbody tr th ~ td:not(:last-child)': {
             color: '#6E77AA',
@@ -32,15 +34,16 @@ const useStyles = makeStyles({
             fontWeight: 700
         },
         '& thead': {
-
+            
             '& th': {
                 padding: 0,
-                color: '#000',
+                color: '#5A607F',
                 // lineHeight: '',
-                background: '#F0F5F7',
+                // background: '#F0F5F7',
+                background: '#1E2029',
                 '& svg': {
                     marginLeft: '5px',
-                    width: 18
+                    width: 18,
                 },
                 '&:first-child': {
                     borderRadius: '5px 0 0px 5px',
@@ -89,6 +92,7 @@ const useStyles = makeStyles({
             marginRight: 10
         }
     },
+
     statusWorking: {
         color: '#1DBF73'
     },
@@ -113,6 +117,7 @@ const useStyles = makeStyles({
             }
         },
         '& .MuiPaper-root': {
+            background: '#2A2C34',
             boxShadow: '0px 3px 6px #00000029',
             border: '1px solid #7070704F', overflow: 'visible'
         },
@@ -142,6 +147,9 @@ const useStyles = makeStyles({
             transform: 'rotate(90deg)'
         }
     },
+    checkBox: {
+        color:'#4B5060'
+    },
     colorDanger: {
         color: '#FF6060'
     },
@@ -152,7 +160,13 @@ const useStyles = makeStyles({
     followBtn: {
         width: 110,
         background: '#1DBF73!important',
-        color: '#fff'
+        color: '#fff',
+
+        '&:hover': {
+            background: '#2A2C34!important',
+            color: '#1DBF73',
+            border: '1px solid #1DBF73!important'
+        }
     },
     moreIconV: {
         transform: 'rotate(90deg)'
@@ -197,13 +211,14 @@ const DevTable = () => {
                             <TableRow>
                                 <TableCell>
                                     <Checkbox
+                                        className={classes.checkBox}
                                         color="primary"
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                     />
                                 </TableCell>
                                 <TableCell>
                                     Avatar
-                            </TableCell>
+                                </TableCell>
                                 <TableCell>Skapp ID</TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
@@ -239,6 +254,7 @@ const DevTable = () => {
                                     <TableCell scope="row">
                                         <Checkbox
                                             color="primary"
+                                            // color="#2A2C34"
                                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         />
                                     </TableCell>

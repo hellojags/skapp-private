@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -36,10 +36,9 @@ import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
 import { useHistory } from "react-router-dom"
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: '#fff',
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
-
     },
     toolBarRoot: {
         justifyContent: 'space-between',
@@ -94,12 +93,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#B4C6CC'
+        color: '#fff',
+        background: '#fff',
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
+        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -125,7 +126,6 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     usrIcon: {
-
         width: '28px',
         height: '28px',
         minWidth: 'auto',
@@ -138,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: "1rem",
         textTransform: 'capitalize',
         maxWidth: 110,
+        color: '#fff'
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -339,7 +340,7 @@ export default function Navbar() {
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo />
+                        <Logo1 />
                     </div>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>

@@ -270,6 +270,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                     <IconButton
                       aria-label="Favourite Button"
                       size="small"
+                      color="#fff"
                       className={classes.heartBtn}
                     >
                       <HeartIcon />
@@ -278,6 +279,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                       onClick={HandleShareModel}
                       aria-label="Share Button"
                       size="small"
+                      color="#fff"
                       className={classes.shareBtn}
                     >
                       <ShareIcon />
