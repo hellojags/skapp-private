@@ -1,5 +1,5 @@
 import imageCompression from "browser-image-compression";
-import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY , DEFAULT_PORTAL, ID_PROVIDER_SKYID} from "./SnConstants";
+import { DEFAULT_PORTAL, ID_PROVIDER_SKYID} from "./SnConstants";
 import base64 from "base64-js";
 import base32Encode from "base32-encode";
 
@@ -67,19 +67,15 @@ const getbase32URlForSkapp = (skylink) => {
 // }
 
 /**
- * Compresses Image file to Skyspace params. Returns an Object of type File
+ * Compresses Image file to Skyspace params
  * 
  * @param {File} originalFile Original File.
  */
-
-export const getCompressedImageFile = async(originalFile) => {
-  const compressedBlob = await imageCompression(originalFile, {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 256,
-    useWebWorker: true,
-  });
-  return new File([compressedBlob], compressedBlob.name);
-};
+export const getCompressedImageFile = async(originalFile) => await imageCompression(originalFile, {
+  maxSizeMB: 1,
+  maxWidthOrHeight: 256,
+  useWebWorker: true,
+});
 
 /**
  * Generates thumbnail image file out of the first frame of the video file.
@@ -180,15 +176,6 @@ export const isStrInObj = (searchStr, obj) => {
     return true;
   }
 };
-export const getUserSession = () => {
-  let session = null;
-  try {
-      session = JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY))
-  }
-  catch (e) {
-      return session
-  }
-  return session
-}
+
 export const genHostedAppSkappUrl = (hostedAppDetail) => hostedAppDetail?.content?.hns && hostedAppDetail?.content?.storageGateway && 
 `https://${hostedAppDetail.content.hns}.hns.${hostedAppDetail.content.storageGateway}`;

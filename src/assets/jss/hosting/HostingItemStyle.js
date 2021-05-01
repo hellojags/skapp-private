@@ -91,25 +91,6 @@ const hostingItemStyle = {
         }
 
     },
-    trashBtn: {
-        backgroundColor: '#F5F6FA',
-        '& svg': {
-            fontSize: 18,
-            color: '#ea052f',
-            marginLeft: 5,
-            marginRight: 5,
-
-        },
-        '&  span > span': {
-            marginRight: 8
-        },
-        color: '#7E84A3',
-        '@media only screen and (max-width: 450px)': {
-            flex: 1,
-            marginTop: 5
-        }
-
-    },
     btnContainer: {
         marginTop: '13px',
         '& button:not(:last-child)': {

@@ -1,8 +1,8 @@
-import { combineReducers, createStore } from "redux"
-import { combineEpics } from "redux-observable"
-import { composeWithDevTools } from "redux-devtools-extension"
+import { combineReducers, createStore } from "redux";
+import { combineEpics } from "redux-observable";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer"
+import SnLoaderReducer from "./action-reducers-epic/SnLoaderReducer";
 // import SnPerson from "./sn.person.reducer"
 // import SnUserProfile from "./sn.userprofile.reducer"
 // import { snUserProfileEpic } from "./sn.userprofile.epic"
@@ -17,9 +17,7 @@ import snSelectedHostedAppStore from "./action-reducers-epic/SnSelectedHostedApp
 import snAllPublishedAppsStore from "./action-reducers-epic/SnAllPublishAppReducer";
 import {snGetAllPublishedAppsEpic} from "./action-reducers-epic/SnAllPublishAppEpic";
 import snPublishedAppsStore from "./action-reducers-epic/SnPublishAppReducer";
-import snInstalledAppsStore from "./action-reducers-epic/SnInstalledAppReducer";
 import {snGetPublishedAppsEpic,snSetPublishAppEpic} from "./action-reducers-epic/SnPublishAppEpic";
-import {snGetInstalledAppsEpic, snSetInstallAppEpic, snSetUnInstallAppEpic } from "./action-reducers-epic/SnInstalledAppEpic";
 import snAppStatsStore from "./action-reducers-epic/SnAppStatsReducer";
 import {snSetAppStatsEpic,snGetAppStatsEpic} from "./action-reducers-epic/SnAppStatsEpic";
 import snAppCommentsStore from "./action-reducers-epic/SnAppCommentsReducer";
@@ -41,23 +39,19 @@ const rootReducer = combineReducers({
   snUploadListStore: SnUploadListReducer,
   snAllPublishedAppsStore,
   snPublishedAppsStore,
-  snInstalledAppsStore,
   snAppStatsStore,
   snAppCommentsStore,
   snSelectedHostedAppStore,
   snShowHostingLinks
-})
+});
 
 const rootEpic = combineEpics(
   snGetAllPublishedAppsEpic,
   snGetPublishedAppsEpic,
   snSetPublishAppEpic,
-  snGetInstalledAppsEpic,
-  snSetInstallAppEpic,
-  snSetUnInstallAppEpic,
   snSetAppStatsEpic,
   snGetAppStatsEpic,
-  snGetAppCommentsEpic,
+  snGetAppCommentsEpic, 
   snSetAppCommentEpic,
   // snPersonEpic,
   // logoutPersonEpic,
@@ -73,6 +67,6 @@ const store = createStore(
   rootReducer,
   composeWithDevTools(redux.applyMiddleware(observableMiddleware))
 )
-observableMiddleware.run(rootEpic)
+observableMiddleware.run(rootEpic);
 
-export default store
+export default store;

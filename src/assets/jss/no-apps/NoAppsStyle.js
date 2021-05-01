@@ -29,8 +29,6 @@ const noAppsStyle = {
     },
     p: {
         color: '#5A607F',
-        maxWidth: 425,
-        textAlign: "center",
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
         }
