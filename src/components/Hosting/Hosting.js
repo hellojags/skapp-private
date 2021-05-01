@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Box, InputBase } from '@material-ui/core'
+import { Box, InputBase, Typography, Button } from '@material-ui/core'
 import { useHistory } from "react-router-dom";
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
@@ -9,11 +9,15 @@ import SubmitBtn from '../AppsComp/SubmitBtn'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import HostingItem from './HostingItem'
 import AddNewSite from './AddNewSiteBtn'
-import { getMyHostedApps } from '../../service/SnSkappService';
+import { getMyHostedApps, deleteMyHostedApp } from '../../service/SnSkappService';
 import SnInfoModal from '../Modals/SnInfoModal';
 import { isStrInObj } from '../../utils/SnUtility';
 import { useDispatch } from 'react-redux';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+
 const useStyles = makeStyles(theme => (
     {
         search: {
@@ -38,6 +42,66 @@ const useStyles = makeStyles(theme => (
                 width: 'auto'
             },
 
+        },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        closeBtn: {
+            border: '1px solid #1DBF73',
+            borderRadius: '5px',
+            boxShadow: '0px 2px 5px #15223221',
+            height: 48,
+            marginTop: '2rem',
+            textTransform: 'none'
+        },
+        okBtn: {
+            border: '1px solid #ea052f',
+            marginRight: '10px',
+            borderRadius: '5px',
+            boxShadow: '0px 2px 5px #15223221',
+            height: 48,
+            marginTop: '2rem',
+            textTransform: 'none'
+        },
+        modalTitle: {
+            fontSize: 32,
+            color: '#333333',
+            fontWeight: 700,
+            marginBottom: '1rem'
+        },
+        shareCardContainer: {
+            background: '#fff',
+            boxShadow: '0px 2px 5px #15223221',
+            borderRadius: 15,
+            padding: '48px 60px',
+            '@media only screen and (max-width: 575px)': {
+                padding: '40px 20px',
+                paddingTop: '50px'
+            },
+            '&:focus': {
+                outline: 0,
+                border: 0
+            },
+            width: '90%',
+            maxWidth: 500,
+            '& p': {
+                color: '#5A607F',
+                marginBottom: '5px'
+            },
+            '& .s-links-title': {
+                marginTop: '.4rem'
+            },
+            '& a': {
+                marginRight: '1rem',
+                '&:focus': {
+                    textDecoration: 'none',
+                    opacity: .8,
+                    transition: '.25s ease'
+                }
+            }
+    
         },
         searchIcon: {
             padding: theme.spacing(0, 2),
@@ -142,6 +206,13 @@ function Hosting() {
     
     const [hostedAppListObj, setHostedAppListObj] = useState();
     const [searchStr, setSearchStr] = useState("");
+    const [isDelete, setIsDelete] = useState(false);
+    const [selectedApp, setAppForDelete] = useState(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoModalTitle, setInfoModalTitle] = useState("");
+    const [infoModalContent, setInfoModalContent] = useState("");
+    const [infoModalShowCopyToClipboard, setInfoModalShowCopyToClipboard] = useState(false);
+    const [infoModalClipboardTooltip, setInfoModalClipboardTooltip] = useState("");
 
     useEffect(() => {
         loadHostedApps();
@@ -156,6 +227,41 @@ function Hosting() {
 
     const filterApps = (searchStr, app) => isStrInObj(searchStr, app);
 
+    const handleClose = () => {
+        setIsDelete(false);
+    }
+    
+    const handleOpen = (app, appId) => {
+        app['appId'] = appId;
+        setAppForDelete(app);
+        setIsDelete(true);
+    }
+    
+    const handleDelete = async () => {
+        dispatch(setLoaderDisplay(true));
+        setIsDelete(false);
+        const check = await deleteMyHostedApp(selectedApp.appId);
+        dispatch(setLoaderDisplay(false));
+        setInfoModalParams({
+            title: check ? `Success` : `Error`,
+            content: check ? `Site Deleted Successfully!` : `Unexpected Error occured`,
+            showClipboardCopy: false,
+        });
+    }
+
+    const setInfoModalParams = ({ title, content, showClipboardCopy = false, clipboardCopyTooltip, open = true }) => {
+        setInfoModalContent(content);
+        setInfoModalTitle(title);
+        setInfoModalShowCopyToClipboard(showClipboardCopy);
+        setInfoModalClipboardTooltip(clipboardCopyTooltip);
+        setShowInfoModal(open);
+    };
+
+    const onInfoModalClose = () => {
+        setInfoModalParams({ open: false });
+        loadHostedApps();
+    };
+    
     return (
 
         <Fragment >
@@ -218,11 +324,50 @@ function Hosting() {
                     .filter((appId)=>filterApps(searchStr, hostedAppListObj.appDetailsList[appId]))
                     .sort((appId1, appId2)=>(hostedAppListObj.appDetailsList[appId2].ts-hostedAppListObj.appDetailsList[appId1].ts))
                     .map((appId, idx) =>
-                        hostedAppListObj.appDetailsList[appId] && <HostingItem key={idx} ActiveSite={true} app={hostedAppListObj.appDetailsList[appId]} />
+                        hostedAppListObj.appDetailsList[appId] && <HostingItem handleOpen={handleOpen} key={idx} ActiveSite={true} id={appId} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
                 <AddNewSite onClick={() => history.push("/submitsite")} />
             </Box>
 
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={false || isDelete}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={isDelete}>
+                    <Box className={classes.shareCardContainer}>
+                        <Typography component='h2' className={classes.modalTitle}>
+                            Confirm Delete
+                        </Typography>
+                        <Typography component="p">
+                            Do you want to delete { selectedApp ? `${selectedApp.appName}`: ''}?
+                        </Typography>
+                        <Box style={{ textAlign: 'right' }}>
+                            <Button onClick={handleDelete} className={classes.okBtn}>
+                                Ok
+                            </Button>
+                            <Button onClick={handleClose} className={classes.closeBtn}>
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Box>
+                </Fade>
+            </Modal>
+            
+            <SnInfoModal
+                open={showInfoModal}
+                onClose={onInfoModalClose}
+                title={infoModalTitle}
+                content={infoModalContent}
+                showClipboardCopy={infoModalShowCopyToClipboard}
+            />
         </Fragment>
     )
 }

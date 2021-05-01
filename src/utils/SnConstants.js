@@ -118,6 +118,7 @@ export const STORAGE_SELECTED_HOSTED_APP_KEY = "STORAGE_SELECTED_HOSTED_APP_KEY"
 
 
 // Skapp SkyDB DataKeys
+export const DK_INSTALLED_APPS = "installedApps";
 export const DK_PUBLISHED_APPS = "publishedApps";
 export const DK_HOSTED_APPS = "hostedApps";
 
@@ -140,6 +141,8 @@ export const EVENT_APP_FAVORITE = "6";
 export const EVENT_APP_FAVORITE_REMOVED = "7";
 export const EVENT_APP_COMMENT = "8";
 export const EVENT_APP_COMMENT_REMOVED = "9";
+export const EVENT_APP_INSTALLED = "10";
+export const EVENT_APP_UNINSTALLED = "11";
 
 // export const EVENT_APP_LIKED_REMOVED =  'appLikedRemoved';
 // export const EVENT_APP_FAVORITE_MARKED =  'FavoriteMarked';
