@@ -1,5 +1,5 @@
 import { Box, Button, Grid, InputBase } from '@material-ui/core'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -9,12 +9,6 @@ import useWindowDimensions from '../../hooks/useWindowDimensions'
 
 import AppCard from './AppCard'
 import styles from "../../assets/jss/apps/AppListStyle"
-import { getMyInstalledApps, installApp } from '../../service/SnSkappService'
-import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
-import { useDispatch, useSelector } from 'react-redux';
-import AppsList from "./AppsList";
-import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
-import NoApp from '../NoApps/NoApps';
 
 const useStyles = makeStyles(theme => (
     {
@@ -154,98 +148,93 @@ function InstalledApps() {
     // temp var for selected page
     // const selectedPage = true
 
-    const { width } = useWindowDimensions();
-    const classes = useStyles();
-    const dispatch = useDispatch();
+    const { width } = useWindowDimensions()
+    const classes = useStyles()
 
-    const [installedAppListObj, setInstalledAppListObj] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    // const [searchStr, setSearchStr] = useState("");
-
-    const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
-    useEffect(() => {
-        setIsLoading(true);
-        dispatch(getMyInstalledAppsAction());
-        setIsLoading(false);
-    }, []);
-
-    const handleInstall = async (item, key) => {
-        if (key == "install") {
-            dispatch(installedAppAction(item));
-        } else {
-            dispatch(unInstalledAppAction(item.id));
-        }
-    }
 
     return (
-        <Fragment>
-            {
-                !isLoading && installedAppsStore.length > 0 ?
-                    <Fragment>
-                        <Box display="flex" className='second-nav' alignItems="center">
-                            <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                                <h1 className={classes.pageHeading}>Apps</h1>
-                                <small className={classes.smallText}>{installedAppsStore.length} Results</small>
-                            </Box>
-                            {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
-                                <Box>
-                                    <div className={classes.searchIcon}>
-                                        <SearchIcon />
-                                    </div>
-                                </Box>
-                                <InputBase
-                                    placeholder="Search Apps"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </div>}
-                            <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-
-                                {/* <Box className={classes.btnSecondNavContainer}>
-                                    <Button className={classes.btnSecondNav} style={{ color: '#000' }}> All (50)</Button>
-                                </Box>
-                                <Box className={classes.btnSecondNavContainer}>
-                                    <Button className={classes.btnSecondNav} > Programms (12)</Button>
-                                </Box>
-                                <Box className={classes.btnSecondNavContainer}>
-                                    <Button className={classes.btnSecondNav}>Utilities (25)</Button>
-                                </Box> */}
-                                {width > 1249 && <div className={classes.search}>
-                                    <Box>
-                                        <div className={classes.searchIcon}>
-                                            <SearchIcon />
-                                        </div>
-                                    </Box>
-                                    <InputBase
-                                        placeholder="Search Apps"
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        inputProps={{ 'aria-label': 'search' }}
-                                    />
-                                </div>}
-                                {/* <Box>
-                                    <ListFilter />
-                                </Box>
-                                <Box>
-                                    <SelectItem />
-                                </Box> */}
-
-                            </Box>
-                        </Box>
-                        {/* When items are selectable */}
-                        {/* {selectedPage && <SelectedAppsHeader />} */}
-
-                        <div className={`${classes.listContain} list-grid-container`}>
-                            <AppsList newData={installedAppsStore} installedApps={installedAppsStore} updated={true} handleInstall={handleInstall} />
+        <Fragment >
+            <Box display="flex" className='second-nav' alignItems="center">
+                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                    <h1 className={classes.pageHeading}>Apps</h1>
+                    <small className={classes.smallText}>120 Results</small>
+                </Box>
+                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                    <Box>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
                         </div>
-                    </Fragment>
-                :   <NoApp />
-            }
+                    </Box>
+                    <InputBase
+                        placeholder="Search Apps"
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                    />
+                </div>}
+                <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
+
+                    <Box className={classes.btnSecondNavContainer}>
+                        <Button className={classes.btnSecondNav} style={{ color: '#000' }}> All (50)</Button>
+                    </Box>
+                    <Box className={classes.btnSecondNavContainer}>
+                        <Button className={classes.btnSecondNav} > Programms (12)</Button>
+                    </Box>
+                    <Box className={classes.btnSecondNavContainer}>
+                        <Button className={classes.btnSecondNav}>Utilities (25)</Button>
+                    </Box>
+                    {width > 1249 && <div className={classes.search}>
+                        <Box>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                        </Box>
+                        <InputBase
+                            placeholder="Search Apps"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </div>}
+                    <Box>
+                        <ListFilter />
+                    </Box>
+                    <Box>
+                        <SelectItem />
+                    </Box>
+
+                </Box>
+            </Box>
+            {/* When items are selectable */}
+            {/* {selectedPage && <SelectedAppsHeader />} */}
+
+            <div className={`${classes.listContain} list-grid-container`}>
+                <Grid container spacing={1}>
+                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+                        <AppCard selectable={true} updated={true} />
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+                        <AppCard selectable={true} updated={false} />
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+                        <AppCard updated={true} />
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+                        <AppCard updated={true} />
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+                        <AppCard selectable={true} updated={false} />
+                    </Grid>
+
+                </Grid>
+            </div>
+            {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
+                <CustomPagination />
+            </Box> */}
         </Fragment>
     )
 }

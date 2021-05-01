@@ -179,18 +179,6 @@ export const HISTORY_DATA = [
   },
 ]
 
-export const createDummyUserProfileObject = () => (
-  {
-    $schema: "v1/profile.schema.json",
-    username: "TestUSer",
-    userID:"",
-    aboutMe: "Lorem ipsum dolor sit amet.",
-    location: "Somewhere on earth",
-    social: [{"twitter" : { handle: "@abc"}}, {"github" : { handle: "@dev1"}}, {"facebook" : {link: "https://fb.com/user1"}} ],
-    tags: [{tag: "dating", permission: "hidden"},{tag: "dev", permission: "discoverable"}],
-    avatar : [{"ext": "png","w": 128, "h": 128, "url": "sia://IADUs8d9CQjUO34LmdaaNPK_STuZo24rpKVfYW3wPPM2uQ"},{"ext": "jpeg","w": 512,"h": 512,"url": "sia://IADUs8d9CQjUO34LmdaaNPK_STuZo24rpKVfYW3wPPM2uQ"}]
-  })
-  
 
 export const getEmptySkylinkObject = () => ({
   version: "v1",
