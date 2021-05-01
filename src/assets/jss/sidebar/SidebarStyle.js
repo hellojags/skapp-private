@@ -11,7 +11,6 @@ const sideabrStyle = theme => (
             alignItems: 'center',
         },
         sidebar: {
-            // backgroundColor: '#fff',
             backgroundColor: '#fff',
             boxShadow: ' 0px 1px 4px #15223214',
             maxWidth: '250px',
