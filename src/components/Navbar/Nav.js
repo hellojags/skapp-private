@@ -7,7 +7,6 @@ import Navbar from './Navbar'
 const Nav = () => {
     let location = useLocation()
     let userSession = useSelector((state) => state.userSession)
-
     const navbar = (!userSession || location.pathname === '/login') ? <LandingPageNavbar /> : <Navbar />
     return (
         <div>

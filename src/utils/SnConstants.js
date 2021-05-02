@@ -8,9 +8,9 @@ export const STORAGE_USER_KEY = "USER"
 export const STORAGE_SKYSPACE_LIST_KEY = "SKYSPACELIST"
 export const STORAGE_USER_SETTING_KEY = "USER_SETTING"
 export const STORAGE_USER_APP_PROFILE_KEY = "USER_APP_PROFILE"
-export const STORAGE_USER_MASTER_PROFILE_KEY = "USER_MASTER_PROFILE"
+export const STORAGE_USER_PREFERENCES_KEY = "USER_PREFERENCES"
 export const STORAGE_PORTALS_LIST_KEY = "PORTALS_LIST"
-export const STORAGE_USER_SESSION_KEY = "USER_SESSION"
+//export const STORAGE_USER_SESSION_KEY = "USER_SESSION"
 export const STORAGE_DARK_MODE_KEY = "darkMode"
 export const BROWSER_STORAGE = localStorage
 export const BLOCKSTACK_CORE_NAMES = "https://core.blockstack.org/v1/names"
@@ -121,6 +121,9 @@ export const STORAGE_SELECTED_HOSTED_APP_KEY = "STORAGE_SELECTED_HOSTED_APP_KEY"
 export const DK_INSTALLED_APPS = "installedApps";
 export const DK_PUBLISHED_APPS = "publishedApps";
 export const DK_HOSTED_APPS = "hostedApps";
+
+export const DK_AGGREGATED_PUBLISHED_APPS = "aggregatedPublishedApps";
+export const DK_AGGREGATED_PUBLISHED_APPS_STATS = "aggregatedPublishedAppsStats";
 
 //Stats Action Type
 // export const VIEW_COUNT = "view";

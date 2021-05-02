@@ -126,7 +126,7 @@ export default function AddNewSite() {
         dispatch(setLoaderDisplay(true));
         await setMyHostedApp(values);
         dispatch(setLoaderDisplay(false));
-        const hnsSkyDBURL = getHNSSkyDBURL(values.hns);
+        const hnsSkyDBURL = await getHNSSkyDBURL(values.hns);
         setInfoModalParams({
             title: `HNS SkyDB URL`,
             content: hnsSkyDBURL,

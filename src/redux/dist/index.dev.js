@@ -34,8 +34,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 // import SnPerson from "./sn.person.reducer"
 // import SnUserProfile from "./sn.userprofile.reducer"
 // import { snUserProfileEpic } from "./sn.userprofile.epic"
-// import SnUserMasterProfile from "./sn.usermasterprofile.reducer"
-// import { snUserMasterProfileEpic } from "./sn.usermasterprofile.epic"
+// import SnUserPreferences from "./sn.usermasterprofile.reducer"
+// import { snUserPreferencesEpic } from "./sn.usermasterprofile.epic"
 // import SnMyFollowers from "./sn.myFollowers.reducer"
 // import { snMyFollowersEpic } from "./sn.myFollowers.epic"
 // import SnMyFollowings from "./sn.myFollowings.reducer"
@@ -50,7 +50,7 @@ var rootReducer = (0, _redux.combineReducers)({
   userSession: _SnUserSessionReducer["default"],
   // person: SnPerson,
   // snUserProfile: SnUserProfile,
-  // snUserMasterProfile: SnUserMasterProfile,
+  // snUserPreferences: SnUserPreferences,
   // snMyFollowers: SnMyFollowers,
   // snMyFollowings: SnMyFollowings,
   snUploadListStore: _SnUploadListReducer["default"],
@@ -62,7 +62,7 @@ var rootReducer = (0, _redux.combineReducers)({
 var rootEpic = (0, _reduxObservable.combineEpics)(_SnAppStatsEpic.snSetAppStatsEpic, _SnAppStatsEpic.snGetAppStatsEpic, _SnPublishAppEpic.snGetPublishedAppsEpic, _SnPublishAppEpic.snSetPublishAppEpic, _SnPublishAppEpic.snGetAppCommentsEpic, _SnPublishAppEpic.snSetAppCommentEpic // snPersonEpic,
 // logoutPersonEpic,
 // snUserProfileEpic,
-// snUserMasterProfileEpic,
+// snUserPreferencesEpic,
 // snMyFollowersEpic,
 // snMyFollowingsEpic
 );

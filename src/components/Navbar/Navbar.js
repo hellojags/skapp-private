@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
+import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -31,14 +31,18 @@ import Sidebar from '../Sidebar/Sidebar'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
 import { clearAllfromIDB, IDB_STORE_SKAPP } from "../../service/SnIndexedDB"
- import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../../utils/SnConstants"
- import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
+import { BROWSER_STORAGE } from "../../utils/SnConstants"
+import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
 import { useHistory } from "react-router-dom"
+import { getProfile, getPreferences } from '../../service/SnSkappService';
+import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
+import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: '#2A2C34',
+        backgroundColor: '#fff',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
+
     },
     toolBarRoot: {
         justifyContent: 'space-between',
@@ -93,14 +97,12 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#fff',
-        background: '#fff',
+        color: '#B4C6CC'
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
-        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -126,6 +128,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     usrIcon: {
+
         width: '28px',
         height: '28px',
         minWidth: 'auto',
@@ -138,7 +141,6 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: "1rem",
         textTransform: 'capitalize',
         maxWidth: 110,
-        color: '#fff'
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -192,14 +194,39 @@ export default function Navbar() {
 
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-    const stUserSession = useSelector((state) => state.userSession)
+    const userSession = useSelector((state) => state.userSession)
+    // alert("NAV--userSession"+userSession);
+    // alert("NAV--userSession:userID"+userSession?.userID);
+    // alert("NAV--userSession:mysky"+userSession?.mySky);
+    // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
+    const [person, setPerson] = useState({ username: "MySky User" })
 
-    const [person, setPerson] = useState({username:"hardcoded"})
-    const user = useSelector(state => state.userSession)
-    // useEffect(() => {
-    //     setPerson(user?.person?.profile)
-    // }, [setPerson, user])
-    console.log(person)
+    const userProfile = useSelector((state) => state.snUserProfile)
+    const userPreferences = useSelector((state) => state.snUserPreferences)
+    useEffect(() => {
+        setPerson({ username: userProfile?.username })
+    }, [userProfile]);
+
+    useEffect(() => {
+        const reloadReduxState = async () => {
+            if (userSession?.mySky != null) {
+                console.log("#### On Refresh : Reload Redux State ####");
+                if (!userProfile) {
+                    console.log("#### On Refresh : Reload Redux State #### [userProfile]");
+                    const userProfile = await getProfile();
+                    setPerson({ username: userProfile?.username })
+                    dispatch(setUserProfileAction(userProfile));
+                }
+                if (!userPreferences) {
+                    console.log("#### On Refresh : Reload Redux State #### [userPrefrences]");
+                    const userPrefrences = await getPreferences();
+                    dispatch(setUserPreferencesAction(userPrefrences));
+                }
+            }
+        }
+        reloadReduxState();
+    }, []);
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -215,27 +242,33 @@ export default function Navbar() {
     const handleSettings = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
-        if (stUserSession != null) {
-            history.push('/settings')
+        if (userSession != null) {
+            history.push('/usersettings')
         }
     }
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
+
+
     const handleMySkyLogout = async () => {
-        alert("logout")
         try {
             dispatch(setLoaderDisplay(true));
-            console.log("handleMySkyLogout: stUserSession.mySky = " + stUserSession.mySky);
-            await stUserSession.mySky.logout();
-            clearAllfromIDB({ store: IDB_STORE_SKAPP });
-            console.log("### 1");
+            if (userSession?.mySky) {
+                try {
+                    await userSession.mySky.logout();
+                }
+                catch (e) {
+                    console.log("Error during logout process." + e)
+                }
+            }
+            await clearAllfromIDB({ store: IDB_STORE_SKAPP });
             BROWSER_STORAGE.clear();
-            console.log("### 2");
-            dispatch(setUserSession(null));
+            await dispatch(setUserSession(null));
             dispatch(setLoaderDisplay(false));
             window.location.href = window.location.origin
+
         } catch (e) {
             console.log("Error during logout process." + e)
             dispatch(setLoaderDisplay(false))
@@ -340,7 +373,7 @@ export default function Navbar() {
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo1 />
+                        <Logo />
                     </div>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
