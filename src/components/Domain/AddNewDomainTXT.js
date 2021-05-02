@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
     modalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#333333',
+        // color: '#333333',
+        color: '#fff',
         borderBottom: '1px solid #70707085',
         padding: '1.3rem',
         '@media only screen and (max-width: 1440px)': {
@@ -28,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         opacity: 1,
         '&, &:focus': {
-            background: '#fff',
+            // background: '#fff',
+            background: '#1E2029',
             border: 0,
             outline: 0,
 
@@ -43,11 +45,14 @@ const useStyles = makeStyles((theme) => ({
             flex: 1,
             height: 60,
             fontSize: 21,
+            color: '#fff',
+            background: '#1E2029',
             '@media only screen and (max-width: 575px)': {
                 flex: '100%',
                 marginBottom: 8, borderRadius: 10
             },
-            border: '1px solid #D9E1EC',
+            // border: '1px solid #D9E1EC',
+            border: '1px solid #48494E',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -133,7 +138,8 @@ const useStyles = makeStyles((theme) => ({
 
     },
     subheading: {
-        color: '#333333',
+        // color: '#333333',
+        color: '#fff',
         fontSize: 24,
         fontWeight: 'bold',
         marginTop: '1rem',
@@ -150,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
     checkBox: {
         marginTop: 10,
         marginBottom: 10,
-
+        color: '#fff',
         '& span': {
             color: '#5A607F',
             '@media only screen and (max-width: 575px)': {
@@ -164,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
             // fontSize: 18,
             // height: 50
         }
-    }
+    },
 }))
 const AddNewDomainTXT = () => {
     const classes = useStyles()
