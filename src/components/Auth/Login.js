@@ -2,8 +2,8 @@ import { Button, makeStyles } from '@material-ui/core'
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Link, Typography } from '@material-ui/core';
-import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
-import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoGray.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
+import { ReactComponent as SiteLogoWhite } from '../../assets/img/icons/siteLogoWhite.svg'
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
@@ -46,14 +46,15 @@ const useStyles = makeStyles({
         display: 'flex',
         height: '100%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     poweredBy: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         '& span': {
-            color: '#4E4E4E'
+            color: '#fff'
         },
         marginTop: '2.5rem',
         marginBottom: '3.5rem'
@@ -126,14 +127,14 @@ const Login = () => {
     }
     return (
         <div className={classes.loginFormContainer}>
-            <form className="login-form">
+            <form className='login-form'>
                 <div>
-                    <Logo />
+                    <Logo1 />
                     <h3>Sign In to Skapp</h3>
                     <Button onClick={handleLogin}> Login using MySky
                     </Button>
                     <div className={classes.poweredBy}>
-                        <span>Powered by </span><SiteLogoGray />
+                        <span>Powered by </span><SiteLogoWhite />
                     </div>
                 </div>
             </form>

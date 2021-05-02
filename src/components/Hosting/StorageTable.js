@@ -55,6 +55,9 @@ const useStyles = makeStyles({
             borderCollapse: 'separate',
             borderSpacing: '0 8px'
         },
+        /* 'tr.MuiTableRow-root': {
+            background: '#2A2C34!important'
+        }, */
         '& tbody tr td,& tbody tr th': {
             background: '#fff'
         },

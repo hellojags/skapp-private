@@ -15,7 +15,7 @@ const errorPageStyle = {
     },
     h1: {
         fontSize: 82,
-        color: '#242F57',
+        color: '#fff',
         marginTop: '-80px',
         '@media only screen and (max-width: 1440px)': {
             marginTop: '-90px',

@@ -1,7 +1,8 @@
 const sideabrStyle = theme => (
     {
         root: {
-            padding: 0
+            padding: 0,
+            background: '#2A2C34!important',
         },
         nested: {
             paddingLeft: theme.spacing(4),
@@ -11,7 +12,7 @@ const sideabrStyle = theme => (
             alignItems: 'center',
         },
         sidebar: {
-            backgroundColor: '#fff',
+            backgroundColor: '#2A2C34',
             boxShadow: ' 0px 1px 4px #15223214',
             maxWidth: '250px',
             padding: '1rem',
@@ -23,10 +24,16 @@ const sideabrStyle = theme => (
             }
         },
         listIcon: {
-            minWidth: '40px'
+            minWidth: '40px',
+
+            '&:hover': {
+                color: '#fff',
+                background: '#1DBF73'
+            }
         },
         dropArrow: {
-            color: '#323232'
+            // color: '#323232'
+            color: '#fff'
         },
         promoCard: {
             background: '#1DBF73',

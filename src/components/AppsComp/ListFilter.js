@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
         color: '#323232'
     },
     utilBtn: {
-        background: '#fff',
+        background: '#2A2C34',
         textTransform: 'none',
         minWidth: '175px',
         display: 'flex',
@@ -23,7 +23,8 @@ const useStyles = makeStyles(theme => ({
         boxShadow: '0px 1px 2px #15223214',
         border: '1px solid #7070701A;',
         '&:hover': {
-            background: '#fff'
+            background: '#1DBF73',
+            color: '#fff'
         },
         '@media only screen and (max-width: 1249px)': {
             marginLeft: '1rem'
@@ -31,6 +32,7 @@ const useStyles = makeStyles(theme => ({
     },
     textColor: {
         color: '#7E84A3'
+        // color: '#fff'
     },
     popper: {
         zIndex: 9
