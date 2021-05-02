@@ -31,19 +31,19 @@ let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 //       privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
 //   };
 // }
+
 export function getProviderKeysByType(keyType) {
   let keys = { privateKey: null, publicKey: null };
   switch (keyType) {
     case "GEQ":
       keys = {
-        publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
-        privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
+        publicKey:"c570f61ef7482622addcdd6cfe1c00a3b08a31d7fa9ba172515cace63570042a",
+        privateKey: "57dde68330fbcf3799964d8af7dc78229856d6038e83efdf547a937f8e14c0e4c570f61ef7482622addcdd6cfe1c00a3b08a31d7fa9ba172515cace63570042a"
       };
       break;
     case "AGGREGATOR":
       keys = {
-        publicKey: "315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c",
-        privateKey: "397c17d094da41d641bec5d7c6f255c27485d784d7aaa91bad6c3bc5ebce9bff315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c"
+        publicKey:  "96682842f92cb14f257e023e812178ca4304bf963c3758929966746154f59539"
       };
       break;
     default:

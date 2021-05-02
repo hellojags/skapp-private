@@ -243,7 +243,7 @@ export default function Navbar() {
         setAnchorEl(null)
         handleMobileMenuClose()
         if (userSession != null) {
-            history.push('/settings')
+            history.push('/usersettings')
         }
     }
 

@@ -81,7 +81,7 @@ const SnRouter = (props) => (
             <Route exact path='/storagegateway'>
                 <StorageGateway />
             </Route>
-            <Route exact path='/settings'>
+            <Route exact path='/usersettings'>
                 <Settings />
             </Route>
             <Route exact path='/deploysite/:appId?'>

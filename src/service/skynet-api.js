@@ -12,7 +12,7 @@ import store from "../redux"
 import { setUserSession } from "../redux/action-reducers-epic/SnUserSessionAction"
 
 const client = new SkynetClient("https://siasky.net/");
-//const hostApp = "skapp.hns";
+//const hostApp = "awesomeskynet.hns";
 const hostApp = "localhost";
 
 
@@ -23,6 +23,7 @@ export const initMySky = async () => {
     try {
         // Initialize MySky.
         const mySky = await client.loadMySky(hostApp, { dev: true, debug: true });
+        //const mySky = await client.loadMySky(hostApp);
         const contentDAC = new ContentRecordDAC();
         const userProfileDAC = new UserProfileDAC();
         const feedDAC = new FeedDAC();
@@ -178,7 +179,7 @@ export const putFile_MySky = async (dataKey, content, options) => {
         // get previous skylink 
         // create linked list to track history
         if (options?.historyflag == true) {
-            content.prevSkylink = getFile_MySky(dataKey)?.skylink ?? null;
+            content.prevSkylink = getFile_MySky(dataKey)?.dataLink ?? null;
         }
         // set new data in SkyDB with
         let status = false

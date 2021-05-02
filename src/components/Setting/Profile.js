@@ -284,7 +284,7 @@ const Profile = () => {
             // formikObj.telegram[0] = profile?.connections?.telegram ?? "";
             formikObj.topicsHidden[0] = profile?.topicsHidden;
             formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
-            if (profile?.avatar[0].url) {
+            if (profile?.avatar[0]?.url) {
                 formikObj.avatar = profile.avatar;
             }
             setFormikObj(formikObj)

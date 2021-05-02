@@ -67,7 +67,6 @@ const Login = () => {
 
     const [userID, setUserID] = useState();
     // choose a data domain for saving files in MySky
-    const dataDomain = 'localhost';
     const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
 
     useEffect(() => {
