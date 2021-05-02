@@ -1,7 +1,7 @@
 import { Box, Button, InputBase } from '@material-ui/core'
 import React, { Fragment, useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
-// import SearchIcon from '@material-ui/icons/Search'
+import SearchIcon from '@material-ui/icons/Search'
 // import UtilitiesItem from './UtilitiesItem'
 import ListFilter from './ListFilter'
 import SelectItem from './SelectItem'
@@ -23,11 +23,11 @@ import SlickPrevArrow from '../slickarrows/SlickPrevArrow'
 import Footer from '../Footer/Footer'
 import { getAllPublishedAppsAction } from "../../redux/action-reducers-epic/SnAllPublishAppAction";
 import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction, installedAppActionForLogin } from "../../redux/action-reducers-epic/SnInstalledAppAction";
+import {getAggregatedAppStatsAction} from "../../redux/action-reducers-epic/SnAggregatedAppStatsAction"
 
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Fuse from 'fuse.js'
-import searchIcon from '../../assets/img/icons/search.svg'
 import styles from "../../assets/jss/apps/AppListStyle"
 // import classes from '*.module.css'
 // import InfiniteScroll from 'react-infinite-scroll-component'
@@ -50,8 +50,7 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #7070701A;',
-            border: '1px solid #2A2C34;',
+            border: '1px solid #7070701A;',
             // hieght: '41px',
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -67,12 +66,10 @@ const useStyles = makeStyles(theme => (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            // color: '#B4C6CC',
-            color: '#2A2C34'
+            color: '#B4C6CC'
         },
         inputRoot: {
             color: 'inherit',
-            background: '#2A2C34',
         },
         inputInput: {
             // padding: theme.spacing(1, 1, 1, 0),
@@ -97,8 +94,7 @@ const useStyles = makeStyles(theme => (
         },
 
         pageHeading: {
-            // color: '#131523',
-            color: '#fff',
+            color: '#131523',
             fontSize: '28px',
         },
         smallText: {
@@ -188,12 +184,14 @@ function AppStore() {
         // console.log("came here");
         //await dispatch(getAllPublishedAppsAction());
         await dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
+        await dispatch(getAggregatedAppStatsAction()) // I can do pagination here
         setSearchData(publishedAppsStore)
         await dispatch(getMyInstalledAppsAction());
         if (installedAppsStoreForLogin) {
             await dispatch(installedAppAction(installedAppsStoreForLogin));
         }
     }, []);
+
     useEffect(() => {
 
         setSearchData(publishedAppsStore)
@@ -351,7 +349,7 @@ function AppStore() {
     }
     let categories = []
     publishedAppsStore.filter(item => categories.push(item.content.category))
-    console.log("cates", categories)
+    //console.log("cates", categories)
     let catWithCount = categories.reduce(function (obj, b) {
         obj[b] = ++obj[b] || 1
         return obj
@@ -377,7 +375,7 @@ function AppStore() {
     }, [sliderRef])
     // console.log(sliderRef.current.clientWidth, sliderRef.current.scrollWidth)
     let showSlides = width > 1600 ? 1600 / 140 : width / 140
-    console.log("slided to show " + showSlides + "Width " + width)
+    //console.log("slided to show " + showSlides + "Width " + width)
     let slicky = 133 * catWithCount.length <= sliderContainerWidth ? 'unslick' : 'slick'
     var settings = {
         dots: false,
@@ -413,8 +411,7 @@ function AppStore() {
                 {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
-                            {/* <SearchIcon /> */}
-                            <searchIcon />
+                            <SearchIcon />
                         </div>
                     </Box>
                     <InputBase
@@ -436,8 +433,7 @@ function AppStore() {
                     {width > 1049 && <div className={classes.search}>
                         <Box>
                             <div className={classes.searchIcon}>
-                                {/* <SearchIcon /> */}
-                                <searchIcon />
+                                <SearchIcon />
                             </div>
                         </Box>
                         <InputBase

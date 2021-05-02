@@ -1,12 +1,27 @@
 
-import React from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
-import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core'
-import { ReactComponent as ImgIcon } from '../../assets/img/icons/imgPlace.svg'
+import { Box, Button, makeStyles, Typography, Snackbar } from '@material-ui/core';
+import Alert from "@material-ui/lab/Alert";
+import { Formik } from 'formik';
+import { SnTextInput, SnTextInputTag, SnTextArea, SnInputWithIcon } from '../Utils/SnFormikControlls';
+import SnUpload from '../../uploadUtil/SnUpload';
+import { UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
+
+import * as Yup from 'yup';
+import { Add, Search, GitHub, Facebook, Reddit, Twitter, Telegram } from '@material-ui/icons';
+import { skylinkToUrl } from "../../utils/SnUtility";
+import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
+import { useHistory } from 'react-router-dom';
+import { getProfile, setProfile } from '../../service/SnSkappService';
+import { setUserProfileAction } from "../../redux/action-reducers-epic/SnUserProfileAction"
+import Loader from "react-loader-spinner";
+
 const useStyles = makeStyles((theme) => ({
     ProfileRoot: {
-        // backgroundColor: '#fff',
-        backgroundColor: '#12141D',
+        backgroundColor: '#fff',
         boxShadow: '0px 2px 5px #15223214',
         borderRadius: 6,
         padding: '50px 30px',
@@ -14,8 +29,7 @@ const useStyles = makeStyles((theme) => ({
             padding: '20px 10px',
         },
         '& h2': {
-            // color: '#242F57',
-            color: '#fff',
+            color: '#242F57',
             marginBottom: '1rem',
             '@media only screen and (max-width: 575px)': {
                 fontSize: 22,
@@ -23,18 +37,66 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     textInfo: {
-        color: '#fff',
-        opacity: '0.6',
+        color: '#000',
         fontSize: 14,
         '@media only screen and (max-width: 575px)': {
             fontSize: 13,
         },
     },
+    submitBtn: {
+        background: '#1DBF73!important',
+        color: '#fff',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+        display: 'inlin-flex',
+        alignItems: 'center',
+        float: 'right',
+        minWidth: 130,
+        '& svg': {
+            fontSize: '19px',
+            marginRight: '5px'
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: '12px',
+
+            paddingLeft: '.5rem',
+            paddingRight: '.5rem',
+            minWidth: 70,
+        }
+    },
+    siteLogo: {
+        background: '#fff',
+        cursor: 'pointer',
+        height: 150,
+        width: 150,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: '50%',
+        marginBottom: 10,
+        marginTop: 10,
+        '@media only screen and (max-width: 575px)': {
+            width: 75,
+            height: 75,
+            // maxWidth: 340,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        }
+    },
+    label: {
+        display: 'block',
+        color: '#5A607F',
+        marginBottom: 8,
+        fontSize: 18,
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 16,
+        }
+    },
     profilePlaceholder: {
-        width: 100,
-        height: 100,
-        // background: '#EFF5F7',
-        background: '#12141D',
+        width: 150,
+        height: 150,
+        background: '#EFF5F7',
         display: 'flex',
         borderRadius: '50%',
         justifyContent: 'center',
@@ -45,7 +107,6 @@ const useStyles = makeStyles((theme) => ({
             // marginTop: '2.9rem',
             color: '#B4C6CC'
         },
-        marginRight: '1.2rem',
         '@media only screen and (max-width: 575px)': {
             width: 75,
             height: 75,
@@ -57,8 +118,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     btnUpload: {
-        // backgroundColor: '#869EA6!important',
-        backgroundColor: '#12141D!important',
+        backgroundColor: '#869EA6!important',
         color: '#fff',
         fontSize: 14,
         minWidth: 150,
@@ -72,9 +132,7 @@ const useStyles = makeStyles((theme) => ({
     },
     textHelper: {
         fontSize: 13,
-        // color: '#5C757D',
-        color: '#fff',
-        opacity: '0.6',
+        color: '#5C757D',
         marginTop: 5,
         '@media only screen and (max-width: 575px)': {
             fontSize: 12,
@@ -84,8 +142,6 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 20
     },
     label: {
-        color: '#fff',
-        opacity: '0.6',
         display: 'block',
         marginTop: 10,
         marginBottom: 8,
@@ -96,24 +152,58 @@ const useStyles = makeStyles((theme) => ({
             marginBottom: 5,
         },
     },
-    input: {
-        // border: '1px solid #E4EDF0',
-        border: '1px solid #48494E',
-        background: '#1E2029',
-        color: '#fff',
-        borderRadius: 8,
-        height: 45,
-        padding: 10,
-        fontSize: 14,
-        width: '100%',
+    inputGuide: {
+        color: '#5C757D',
         '@media only screen and (max-width: 575px)': {
             fontSize: 12,
-            height: 40
-        },
-        '&:focus': {
-            outline: 'none',
-            border: '1px solid #1DBF73',
         }
+    },
+    input: {
+        background: '#fff',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 20,
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 15,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+
+    },
+    inputContainer: {
+        '& > label': {
+            display: 'block',
+            color: '#5A607F',
+            marginBottom: 7
+        },
+        '& input:focus, & select:focus': {
+            outline: 'none!important',
+            border: '1px solid #1DBF73'
+        },
+        marginTop: '25px',
+        '&': {
+            marginRight: '1rem'
+        },
+        '& input, & input': {
+            fontSize: 18
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '16px',
+            marginRight: '10px'
+
+
+        },
+
     },
     firstInput: {
         marginTop: 5,
@@ -122,61 +212,296 @@ const useStyles = makeStyles((theme) => ({
         },
     }
 }))
-const Profile = () => {
-    const classes = useStyles()
-    return (
-        <div className={classes.ProfileRoot}>
-            <h2>Account</h2>
-            <Typography className={classes.textInfo}>
-                This information can be edited from your profile page.
-            </Typography>
+const initailValueFormikObj = {
+        username: ['', Yup.string().required('This field is required')],
+        emailID: [''],
+        firstName: [''],
+        lastName: [''],
+        contact: [''],
+        aboutMe: [''],
+        location: [''],
+        topicsHidden: [[]],
+        topicsDiscoverable: [[]],
+        avatar: [{}],
+        facebook: [''],
+        twitter: [''],
+        github: [''],
+        reddit: [''],
+        telegram: [''],
 
-            <form className={classes.form}>
-                <Box display="flex" alignItems="center" className={classes.firstInput}>
-                    <div className={classes.profilePlaceholder}>
-                        {/* <img src={} alt="" /> */}
-                        <PersonOutlineIcon className={classes.avatarIcon} />
-                    </div>
-                    <div>
-                        <Button className={classes.btnUpload}>
-                            <ImgIcon />
-                            Upload Image
-                        </Button>
-                        <div className={classes.textHelper}>Max. size of 8 MB in: JPG or PNG.</div>
-                    </div>
-                </Box>
-                <Grid container className={classes.ContainerRoot} spacing={2}>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>First Name</label>
-                        <input className={classes.input} type="text" placeholder="Enter first name" value="Fernando" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>Last Name</label>
-                        <input className={classes.input} type="text" placeholder="Enter list name" value="Cabral" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>Email</label>
-                        <input className={classes.input} type="email" required placeholder="Enter email address" value="email@emial.com" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>Phone Number</label>
-                        <input className={classes.input} type="text" placeholder="Enter number" value="+92 00000000" />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12}  >
-                        <label htmlFor="firstName" className={classes.label}>Short description</label>
-                        <input className={classes.input} type="text" placeholder="Enter Short description" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>Twitter</label>
-                        <input className={classes.input} type="text" placeholder="Enter Twitter profile link" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}  >
-                        <label htmlFor="firstName" className={classes.label}>GitHub</label>
-                        <input className={classes.input} type="text" placeholder="Enter GitHub profile link" />
-                    </Grid>
-                    <input type="submit" hidden />
-                </Grid>
-            </form>
+    };
+const Profile = () => {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isError, setIsError] = useState(false);
+
+    const [formikObj, setFormikObj] = useState(initailValueFormikObj);
+
+    const classes = useStyles()
+    let history = useHistory();
+    const dispatch = useDispatch();
+    const imgUploadEleRef = createRef();
+    const [isLogoUploaded, setIsLogoUploaded] = useState(false);
+    const userProfile = useSelector((state) => state.snUserProfile);
+    
+    const handleDropZoneClick = (evt, dropZoneRef) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        dropZoneRef.current.gridRef.current.click();
+    };
+    
+    const handleImgUpload = (obj, formik) => {
+        formik.setFieldValue("avatar", { url: `sia:${obj.thumbnail}` }, true);
+        setIsLogoUploaded(false);
+    };
+    useEffect(() => {
+            setProfileFormicObj(userProfile);
+    });
+
+    useEffect(() => {
+        setProfileFormicObj(userProfile);
+    }, [userProfile]);
+
+    const setProfileFormicObj = (profile) => {
+        if (profile) {
+            formikObj.username[0] = `${profile?.username}`;
+            formikObj.emailID[0] = `${profile?.emailID}`;
+            formikObj.firstName[0] = `${profile?.firstName}`;
+            formikObj.lastName[0] = `${profile?.lastName}`;
+            formikObj.contact[0] = `${profile?.contact}`;
+            formikObj.location[0] = `${profile?.location}`;
+            formikObj.aboutMe[0] = `${profile?.aboutMe}`;
+            formikObj.facebook[0] = `${profile?.connections?.find(({facebook}) => facebook)?.facebook?? ""}`;
+            formikObj.twitter[0] = `${profile?.connections?.find(({twitter}) => twitter)?.twitter?? ""}`;
+            formikObj.github[0] = `${profile?.connections?.find(({github}) => github)?.github?? ""}`;
+            formikObj.reddit[0] = `${profile?.connections?.find(({reddit}) => reddit)?.reddit?? ""}`;
+            formikObj.telegram[0] = `${profile?.connections?.find(({telegram}) => telegram)?.telegram ?? ""}`;
+            // formikObj.facebook[0] = profile?.connections?.facebook ?? "";
+            // formikObj.twitter[0] = profile?.connections?.twitter ?? "";
+            // formikObj.github[0] = profile?.connections?.github ?? "";
+            // formikObj.reddit[0] = profile?.connections?.reddit ?? "";
+            // formikObj.telegram[0] = profile?.connections?.telegram ?? "";
+            formikObj.topicsHidden[0] = profile?.topicsHidden;
+            formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
+            if (profile?.avatar[0]?.url) {
+                formikObj.avatar = profile.avatar;
+            }
+            setFormikObj(formikObj)
+        }
+    }
+    const submitProfileForm = async (values) => {
+        dispatch(setLoaderDisplay(true));
+        let profileJSON = {
+            username: values.username,
+            emailID: values.emailID,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            contact: values.contact,
+            location: values.location,
+            aboutMe: values.aboutMe,
+            connections: [{ twitter: values.twitter }, { facebook: values.facebook }, { github: values.github }, { reddit: values.reddit }, { telegram: values.telegram }],
+            topicsHidden: values.topicsHidden,
+            topicsDiscoverable: values.topicsDiscoverable,
+            avatar: [values.avatar],
+        }
+        await setProfile(values);
+        dispatch(setUserProfileAction(profileJSON))
+        //await setProfile(profileJSON);
+        setIsSuccess(true);
+        dispatch(setLoaderDisplay(false));
+    };
+
+    return (
+
+        <div className={classes.ProfileRoot}>
+            <Box>
+
+                <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000}>
+                    <Alert severity="success">
+                        Profile Successfully Saved!
+                    </Alert>
+                </Snackbar>
+                <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isError} autoHideDuration={6000}>
+                    <Alert severity="error">
+                        Error Occurred while saving profile!
+                    </Alert>
+                </Snackbar>
+                <Formik
+                    initialValues={getInitValAndValidationSchemaFromSnFormikObj(formikObj).initialValues}
+                    validationSchema={Yup.object(getInitValAndValidationSchemaFromSnFormikObj(formikObj).validationSchema)}
+                    validateOnChange={true}
+                    validateOnBlur={true}
+                    onSubmit={submitProfileForm}>
+                    {formik => (<form onSubmit={formik.handleSubmit}>
+                        <h2>Account  <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save Changes </Button>
+                        </h2>
+                        <Typography className={classes.textInfo}>
+                            This information can be edited from your profile page.
+                        </Typography>
+                        <Box component="form">
+                            <Box>
+                                <div className="d-none">
+                                    <SnUpload
+                                        name="files"
+                                        source={UPLOAD_SOURCE_NEW_HOSTING_IMG}
+                                        ref={imgUploadEleRef}
+                                        directoryMode={false}
+                                        onUpload={(obj) => handleImgUpload(obj, formik)}
+                                        uploadStarted={(e) => setIsLogoUploaded(e)}
+                                    />
+                                </div>
+                                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                    {!isLogoUploaded && Object.keys(formik.values.avatar).length == 0 && <div className={classes.profilePlaceholder}>
+                                        <PersonOutlineIcon className={classes.avatarIcon} />
+                                    </div>}
+                                    {!isLogoUploaded && Object.keys(formik.values.avatar).length > 0 && <img
+                                        alt="app"
+                                        src={skylinkToUrl(formik.values.avatar.url)}
+                                        className={classes.siteLogo}
+                                        onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
+                                        name="1"
+                                    />}
+                                    {isLogoUploaded ? <Loader type="Oval" color="#57C074" height={50} width={50} /> : null}
+                                </div>
+                                <div className={classes.inputGuide}>
+                                    Max. size of 5 MB in: JPG or PNG.
+                                </div>
+                                <input type="text" hidden />
+                            </Box>
+
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label={<span> Username <span style={{ color: 'red' }}>*</span></span>}
+                                        name="username"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label="First Name"
+                                        name="firstName"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label="Last Name"
+                                        name="lastName"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label="Location"
+                                        name="location"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label="Email"
+                                        name="emailID"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInput
+                                        label="Contact"
+                                        name="contact"
+                                        className={classes.input}
+                                        type="text"
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextArea
+                                        label="About me"
+                                        name="aboutMe"
+                                        className={classes.input}
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInputTag
+                                        label="Topics Hidden"
+                                        name="topicsHidden"
+                                        className={classes.input}
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnTextInputTag
+                                        label="Topics Discoverable"
+                                        name="topicsDiscoverable"
+                                        className={classes.input}
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <label>Social Connections</label>
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnInputWithIcon
+                                        icon={<GitHub />}
+                                        label="Github"
+                                        name="github"
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnInputWithIcon
+                                        icon={<Twitter />}
+                                        label="Twitter"
+                                        name="twitter"
+                                        type="text"
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnInputWithIcon
+                                        icon={<Facebook />}
+                                        label="Facebook"
+                                        name="facebook"
+                                        type="text"
+                                    />
+                                </Box>
+                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                    <SnInputWithIcon
+                                        icon={<Reddit />}
+                                        label="Reddit"
+                                        name="reddit"
+                                        type="text"
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display='flex' className={`${classes.formRow} formSiteRow`}>
+                                <Box className={`${classes.inputContainer}`} flex={0.5}>
+                                    <SnInputWithIcon
+                                        icon={<Telegram />}
+                                        label="Telegram"
+                                        name="telegram"
+                                        type="text"
+                                    />
+                                </Box>
+                            </Box>
+                        </Box>
+                    </form>)}
+                </Formik>
+            </Box>
         </div>
     )
 }

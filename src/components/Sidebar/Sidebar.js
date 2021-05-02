@@ -195,7 +195,7 @@ const Sidebar = (props) => {
           aria-labelledby="nested-list-subheader"
           className={classes.root}
         >
-          <NavLink exact to="/settings">
+          <NavLink exact to="/usersettings">
             <ListItem button>
               <ListItemIcon className={classes.listIcon}>
                 <SettingNavLogIcon />

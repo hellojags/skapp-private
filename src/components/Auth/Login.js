@@ -2,15 +2,15 @@ import { Button, makeStyles } from '@material-ui/core'
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Link, Typography } from '@material-ui/core';
-import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
-import { ReactComponent as SiteLogoWhite } from '../../assets/img/icons/siteLogoWhite.svg'
+import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoGray.svg'
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
-import { handleMySkyLogin } from '../../service/skynet-api';
-import { getUserProfile } from '../../service/SnSkappService';
-import { ID_PROVIDER_SKYID } from "../../utils/SnConstants";
-
+import { initMySky } from '../../service/skynet-api';
+import { getProfile, getPreferences } from '../../service/SnSkappService';
+import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
+import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
 import { getMyFollowingsAction } from "../../redux/action-reducers-epic/SnMyFollowingAction"
 import { setUserSession } from "../../redux/action-reducers-epic/SnUserSessionAction"
@@ -46,15 +46,14 @@ const useStyles = makeStyles({
         display: 'flex',
         height: '100%',
         justifyContent: 'center',
-        alignItems: 'center',
-        
+        alignItems: 'center'
     },
     poweredBy: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         '& span': {
-            color: '#fff'
+            color: '#4E4E4E'
         },
         marginTop: '2.5rem',
         marginBottom: '3.5rem'
@@ -64,64 +63,77 @@ const Login = () => {
     const classes = useStyles()
     const dispatch = useDispatch()
     const history = useHistory()
-    const stUserSession = useSelector((state) => state.userSession)
+    const userSession = useSelector((state) => state.userSession)
 
     const [userID, setUserID] = useState();
     // choose a data domain for saving files in MySky
-    const dataDomain = 'localhost';
-
-    useEffect(() => {
-    }, []);
-
     const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
 
     useEffect(() => {
-        console.log("stUserSession=" + stUserSession);
-        if (stUserSession?.mySky != null) {
+        console.log("##### checkActiveLogin :: userSession = " + userSession);
+        if (userSession?.mySky != null) {
             if (installedAppsStoreForLogin) {
                 history.push('/');
             } else {
                 history.push('/apps');
             }
         }
-    }, [stUserSession]);
+    }, [userSession]);
     const handleLogin = async () => {
-        const result = await handleMySkyLogin();
-        setUserID(result.userID);
-        alert("result.userID : " + result.userID)
-        await onMySkySuccess(result.mySky, result.userID);
-        dispatch(setLoaderDisplay(true));
-    }
-    // login - helper functions
-    const onMySkySuccess = async (mySky,userID) => {
+        let result = null;
         try {
-            // create userSession Object
-            let userSession = { idp: ID_PROVIDER_SKYID, mySky};
-            const userProfileObj = await getUserProfile(userID);// dont proceed without pulling profile
-            userSession = { ...userSession, userProfile: userProfileObj };
-            dispatch(setUserSession(userSession));
+            dispatch(setLoaderDisplay(true));
+            //console.log("BEFORE: userSession" + userSession);
+            // if user session and mysky is present and user is already logged in
+            if (userSession != null && userSession?.mySky != null) {
+                const loggedIn = await userSession.mySky.checkLogin();
+                if (!loggedIn) {
+                    await userSession.mySky.requestLoginAccess();
+                }
+                return;
+            }
+            else {
+                result = await initMySky();
+                if (!result.loggedIn) {
+                    await result.userSession.mySky.requestLoginAccess();
+                    let userID = await result.userSession.mySky.userID();
+                    result.userSession.userID = userID;
+                }
+            }
+            //innocent motherly hull focus gnaw elapse custom sipped dazed eden sifting jump lush inkling
+            dispatch(setUserSession(result.userSession));
+            // on success do following
+            //alert("handleLogin: newSession " + result.userSession);
+            //alert("handleLogin: newSession " + result.userSession.userID);
+            const userProfile = await getProfile();
+            dispatch(setUserProfileAction(userProfile));
+            const userPrefrences = await getPreferences();
+            dispatch(setUserPreferencesAction(userPrefrences));
+            //const userProfileObj = await getUserProfile(result.userSession);// dont proceed without pulling profile
+            //newSession = { ...newSession, userProfile: userProfileObj};
+            //alert("AFTER: userSession(old)" + userSession);
+            //history.push('/apps');
             // get userFollowers
-            dispatch(getMyFollowersAction(null));
+            //await dispatch(getMyFollowersAction(null));
             // get userFollowings
-            dispatch(getMyFollowingsAction(null));
-            dispatch(setLoaderDisplay(false));
+            //await dispatch(getMyFollowingsAction(null));
             //window.history.pushState({}, '', '/appdetail')
-        }
-        catch (error) {
-            console.log("Error during login process. login failed");
+            dispatch(setLoaderDisplay(false));
+        } catch (error) {
+            console.log(error);
             dispatch(setLoaderDisplay(false));
         }
     }
     return (
         <div className={classes.loginFormContainer}>
-            <form className='login-form'>
+            <form className="login-form">
                 <div>
-                    <Logo1 />
+                    <Logo />
                     <h3>Sign In to Skapp</h3>
                     <Button onClick={handleLogin}> Login using MySky
                     </Button>
                     <div className={classes.poweredBy}>
-                        <span>Powered by </span><SiteLogoWhite />
+                        <span>Powered by </span><SiteLogoGray />
                     </div>
                 </div>
             </form>

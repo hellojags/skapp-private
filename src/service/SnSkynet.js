@@ -11,7 +11,6 @@ import {
 } from "./SnIndexedDB"
 import { encryptData, decryptData } from "./SnEncryption"
 import { getPortal } from '../utils/SnUtility'
-import { BROWSER_STORAGE, STORAGE_USER_SESSION_KEY } from "../utils/SnConstants"
 /* global BigInt */
 //above comment is required to enable BigInt
 // ################################ SkyDB Methods ######################
@@ -26,35 +25,25 @@ let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // decrypt = true|false
 // contentOnly = true|false  // If true will return onlu content from SkyDB (not revision number)
 // store = IDB_STORE_SKAPP | IDB_STORE_SKYDB_CACHE , IDB_STORE_SKAPP =  loggedin users Key/value. IDB_STORE_SKYDB_CACHE = otehr users key/Value
-export const getUserSession = () => {
-  let session = null;
-  try {
-    session = JSON.parse(BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY))
-  }
-  catch (e) {
-    return session
-  }
-  return session
-}
 // export function getSkappKeys() {
 //   return {
 //       publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
 //       privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
 //   };
 // }
+
 export function getProviderKeysByType(keyType) {
   let keys = { privateKey: null, publicKey: null };
   switch (keyType) {
     case "GEQ":
       keys = {
-        publicKey: "01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a",
-        privateKey: "b1d00ff5070ad41ee67b518cc1220caeac0da5e0e2f276cc65a0a9c9549f867b01846241b88a741741445d982eff80092b105795349fa071715f451e9101ca4a"
+        publicKey:"c570f61ef7482622addcdd6cfe1c00a3b08a31d7fa9ba172515cace63570042a",
+        privateKey: "57dde68330fbcf3799964d8af7dc78229856d6038e83efdf547a937f8e14c0e4c570f61ef7482622addcdd6cfe1c00a3b08a31d7fa9ba172515cace63570042a"
       };
       break;
     case "AGGREGATOR":
       keys = {
-        publicKey: "315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c",
-        privateKey: "397c17d094da41d641bec5d7c6f255c27485d784d7aaa91bad6c3bc5ebce9bff315dd49e8dc8f02537259497c4e6fe028505d011de53a5633f9f54883a71059c"
+        publicKey:  "96682842f92cb14f257e023e812178ca4304bf963c3758929966746154f59539"
       };
       break;
     default:
@@ -64,6 +53,12 @@ export function getProviderKeysByType(keyType) {
   return keys;
 }
 
+export const getFile_SkyDB = async (publicKey, dataKey, options) => {
+  return await skynetClient.db.getJSON(publicKey, dataKey);
+}
+export const putFile_SkyDB = async (publicKey, dataKey, content, options) => {
+  await skynetClient.db.setJSON(options.privateKey, dataKey, content)
+}
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
   // Get User Public Key
@@ -112,7 +107,7 @@ export const getFile = async (publicKey, dataKey, options) => {
         //Step4: Update, "IDB_STORE_SKAPP"
         //Step5: return;
         // Fetch value for [DataKey] from IndexedDB
-        let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })
+        let result = await getJSONfromIDB(dataKey, { store: IDB_STORE_SKAPP })// TODO: need to fix IDB store. we cant hardcode store value. must take from options
         // get revision number using dataKey - getEntry method
         let registryEntry = await getRegistryEntry(publicKey, dataKey)
         const skyDBRevisionNo =
@@ -142,7 +137,7 @@ export const getFile = async (publicKey, dataKey, options) => {
           // }
           await setJSONinIDB(dataKey, [skyDBRevisionNo, data], {
             store: IDB_STORE_SKAPP,
-          })
+          }) // TODO: need to fix IDB store. we cant hardcode store value. must take from options
           // TODO: decrypt method
           return data
         }
@@ -273,7 +268,7 @@ export const setRegistryEntry = async (dataKey, content, options) => {
       revision = entry && entry != "undefined" && entry?.revision != NaN && entry.revision != "undefined" ? entry.revision : 0
       revision++;
     }
-    let entry = { datakey: dataKey, data: content + "", revision: BigInt(revision) };
+    let entry = { dataKey: dataKey, data: content + "", revision: BigInt(revision) };
     await skynetClient.registry.setEntry(privateKey, entry);
     if (options.skipIDB && options.skipIDB != true) {
       await setJSONinIDB(dataKey, [BigInt(revision), content], options)

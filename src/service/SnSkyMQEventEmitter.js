@@ -1,5 +1,5 @@
-import { getUserSession, getRegistryEntry, getProviderKeysByType, putFile, getFile, snKeyPairFromSeed,getRegistryEntryURL, setRegistryEntry } from './SnSkynet'
-import {getUserPublicKey, getMySky} from './skynet-api'
+import { getRegistryEntry, getProviderKeysByType, setRegistryEntry } from './SnSkynet'
+import {getUserID, putFile_MySky, getFile_MySky} from './skynet-api'
 
 // "Shared Global Event Queue" is mechanism built on SkyDB for storing EVENTS emitted by all Skapp 
 // users in Sequence. You can think of it as MessagingQueue. 
@@ -23,10 +23,10 @@ const ANONYMOUS = "anonymous";
 // EVENT_APP_FAVORITE =  '4';
 // EVENT_APP_COMMENT =  '5';
 // This method can go in ServiceWorker
-export const emitEvent = async (appId, eventType) => {
+export const emitEvent = async (userID, appId, eventType) => {
     //DataKey -> PublicKey#AppID#EVENT_NAME OR anonymous#AppID#EVENT_NAME
     //let eventData = publicKey + "#" + appId + "#" + eventType;
-    let eventData = getUserPublicKey() + "#" + appId + "#" + eventType;
+    let eventData = userID + "#" + appId + "#" + eventType;
     let isSuccess = false;
     let isleqSuccess = false;
     //STEP1: Get Current Cursor Position of "GEQ"
@@ -36,17 +36,18 @@ export const emitEvent = async (appId, eventType) => {
     while (!isSuccess && !isleqSuccess) {
         cursorPositionOfGEQ++
         console.log("getCurrentCursorPosition(): eventData= " + eventData + " cursorPositionOfGEQ=" + cursorPositionOfGEQ);
-        //STEP2: PUSH USER ACTION EVENT in "GEQ". Its important to set maxRevisionFlag = true
+        //STEP2: ** MOST IMPORTANT STEP ** PUSH USER ACTION EVENT in "GEQ". Its important to set maxRevisionFlag = true
         let result = await setRegistryEntry((cursorPositionOfGEQ).toString(), eventData, { publicKey: getProviderKeysByType("GEQ").publicKey, privateKey: getProviderKeysByType("GEQ").privateKey, maxRevisionFlag: true, skipIDB: true });
         isSuccess = result?.resultFlag;
         revision = result?.revision;
         console.log("setRegistryEntry(): GEQ eventData= " + eventData + " revision=" + revision + " isSuccess=" + isSuccess);
-        if (isSuccess == true && getUserPublicKey() != ANONYMOUS) {
+        if (isSuccess == true && userID != ANONYMOUS) {
             //STEP3: on GEQ PUSH success, PUSH USER ACTION EVENT in "LEQ". Its important to set maxRevisionFlag = true
+            //(with DAC this STEP 3 is not required)
             // let leqResult = await setRegistryEntry((cursorPositionOfGEQ).toString(), eventData, { publicKey, privateKey, maxRevisionFlag: true, skipIDB: true });
             // isleqSuccess = leqResult?.resultFlag;
             // //let leqResult = await setRegistryEntry((cursorPositionOfGEQ).toString(), eventData, { publicKey, privateKey, maxRevisionFlag: true, skipIDB: true });
-            let leqResult = getMySky().setJSON((cursorPositionOfGEQ).toString(),eventData);
+            let leqResult = await putFile_MySky((cursorPositionOfGEQ).toString(),{e : eventData});
             isleqSuccess = leqResult ? true : false ;
             console.log("setRegistryEntry(): LEQ : eventData= " + eventData + " revision=" + revision + " isleqSuccess=" + isleqSuccess);
 

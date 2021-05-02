@@ -147,7 +147,7 @@ export default function EditSite() {
         dispatch(setLoaderDisplay(true));
         await setMyHostedApp(values, appId);
         dispatch(setLoaderDisplay(false));
-        const hnsSkyDBURL = getHNSSkyDBURL(values.hns);
+        const hnsSkyDBURL = await getHNSSkyDBURL(values.hns);
         
         if(values.hns != `${hostedAppObj.appDetailsList[appId].content.hns}`) {
             setInfoModalParams({

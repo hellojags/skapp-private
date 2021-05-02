@@ -17,8 +17,8 @@ import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 import AppImg from "../../assets/img/placeholderImg.png"
 import { Box, IconButton, Tooltip } from "@material-ui/core"
-import { ReactComponent as Heart1Icon } from "../../assets/img/icons/Heart1.svg"
-import { ReactComponent as Share12Icon } from "../../assets/img/icons/share.12.svg"
+import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg"
+import { ReactComponent as ShareIcon } from "../../assets/img/icons/share.1.svg"
 import { ReactComponent as MsgIcon } from "../../assets/img/icons/Messages, Chat.15.svg"
 import { ReactComponent as StarIcon } from "../../assets/img/icons/star-favorite.svg"
 // import { ReactComponent as OutLineStarIcon } from "../../assets/img/icons/starOutlinedIcon.svg";
@@ -228,19 +228,20 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                 }
                 title="Contemplative Reptile"
               /> */}
-              <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
-                backgroundColor: appBg[item.content.category] ? appBg[item.content.category] : Math.floor(Math.random() * 16777215).toString(16)
-              }}>
-                <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail &&
-                  `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
-                  }`} alt="" /></span>
-              </Box>
-              <div className="categoryOnAppCard">
-                <span>
-                  {item.content.category}
-                </span>
+              <div onClick={() => ViewAppDetail(item.id)}>
+                <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
+                  backgroundColor: appBg[item.content.category] ? appBg[item.content.category] : Math.floor(Math.random() * 16777215).toString(16)
+                }}>
+                  <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail &&
+                    `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
+                    }`} alt="" /></span>
+                </Box>
+                <div className="categoryOnAppCard">
+                  <span>
+                    {item.content.category}
+                  </span>
+                </div>
               </div>
-
               <CardContent className={classes.cardContent}>
                 <Box
                   className="card-head"
@@ -270,19 +271,17 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                     <IconButton
                       aria-label="Favourite Button"
                       size="small"
-                      color="#fff"
                       className={classes.heartBtn}
                     >
-                      <Heart1Icon />
+                      <HeartIcon />
                     </IconButton>
                     <IconButton
                       onClick={HandleShareModel}
                       aria-label="Share Button"
                       size="small"
-                      color="#fff"
                       className={classes.shareBtn}
                     >
-                      <Share12Icon />
+                      <ShareIcon />
                     </IconButton>
                   </Box>
                 </Box>

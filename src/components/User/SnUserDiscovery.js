@@ -99,7 +99,7 @@ export default function SnUserDiscovery(props) {
     // Fetch all PublicKeys from Cache
     // Step1: fetch userCache MasterPublicKeys and Profile
     // Step2: using AppSpecific PubKey for SKAPP fetch  [masterKey, masterProfile, appProfile , followers, followings]
-    // Step3: fetch Julian's "Followers" and "Follwings" using MasterProfile. (3 level- Recursive). at the end we shall have
+    // Step3: fetch Julian's "Followers" and "Follwings" using Preferences. (3 level- Recursive). at the end we shall have
     // [masterKey, masterProfile, followers, followings] for all users connected with Julian at three level in tree
     // combine data and show
 

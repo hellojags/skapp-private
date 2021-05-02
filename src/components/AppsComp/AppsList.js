@@ -16,7 +16,7 @@ const useStyles = makeStyles(styles)
 
   const [items, setItems] = useState(Array.from({ length: 12 }))
   const [alldata, setAlldata] = useState([])
-  console.log("from list", newData)
+  //console.log("from list", newData)
   useEffect(() => {
     // console.log(items.length);
     if (items.length && newData) {
