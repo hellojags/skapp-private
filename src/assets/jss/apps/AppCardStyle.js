@@ -106,7 +106,7 @@ const appCardStyle = {
     },
     cardSmallText: {
         // padding: " 0!important",
-        color: '#fff',
+        color: '#48494E',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
