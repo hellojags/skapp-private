@@ -18,10 +18,12 @@ import { useHistory } from 'react-router-dom';
 import { getProfile, setProfile } from '../../service/SnSkappService';
 import { setUserProfileAction } from "../../redux/action-reducers-epic/SnUserProfileAction"
 import Loader from "react-loader-spinner";
+// import './index.css';
 
 const useStyles = makeStyles((theme) => ({
     ProfileRoot: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
+        backgroundColor: '#12141D',
         boxShadow: '0px 2px 5px #15223214',
         borderRadius: 6,
         padding: '50px 30px',
@@ -29,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
             padding: '20px 10px',
         },
         '& h2': {
-            color: '#242F57',
+            // color: '#242F57',
+            color: '#fff',
             marginBottom: '1rem',
             '@media only screen and (max-width: 575px)': {
                 fontSize: 22,
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     textInfo: {
-        color: '#000',
+        color: 'rgba(255, 255, 255, 0.5)',
         fontSize: 14,
         '@media only screen and (max-width: 575px)': {
             fontSize: 13,
@@ -96,7 +99,8 @@ const useStyles = makeStyles((theme) => ({
     profilePlaceholder: {
         width: 150,
         height: 150,
-        background: '#EFF5F7',
+        // background: '#EFF5F7',
+        background: '#2A2C34',
         display: 'flex',
         borderRadius: '50%',
         justifyContent: 'center',
@@ -159,8 +163,11 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     input: {
-        background: '#fff',
-        border: '1px solid #D9E1EC',
+        // background: '#fff',
+        color: '#fff',
+        background: '#2A2C34',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(0, 0, 0, 0.5)',
         borderRadius: 8,
         height: 55,
         width: '100%',
@@ -186,16 +193,18 @@ const useStyles = makeStyles((theme) => ({
             color: '#5A607F',
             marginBottom: 7
         },
-        '& input:focus, & select:focus': {
+        '& input:focus, & select:focus, & textarea:focus': {
             outline: 'none!important',
-            border: '1px solid #1DBF73'
+            // border: '1px solid #1DBF73',
         },
         marginTop: '25px',
         '&': {
             marginRight: '1rem'
         },
         '& input, & input': {
-            fontSize: 18
+            fontSize: 18,
+            width: '100%',
+            color: '#fff'
         },
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
@@ -456,6 +465,7 @@ const Profile = () => {
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnInputWithIcon
                                         icon={<GitHub />}
+                                        // icon={<i className="fa fa-github-square"></i>}
                                         label="Github"
                                         name="github"
                                         type="text"

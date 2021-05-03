@@ -508,7 +508,8 @@ const SubmitAppStyles = () => ({
         },
     },
     socialOptionContainer: {
-        background: '#fff',
+        // background: '#fff',
+        background: '#2A2C34',
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         height: 55,
@@ -516,11 +517,15 @@ const SubmitAppStyles = () => ({
         fontSize: 18,
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
-            height: 50
+            height: 50,
+            background: '#2A2C34!important',
+            border: '1px solid rgba(0, 0, 0, 0.4)'
         },
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
-            height: 43
+            height: 43,
+            background: '#2A2C34!important',
+            border: '1px solid rgba(0, 0, 0, 0.4)'
         },
     },
 

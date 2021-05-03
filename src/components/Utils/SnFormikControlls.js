@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
     // color: "#8B9DA5",
     boxShadow: "0px 1px 2px #15223214",
-    border: "1px solid #7070701A;",
+    // border: "1px solid #7070701A;",
+    border: "1px solid rgba(0, 0, 0, 0.8);",
     // hieght: '41px',
     marginLeft: "16px!important",
     "@media (max-width: 1650px)": {
@@ -45,7 +46,10 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     width: '100%',
   },
+  
   inputInput: {
+    color: '#fff',
+    background: '#2A2C34',
     // padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
@@ -85,6 +89,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   margnBottomMediaQuery: {
+    /* '& .MuiSvgIcon-root': {
+    background: '#fff',
+    }, */
     "@media only screen and (max-width: 1249px)": {
       marginBottom: ".75rem",
     },

@@ -29,7 +29,8 @@ const useStyles = makeStyles(theme => (
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
             // border: '1px solid #7070701A;',
-            border: '1px solid #48494E;',
+            // border: '1px solid #48494E;',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
 
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {

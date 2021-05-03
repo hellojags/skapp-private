@@ -12,11 +12,14 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 // import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
+// import Icon from '@material-ui/core/Icon'
+// import grey from '@material-ui/core/colors/grey'
 // import MailIcon from '@material-ui/icons/Mail'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+// import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -39,7 +42,8 @@ import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserPro
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
 
@@ -97,12 +101,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#B4C6CC'
+        // color: '#B4C6CC'
+        color: '#fff'
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
+        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -373,11 +379,12 @@ export default function Navbar() {
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo />
+                        <Logo1 />
                     </div>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
+                            {/* <Icon style={{color: grey[50]}}>article</Icon> */}
                         </div>
                         <InputBase
                             placeholder="Search…"

@@ -76,7 +76,8 @@ const useStyles = makeStyles((theme) => ({
         listStyle: 'none',
         '& span': {
             // color: '#2a2c3499',
-            color: '#48494E',
+            // color: '#48494E',
+            color: '#6A6F89',
             fontSize: 13,
             display: 'block',
             '&:first-child': {

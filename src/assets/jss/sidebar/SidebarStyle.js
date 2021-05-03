@@ -2,7 +2,6 @@ const sideabrStyle = theme => (
     {
         root: {
             padding: 0,
-            background: '#2A2C34!important',
         },
         nested: {
             paddingLeft: theme.spacing(4),
@@ -10,9 +9,10 @@ const sideabrStyle = theme => (
         sidebarItem: {
             display: 'flex',
             alignItems: 'center',
+            background: '#2A2C34!important',
         },
         sidebar: {
-            backgroundColor: '#2A2C34',
+            backgroundColor: '#2A2C34!important',
             boxShadow: ' 0px 1px 4px #15223214',
             maxWidth: '250px',
             padding: '1rem',

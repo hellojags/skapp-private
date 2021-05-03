@@ -66,10 +66,15 @@ const useStyles = makeStyles((theme) => ({
       border: "1px solid #7070701A",
     },
   },
+  /* select: {
+    background: '#2A2C34' 
+  }, */
   itemSelect: {
     fontSize: 13,
     paddingTop: 10,
     paddingBottom: 10,
+    color: '#fff',
+    background: '#2a2c34',
     "&  span:first-child": {
       color: "#000",
     },

@@ -17,7 +17,8 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 // import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+// import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -34,7 +35,8 @@ import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
 
@@ -93,12 +95,13 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#B4C6CC'
+        // color: '#B4C6CC'
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
+        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -325,7 +328,7 @@ export default function LandingPageNavbar() {
                 <Toolbar className={classes.toolBarRoot} >
 
                     <div className="logo-top" >
-                        <Logo />
+                        <Logo1 />
                     </div>
                     {/* <div className={classes.search}>
                         <div className={classes.searchIcon}>

@@ -28,7 +28,8 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            border: '1px solid #7070701A;',
+            // border: '1px solid #7070701A;',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
 
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -44,12 +45,14 @@ const useStyles = makeStyles(theme => (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#B4C6CC'
+            color: '#B4C6CC',
         },
         inputRoot: {
             color: 'inherit',
         },
         inputInput: {
+            color: '#fff',
+            background: '#2A2C34',
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             transition: theme.transitions.create('width'),
             width: '100%',
