@@ -8,6 +8,9 @@ export const skappTheme = createMuiTheme({
         body1: {
 
             lineHeight: '1.25'
-        }
+        },
+        palette: {
+            type: 'light',
+        },
     },
 })

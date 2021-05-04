@@ -31,7 +31,7 @@ import { NavLink } from "react-router-dom"
 import { useSelector } from "react-redux"
 const useStyles = makeStyles(style)
 
-const Sidebar = (props) => {
+const Sidebar = ({style, toggle, setToggle}) => {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
 
@@ -44,7 +44,7 @@ const Sidebar = (props) => {
   let location = useLocation()
 
   let sidebar = (
-    <div className={`${classes.sidebar} sidebar`} style={props.style}>
+    <div className={`${classes.sidebar} sidebar`} style={style}>
       <PerfectScrollbar>
         <List
           component="nav"

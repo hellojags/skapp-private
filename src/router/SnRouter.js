@@ -23,7 +23,7 @@ import {
 } from "react-router-dom";
 import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
 import AddNewSite from '../components/Hosting/AddNewSite'
-const SnRouter = (props) => (
+const SnRouter = ({toggle}) => (
    
         <Switch>
             <Route exact path='/'>

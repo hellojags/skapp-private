@@ -26,7 +26,8 @@ const SubmitAppStyles = () => ({
         marginBottom: '1rem'
     },
     shareCardContainer: {
-        background: '#fff',
+        // background: '#fff',
+        background: '#2A2C34',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
         padding: '48px 60px',
@@ -378,17 +379,19 @@ const SubmitAppStyles = () => ({
         }
     },
     placeholderImg: {
-        background: '#ffff',
+        // background: '#ffff',
+        background: '#1E2029',
         width: '100%',
         height: '160px',
         borderRadius: '8px',
-        border: '1px dashed #5C5D5E',
+        // border: '1px dashed #5C5D5E',
+        border: '1px dashed rgba(0, 0, 0, 0.6)',
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
     },
     previewImg: {
-        background: '#fff',
+        background: '#1E2029',
         cursor: 'pointer',
         height: 160,
         width: '100%',

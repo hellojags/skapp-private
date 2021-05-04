@@ -6,9 +6,11 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import Badge from '@material-ui/core/Badge'
+import Switch from "@material-ui/core/Switch";
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 // import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
@@ -18,7 +20,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-// import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
@@ -41,12 +43,17 @@ import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 const useStyles = makeStyles((theme) => ({
-    root: {
+    rootDark: {
         // backgroundColor: '#fff',
         backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
 
+    },
+    rootLight: {
+        backgroundColor: '#fff',
+        background: "#ffff 0 % 0 % no-repeat padding-box",
+        boxShadow: '0px 1px 4px #15223214',
     },
     toolBarRoot: {
         justifyContent: 'space-between',
@@ -93,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'none'
         }
     },
-    searchIcon: {
+    searchIconDark: {
         padding: theme.spacing(0, 2),
         height: '100%',
         position: 'absolute',
@@ -102,13 +109,37 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         // color: '#B4C6CC'
-        color: '#fff'
+        color: '#ffffff!important',
+    },
+    searchIconLight: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#2A2C34',
+        opacity: '0.4'
     },
     inputRoot: {
         color: 'inherit',
     },
-    inputInput: {
+    inputInputDark: {
         background: '#1E2029',
+        padding: theme.spacing(1, 1, 1, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '30ch',
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: '50ch',
+        },
+
+    },
+    inputInputLight: {
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -173,6 +204,14 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '12px'
         }
     },
+    /* darkMenuColor: {
+        color: '#fff',
+        background:'#2A2C34',
+    },
+    lightMenuColor: {
+        color: '#000',
+        background:'#fff',
+    }, */
     menuIcon: {
         marginRight: ".90rem",
         '@media(max-width: 1440px)': {
@@ -187,16 +226,48 @@ const useStyles = makeStyles((theme) => ({
     },
     mobileHelpItem: {
         paddingLeft: ".5rem"
+    },
+    darkLightTextWhite: {
+        color: '#fff'
+    },
+    darkLightTextDark: {
+        color: '#000'
+    },
+    swicthButton: {
+        marginLeft: '5px'
     }
 }))
 
-export default function Navbar() {
+export default function Navbar({toggle, setToggle}) {
+    
     const dispatch = useDispatch()
     const history = useHistory()
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  
+    const LightTheme = createMuiTheme({
+        palette:{
+            type: 'light',
+        }
+    }) 
+
+    const DarkTheme = createMuiTheme({
+        palette:{
+            type: 'dark',
+        }
+    })
+
+    /* const handleChange = (e) => {
+        setLightMode(!lightMode);
+
+        if(lightMode) {
+            LightTheme();
+        } else {
+            DarkTheme();
+        }
+    } */
 
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -291,6 +362,7 @@ export default function Navbar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
             className="profile-dropdown"
+            // className={`profile-dropdown ${toggle ? classes.darkMenuColor : classes.lightMenuColor}`}
 
         >
             <MenuItem onClick={handleSettings} className={classes.MenuItem}>
@@ -373,27 +445,54 @@ export default function Navbar() {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
-            <AppBar position="static" className={classes.root} color='default'>
+            <AppBar position="static" className={toggle ?  classes.rootDark : classes.rootLight} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
                     <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo1 />
+                        {toggle ? <Logo1 /> : <Logo />} 
                     </div>
                     <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                            {/* <Icon style={{color: grey[50]}}>article</Icon> */}
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
+                    
+                        
+                        {toggle ? 
+                            <>
+                                <div className={classes.searchIconDark}>
+                                    <SearchIcon />
+                                    {/* <Icon style={{color: grey[50]}}>article</Icon> */}
+                                </div>
+                                <InputBase
+                                    placeholder="Search…"
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInputDark,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </> : 
+                            <>
+                                <div className={classes.searchIconLight}>
+                                    <SearchIcon />
+                                    {/* <Icon style={{color: grey[50]}}>article</Icon> */}
+                                </div>
+                            
+                                <InputBase
+                                    placeholder="Search…"
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInputLight,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </>
+                        }
+                    </div>
+
+                    <div className={toggle ? classes.darkLightTextWhite : classes.darkLightTextDark}>
+                        Dark / Light
+                        <Switch color="primary" checked={toggle} onChange={()=>setToggle(!toggle)} className={classes.swicthButton} />
+                        {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
                     </div>
 
                     <div className={classes.sectionDesktop}>

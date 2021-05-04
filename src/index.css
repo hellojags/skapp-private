@@ -30,7 +30,8 @@ button{
 }
 /* app sidebar */
 .sidebar .MuiListItem-button{
-  background-color:#F5F6FA;
+  /* background-color:#F5F6FA; */
+  background-color:#2A2C34;
 }
 .sidebar .MuiListItemText-root > span{
   font-weight: 600;

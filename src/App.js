@@ -1,4 +1,4 @@
-import React, {useEffect } from "react"
+import React, {useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { ThemeProvider } from '@material-ui/core'
 import Sidebar from './components/Sidebar/Sidebar'
@@ -14,12 +14,13 @@ import { initMySky } from "./service/skynet-api"
 import { setUserSession } from "./redux/action-reducers-epic/SnUserSessionAction"
 
 function App() {
+  const [toggle, setToggle] = useState(false)
   const dispatch = useDispatch()
   useEffect(() => {
     initMySky().then(({ loggedIn, userSession }) => {
       if (loggedIn)// only if login is true set session
         dispatch(setUserSession(userSession))
-    }
+      } 
     );
   }, []);
 
@@ -28,13 +29,13 @@ function App() {
       <ThemeProvider theme={skappTheme}>
         <SnLoader />
         <div className="App">
-          <Nav />
+          <Nav toggle={toggle} setToggle={setToggle} />
           <section className="main-content">
             <aside className="app-sidebar">
-              <Sidebar />
+              <Sidebar toggle={toggle} setToggle={setToggle} />
             </aside>
             <main className="app-content" id="app-content">
-              <SnRouter />
+              <SnRouter toggle={toggle} setToggle={setToggle} />
             </main>
           </section>
         </div>
