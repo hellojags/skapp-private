@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid #7070701A;',
         '&:hover': {
             background: '#1DBF73',
-            color: '#fff'
+            color: '#7E84A3'
         },
         '@media only screen and (max-width: 1249px)': {
             marginLeft: '1rem'
@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     },
     darkLists: {
         background: '#2A2C34',
-        color: '#fff'
+        color: '#7E84A3'
     },
     lightLists: {
         background: '#fff',

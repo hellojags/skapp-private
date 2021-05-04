@@ -362,8 +362,7 @@ export default function Navbar({toggle, setToggle}) {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            className="profile-dropdown"
-            // className={`profile-dropdown ${toggle ? classes.darkMenuColor : classes.lightMenuColor}`}
+            className={toggle ? 'darkProfile-dropdown' : 'lightProfile-dropdown'}
 
         >
             <MenuItem onClick={handleSettings} className={classes.MenuItem}>

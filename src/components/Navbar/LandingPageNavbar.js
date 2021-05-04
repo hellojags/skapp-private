@@ -17,7 +17,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 // import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
-// import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
 import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
@@ -34,8 +34,13 @@ import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        // backgroundColor: '#fff',
+    lightRoot: {
+        backgroundColor: '#fff',
+        background: "#ffff 0 % 0 % no-repeat padding-box",
+        boxShadow: '0px 1px 4px #15223214',
+
+    },
+    darkRoot: {
         backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
@@ -212,7 +217,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function LandingPageNavbar() {
+export default function LandingPageNavbar({toggle}) {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -244,7 +249,7 @@ export default function LandingPageNavbar() {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            className="profile-dropdown"
+            className={toggle ? 'darkProfile-dropdown' : 'lightProfile-dropdown'}
 
         >
             <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
@@ -324,11 +329,11 @@ export default function LandingPageNavbar() {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
-            <AppBar position="static" className={classes.root} color='default'>
+            <AppBar position="static" className={`${toggle ? classes.darkRoot : classes.lightRoot}`} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
 
                     <div className="logo-top" >
-                        <Logo1 />
+                        {toggle ? <Logo1 /> : <Logo />}
                     </div>
                     {/* <div className={classes.search}>
                         <div className={classes.searchIcon}>

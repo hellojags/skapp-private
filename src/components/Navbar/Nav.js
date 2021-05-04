@@ -7,7 +7,7 @@ import Navbar from './Navbar'
 const Nav = ({toggle, setToggle}) => {
     let location = useLocation()
     let userSession = useSelector((state) => state.userSession)
-    const navbar = (!userSession || location.pathname === '/login') ? <LandingPageNavbar /> : <Navbar toggle={toggle} setToggle={setToggle} />
+    const navbar = (!userSession || location.pathname === '/login') ? <LandingPageNavbar toggle={toggle} /> : <Navbar toggle={toggle} setToggle={setToggle} />
     // const navbar = (!userSession || location.pathname === '/login') ? <Navbar toggle={toggle} setToggle={setToggle} /> : <LandingPageNavbar />
     return (
         <div>
