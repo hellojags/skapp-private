@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState,useEffect, Fragment } from 'react'
 import InfiniteScroll from "react-infinite-scroll-component"
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -173,6 +173,17 @@ const DevTable = () => {
     const classes = useStyles()
     const inialS = Array.from({ length: 12 })
     const [items, setItems] = useState(inialS)
+    const [alldata, setAlldata] = useState([])
+
+    // useEffect(() => {
+    //     // console.log(items.length);
+    //     if (items.length && newData) {
+    //       const indexOfLastTodo = 1 * items.length
+    //       const indexOfFirstTodo = indexOfLastTodo - items.length
+    //       const currentTodos = newData?.slice(indexOfFirstTodo, indexOfLastTodo)
+    //       setAlldata(currentTodos)
+    //     }
+    //   }, [items.length, newData])
 
     const fetchMoreData = () => {
         // a fake async api call like which sends
@@ -204,10 +215,10 @@ const DevTable = () => {
                                 <TableCell>
                                     Avatar
                             </TableCell>
-                                <TableCell>Skapp ID</TableCell>
+                                <TableCell>UserId</TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Developer Name </span><Arrows />
+                                        <span>UserName </span><Arrows />
                                     </Box>
                                 </TableCell>
                                 <TableCell>
@@ -234,7 +245,7 @@ const DevTable = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {items.map((i, index) => (
+                            {items.map((item, index) => (
                                 <TableRow >
                                     <TableCell scope="row">
                                         <Checkbox

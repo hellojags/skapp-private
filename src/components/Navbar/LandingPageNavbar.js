@@ -327,8 +327,9 @@ export default function LandingPageNavbar() {
                     <div className="logo-top" >
                         <Logo />
                     </div>
-                    {/* <div className={classes.search}>
-                        <div className={classes.searchIcon}>
+                   <div className={classes.search}>
+                      <font color="red">Unit testing in-progress: Aggregated Test Data will be reset in couple of days</font>
+                       {/*   <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                         <InputBase
@@ -338,8 +339,8 @@ export default function LandingPageNavbar() {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div> */}
+                        /> */}
+                    </div>
 
                     <div className={classes.sectionDesktop}>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>

@@ -3,9 +3,15 @@ import SearchIcon from '@material-ui/icons/Search'
 import { makeStyles } from '@material-ui/core/styles'
 import { ReactComponent as UserProfileIcon } from '../../assets/img/icons/user-profile-message.svg'
 import { ReactComponent as UserProfileBackIcon } from '../../assets/img/icons/user-profile-back.svg'
-import React from 'react'
+import React, { useState, useEffect } from "react"
 import DevTable from './DevTable'
 import UserCard from './UserCard'
+import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
+import {
+    getFollowingCountForUser,getAggregatedUserIDs
+} from "../../service/SnSkappService"
+import { useDispatch } from 'react-redux';
+
 const useStyles = makeStyles(theme => ({
     pageHeading: {
         color: '#131523',
@@ -99,6 +105,67 @@ const useStyles = makeStyles(theme => ({
 const DescoverDev = () => {
 
     const classes = useStyles()
+    const [followingCount, setFollowingCount] = useState([]);
+    const [searchData, setSearchData] = useState([])
+    const dispatch = useDispatch();
+    // Effects, empty array will render only once at initialization
+    useEffect(() => {
+        // setUserKeys(fetchAllUsersPubKeys());
+        fetchUsersSocialData()
+    }, [])
+
+    // fetch all users data
+    const fetchUsersSocialData = async () => {
+        dispatch(setLoaderDisplay(true))
+        const count = await getFollowingCountForUser(null);
+        const allUserIDs = await getAggregatedUserIDs(null);
+        setSearchData(allUserIDs);
+        setFollowingCount(count);
+        dispatch(setLoaderDisplay(false))
+    }
+
+    const searchHandler = (e) => {
+        // const options = {
+        //     isCaseSensitive: false,
+        //     // includeScore: false,
+        //     shouldSort: true,
+        //     // includeMatches: false,
+        //     findAllMatches: true,
+        //     minMatchCharLength: 0,
+        //     // location: 0,
+        //     threshold: 0.0,
+        //     // distance: 100,
+        //     // useExtendedSearch: false,
+        //     // ignoreLocation: false,
+        //     // ignoreFieldNorm: false,
+        //     includeScore: true,
+        //     keys: [
+        //         "username",
+        //         "location",
+        //         "userid"
+        //     ]
+        // }
+
+        // const fuse = new Fuse(publishedAppsStore, options)
+
+        // // Change the pattern
+        // const pattern = e.target.value
+        // console.log(pattern)
+        // if (pattern) {
+        //     let _newD = fuse.search(pattern)
+        //     _newD = _newD.map(_ => _.item)
+        //     setSearchData(_newD)
+        //     console.log(_newD)
+        // } else {
+        //     setSearchData(publishedAppsStore)
+        // }
+    }
+
+    // useEffect(() => {
+
+    //     setSearchData(publishedAppsStore)
+
+    // }, [setSearchData, publishedAppsStore])
 
     return (
         <div>
@@ -112,7 +179,7 @@ const DescoverDev = () => {
                         <UserProfileIcon />
                     </div>
                     <div className='_details'>
-                        <h3 className={classes.h3}>5.6K</h3>
+                        <h3 className={classes.h3}>Coming Soon</h3>
                         <p className={classes.p}>Followers</p>
                     </div>
                 </Box>
@@ -121,7 +188,7 @@ const DescoverDev = () => {
                         <UserProfileBackIcon />
                     </div>
                     <div className='_details'>
-                        <h3 className={classes.h3}>5</h3>
+                        <h3 className={classes.h3}>{followingCount}</h3>
                         <p className={classes.p}>Following</p>
                     </div>
                 </Box>
@@ -135,6 +202,7 @@ const DescoverDev = () => {
                             <SearchIcon />
                         </div>
                         <InputBase
+                            onChange={searchHandler}
                             placeholder="Search…"
                             classes={{
                                 root: classes.inputRoot,
@@ -148,7 +216,7 @@ const DescoverDev = () => {
             </div>
 
 
-            <UserCard />
+            {/* <UserCard /> */}
         </div>
     )
 }

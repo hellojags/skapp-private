@@ -124,6 +124,7 @@ export const DK_HOSTED_APPS = "hostedApps";
 
 export const DK_AGGREGATED_PUBLISHED_APPS = "aggregatedPublishedApps";
 export const DK_AGGREGATED_PUBLISHED_APPS_STATS = "aggregatedPublishedAppsStats";
+export const DK_AGGREGATED_USERIDS = "aggregatedUserIDs";
 
 //Stats Action Type
 // export const VIEW_COUNT = "view";

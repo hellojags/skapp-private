@@ -183,7 +183,7 @@ function AppStore() {
     useEffect(async () => {
         // console.log("came here");
         //await dispatch(getAllPublishedAppsAction());
-        await dispatch(getAllPublishedAppsAction("ACCESS", "DEC", 0))
+        await dispatch(getAllPublishedAppsAction("ACCESS", "DESC", 0))
         await dispatch(getAggregatedAppStatsAction()) // I can do pagination here
         setSearchData(publishedAppsStore)
         await dispatch(getMyInstalledAppsAction());

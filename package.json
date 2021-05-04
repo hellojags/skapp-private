@@ -71,6 +71,7 @@
     "rxjs": "^6.6.3",
     "skynet-js": "^4.0.5-beta",
     "slick-carousel": "^1.8.1",
+    "social-dac-library": "^0.2.2",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "uuid": "^8.3.2",

@@ -376,7 +376,8 @@ export default function Navbar() {
                         <Logo />
                     </div>
                     <div className={classes.search}>
-                        <div className={classes.searchIcon}>
+                        <font color="red">Unit testing in-progress: Aggregated Test Data will be reset in couple of days</font>
+                        {/* <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                         <InputBase
@@ -386,7 +387,7 @@ export default function Navbar() {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                        />
+                        /> */}
                     </div>
 
                     <div className={classes.sectionDesktop}>
