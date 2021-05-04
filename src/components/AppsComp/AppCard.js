@@ -232,7 +232,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                 <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
                   backgroundColor: appBg[item.content.category] ? appBg[item.content.category] : Math.floor(Math.random() * 16777215).toString(16)
                 }}>
-                  <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail &&
+                  <span className="app-logo-img"><img src={item.content.skappLogo && item.content.skappLogo.thumbnail &&
                     `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
                     }`} alt="" /></span>
                 </Box>

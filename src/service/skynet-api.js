@@ -1,6 +1,7 @@
 import { SkynetClient } from "skynet-js";
 import { ContentRecordDAC } from "@skynetlabs/content-record-library";
 import { UserProfileDAC, Profile } from '@skynethub/userprofile-library';
+import { SkappDAC } from '@kbiswas/skapps-record-library';
 import { FeedDAC } from "feed-dac-library";
 import {
     getJSONfromIDB,
@@ -26,8 +27,9 @@ export const initMySky = async () => {
         //const mySky = await client.loadMySky(hostApp);
         const contentDAC = new ContentRecordDAC();
         const userProfileDAC = new UserProfileDAC();
+        const skappDAC = new SkappDAC();
         const feedDAC = new FeedDAC();
-        await mySky.loadDacs(contentDAC, userProfileDAC, feedDAC);
+        await mySky.loadDacs(contentDAC, userProfileDAC, feedDAC,skappDAC);
         //await mySky.loadDacs(userProfileDAC);
         // Add additional needed permissions before checkLogin.
         // Can be Permissions object or list of Permissions objects
@@ -35,7 +37,7 @@ export const initMySky = async () => {
         // Try to login silently, requesting permissions for hostApp HNS.
         loggedIn = await mySky.checkLogin();// check if user is already logged-In
         console.log("checkLogin : loggedIn status: " + loggedIn);
-        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC } };
+        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, skappDAC } };
         //userSession = { mySky, dacs: { userProfileDAC } };
         // if not logged-in
         if (loggedIn) {
@@ -112,6 +114,11 @@ export const getContentDAC = async () => {
 export const getProfileDAC = async () => {
     const userSession = await getUserSession();
     return userSession?.dacs?.userProfileDAC ?? null;
+}
+
+export const getSkappDAC = async () => {
+    const userSession = await getUserSession();
+    return userSession?.dacs?.skappDAC ?? null;
 }
 
 export const getFeedDAC = async () => {
