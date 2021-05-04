@@ -1,10 +1,16 @@
 // import appListStyle from "./AppListStyle"
 
 const appCardStyle = {
-    root: {
+    darkRoot: {
         maxWidth: 'auto',
         borderRadius: 10,
         background: '#2A2C34',
+        boxShadow: ' 0px 1px 4px #15223214',
+    },
+    lightRoot: {
+        maxWidth: 'auto',
+        borderRadius: 10,
+        background: '#fff',
         boxShadow: ' 0px 1px 4px #15223214',
     },
     media: {
@@ -45,10 +51,18 @@ const appCardStyle = {
         },
         cursor: 'context-menu'
     },
-    cardH2: {
+    darkCardH2: {
         fontWeight: 700,
         textTransform: 'capitalize',
         color: '#FFF',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: '15px'
+        }
+    },
+    lightCardH2: {
+        fontWeight: 700,
+        textTransform: 'capitalize',
+        color: '#000',
         '@media only screen and (max-width: 575px)': {
             fontSize: '15px'
         }
@@ -75,6 +89,12 @@ const appCardStyle = {
             width: 7,
             marginBottom: 1
         }
+    },
+    lightIcon : {
+        color: '#000'
+    },
+    darkIcon : {
+        color: '#fff!important'
     },
     footerItem: {
         opacity: .64,
@@ -125,7 +145,14 @@ const appCardStyle = {
         opacity: 1,
         // alignItems: 'center'
     },
-    detailsArea: {
+    lightDetailsArea: {
+        paddingTop: 4,
+        paddingBottom: 0,
+        '& .MuiBox-root': {
+            paddingTop: 0
+        }
+    },
+    darkDetailsArea: {
         color: '#fff',
         paddingTop: 4,
         paddingBottom: 0,

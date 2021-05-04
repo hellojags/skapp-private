@@ -9,10 +9,21 @@ const sideabrStyle = theme => (
         sidebarItem: {
             display: 'flex',
             alignItems: 'center',
-            background: '#2A2C34!important',
+            // background: '#2A2C34!important',
         },
-        sidebar: {
+        darkSidebar: {
             backgroundColor: '#2A2C34!important',
+            boxShadow: ' 0px 1px 4px #15223214',
+            maxWidth: '250px',
+            padding: '1rem',
+            paddingRight: '0',
+            height: 'calc(100vh - 64px)',
+            overflowY: 'auto',
+            '@media (max-width: 1440px)': {
+                maxWidth: '230px',
+            }
+        },
+        lightSidebar: {
             boxShadow: ' 0px 1px 4px #15223214',
             maxWidth: '250px',
             padding: '1rem',

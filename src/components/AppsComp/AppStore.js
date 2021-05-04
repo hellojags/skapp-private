@@ -34,7 +34,7 @@ import styles from "../../assets/jss/apps/AppListStyle"
 const useStyles = makeStyles(theme => (
     {
         ...styles,
-        search: {
+        lightSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade('#fff', 1),
@@ -50,8 +50,31 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #7070701A;',
-            border: '1px solid #2A2C34;',
+            border: '1px solid #7070701A;',
+            // hieght: '41px',
+            marginLeft: '16px!important',
+            '@media (max-width: 1650px)': {
+                width: 'auto'
+            },
+
+        },
+        darkSearch: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade('#fff', 1),
+            '&:hover': {
+                backgroundColor: fade("#fff", 0.9),
+            },
+            marginRight: theme.spacing(2),
+            // marginLeft: 0,
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(3),
+                width: 'auto',
+            },
+            color: '#8B9DA5',
+            boxShadow: '0px 1px 2px #15223214',
+            // border: '1px solid #2A2C34;',
             // hieght: '41px',
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -67,10 +90,13 @@ const useStyles = makeStyles(theme => (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            // color: '#B4C6CC',
-            color: '#2A2C34'
+            color: '#B4C6CC',
+            // color: '#2A2C34'
         },
-        inputRoot: {
+        lightInputRoot: {
+            color: 'inherit',
+        },
+        darkInputRoot: {
             color: 'inherit',
             background: '#2A2C34',
         },
@@ -96,7 +122,12 @@ const useStyles = makeStyles(theme => (
             paddingRight: '10px'
         },
 
-        pageHeading: {
+        lightPageHeading: {
+            // color: '#131523',
+            color: '#2A2C34',
+            fontSize: '28px',
+        },
+        darkPageHeading: {
             // color: '#131523',
             color: '#fff',
             fontSize: '28px',
@@ -175,7 +206,7 @@ const useStyles = makeStyles(theme => (
 ))
 
 // get div with
-function AppStore() {
+function AppStore({toggle}) {
     const dispatch = useDispatch();
     const classes = useStyles();
     let publishedAppsStore = useSelector((state) => state.snAllPublishedAppsStore);
@@ -183,6 +214,8 @@ function AppStore() {
     let tags = []
     const [searchData, setSearchData] = useState([])
     const [selectedTag, setSelectedTag] = useState('All')
+
+
 
     useEffect(async () => {
         // console.log("came here");
@@ -399,20 +432,23 @@ function AppStore() {
             }
         ]
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
     return (
         // (width < 575)
         //     ? <div className={classes.mobileSave}>{AppsComp}</div>
         //     : < PerfectScrollbar className={classes.PerfectScrollbarContainer} >{AppsComp}</PerfectScrollbar>
-
+        <>
         <div><Fragment >
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Skynet Apps</h1>
+                    <h1 className={`${toggle ? classes.darkPageHeading : classes.lightPageHeading}`}>Skynet Apps</h1>
                 </Box>
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
                 </Box>
-                {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                {width < 1050 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -423,7 +459,7 @@ function AppStore() {
                         onChange={searchHandler}
                         placeholder="Search Apps"
                         classes={{
-                            root: classes.inputRoot,
+                            root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
@@ -434,7 +470,7 @@ function AppStore() {
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
 
 
-                    {width > 1049 && <div className={classes.search}>
+                    {width > 1049 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch}`}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -444,7 +480,7 @@ function AppStore() {
                             onChange={searchHandler}
                             placeholder="Search Apps"
                             classes={{
-                                root: classes.inputRoot,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
@@ -453,7 +489,7 @@ function AppStore() {
                         />
                     </div>}
                     <Box>
-                        <ListFilter />
+                        <ListFilter toggle={toggle} />
                     </Box>
                     {/* <Box>
                     <SelectItem />
@@ -482,18 +518,22 @@ function AppStore() {
                 </div>)} */}
 
                     {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
-                        <Button data-cat={tag[0]} onClick={catClickHandler} className="tagButton">
+                        {toggle ? <Button data-cat={tag[0]} onClick={catClickHandler} className="darkTagButton">
                             <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
-                        </Button>
+                        </Button> : <Button data-cat={tag[0]} onClick={catClickHandler} className="lightTagButton">
+                            <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
+                        </Button>}
+                        
                     </div>)}
                 </Slider>
             </div>
             <div style={{ marginBottom: '2rem' }}>
-                <AppsList newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
-                <Footer/>
+                <AppsList toggle={toggle} newData={searchData} installedApps={installedAppsStore} handleInstall={handleInstall} />
+                <Footer toggle={toggle}/>
             </div>
         </Fragment>
         </div>
+        </>
     )
 }
 export default AppStore

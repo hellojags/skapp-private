@@ -14,7 +14,8 @@ import { initMySky } from "./service/skynet-api"
 import { setUserSession } from "./redux/action-reducers-epic/SnUserSessionAction"
 
 function App() {
-  const [toggle, setToggle] = useState(false)
+  const [toggle, setToggle] = useState(false);
+
   const dispatch = useDispatch()
   useEffect(() => {
     initMySky().then(({ loggedIn, userSession }) => {
@@ -32,10 +33,10 @@ function App() {
           <Nav toggle={toggle} setToggle={setToggle} />
           <section className="main-content">
             <aside className="app-sidebar">
-              <Sidebar toggle={toggle} setToggle={setToggle} />
+              <Sidebar toggle={toggle} />
             </aside>
             <main className="app-content" id="app-content">
-              <SnRouter toggle={toggle} setToggle={setToggle} />
+              <SnRouter toggle={toggle} />
             </main>
           </section>
         </div>

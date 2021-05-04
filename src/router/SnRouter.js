@@ -27,7 +27,7 @@ const SnRouter = ({toggle}) => (
    
         <Switch>
             <Route exact path='/'>
-                  <AppStore />
+                  <AppStore toggle={toggle} />
             </Route>
             <Route exact path='/descoverdev'>
                   <DescoverDev />

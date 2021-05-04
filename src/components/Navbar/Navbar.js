@@ -233,8 +233,9 @@ const useStyles = makeStyles((theme) => ({
     darkLightTextDark: {
         color: '#000'
     },
-    swicthButton: {
-        marginLeft: '5px'
+    switchButton: {
+        marginLeft: '5px',
+        marginRight: '5px'
     }
 }))
 
@@ -490,8 +491,9 @@ export default function Navbar({toggle, setToggle}) {
                     </div>
 
                     <div className={toggle ? classes.darkLightTextWhite : classes.darkLightTextDark}>
-                        Dark / Light
-                        <Switch color="primary" checked={toggle} onChange={()=>setToggle(!toggle)} className={classes.swicthButton} />
+                        Light
+                        <Switch color="primary" checked={toggle} onChange={()=>setToggle(!toggle)} className={classes.switchButton} />
+                        Dark
                         {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
                     </div>
 

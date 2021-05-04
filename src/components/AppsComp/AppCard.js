@@ -77,7 +77,7 @@ const appBg = {
 //   'Portal': "#000000",
 // }
 
-const AppCard = ({ selectable, updated, item, handleInstall }) => {
+const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -214,7 +214,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
       <>
         <ShareApp shareModelOpen={modalOpen} shareModelFn={HandleShareModel} />
         {item &&
-          <Card className={classes.root}>
+          <Card className={toggle ? classes.darkRoot : classes.lightRoot}>
             <CardActionArea className={classes.cardActionArea} component="div">
               {/* <CardMedia
                 onClick={() => ViewAppDetail(item.id)}
@@ -237,11 +237,15 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                     `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
                     }`} alt="" /></span>
                 </Box>
-                <div className="categoryOnAppCard">
+                {toggle ? <div className="lightCategoryOnAppCard">
                   <span>
                     {item.content.category}
                   </span>
-                </div>
+                </div> : <div className="darkCategoryOnAppCard">
+                  <span>
+                    {item.content.category}
+                  </span>
+                </div>}
               </div>
               <CardContent className={classes.cardContent}>
                 <Box
@@ -252,7 +256,7 @@ const AppCard = ({ selectable, updated, item, handleInstall }) => {
                 >
                   <Typography
                     onClick={() => AccessApp(item.id, item.content.appUrl)}
-                    className={classes.cardH2}
+                    className={toggle ? classes.darkCardH2 : classes.lightCardH2}
                     gutterBottom
                     variant="h5"
                     component="h2"
@@ -402,7 +406,7 @@ Lorem ipsum dolor sit amet co
               </CardContent>
             </CardActionArea>
 
-            <CardActions className={`${classes.detailsArea} cardFooter`}>
+            <CardActions className={`${toggle ? classes.darkDetailsArea : classes.lightDetailsArea} cardFooter`}>
               <Box
                 display="flex"
                 width="100%"
@@ -515,7 +519,7 @@ Lorem ipsum dolor sit amet co
                   alignItems="center"
                   className={classes.footerItem}
                 >
-                  <MsgIcon className={classes.cardFooterIcon} />
+                  <MsgIcon className={`${classes.cardFooterIcon} ${toggle ? classes.darkIcon : classes.lightIcon}`} />
                   <Typography variant="caption">{millify(1456044)}</Typography>
                 </Box>
                 {/* <Box marginLeft="auto">
