@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import Badge from '@material-ui/core/Badge'
+import Switch from "@material-ui/core/Switch";
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
@@ -214,10 +215,23 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: '10px',
         },
 
+    },
+    lightText: {
+        color: '#000'
+    },
+    darkText: {
+        color: '#fff'
+    },
+    switchButton: {
+        marginLeft: '5px',
+        marginRight: '5px'
+    },
+    mr15: {
+        marginRight: '15px'
     }
 }))
 
-export default function LandingPageNavbar({toggle}) {
+export default function LandingPageNavbar({toggle, setToggle}) {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -347,9 +361,15 @@ export default function LandingPageNavbar({toggle}) {
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />
-                    </div> */}
+                    </div> */}                    
 
                     <div className={classes.sectionDesktop}>
+                        <div className={toggle ? classes.darkText : classes.lightText}>
+                            Light
+                            <Switch color="primary" checked={toggle} onChange={()=>setToggle(!toggle)} className={classes.switchButton} />
+                            <span className={classes.mr15}>Dark</span>
+                            {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
+                        </div>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>

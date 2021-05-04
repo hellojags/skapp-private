@@ -42,6 +42,7 @@ button{
 
 .lightSidebar .MuiListItem-button{
   background-color:#F5F6FA;
+  /* background-color:#fff; */
   /* background-color:#2A2C34; */
 }
 .lightSidebar .MuiListItemText-root > span{
@@ -476,7 +477,7 @@ border-top: 0;
   background-color: #1dbf7378!important;
 }
 
-/* end light tags buttons */
+/* end dark tags buttons */
 
 /* button[data-cat="All"]{
   background-color: #1dbf73!important;
@@ -888,8 +889,67 @@ button[data-cat="All"] .count-cat{
 
 /* end dark footer */
 
-/* login form */
-.login-form{
+/* light login form */
+
+.lightLogin-form{
+  box-shadow: 0px 2px 5px #15223221;
+  background: #fff;
+  width: 500px;
+  /* display: flex; */
+  border-radius: 6px;
+  padding: 2rem 3rem ;
+  padding-top: 4.5rem;
+  display: flex;
+
+  justify-content: center;
+}
+.lightLogin-form h3{
+  font-size: 32px;
+  color: #fff;
+
+}
+.lightLogin-form p{
+  color: #5A607F;
+  text-align: center;
+}
+.lightLogin-form .secrect-key{
+  color: #1DBF73;
+}
+.lightLogin-form > div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.lightLogin-form div:first-child > svg{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.lightLogin-form p{
+  margin-top: 1rem;
+  margin-bottom: 1.7rem;
+}
+.lightLogin-form button{
+  background: #1DBF73!important;
+  color: #fff;
+  width: 100%;
+  min-width: 100%;
+  margin-top: 1rem;
+  height: 42px;
+  margin-bottom: 1.6rem;
+}
+@media (max-width: 459px){
+  .lightLogin-form{
+    padding: 1rem;
+    padding-top: 2rem;
+  }
+}
+
+/* end light login form */
+
+/* dark login form */
+
+.darkLogin-form{
   box-shadow: 0px 2px 5px #15223221;
   background: #1E2029;
   width: 500px;
@@ -901,33 +961,33 @@ button[data-cat="All"] .count-cat{
 
   justify-content: center;
 }
-.login-form h3{
+.darkLogin-form h3{
   font-size: 32px;
   color: #fff;
 
 }
-.login-form p{
+.darkLogin-form p{
   color: #5A607F;
   text-align: center;
 }
-.login-form .secrect-key{
+.darkLogin-form .secrect-key{
   color: #1DBF73;
 }
-.login-form > div{
+.darkLogin-form > div{
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
-.login-form div:first-child > svg{
+.darkLogin-form div:first-child > svg{
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.login-form p{
+.darkLogin-form p{
   margin-top: 1rem;
   margin-bottom: 1.7rem;
 }
-.login-form button{
+.darkLogin-form button{
   background: #1DBF73!important;
   color: #fff;
   width: 100%;
@@ -937,11 +997,13 @@ button[data-cat="All"] .count-cat{
   margin-bottom: 1.6rem;
 }
 @media (max-width: 459px){
-  .login-form{
+  .darkLogin-form{
     padding: 1rem;
     padding-top: 2rem;
   }
 }
+
+/* end dark login form */
 
 .react-tagsinput-input{
   padding: 0px !important;

@@ -239,7 +239,7 @@ const initailValueFormikObj = {
         telegram: [''],
 
     };
-const Profile = () => {
+const Profile = ({toggle}) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);

@@ -221,7 +221,7 @@ const portalOptions = [
     { value: 'https://siasky.net/', label: 'https://siasky.net/' },
     { value: 'https://skyportal.xyz', label: 'https://skyportal.xyz' }
 ]
-const GlobalPrefrences = () => {
+const GlobalPrefrences = ({toggle}) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);

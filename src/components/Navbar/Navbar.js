@@ -227,11 +227,11 @@ const useStyles = makeStyles((theme) => ({
     mobileHelpItem: {
         paddingLeft: ".5rem"
     },
-    darkLightTextWhite: {
-        color: '#fff'
-    },
-    darkLightTextDark: {
+    lightText: {
         color: '#000'
+    },
+    darkText: {
+        color: '#fff'
     },
     switchButton: {
         marginLeft: '5px',
@@ -489,7 +489,7 @@ export default function Navbar({toggle, setToggle}) {
                         }
                     </div>
 
-                    <div className={toggle ? classes.darkLightTextWhite : classes.darkLightTextDark}>
+                    <div className={toggle ? classes.darkText : classes.lightText}>
                         Light
                         <Switch color="primary" checked={toggle} onChange={()=>setToggle(!toggle)} className={classes.switchButton} />
                         Dark

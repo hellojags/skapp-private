@@ -137,8 +137,12 @@ const useStyles = makeStyles(theme => (
 
         },
 
-        pageHeading: {
+        lightPageHeading: {
             color: '#131523',
+            fontSize: '28px',
+        },
+        darkPageHeading: {
+            color: '#fff',
             fontSize: '28px',
         },
         smallText: {
@@ -197,7 +201,7 @@ const useStyles = makeStyles(theme => (
 
     }
 ))
-function Hosting() {
+function Hosting({toggle}) {
 
     const { width } = useWindowDimensions()
     const classes = useStyles()
@@ -261,13 +265,15 @@ function Hosting() {
         setInfoModalParams({ open: false });
         loadHostedApps();
     };
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
     
     return (
 
         <Fragment >
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Hosting</h1>
+                    <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Hosting</h1>
                 </Box>
                 {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
@@ -326,7 +332,7 @@ function Hosting() {
                     .map((appId, idx) =>
                         hostedAppListObj.appDetailsList[appId] && <HostingItem handleOpen={handleOpen} key={idx} ActiveSite={true} id={appId} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
-                <AddNewSite onClick={() => history.push("/submitsite")} />
+                <AddNewSite toggle={toggle} onClick={() => history.push("/submitsite")} />
             </Box>
 
             <Modal

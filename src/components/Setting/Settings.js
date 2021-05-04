@@ -97,13 +97,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-
-const Settings = () => {
+const Settings = ({toggle}) => {
     const classes = useStyles()
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue)
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
     return (
         <Fragment>
             {/* <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
@@ -122,10 +124,10 @@ const Settings = () => {
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
-                    <Profile/>
+                    <Profile toggle={toggle}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <GlobalPrefrences/>
+                    <GlobalPrefrences toggle={toggle}/>
                 </TabPanel>
                 {/* <TabPanel value={value} index={2}>
                     <h4>Billing</h4>

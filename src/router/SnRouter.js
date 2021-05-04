@@ -30,44 +30,44 @@ const SnRouter = ({toggle}) => (
                   <AppStore toggle={toggle} />
             </Route>
             <Route exact path='/descoverdev'>
-                  <DescoverDev />
+                  <DescoverDev toggle={toggle} />
             </Route>
             {/* <Route exact path="/">
                 <Redirect to={`/login`}/>
                  <Redirect to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}/> */}
             {/* </Route> */}
             <Route exact path='/login'>
-                  <Login />
+                  <Login toggle={toggle} />
             </Route>
             <Route exact path='/appdetail/:appId'>
-                <AppDetailsPage />
+                <AppDetailsPage toggle={toggle} />
             </Route>
             <Route path='/submitapp/:appId?'>
-                <SubmitApp />
+                <SubmitApp toggle={toggle} />
             </Route>
             <Route path='/editpublishapp/:appId'>
-                <EditPublishApp />
+                <EditPublishApp toggle={toggle} />
             </Route>
             <Route exact path='/error'>
-                <Error />
+                <Error toggle={toggle} />
             </Route>
             <Route exact path='/noapp'>
-                <NoApps />
+                <NoApps toggle={toggle} />
             </Route>
             <Route exact path='/installedapps'>
-                <InstalledApps />
+                <InstalledApps toggle={toggle} />
             </Route>
             <Route exact path='/hosting'>
-                <Hosting />
+                <Hosting toggle={toggle} />
             </Route>
             <Route exact path='/submitsite'>
-                <AddNewSite />
+                <AddNewSite toggle={toggle} />
             </Route>
             <Route exact path='/editsite/:appId'>
-                <EditSite />
+                <EditSite toggle={toggle} />
             </Route>
             <Route exact path='/domains'>
-                <Domains />
+                <Domains toggle={toggle} />
             </Route>
             {/* <Route exact path='/addnewdomain'>
   <AddNewDomain />
@@ -76,19 +76,19 @@ const SnRouter = ({toggle}) => (
   <AddNewDomainTXT />
 </Route> */}
             <Route exact path='/nodomain'>
-                <NoDomain />
+                <NoDomain toggle={toggle} />
             </Route>
             <Route exact path='/storagegateway'>
-                <StorageGateway />
+                <StorageGateway toggle={toggle} />
             </Route>
             <Route exact path='/usersettings'>
-                <Settings />
+                <Settings toggle={toggle} />
             </Route>
             <Route exact path='/deploysite/:appId?'>
-                <DeploySite />
+                <DeploySite toggle={toggle} />
             </Route>
             <Route exact path='/apps'>
-                <Apps />
+                <Apps toggle={toggle} />
             </Route>
         </Switch>
   

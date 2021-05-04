@@ -101,9 +101,12 @@ const useStyles = makeStyles(theme => ({
     }
 
 }))
-const DescoverDev = () => {
+
+const DescoverDev = ({toggle}) => {
 
     const classes = useStyles()
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
 
     return (
         <div>

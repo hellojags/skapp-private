@@ -1,8 +1,16 @@
 const noAppsStyle = {
-    h1: {
+    lighth1: {
         fontSize: 28,
         // color: '#131523',
         color: '#fff',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 18,
+        }
+    },
+    darkh1: {
+        fontSize: 28,
+        // color: '#131523',
+        color: '#2A2C34',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18,
         }
@@ -19,10 +27,20 @@ const noAppsStyle = {
             maxWidth: 85
         }
     },
-    h2: {
+    lighth2: {
         fontSize: 32,
         // color: '#333333',
         color: '#fff',
+        fontWeight: 800,
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 25,
+            fontWeight: 600,
+        }
+    },
+    darkh2: {
+        fontSize: 32,
+        // color: '#333333',
+        color: '#2A2C34',
         fontWeight: 800,
         '@media only screen and (max-width: 575px)': {
             fontSize: 25,

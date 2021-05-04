@@ -508,8 +508,6 @@ function AppStore({toggle}) {
             </Button>
         </div> */}
             <div ref={sliderRef}>
-
-
                 <Slider {...settings} id="appTagsButtons" className="appTagsButtons" >
                     {/* {tagsWithCount.map((tag, index) => tag[1] >= 2 && <div key={index}>
                     <Button data-tag={tag[0]} onClick={tagClickHandler} className="tagButton">
@@ -518,12 +516,9 @@ function AppStore({toggle}) {
                 </div>)} */}
 
                     {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
-                        {toggle ? <Button data-cat={tag[0]} onClick={catClickHandler} className="darkTagButton">
+                        <Button data-cat={tag[0]} onClick={catClickHandler} className={toggle ? 'darkTagButton' : 'lightTagButton'}>
                             <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
-                        </Button> : <Button data-cat={tag[0]} onClick={catClickHandler} className="lightTagButton">
-                            <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
-                        </Button>}
-                        
+                        </Button>
                     </div>)}
                 </Slider>
             </div>
