@@ -7,7 +7,7 @@ import './index.css'
 import { skappTheme } from './theme/Theme'
 import SnRouter from './router/SnRouter'
 import {
-  BrowserRouter as Router
+  HashRouter as Router
 } from "react-router-dom";
 import Nav from './components/Navbar/Nav'
 import { initMySky } from "./service/skynet-api"
