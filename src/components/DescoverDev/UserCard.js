@@ -1,6 +1,7 @@
-import { Box, Button, IconButton, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, IconButton, Typography } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
+import { PersonOutline } from "@material-ui/icons";
 import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
 
@@ -55,8 +56,10 @@ const useStyles = makeStyles((theme) => ({
     color: "#4E4E4E",
   },
   userProfile: {
-    marginBottom: "6px",
-    textAlign: "center",
+    marginBottom: "16px",
+    display: "flex",
+    justifyContent: "center",
+
     "& img": {
       borderRadius: "50%",
       border: "8px solid #70707026",
@@ -121,6 +124,13 @@ const useStyles = makeStyles((theme) => ({
     right: 10,
     top: 10,
   },
+  devAvtar: {
+    height: 120,
+    width: 120,
+    "& .icon": {
+      fontSize: 60,
+    },
+  },
 }));
 
 const UserCard = ({
@@ -145,13 +155,17 @@ const UserCard = ({
       >
         <div className={classes.userCard}>
           <div className={classes.userProfile}>
-            <img
-              src={
-                (user?.avatar && user?.avatar[0]?.url) ||
-                "https://i.pravatar.cc/120"
-              }
-              alt=""
-            />
+            {user.avatar && user.avatar[0] ? (
+              <img
+                className={classes.devAvtar}
+                src={user.avatar[0].url}
+                alt=""
+              />
+            ) : (
+              <Avatar className={classes.devAvtar}>
+                <PersonOutline className="icon" />
+              </Avatar>
+            )}
           </div>
           <div className={classes.userDetails}>
             <Typography className={classes.cardUserName}>

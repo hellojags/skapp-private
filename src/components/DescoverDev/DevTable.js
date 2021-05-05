@@ -1,6 +1,6 @@
 import { faEllipsisH as MoreIcon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Checkbox, IconButton } from "@material-ui/core";
+import { Avatar, Box, Button, Checkbox, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,6 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { PersonOutline } from "@material-ui/icons";
 import React, { Fragment, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 // import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
@@ -221,14 +222,18 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
     );
 
     const promiseList = idList.map(async (id) => {
-      const [profile = {}, following, appCount] = await Promise.all([
+      let [profile = {}, following, appCount] = await Promise.all([
         getProfile(id),
         getFollowingCountForUser(id),
         getUsersPublishedAppsCount(id),
       ]);
 
-      profile.following = following;
-      profile.appCount = appCount;
+      if (!profile) {
+        profile = {};
+      }
+
+      profile.following = following || 0;
+      profile.appCount = appCount || 0;
       profile.uid = id;
 
       return profile;
@@ -236,7 +241,7 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
 
     const list = await Promise.all(promiseList);
 
-    setItems((items) => [...items, ...list]);
+    setItems((items) => [...items, ...list.filter((i) => i)]);
   };
 
   const handleFollowing = (actionType, uid) => async () => {
@@ -333,14 +338,17 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    <img
-                      className={classes.devAvtar}
-                      src={
-                        (item.avatar && item.avatar[0]?.url) ||
-                        "https://i.pravatar.cc/40"
-                      }
-                      alt=""
-                    />
+                    {item.avatar && item.avatar[0] ? (
+                      <img
+                        className={classes.devAvtar}
+                        src={item.avatar[0].url}
+                        alt=""
+                      />
+                    ) : (
+                      <Avatar className={classes.devAvtar}>
+                        <PersonOutline />
+                      </Avatar>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Box
