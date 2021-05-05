@@ -50,7 +50,22 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    lightRoot: {
+        backgroundColor: 'transparent',
+        backgroundColor: 'transparent',
+        '& .MuiTabs-indicator': {
+            backgroundColor: 'transparent',
+        },
+        '& .MuiTab-root': {
+            fontWeight: 600,
+            minWidth: 85,
+            color: '#869EA6',
+            "&.Mui-selected": {
+                color: '#2A2C34'
+            }
+        }
+    },
+    darkRoot: {
         backgroundColor: 'transparent',
         backgroundColor: 'transparent',
         '& .MuiTabs-indicator': {
@@ -91,7 +106,11 @@ const useStyles = makeStyles((theme) => ({
             minWidth: 70,
         }
     },
-    tabNavigation: {
+    lightTabNavigation: {
+        boxShadow: 'none',
+        background: '#fff'
+    },
+    darkTabNavigation: {
         boxShadow: 'none',
         background: '#12141D',
     }
@@ -115,8 +134,8 @@ const Settings = ({toggle}) => {
                 </Box>
             </Box> */}
 
-            <div className={classes.root}>
-                <AppBar className={classes.tabNavigation} position="static" color="default" >
+            <div className={toggle ? classes.darkRoot : classes.lightRoot}>
+                <AppBar className={toggle ? classes.darkTabNavigation: classes.lightTabNavigation} position="static" color="default" >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" >
                         <Tab label="Profile" {...a11yProps(0)} />
                         <Tab label="Global Preferences" {...a11yProps(1)} />

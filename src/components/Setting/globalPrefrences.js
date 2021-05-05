@@ -20,10 +20,8 @@ import Loader from "react-loader-spinner";
 import { setUserPreferencesAction } from "../../redux/action-reducers-epic/SnUserPreferencesAction"
 
 const useStyles = makeStyles((theme) => ({
-    ProfileRoot: {
-        // backgroundColor: '#fff',
-        // backgroundColor: '#2A2C34',
-        backgroundColor: '#12141D',
+    lightProfileRoot: {
+        backgroundColor: '#fff',
         boxShadow: '0px 2px 5px #15223214',
         borderRadius: 6,
         padding: '50px 30px',
@@ -31,7 +29,22 @@ const useStyles = makeStyles((theme) => ({
             padding: '20px 10px',
         },
         '& h2': {
-            // color: '#242F57',
+            color: '#242F57',
+            marginBottom: '1rem',
+            '@media only screen and (max-width: 575px)': {
+                fontSize: 22,
+            },
+        }
+    },
+    darkProfileRoot: {
+        backgroundColor: '#1E2029',
+        boxShadow: '0px 2px 5px #12141D',
+        borderRadius: 6,
+        padding: '50px 30px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '20px 10px',
+        },
+        '& h2': {
             color: '#fff',
             marginBottom: '1rem',
             '@media only screen and (max-width: 575px)': {
@@ -39,7 +52,14 @@ const useStyles = makeStyles((theme) => ({
             },
         }
     },
-    textInfo: {
+    lightTextInfo: {
+        color: 'rgba(0, 0, 0, 0.5)',
+        fontSize: 14,
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 13,
+        },
+    },
+    darkTextInfo: {
         color: 'rgba(255, 255, 255, 0.5)',
         fontSize: 14,
         '@media only screen and (max-width: 575px)': {
@@ -256,7 +276,7 @@ const GlobalPrefrences = ({toggle}) => {
     }
     return (
 
-        <div className={classes.ProfileRoot}>
+        <div className={toggle ? classes.darkProfileRoot : classes.lightProfileRoot}>
             <Box>
 
                 {isSuccess && <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000}>
@@ -282,7 +302,7 @@ const GlobalPrefrences = ({toggle}) => {
                             {formik => (<form onSubmit={formik.handleSubmit}>
                                 <h2>General Prefrences  <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save Changes </Button>
                                 </h2>
-                                <Typography className={classes.textInfo}>
+                                <Typography className={toggle ? classes.darkTextInfo : classes.lightTextInfo}>
                                     This information can be edited from your general prefrences page.
                                 </Typography>
                                 <Box display='flex' className={`${classes.formRow} formSiteRow`}>

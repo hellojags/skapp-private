@@ -13,7 +13,19 @@ const errorPageStyle = {
         }
 
     },
-    h1: {
+    lighth1: {
+        fontSize: 82,
+        color: '#2A2C34',
+        marginTop: '-80px',
+        '@media only screen and (max-width: 1440px)': {
+            marginTop: '-90px',
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '-100px',
+            fontSize: 42,
+        }
+    },
+    darkh1: {
         fontSize: 82,
         color: '#fff',
         marginTop: '-80px',

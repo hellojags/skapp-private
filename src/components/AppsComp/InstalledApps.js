@@ -150,7 +150,7 @@ const useStyles = makeStyles(theme => (
         }
     }
 ))
-function InstalledApps() {
+function InstalledApps({toggle}) {
     // temp var for selected page
     // const selectedPage = true
 
@@ -244,7 +244,7 @@ function InstalledApps() {
                             <AppsList newData={installedAppsStore} installedApps={installedAppsStore} updated={true} handleInstall={handleInstall} />
                         </div>
                     </Fragment>
-                :   <NoApp />
+                :   <NoApp toggle={toggle} />
             }
         </Fragment>
     )

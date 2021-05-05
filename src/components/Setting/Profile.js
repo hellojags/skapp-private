@@ -21,9 +21,8 @@ import Loader from "react-loader-spinner";
 // import './index.css';
 
 const useStyles = makeStyles((theme) => ({
-    ProfileRoot: {
-        // backgroundColor: '#fff',
-        backgroundColor: '#12141D',
+    lightProfileRoot: {
+        backgroundColor: '#fff',
         boxShadow: '0px 2px 5px #15223214',
         borderRadius: 6,
         padding: '50px 30px',
@@ -31,7 +30,22 @@ const useStyles = makeStyles((theme) => ({
             padding: '20px 10px',
         },
         '& h2': {
-            // color: '#242F57',
+            color: '#242F57',
+            marginBottom: '1rem',
+            '@media only screen and (max-width: 575px)': {
+                fontSize: 22,
+            },
+        }
+    },
+    darkProfileRoot: {
+        backgroundColor: '#1E2029',
+        boxShadow: '0px 2px 5px #12141D',
+        borderRadius: 6,
+        padding: '50px 30px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '20px 10px',
+        },
+        '& h2': {
             color: '#fff',
             marginBottom: '1rem',
             '@media only screen and (max-width: 575px)': {
@@ -39,7 +53,14 @@ const useStyles = makeStyles((theme) => ({
             },
         }
     },
-    textInfo: {
+    lightTextInfo: {
+        color: 'rgba(0, 0, 0, 0.5)',
+        fontSize: 14,
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 13,
+        },
+    },
+    darkTextInfo: {
         color: 'rgba(255, 255, 255, 0.5)',
         fontSize: 14,
         '@media only screen and (max-width: 575px)': {
@@ -293,9 +314,9 @@ const Profile = ({toggle}) => {
             // formikObj.telegram[0] = profile?.connections?.telegram ?? "";
             formikObj.topicsHidden[0] = profile?.topicsHidden;
             formikObj.topicsDiscoverable[0] = profile?.topicsDiscoverable;
-            if (profile?.avatar[0]?.url) {
+            /* if (profile?.avatar[0]?.url) {
                 formikObj.avatar = profile.avatar;
-            }
+            } */
             setFormikObj(formikObj)
         }
     }
@@ -323,7 +344,7 @@ const Profile = ({toggle}) => {
 
     return (
 
-        <div className={classes.ProfileRoot}>
+        <div className={toggle ? classes.darkProfileRoot : classes.lightProfileRoot}>
             <Box>
 
                 <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={isSuccess} autoHideDuration={6000}>
@@ -345,7 +366,7 @@ const Profile = ({toggle}) => {
                     {formik => (<form onSubmit={formik.handleSubmit}>
                         <h2>Account  <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save Changes </Button>
                         </h2>
-                        <Typography className={classes.textInfo}>
+                        <Typography className={toggle ? classes.darkTextInfo : classes.lightTextInfo}>
                             This information can be edited from your profile page.
                         </Typography>
                         <Box component="form">

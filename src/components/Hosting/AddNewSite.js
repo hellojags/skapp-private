@@ -54,13 +54,11 @@ const reactSelectStyles = {
             height: 50,
             // width: '100%',
             fontSize: 16,
-
         },
         '@media only screen and (max-width: 575px)': {
             height: 43,
             // width: '100%',
             fontSize: 14,
-
         },
         '&:hover': {
             borderColor: '#1DBF73'
@@ -86,7 +84,7 @@ const formikObj = {
     imgThumbnailSkylink: ['']
 };
 
-export default function AddNewSite() {
+export default function AddNewSite({toggle}) {
     const [selectedOption, setSelectedOption] = useState(null);
     const classes = useStyles();
     let history = useHistory();
@@ -177,6 +175,8 @@ export default function AddNewSite() {
         formik.setFieldValue("skylink", obj.skylink, true)
         formik.setFieldValue("sourceCode", `https://siasky.net/${obj.skylink}`, true)
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
     
     return (
         <>
@@ -189,7 +189,7 @@ export default function AddNewSite() {
                     onSubmit={submitForm}>
                     {formik => (<form onSubmit={formik.handleSubmit}>
                         <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                            <h1 className={classes.h1}>Add New Site</h1>
+                            <h1 className={toggle ? classes.darkh1 : classes.lighth1}>Add New Site</h1>
                             <Box className={classes.btnBox}>
                                 <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}>Reset Form</Button>
                                 <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add />Submit</Button>
@@ -208,7 +208,7 @@ export default function AddNewSite() {
                                         uploadStarted={(e) => setIsLogoUploaded(e)}
                                     />
                                 </div>
-                                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                <div className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
                                     {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() === "" && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                                     <Box style={{ position: "relative", textAlign: 'center' }}>
                                         <ImgIcon />
@@ -238,14 +238,14 @@ export default function AddNewSite() {
                                     <SnTextInput
                                         label={<span>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="appName"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                                 <Box className={classes.inputContainer} flex={1}>
                                     <SnTextInput
                                         label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="defaultPath"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>
@@ -254,7 +254,7 @@ export default function AddNewSite() {
                                     <SnTextInput
                                         label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="hns"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1} >
@@ -272,7 +272,7 @@ export default function AddNewSite() {
                                     <SnTextInput
                                         label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="portalMinVersion"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>
@@ -283,7 +283,7 @@ export default function AddNewSite() {
                                     <SnTextInput
                                         label={<span>Deployed Code Skylink <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                         name="sourceCode"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>

@@ -1,6 +1,13 @@
 import GraphIcon from '../../img/icons/grahpIcon.svg'
 const SubmitAppStyles = () => ({
-    h1: { 
+    lighth1: { 
+        fontSize: '28px',
+        color: '#2A2C34',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 18
+        }
+    },
+    darkh1: { 
         fontSize: '28px',
         color: '#fff',
         '@media only screen and (max-width: 575px)': {
@@ -106,7 +113,25 @@ const SubmitAppStyles = () => ({
             minWidth: 70,
         }
     },
-    siteLogo: {
+    lightSiteLogo: {
+        background: '#fff',
+        cursor: 'pointer',
+        height: 160,
+        width: 260,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        marginBottom: 10,
+        '@media only screen and (max-width: 575px)': {
+            width: "100%",
+            maxWidth: 340,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        }
+    },
+    darkSiteLogo: {
         background: '#1E2029',
         cursor: 'pointer',
         height: 160,
@@ -114,7 +139,6 @@ const SubmitAppStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // border: '1px solid #D9E1EC',
         border: '1px solid #48494E',
         borderRadius: 8,
         marginBottom: 10,
@@ -123,9 +147,7 @@ const SubmitAppStyles = () => ({
             maxWidth: 340,
             marginLeft: 'auto',
             marginRight: 'auto',
-
         }
-
     },
     label: {
         display: 'block',
@@ -144,7 +166,8 @@ const SubmitAppStyles = () => ({
     },
     input: {
         background: '#fff',
-        border: '1px solid #D9E1EC',
+        // border: '1px solid #1DBF73',
+        border: '1px solid #1DBF73',
         borderRadius: 8,
         height: 55,
         width: '100%',
@@ -162,9 +185,9 @@ const SubmitAppStyles = () => ({
             fontSize: '14px !important',
             padding: 10,
         }
-
     },
-    inputTag: {
+    lightInputTag: {
+        color: '#000',
         background: '#fff',
         border: '1px solid #D9E1EC',
         borderRadius: 8,
@@ -172,6 +195,35 @@ const SubmitAppStyles = () => ({
         width: '100%',
         fontSize: 18,
         padding: 10,
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            color: '#000',
+            fontSize: 16,
+            padding: 10,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+    },
+    darkInputTag: {
+        color: '#fff',
+        background: '#1E2029',
+        border: '1px solid #48494E',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 10,
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -184,19 +236,49 @@ const SubmitAppStyles = () => ({
             fontSize: '14px !important',
             padding: 10,
         }
-
     },
-    inputContainer: {
+    lightInputContainer: {
         '& > label': {
             display: 'block',
             color: '#5A607F',
             marginBottom: 7
         },
-        '& input, input:focus, & select:focus': {
+        '& input': {
+            border: '1px solid #D9E1EC',
+            background: '#fff',
+        },
+        '& input:focus, & select:focus': {
             outline: 'none!important',
-            // border: '1px solid #1DBF73',
-            color: '#fff',
+            color: '#2A2C34',
+            border: '1px solid #1DBF73',
+            background: '#fff',
+        },
+        marginTop: '25px',
+        '&': {
+            marginRight: '1rem'
+        },
+        '& input, & input': {
+            fontSize: 18
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '16px',
+            marginRight: '10px'
+        },
+    },
+    darkInputContainer: {
+        '& > label': {
+            display: 'block',
+            color: '#5A607F',
+            marginBottom: 7
+        },
+        '& input': {
             border: '1px solid #48494E',
+            background: '#1E2029',
+        },
+        '& input:focus, & select:focus': {
+            outline: 'none!important',
+            color: '#fff',
+            border: '1px solid #1DBF73',
             background: '#1E2029',
         },
         marginTop: '25px',
@@ -209,13 +291,7 @@ const SubmitAppStyles = () => ({
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
             marginRight: '10px'
-
-
         },
-
-    },
-    '.css-h0f0jv-control': {
-        background: '#1E2029'
     },
     inputContainerTag: {
         '& > label': {
@@ -375,11 +451,38 @@ const SubmitAppStyles = () => ({
 
                 fontSize: '12px'
             },
-
         }
     },
-    placeholderImg: {
-        // background: '#ffff',
+    lightPlaceholderImg: {
+        background: '#ffff',
+        width: '100%',
+        height: '160px',
+        borderRadius: '8px',
+        // border: '1px dashed #5C5D5E',
+        border: '1px dashed rgba(0, 0, 0, 0.6)',
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    lightPreviewImg: {
+        background: '#fff',
+        cursor: 'pointer',
+        height: 160,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#1E2029'
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    darkPlaceholderImg: {
         background: '#1E2029',
         width: '100%',
         height: '160px',
@@ -390,7 +493,7 @@ const SubmitAppStyles = () => ({
             height: '150px'
         }
     },
-    previewImg: {
+    darkPreviewImg: {
         background: '#1E2029',
         cursor: 'pointer',
         height: 160,
@@ -409,20 +512,60 @@ const SubmitAppStyles = () => ({
             height: '150px'
         }
     },
-    textarea: {
-        // background: '#fff',
-        background: '#1E2029',
+    lightTextarea: {
+        background: '#fff',
         boxShadow: '0px 1px 2px #15223214',
-        // border: '1px solid #7070701A',
-        color: '#fff !important',
-        border: '1px solid #48494E',
+        border: '1px solid #7070701A',
         borderRadius: '8px',
         // minHeight: '90px',
         width: `100%`,
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
-        color: '#000',
+        color: '#2A2C34',
+        '&:focus': {
+            color: '#2A2C34',
+            outline: 'none!important',
+            border: '1px solid #7070701A',
+        },
+        '&:placeholder': {
+            color: 'rgba(126, 132, 163 , .32)'
+        },
+        '&::-webkit-input-placeholder': {
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&:-moz-placeholder": { /* Firefox 18- */
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&::-moz-placeholder": {  /* Firefox 19+ */
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        " &:-ms-input-placeholder": {
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&::placeholder": {
+            color: 'rgba(126, 132, 163 , .32)'
+        },
+        marginTop: '0',
+        '@media only screen and (max-width: 575px)': {
+            padding: "10px"
+        }
+    },
+    darkTextarea: {
+        background: '#1E2029',
+        boxShadow: '0px 1px 2px #15223214',
+        border: '1px solid #48494E',
+        color: '#fff',
+        borderRadius: '8px',
+        // minHeight: '90px',
+        width: `100%`,
+        maxWidth: '100%',
+        resize: 'none',
+        padding: "1rem",
         '&:focus': {
             color: '#fff',
             outline: 'none!important',
@@ -484,7 +627,7 @@ const SubmitAppStyles = () => ({
             marginTop: '16px',
         }
     },
-    socilaMediaSelect: {
+    lightSocilaMediaSelect: {
         maxWidth: 120,
         minWidth: 120,
         '& .socialMedia__control, & ~ input': {
@@ -495,7 +638,6 @@ const SubmitAppStyles = () => ({
         '& ~ input': {
             width: '100%',
             paddingRight: 10
-
         },
         '& ~ input:hover, & ~ input:focus': {
             border: 0,
@@ -510,9 +652,34 @@ const SubmitAppStyles = () => ({
             minWidth: 100,
         },
     },
-    socialOptionContainer: {
-        // background: '#fff',
-        background: '#2A2C34',
+    darkSocilaMediaSelect: {
+        maxWidth: 120,
+        minWidth: 120,
+        '& .socialMedia__control, & ~ input': {
+            border: 0,
+            borderRadius: 8,
+            height: '100%'
+        },
+        '& ~ input': {
+            width: '100%',
+            paddingRight: 10,
+            color: '#fff',
+            background: '#2A2C34',
+        },
+        '& ~ input:hover, & ~ input:focus': {
+            border: 0,
+            outline: 0
+        },
+        '& .socialMedia__indicator-separator': {
+            display: 'none'
+        },
+        '@media only screen and (max-width: 575px)': {
+            margin: 'auto',
+            maxWidth: 100,
+            minWidth: 100,
+        },
+    },
+    lightSocialOptionContainer: {
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         height: 55,
@@ -521,14 +688,28 @@ const SubmitAppStyles = () => ({
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
             height: 50,
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 14,
+            height: 43,
+        },
+    },
+    darkSocialOptionContainer: {
+        background: '#2A2C34',
+        border: '1px solid #48494E',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 16,
+            height: 50,
             background: '#2A2C34!important',
-            border: '1px solid rgba(0, 0, 0, 0.4)'
         },
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
             height: 43,
             background: '#2A2C34!important',
-            border: '1px solid rgba(0, 0, 0, 0.4)'
         },
     },
 
