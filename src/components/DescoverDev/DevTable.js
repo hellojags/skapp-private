@@ -288,7 +288,8 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userList.length]);
 
-  console.log(items);
+  console.log(userList.length);
+  console.log(items.length);
 
   return (
     <Fragment>
