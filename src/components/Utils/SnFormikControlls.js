@@ -47,7 +47,30 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   
-  inputInput: {
+  lightInputInput: {
+    color: '#2A2C34',
+    background: '#fff',
+    borderColor: '#D9E1EC',
+    // padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: "100%",
+    },
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    "@media (max-width: 1660px)": {
+      width: "100%",
+    },
+    "@media (max-width: 1460px)": {
+      width: "100%",
+    },
+  },
+  darkInputInput: {
     color: '#fff',
     background: '#2A2C34',
     // padding: theme.spacing(1, 1, 1, 0),
@@ -191,7 +214,7 @@ export const SnTextArea = ({ label, className, showError, ...props }) => {
   );
 };
 
-export const SnInputWithIcon = ({ icon, label, className, showError, ...props }) => {
+export const SnInputWithIcon = ({ icon, label, className, showError, toggle, ...props }) => {
   const [field, meta] = useField(props);
   const { submitCount } = useFormikContext();
   const classes = useStyles();
@@ -209,7 +232,7 @@ export const SnInputWithIcon = ({ icon, label, className, showError, ...props })
           {...field} {...props}
           classes={{
             root: classes.inputRoot,
-            input: classes.inputInput,
+            input: toggle ? classes.darkInputInput : classes.lightInputInput,
           }}
           inputProps={{ "aria-label": "search" }}
         />

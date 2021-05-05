@@ -117,10 +117,33 @@ const useStyles = makeStyles((theme) => ({
             fontSize: 16,
         }
     },
-    profilePlaceholder: {
+    lightProfilePlaceholder: {
         width: 150,
         height: 150,
-        // background: '#EFF5F7',
+        background: '#EFF5F7',
+        display: 'flex',
+        borderRadius: '50%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+        '& svg': {
+            fontSize: 89,
+            // marginTop: '2.9rem',
+            color: '#B4C6CC'
+        },
+        '@media only screen and (max-width: 575px)': {
+            width: 75,
+            height: 75,
+            '& svg': {
+                fontSize: 45,
+                // marginTop: '2.9rem',
+                color: '#B4C6CC'
+            },
+        }
+    },
+    darkProfilePlaceholder: {
+        width: 150,
+        height: 150,
         background: '#2A2C34',
         display: 'flex',
         borderRadius: '50%',
@@ -183,12 +206,10 @@ const useStyles = makeStyles((theme) => ({
             fontSize: 12,
         }
     },
-    input: {
-        // background: '#fff',
-        color: '#fff',
-        background: '#2A2C34',
-        // border: '1px solid #D9E1EC',
-        border: '1px solid rgba(0, 0, 0, 0.5)',
+    lightInput: {
+        background: '#fff',
+        color: '#2A2C34!important',
+        border: '1px solid #D9E1EC',
         borderRadius: 8,
         height: 55,
         width: '100%',
@@ -206,7 +227,28 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '14px !important',
             padding: 10,
         }
-
+    },
+    darkInput: {
+        background: '#2A2C34',
+        color: '#D9E1EC!important',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 20,
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 15,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
     },
     inputContainer: {
         '& > label': {
@@ -224,16 +266,12 @@ const useStyles = makeStyles((theme) => ({
         },
         '& input, & input': {
             fontSize: 18,
-            width: '100%',
-            color: '#fff'
+            width: '100%'
         },
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
             marginRight: '10px'
-
-
         },
-
     },
     firstInput: {
         marginTop: 5,
@@ -382,7 +420,7 @@ const Profile = ({toggle}) => {
                                     />
                                 </div>
                                 <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
-                                    {!isLogoUploaded && Object.keys(formik.values.avatar).length == 0 && <div className={classes.profilePlaceholder}>
+                                    {!isLogoUploaded && Object.keys(formik.values.avatar).length == 0 && <div className={toggle ? classes.darkProfilePlaceholder : classes.lightProfilePlaceholder}>
                                         <PersonOutlineIcon className={classes.avatarIcon} />
                                     </div>}
                                     {!isLogoUploaded && Object.keys(formik.values.avatar).length > 0 && <img
@@ -405,7 +443,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label={<span> Username <span style={{ color: 'red' }}>*</span></span>}
                                         name="username"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -413,7 +451,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label="First Name"
                                         name="firstName"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -421,7 +459,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label="Last Name"
                                         name="lastName"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -431,7 +469,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label="Location"
                                         name="location"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -439,7 +477,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label="Email"
                                         name="emailID"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -447,7 +485,7 @@ const Profile = ({toggle}) => {
                                     <SnTextInput
                                         label="Contact"
                                         name="contact"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text"
                                     />
                                 </Box>
@@ -457,7 +495,7 @@ const Profile = ({toggle}) => {
                                     <SnTextArea
                                         label="About me"
                                         name="aboutMe"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                     />
                                 </Box>
                             </Box>
@@ -466,14 +504,14 @@ const Profile = ({toggle}) => {
                                     <SnTextInputTag
                                         label="Topics Hidden"
                                         name="topicsHidden"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                     />
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnTextInputTag
                                         label="Topics Discoverable"
                                         name="topicsDiscoverable"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                     />
                                 </Box>
                             </Box>
@@ -485,6 +523,7 @@ const Profile = ({toggle}) => {
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnInputWithIcon
+                                        toggle={toggle}
                                         icon={<GitHub />}
                                         // icon={<i className="fa fa-github-square"></i>}
                                         label="Github"
@@ -494,6 +533,7 @@ const Profile = ({toggle}) => {
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnInputWithIcon
+                                        toggle={toggle}
                                         icon={<Twitter />}
                                         label="Twitter"
                                         name="twitter"
@@ -504,6 +544,7 @@ const Profile = ({toggle}) => {
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnInputWithIcon
+                                        toggle={toggle}
                                         icon={<Facebook />}
                                         label="Facebook"
                                         name="facebook"
@@ -512,6 +553,7 @@ const Profile = ({toggle}) => {
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnInputWithIcon
+                                        toggle={toggle}
                                         icon={<Reddit />}
                                         label="Reddit"
                                         name="reddit"
@@ -522,6 +564,7 @@ const Profile = ({toggle}) => {
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={0.5}>
                                     <SnInputWithIcon
+                                        toggle={toggle}
                                         icon={<Telegram />}
                                         label="Telegram"
                                         name="telegram"
