@@ -261,6 +261,25 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
     setUser(data);
   };
 
+  const getGithubUrl = (list = []) => {
+    let gitID = "";
+
+    if (!list) return gitID;
+
+    list.map((item) => {
+      if (Object.keys(item)[0] === "github") gitID = item.github;
+      return item;
+    });
+
+    return gitID;
+  };
+
+  const transformImageUrl = (siaUrl) => {
+    let skyUrl = `https://siasky.net/${siaUrl.slice(6)}`;
+    console.log(skyUrl);
+    return skyUrl;
+  };
+
   useEffect(() => {
     console.log("running......");
     setItems([]);
@@ -341,8 +360,10 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
                     {item.avatar && item.avatar[0] ? (
                       <img
                         className={classes.devAvtar}
-                        src={item.avatar[0].url}
+                        src={transformImageUrl(item.avatar[0].url)}
                         alt=""
+                        height="40px"
+                        width="40px"
                       />
                     ) : (
                       <Avatar className={classes.devAvtar}>
@@ -362,7 +383,7 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
                   </TableCell>
                   <TableCell>{item.username}</TableCell>
                   <TableCell>{item.location}</TableCell>
-                  <TableCell>{item.github}</TableCell>
+                  <TableCell>{getGithubUrl(item?.connections)}</TableCell>
                   <TableCell>{item.following}</TableCell>
                   <TableCell>{item.appCount}</TableCell>
                   <TableCell>

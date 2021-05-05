@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   cardUserAd: {
     fontSize: 18,
     color: "#4E4E4E",
+    marginBottom: "1rem",
   },
   userProfile: {
     marginBottom: "16px",
@@ -66,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   ul: {
-    marginTop: ".4rem",
+    marginTop: "1rem",
     justifyContent: "center",
     "& li:not(:last-child)": {
       marginRight: "1.7rem",
@@ -142,6 +143,12 @@ const UserCard = ({
   const classes = useStyles();
   const rootRef = React.useRef(null);
 
+  const transformImageUrl = (siaUrl) => {
+    let skyUrl = `https://siasky.net/${siaUrl.slice(6)}`;
+    console.log(skyUrl);
+    return skyUrl;
+  };
+
   return (
     user && (
       <Modal
@@ -158,7 +165,7 @@ const UserCard = ({
             {user.avatar && user.avatar[0] ? (
               <img
                 className={classes.devAvtar}
-                src={user.avatar[0].url}
+                src={transformImageUrl(user.avatar[0].url)}
                 alt=""
               />
             ) : (
