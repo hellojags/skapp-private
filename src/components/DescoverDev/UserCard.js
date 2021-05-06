@@ -23,8 +23,29 @@ const useStyles = makeStyles((theme) => ({
         
     },
 
-    userCard: {
-        // background: '#fff',
+    lightUserCard: {
+        background: '#fff',
+        paddingTop: '4rem',
+        paddingBottom: '3rem',
+        width: 460,
+        maxWidth: '98%',
+        // textAlign: 
+        borderRadius: 20,
+        boxShadow: '0px 1px 4px #00000012',
+        '&:focus': {
+            border: 'none',
+            outline: "none"
+        },
+        position: 'relative',
+
+        '@media only screen and (max-width: 370px)': {
+            paddingTop: '3rem',
+            paddingRight: '1.4rem',
+            paddingLeft: '1.4rem',
+            paddingBottom: '1rem'
+        }
+    },
+    darkUserCard: {
         background: '#2A2C34',
         paddingTop: '4rem',
         paddingBottom: '3rem',
@@ -46,15 +67,22 @@ const useStyles = makeStyles((theme) => ({
             paddingBottom: '1rem'
         }
     },
-    cardUserName: {
+    lightCardUserName: {
         fontSize: 18,
         fontWeight: 800,
-        // color: '#4E4E4E'
+        color: '#4E4E4E'
+    },
+    darkCardUserName: {
+        fontSize: 18,
+        fontWeight: 800,
         color: '#fff'
     },
-    cardUserAd: {
+    lightCardUserAd: {
         fontSize: 18,
-        // color: '#4E4E4E'
+        color: '#4E4E4E'
+    },
+    darkCardUserAd: {
+        fontSize: 18,
         color: '#fff'
     },
     userProfile: {
@@ -90,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
     userDetails: {
         textAlign: "center"
     },
-    userDetailsList: {
+    lightUserDetailsList: {
         
         listStyle: "none",
         margin: '1rem auto',
@@ -102,7 +130,26 @@ const useStyles = makeStyles((theme) => ({
             '& span': {
                 fontSize: 18,
                 lineHeight: 1.6,
-                // color: '#4E4E4E',
+                color: '#4E4E4E',
+                '&:last-child': {
+                    fontWeight: 'bold'
+                }
+            }
+        },
+
+    },
+    darkUserDetailsList: {
+        
+        listStyle: "none",
+        margin: '1rem auto',
+        '& li': {
+            display: 'flex',
+            maxWidth: 315,
+            justifyContent: 'space-between',
+            margin: '0 auto',
+            '& span': {
+                fontSize: 18,
+                lineHeight: 1.6,
                 color: '#6A6F89',
                 '&:last-child': {
                     fontWeight: 'bold'
@@ -124,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
         color: '#6A6F89',
     }
 }))
-const UserCard = () => {
+const UserCard = ({toggle}) => {
 
     const [open, setOpen] = React.useState(true)
 
@@ -152,15 +199,15 @@ const UserCard = () => {
             className={classes.modal}
             container={() => rootRef.current}
         >
-            <div className={classes.userCard}>
+            <div className={toggle ? classes.darkUserCard : classes.lightUserCard}>
                 <div className={classes.userProfile}>
                     <img src="https://i.pravatar.cc/120" alt="" />
                 </div>
-                <div className={classes.userDetails} >
-                    <Typography className={classes.cardUserName}>
+                <div className={classes.userDetails}>
+                    <Typography className={toggle ? classes.darkCardUserName : classes.lightCardUserName}>
                         Brandon McCoy
                     </Typography>
-                    <Typography className={classes.cardUserAd}>
+                    <Typography className={toggle ? classes.darkCardUserAd : classes.lightCardUserAd}>
                         @sk878
                     </Typography>
 
@@ -192,7 +239,7 @@ const UserCard = () => {
                     </ul>
                 </div>
 
-                <ul className={classes.userDetailsList}>
+                <ul className={toggle ? classes.darkUserDetailsList : classes.lightUserDetailsList}>
                     <li>
                         <span>
                             Skapp ID

@@ -13,7 +13,7 @@ import AddNewDomainTXT from './AddNewDomainTXT'
 // import AddNewSite from './AddNewSiteBtn'
 const useStyles = makeStyles(theme => (
     {
-        search: {
+        lightSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade('#fff', 1),
@@ -28,14 +28,35 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #7070701A;',
-            border: '1px solid rgba(0, 0, 0, 0.8);',
+            border: '1px solid #7070701A;',
 
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
                 width: 'auto'
             },
 
+        },
+        darkSearch: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade('#2A2C34', 1),
+            '&:hover': {
+                backgroundColor: fade("#2A2C34", 0.9),
+            },
+            marginRight: theme.spacing(2),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(3),
+                width: 'auto',
+            },
+            color: '#8B9DA5',
+            boxShadow: '0px 1px 2px #15223214',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
+
+            marginLeft: '16px!important',
+            '@media (max-width: 1650px)': {
+                width: 'auto'
+            },
         },
         searchIcon: {
             padding: theme.spacing(0, 2),
@@ -49,10 +70,11 @@ const useStyles = makeStyles(theme => (
         },
         inputRoot: {
             color: 'inherit',
+            border: '2px solid rgba(255, 255, 255, 0.1)',
         },
-        inputInput: {
-            color: '#fff',
-            background: '#2A2C34',
+        lightInputInput: {
+            color: '#2A2C34',
+            background: '#fff!important',
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             transition: theme.transitions.create('width'),
             width: '100%',
@@ -72,9 +94,33 @@ const useStyles = makeStyles(theme => (
             }
 
         },
+        darkInputInput: {
+            color: '#fff',
+            background: '#2A2C34!important',
+            paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+            transition: theme.transitions.create('width'),
+            width: '100%',
+            [theme.breakpoints.up('md')]: {
+                width: '100%',
+            },
+            [theme.breakpoints.up('lg')]: {
+                width: '50ch',
+            },
+            paddingTop: '10px',
+            paddingBottom: '10px',
+            '@media (max-width: 1660px)': {
+                width: '34ch'
+            },
+            '@media (max-width: 1460px)': {
+                width: '100%'
+            }
+        },
 
-        pageHeading: {
-            // color: '#131523',
+        lightPageHeading: {
+            color: '#131523',
+            fontSize: '28px',
+        },
+        darkPageHeading: {
             color: '#fff',
             fontSize: '28px',
         },
@@ -134,7 +180,7 @@ const useStyles = makeStyles(theme => (
 
     }
 ))
-const Domains = () => {
+const Domains = ({toggle}) => {
 
     const { width } = useWindowDimensions()
     const classes = useStyles()
@@ -146,32 +192,39 @@ const Domains = () => {
 
         <Fragment >
             {!addNew && <AddNewDomainTXT />}
-            <AddNewDomain openModal={addNew} openModalHandler={openModalHandler} />
+            <AddNewDomain toggle={toggle} openModal={addNew} openModalHandler={openModalHandler} />
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Domain Manager</h1>
+                    <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Domain Manager</h1>
                 </Box>
-                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                {width < 1250 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                     </Box>
-                    <InputBase
+                    {toggle ? <InputBase
                         placeholder="Search Apps"
                         classes={{
                             root: classes.inputRoot,
-                            input: classes.inputInput,
+                            input: classes.darkInputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
-                    />
+                    /> : <InputBase
+                        placeholder="Search Apps"
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.lightInputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                    />}
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
                     <Box>
-                        <UtilitiesItem />
+                        <UtilitiesItem toggle={toggle} />
                     </Box>
 
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -187,7 +240,7 @@ const Domains = () => {
                         />
                     </div>}
                     <Box>
-                        <ListFilter />
+                        <ListFilter toggle={toggle} />
                     </Box>
 
                     <Box >
@@ -198,7 +251,7 @@ const Domains = () => {
                 </Box>
 
             </Box>
-            <DomainTable />
+            <DomainTable toggle={toggle} />
         </Fragment>
     )
 }

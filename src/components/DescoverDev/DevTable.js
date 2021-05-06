@@ -10,7 +10,8 @@ import TableRow from '@material-ui/core/TableRow'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH as MoreIcon } from '@fortawesome/free-solid-svg-icons'
 // import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
-import { ReactComponent as Arrows } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
+import { ReactComponent as ArrowsLight } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
+import { ReactComponent as ArrowsDark } from '../../assets/img/icons/arrows-diagrams-02-dark.svg'
 
 import { Box, Button, Checkbox, IconButton } from '@material-ui/core'
 import Spiner from '../AppsComp/Spiner'
@@ -19,12 +20,10 @@ const useStyles = makeStyles({
     table: {
         minWidth: 850,
     },
-    paper: {
-        background: '#2A2C34!important',
+    lightPaper: {
         marginTop: 10,
         "& th, & td": {
             border: 0,
-            background: '#2A2C34',
         },
         '& tbody tr th ~ td:not(:last-child)': {
             color: '#6E77AA',
@@ -37,9 +36,79 @@ const useStyles = makeStyles({
             
             '& th': {
                 padding: 0,
-                color: '#5A607F',
+                color: '#2A2C34',
                 // lineHeight: '',
-                // background: '#F0F5F7',
+                background: '#F0F5F7',
+                '& svg': {
+                    marginLeft: '5px',
+                    width: 18,
+                },
+                '&:first-child': {
+                    borderRadius: '5px 0 0px 5px',
+                    paddingLeft: 5
+                },
+                '&:last-child': {
+                    paddingRight: 10,
+                    borderRadius: '0px 5px 5px 0px'
+                }
+            }
+        },
+        '& tr th, & tr td': {
+            padding: '10px 0',
+            fontSize: 18,
+            '@media only screen and (max-width: 1440px)': {
+                fontSize: 16
+            },
+        },
+        '& tr th': {
+            '&:first-child': {
+                borderRadius: '5px 0 0px 5px'
+            },
+            '&:last-child': {
+                borderRadius: '0px 5px 5px 0px'
+            }
+        },
+        '& tr td': {
+            borderBottom: '1px solid #7070702b',
+            '&:first-child': {
+
+                paddingLeft: 5
+            },
+            '&:last-child': {
+                paddingRight: 10,
+
+            }
+        },
+        '& table': {
+            borderCollapse: 'separate',
+            borderSpacing: '0 8px'
+        },
+        '& tbody tr td,& tbody tr th': {
+            background: '#fff',
+            color: '#2A2C34'
+        },
+        '& tbody th svg': {
+            marginRight: 10
+        }
+    },
+    darkPaper: {
+        marginTop: 10,
+        "& th, & td": {
+            border: 0,
+        },
+        '& tbody tr th ~ td:not(:last-child)': {
+            color: '#6E77AA',
+            fontWeight: 'normal'
+        },
+        '& tbody th': {
+            fontWeight: 700
+        },
+        '& thead': {
+            color: '#fff',
+            '& th': {
+                padding: 0,
+                color: '#fff',
+                // lineHeight: '',
                 background: '#1E2029',
                 '& svg': {
                     marginLeft: '5px',
@@ -86,7 +155,8 @@ const useStyles = makeStyles({
             borderSpacing: '0 8px'
         },
         '& tbody tr td,& tbody tr th': {
-            background: '#fff'
+            color: '#fff',
+            background: '#2A2C34',
         },
         '& tbody th svg': {
             marginRight: 10
@@ -183,7 +253,7 @@ const useStyles = makeStyles({
 //     // createData('mysite.net', 'External DNS', true,),
 // ]
 
-const DevTable = () => {
+const DevTable = ({toggle}) => {
     const classes = useStyles()
     const inialS = Array.from({ length: 12 })
     const [items, setItems] = useState(inialS)
@@ -205,7 +275,7 @@ const DevTable = () => {
                 hasMore={true}
                 loader={<Spiner />}
             >
-                <TableContainer className={classes.paper}>
+                <TableContainer className={toggle ? classes.darkPaper : classes.lightPaper}>
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -222,26 +292,26 @@ const DevTable = () => {
                                 <TableCell>Skapp ID</TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Developer Name </span><Arrows />
+                                        <span>Developer Name </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                                     </Box>
                                 </TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Location </span><Arrows />
+                                        <span>Location </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                                     </Box></TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Git ID </span><Arrows />
+                                        <span>Git ID </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                                     </Box></TableCell>
 
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Following </span><Arrows />
+                                        <span>Following </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                                     </Box>
                                 </TableCell>
                                 <TableCell>
                                     <Box display="flex" alignItems='center'>
-                                        <span>Apps </span><Arrows />
+                                        <span>Apps </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                                     </Box>
                                 </TableCell>
 

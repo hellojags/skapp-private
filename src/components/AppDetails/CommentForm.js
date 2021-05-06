@@ -5,8 +5,43 @@ import { setAppCommentAction } from "../../redux/action-reducers-epic/SnAppComme
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles({
-  textarea: {
+  lightTextarea: {
     background: "#fff",
+    boxShadow: "0px 1px 2px #15223214",
+    border: "1px solid #7070701A",
+    borderRadius: "5px",
+    // minHeight: '90px',
+    width: `100%`,
+    maxWidth: "740px",
+    resize: "none",
+    padding: "1rem",
+    color: "rgba(126, 132, 163 , 1)",
+    "&:focus": {
+      outline: "none!important",
+      border: "1px solid #1DBF73",
+    },
+    "&:placeholder": {
+      color: "rgba(126, 132, 163 , .32)",
+    },
+    "&::-webkit-input-placeholder": {
+      color: "rgba(126, 132, 163 , .32)",
+    },
+    "&:-moz-placeholder": {
+      /* Firefox 18- */ color: "rgba(126, 132, 163 , .32)",
+    },
+    "&::-moz-placeholder": {
+      /* Firefox 19+ */ color: "rgba(126, 132, 163 , .32)",
+    },
+    " &:-ms-input-placeholder": {
+      color: "rgba(126, 132, 163 , .32)",
+    },
+    "&::placeholder": {
+      color: "rgba(126, 132, 163 , .32)",
+    },
+    marginTop: "1rem",
+  },
+  darkTextarea: {
+    background: "#2A2C34",
     boxShadow: "0px 1px 2px #15223214",
     border: "1px solid #7070701A",
     borderRadius: "5px",
@@ -58,7 +93,7 @@ const useStyles = makeStyles({
     },
   },
 });
-const CommentForm = ({ uid, version }) => {
+const CommentForm = ({ uid, version, toggle }) => {
   const classes = useStyles();
   const [comment, setComment] = React.useState("");
 
@@ -86,7 +121,7 @@ const CommentForm = ({ uid, version }) => {
   return (
     <form>
       <TextareaAutosize
-        className={classes.textarea}
+        className={toggle ? classes.darkTextarea : classes.lightTextarea}
         aria-label="minimum height"
         rowsMin={4}
         value={comment}

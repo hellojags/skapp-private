@@ -164,7 +164,10 @@ const AddNewSiteStyles = () => ({
             marginRight: '1rem'
         },
         '& input, & input': {
-            fontSize: 18
+            fontSize: 18,
+            '&:hover': {
+                border: '1px solid #1DBF73'
+            }
         },
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
@@ -332,7 +335,7 @@ const AddNewSiteStyles = () => ({
         }
     },
     "MuiDropzoneArea-root": {
-        border: "none"
+        border: "none",
     },
     previewImg: {
         background: '#fff',

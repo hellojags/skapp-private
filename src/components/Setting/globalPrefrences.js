@@ -316,6 +316,7 @@ const GlobalPrefrences = ({toggle}) => {
                                         <label>Skynet Portal</label>
                                         <Box>
                                             <SnSelect
+                                                toggle={toggle}
                                                 label="Skynet Portal"
                                                 name="portal"
                                                 options={portalOptions}

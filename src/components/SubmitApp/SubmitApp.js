@@ -568,18 +568,18 @@ const SubmitApp = ({toggle}) => {
         }}
       >
         <Fade in={(isModelOpen && !SnLoader)}>
-          <Box className={classes.shareCardContainer}>
-            <Typography component='h2' className={classes.modalTitle}>
+          <Box className={toggle ? classes.darkShareCardContainer : classes.lightShareCardContainer}>
+            <Typography component='h2' className={toggle ? classes.darkModalTitle : classes.lightModalTitle}>
               App Published Successfully
             </Typography>
             <Typography component="p">
               Now you will be redirected to AppStore page, If you want to stay on same page click Cancel Button
             </Typography>
             <Box style={{ textAlign: 'right' }}>
-              <Button onClick={(e)=> history.push('/apps')} className={classes.okBtn}>
+              <Button onClick={(e)=> history.push('/apps')} className={toggle ? classes.darkOkBtn : classes.lightOkBtn}>
                 Ok
               </Button>
-              <Button onClick={(e)=>setIsModelOpen(false)} className={classes.closeBtn}>
+              <Button onClick={(e)=>setIsModelOpen(false)} className={toggle ? classes.darkCloseBtn : classes.lightCloseBtn}>
                 Cancel
               </Button>
             </Box>
@@ -645,7 +645,7 @@ const SubmitApp = ({toggle}) => {
           >
             <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder=""
               name="appname"
               ref={register}
@@ -659,7 +659,7 @@ const SubmitApp = ({toggle}) => {
             <input
               name="appUrl"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://[hns name].hns"
             />
             {isAppUrlTrue && (
@@ -671,7 +671,7 @@ const SubmitApp = ({toggle}) => {
             <input
               name="verson"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="Version"
             />
             {isAppVersionTrue && (
@@ -742,14 +742,14 @@ const SubmitApp = ({toggle}) => {
             <input
               name="sourceCode"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://github.com"
             />
           </Box>
           <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>Demo URL</label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               name="demoUrl"
               ref={register}
               placeholder="https://www.demo.com/UJJ5Rgbu2TM"

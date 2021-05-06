@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     },
     darkLists: {
         background: '#2A2C34',
-        color: '#7E84A3'
+        color: '#fff'
     },
     lightLists: {
         background: '#fff',

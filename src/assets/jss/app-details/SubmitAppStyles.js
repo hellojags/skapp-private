@@ -17,24 +17,40 @@ const SubmitAppStyles = () => ({
     btnBox: {
 
     },
-    okBtn: {
+    lightOkBtn: {
         border: '1px solid #ea052f',
         marginRight: '10px',
         borderRadius: '5px',
         boxShadow: '0px 2px 5px #15223221',
         height: 48,
         marginTop: '2rem',
-        textTransform: 'none'
+        textTransform: 'none',
+        color: '#2A2C34'
     },
-    modalTitle: {
+    darkOkBtn: {
+        border: '1px solid #ea052f',
+        marginRight: '10px',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none',
+        color: '#fff'
+    },
+    lightModalTitle: {
         fontSize: 32,
         color: '#333333',
         fontWeight: 700,
         marginBottom: '1rem'
     },
-    shareCardContainer: {
-        // background: '#fff',
-        background: '#2A2C34',
+    darkModalTitle: {
+        fontSize: 32,
+        color: '#ffffff',
+        fontWeight: 700,
+        marginBottom: '1rem'
+    },
+    lightShareCardContainer: {
+        background: '#fff',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
         padding: '48px 60px',
@@ -63,20 +79,60 @@ const SubmitAppStyles = () => ({
                 transition: '.25s ease'
             }
         }
-
+    },
+    darkShareCardContainer: {
+        background: '#1E2029',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        padding: '48px 60px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '40px 20px',
+            paddingTop: '50px'
+        },
+        '&:focus': {
+            outline: 0,
+            border: 0
+        },
+        width: '90%',
+        maxWidth: 500,
+        '& p': {
+            color: '#5A607F',
+            marginBottom: '5px'
+        },
+        '& .s-links-title': {
+            marginTop: '.4rem'
+        },
+        '& a': {
+            marginRight: '1rem',
+            '&:focus': {
+                textDecoration: 'none',
+                opacity: .8,
+                transition: '.25s ease'
+            }
+        }
     },
     modal: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    closeBtn: {
+    lightCloseBtn: {
         border: '1px solid #1DBF73',
         borderRadius: '5px',
         boxShadow: '0px 2px 5px #15223221',
         height: 48,
         marginTop: '2rem',
-        textTransform: 'none'
+        textTransform: 'none',
+        color: '#2A2C34'
+    },
+    darkCloseBtn: {
+        border: '1px solid #1DBF73',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none',
+        color: '#fff'
     },
     cancelBtn: {
         background: '#FF6060!important',
@@ -164,15 +220,35 @@ const SubmitAppStyles = () => ({
             fontSize: 12,
         }
     },
-    input: {
-        background: '#fff',
-        // border: '1px solid #1DBF73',
+    lightInput: {
         border: '1px solid #1DBF73',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
         padding: 20,
+        color: '#2A2C34',
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 15,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+    },
+    darkInput: {
+        border: '1px solid #1DBF73',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 20,
+        color: '#fff',
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',

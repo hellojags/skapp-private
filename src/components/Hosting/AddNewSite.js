@@ -49,7 +49,13 @@ const storageGatewayOption = getPortalList().map(portal => ({ "value": portal, "
 
 const reactSelectStyles = {
     control: styles => ({
-        ...styles, backgroundColor: 'white', height: 55, boxShadow: 0, borderColor: '#D9E1EC', color: '#000', borderRadius: 8,
+        ...styles, 
+        backgroundColor: 'white', 
+        height: 55, 
+        boxShadow: 0, 
+        borderColor: '#D9E1EC', 
+        color: '#000', 
+        borderRadius: 8,
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -261,6 +267,7 @@ export default function AddNewSite({toggle}) {
                                     <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
                                     <Box>
                                         <SnSelect
+                                            toggle={toggle}
                                             label="Storage Gateway"
                                             name="storageGateway"
                                             options={storageGatewayOption}
@@ -305,6 +312,7 @@ export default function AddNewSite({toggle}) {
                                         <Box>
                                             <div className="d-none">
                                                 <SnUpload
+                                                    toggle={toggle}
                                                     name="files"
                                                     source={UPLOAD_SOURCE_NEW_HOSTING}
                                                     ref={uploadEleRef}

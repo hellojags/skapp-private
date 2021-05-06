@@ -4,7 +4,7 @@ import "./UploadFile.scss";
 import { File, FileCheck, FileError, Copy } from "../svg";
 import LoadingSpinner from './LoadingSpinner';
 
-export default function UploadFile({ file, url, status, progress, error }) {
+export default function UploadFile({ file, url, status, progress, error, toggle }) {
   const [copied, setCopied] = useState(false);
   const urlRef = useRef(null);
 

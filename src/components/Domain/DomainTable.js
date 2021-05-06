@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     table: {
         minWidth: 650,
     },
-    paper: {
+    lightPaper: {
         marginTop: 10,
         "& th, & td": {
             border: 0
@@ -56,7 +56,53 @@ const useStyles = makeStyles({
             borderSpacing: '0 8px'
         },
         '& tbody tr td,& tbody tr th': {
-            background: '#fff'
+            background: '#fff',
+            color: '#2A2C34'
+        },
+        '& tbody th svg': {
+            marginRight: 10
+        }
+    },
+    darkPaper: {
+        marginTop: 10,
+        "& th, & td": {
+            border: 0
+        },
+        '& tbody tr th ~ td:not(:last-child)': {
+            color: '#6E77AA',
+            fontWeight: 'normal'
+        },
+        '& tbody th': {
+            fontWeight: 700
+        },
+        '& thead': {
+
+            '& th': {
+                color: '#fff',
+                lineHeight: '.8rem',
+                background: '#1DBF73',
+
+            }
+        },
+        '& tr th, & tr td': {
+            fontSize: 18,
+            '@media only screen and (max-width: 1440px)': {
+                fontSize: 16
+            },
+            '&:first-child': {
+                borderRadius: '5px 0 0px 5px'
+            },
+            '&:last-child': {
+                borderRadius: '0px 5px 5px 0px'
+            }
+        },
+        '& table': {
+            borderCollapse: 'separate',
+            borderSpacing: '0 8px'
+        },
+        '& tbody tr td,& tbody tr th': {
+            color: '#fff',
+            background: '#2A2C34'
         },
         '& tbody th svg': {
             marginRight: 10
@@ -71,7 +117,54 @@ const useStyles = makeStyles({
     arrow: {
         marginLeft: 10
     },
-    menuAction: {
+    lightMenuAction: {
+        marginTop: '3.4rem',
+        border: '1px solid #D9E1EC',
+        '& ul': {
+            background: '#fff',
+            color: '#2A2C34',
+            minWidth: 230,
+            '& li': {
+                fontSize: 18,
+                paddingBottom: 12,
+                '@media only screen and (max-width: 1440px)': {
+                    fontSize: 16
+                }
+            }
+        },
+        '& .MuiPaper-root': {
+            boxShadow: '0px 3px 6px #00000029',
+            // border: '1px solid #7070704F',
+            border: '1px solid #48494E',
+            overflow: 'visible'
+        },
+        '& .MuiPaper-root::before': {
+            content: '""',
+            width: 0,
+            height: 0,
+            borderTop: '14px solid transparent',
+            borderBottom: '14px solid transparent',
+            borderRight: '14px solid #70707057',
+            position: 'absolute',
+            top: '-22px',
+            right: 19,
+            transform: 'rotate(90deg)'
+        },
+        '& .MuiPaper-root::after': {
+            content: '""',
+            width: 0,
+            height: 0,
+            borderTop: '14px solid transparent',
+            borderBottom: '14px solid transparent',
+            borderRight: '14px solid #fff',
+            // position: 'relative',
+            position: 'absolute',
+            top: '-21px',
+            right: 19,
+            transform: 'rotate(90deg)'
+        }
+    },
+    darkMenuAction: {
         marginTop: '3.4rem',
         '& ul': {
             background: '#1E2029',
@@ -132,7 +225,7 @@ const rows = [
     createData('mysite.net', 'External DNS', true,),
 ]
 
-const DomainTable = () => {
+const DomainTable = ({toggle}) => {
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [clicked, setClicked] = React.useState(false)
@@ -148,7 +241,7 @@ const DomainTable = () => {
     }
     return (
         <Fragment>
-            <TableContainer className={classes.paper}>
+            <TableContainer className={toggle ? classes.darkPaper : classes.lightPaper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -190,7 +283,7 @@ const DomainTable = () => {
                 </Table>
             </TableContainer>
             <Menu
-                className={classes.menuAction}
+                className={toggle ? classes.darkMenuAction : classes.lightMenuAction}
                 id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted

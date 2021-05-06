@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import AppComment from "./AppComment";
 import CommentForm from "./CommentForm";
 
-const AppComments = ({uid,version}) => {
+const AppComments = ({uid,version, toggle}) => {
   return (
     <Fragment>
       <AppComment />
@@ -13,7 +13,7 @@ const AppComments = ({uid,version}) => {
       <AppComment />
 
       <AppComment /> */}
-      <CommentForm uid={uid} version={version} />
+      <CommentForm toggle={toggle} uid={uid} version={version} />
     </Fragment>
   );
 };

@@ -6,7 +6,6 @@ import '../SubmitApp/taginput.css';
 import { TextareaAutosize, InputBase, Box, Switch  } from '@material-ui/core';
 import { fade, makeStyles } from "@material-ui/core/styles";
 
-
 const useStyles = makeStyles((theme) => ({
   search: {
     position: "relative",
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   lightInputInput: {
     color: '#2A2C34',
     background: '#fff',
-    borderColor: '#D9E1EC',
+    border: '1px solid rgba(0, 0, 0, 0.2)',
     // padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
@@ -266,20 +265,27 @@ export const SnTextInputTag = ({ label, className, showError, ...props }) => {
   );
 };
 
-const reactSelectStyles = {
+const lightReactSelectStyles = {
   control: styles => ({
-      ...styles, backgroundColor: 'white', height: 55, boxShadow: 0, borderColor: '#D9E1EC', color: '#000', borderRadius: 8,
+      ...styles, 
+      backgroundColor: 'white', 
+      height: 55, 
+      boxShadow: 0, 
+      borderColor: '#D9E1EC',
+      borderRadius: 8,
       '@media only screen and (max-width: 1440px)': {
           height: 50,
           // width: '100%',
           fontSize: 16,
-
+          background: '#fff',
+          borderColor: '#D9E1EC'
       },
       '@media only screen and (max-width: 575px)': {
           height: 43,
           // width: '100%',
           fontSize: 14,
-
+          background: '#fff',
+          borderColor: '#D9E1EC'
       },
       '&:hover': {
           borderColor: '#1DBF73'
@@ -293,7 +299,43 @@ const reactSelectStyles = {
   }),
 };
 
-export const SnSelect1 = ({ label, className, showError, options, ...props }) => {
+const darkReactSelectStyles = {
+  control: styles => ({
+      ...styles, 
+      height: 55, 
+      boxShadow: 0,
+      borderColor: "#48494E",
+      color: "#fff!important",
+      borderRadius: 8,
+      '@media only screen and (max-width: 1440px)': {
+          height: 50,
+          // width: '100%',
+          fontSize: 16,
+          background: '#2A2C34',
+          borderColor: '#48494E',
+          color: "#fff!important",
+      },
+      '@media only screen and (max-width: 575px)': {
+          height: 43,
+          // width: '100%',
+          fontSize: 14,
+          background: '#2A2C34',
+          borderColor: '#48494E',
+          color: "#fff!important",
+      },
+      '&:hover': {
+          borderColor: '#1DBF73'
+      }
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#fff',
+      '&:foucs': {
+          backgroundColor: '#1DBF73'
+      }
+  }),
+};
+
+export const SnSelect1 = ({ label, className, showError, options, toggle, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>
@@ -301,7 +343,7 @@ export const SnSelect1 = ({ label, className, showError, options, ...props }) =>
       <>
       <Select {...field} {...props}
         options={options}
-        styles={reactSelectStyles}
+        styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
       </> 
       {(showError ?? true) && meta.error ? (
@@ -311,7 +353,7 @@ export const SnSelect1 = ({ label, className, showError, options, ...props }) =>
   );
 };
 
-export const SnSelect = ({ label, className, showError, options, ...props }) => {
+export const SnSelect = ({ label, className, showError, options, toggle, ...props }) => {
   const [field, meta, helpers] = useField(props);
   const { touched, error, value } = meta;
   const { setValue } = helpers;
@@ -325,7 +367,7 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
         name={field.name}
         onChange={(option) => setValue(option.value)}
         instanceId={props.iid}
-        styles={reactSelectStyles}
+        styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
 
       {(showError ?? true) && submitCount>0 && meta.error ? (
