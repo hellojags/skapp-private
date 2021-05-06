@@ -146,8 +146,8 @@ const DescoverDev = () => {
 
   const toggleFollowing = async (id) => {
     if (followingList.includes(id))
-      setFollowingList(followingList.filter((item) => item !== id));
-    else setFollowingList([...followingList, id]);
+      setFollowingList((list) => list.filter((item) => item !== id));
+    else setFollowingList((list) => [...list, id]);
   };
 
   const searchHandler = (e) => {
