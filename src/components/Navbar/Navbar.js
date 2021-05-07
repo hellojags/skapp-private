@@ -81,12 +81,31 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
         },
     },
-    search: {
+    lightSearch: {
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade('#F0F5F7', 1),
         '&:hover': {
             backgroundColor: fade("#F0F5F7", 0.7),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+        color: '#8B9DA5',
+        '@media only screen and (max-width: 890px)': {
+            display: 'none'
+        }
+    },
+    darkSearch: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade('#1E2029', 1),
+        '&:hover': {
+            backgroundColor: fade("#1E2029", 0.7),
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
@@ -130,11 +149,11 @@ const useStyles = makeStyles((theme) => ({
             width: '50ch',
         },
     },
-    lightInputColor: {
-    },
-    darkInputColor: {
-        background: '#1E2029',
-    },
+    // lightInputColor: {
+    // },
+    // darkInputColor: {
+    //     background: '#1E2029',
+    // },
     sectionDesktop: {
         display: 'none',
         [theme.breakpoints.up('md')]: {
@@ -436,7 +455,7 @@ export default function Navbar({toggle, setToggle}) {
                     <div className="logo-top" >
                         {toggle ? <Logo1 /> : <Logo />} 
                     </div>
-                    <div className={classes.search}>
+                    <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                             {/* <Icon style={{color: grey[50]}}>article</Icon> */}
@@ -445,7 +464,7 @@ export default function Navbar({toggle, setToggle}) {
                             placeholder="Search…"
                             classes={{
                                 root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
-                                input: `${classes.inputInput} ${toggle ? classes.darkInputColor : classes.lightInputColor}`,
+                                input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />

@@ -91,7 +91,7 @@ const appCardStyle = {
         }
     },
     lightIcon : {
-        color: '#000'
+        color: '#2A2C34!important'
     },
     darkIcon : {
         color: '#fff!important'

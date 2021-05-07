@@ -223,10 +223,10 @@ const StorageTable = ({toggle}) => {
 
                                 <TableCell align="right">
                                     <IconButton size="small" style={{ marginRight: '1rem' }} >
-                                        <CreateOutlinedIcon style={{ color: '#323232' }} />
+                                        {toggle ? <CreateOutlinedIcon style={{ color: '#fff' }} /> : <CreateOutlinedIcon style={{ color: '#323232' }} />}
                                     </IconButton>
                                     <IconButton size="small" >
-                                        <FontAwesomeIcon color='#323232' icon={DeleteIcon} />
+                                        {toggle ? <FontAwesomeIcon color='#fff' icon={DeleteIcon} /> : <FontAwesomeIcon color='#323232' icon={DeleteIcon} />}
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

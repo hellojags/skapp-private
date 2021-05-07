@@ -13,7 +13,7 @@ import StorageTable from './StorageTable'
 // import AddNewSite from './AddNewSiteBtn'
 const useStyles = makeStyles(theme => (
     {
-        search: {
+        lightSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade('#fff', 1),
@@ -28,8 +28,29 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #7070701A;',
-            // border: '1px solid #48494E;',
+            border: '1px solid #7070701A;',
+
+            marginLeft: '16px!important',
+            '@media (max-width: 1650px)': {
+                width: 'auto'
+            },
+
+        },
+        darkSearch: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade('#2A2C34', 1),
+            '&:hover': {
+                backgroundColor: fade("#2A2C34", 0.9),
+            },
+            marginRight: theme.spacing(2),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(3),
+                width: 'auto',
+            },
+            color: '#8B9DA5',
+            boxShadow: '0px 1px 2px #15223214',
             border: '1px solid rgba(0, 0, 0, 0.8);',
 
             marginLeft: '16px!important',
@@ -76,7 +97,6 @@ const useStyles = makeStyles(theme => (
             }
 
         },
-
         lightPageHeading: {
             color: '#131523',
             fontSize: '28px',
@@ -157,7 +177,7 @@ function StorageGateway({toggle}) {
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Domain Manager</h1>
                 </Box>
-                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                {width < 1250 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -177,7 +197,7 @@ function StorageGateway({toggle}) {
                         <UtilitiesItem toggle={toggle} />
                     </Box>
 
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />

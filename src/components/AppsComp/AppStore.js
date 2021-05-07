@@ -61,9 +61,9 @@ const useStyles = makeStyles(theme => (
         darkSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
-            backgroundColor: fade('#fff', 1),
+            backgroundColor: fade('#2A2C34', 1),
             '&:hover': {
-                backgroundColor: fade("#fff", 0.9),
+                backgroundColor: fade("#2A2C34", 0.9),
             },
             marginRight: theme.spacing(2),
             // marginLeft: 0,
@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #2A2C34;',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
             // hieght: '41px',
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -94,14 +94,14 @@ const useStyles = makeStyles(theme => (
             // color: '#2A2C34'
         },
         lightInputRoot: {
-            color: 'inherit',
+            // color: 'inherit',
+            color: '#2A2C34!important',
         },
         darkInputRoot: {
-            color: 'inherit',
-            background: '#2A2C34',
+            color: '#fff!important',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
         },
         inputInput: {
-            // padding: theme.spacing(1, 1, 1, 0),
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             transition: theme.transitions.create('width'),
             width: '100%',
