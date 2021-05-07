@@ -153,8 +153,8 @@ export const getFollowingForUser = async (userID) => {
   );
   console.log("getFollowingForUser" + followingList);
   // try {
-  //     const contentDAC = await getContentDAC();
-  //     await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
+  //     // const contentDAC = await getContentDAC();
+  //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
   //  } catch (e) {
   //   console.log("contentDAC.recordNewContent : failed =" + e)
   // }
@@ -169,8 +169,8 @@ export const getFollowingCountForUser = async (userID) => {
   const followingCount = await socialDAC.getFollowingCountForUser(userId);
   console.log("getFollowingCountForUser" + followingCount);
   // try {
-  //     const contentDAC = await getContentDAC();
-  //     await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
+  //     // const contentDAC = await getContentDAC();
+  //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
   //  } catch (e) {
   //   console.log("contentDAC.recordNewContent : failed =" + e)
   // }
@@ -238,6 +238,20 @@ export const getMyPublishedApps = async () => {
   return publishedAppsMap;
 };
 
+export const getUsersPublishedAppsCount = async (userID) => {
+  //let publishedAppsMap = new Map();
+  let publishedAppsMap = [];
+  try {
+    let result = await getFile_MySky(DK_PUBLISHED_APPS, { userID, store: IDB_STORE_SKAPP });
+    publishedAppsMap = result.data
+  } catch (err) {
+    console.log(err);
+    return 0;
+  }
+  return publishedAppsMap ? publishedAppsMap.length : 0 ;
+}
+
+
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
   //let publishedAppsIdList = await getFile_MySky( DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
@@ -269,7 +283,7 @@ export const publishApp = async (appJSON) => {
     console.log("emitEvent failed: e" + e);
   }
   try {
-    const contentDAC = await getContentDAC();
+    // const contentDAC = await getContentDAC();
     if (firstTime) {
       await contentDAC.recordNewContent({
         skylink: resultObj.dataLink,
@@ -1020,26 +1034,19 @@ export const getAllPublishedApps = async (sortOn, orderBy, resultCount) => {
     // april 25th
     // let publishedAppsIdList = await getFile(getProviderKeysByType("AGGREGATOR").publicKey, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP_AGGREGATED_DATA });
     //let publishedAppsIdList = await getFile(null, DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP_AGGREGATED_DATA, publicKey: getProviderKeysByType("AGGREGATOR").publicKey });
-    let { data: publishedAppsIdList } = await getFile_SkyDB(
-      getProviderKeysByType("AGGREGATOR").publicKey,
-      DK_AGGREGATED_PUBLISHED_APPS
-    );
-    let { data: publishedAppsStatsList } = await getFile_SkyDB(
-      getProviderKeysByType("AGGREGATOR").publicKey,
-      DK_AGGREGATED_PUBLISHED_APPS_STATS
-    );
-
+    let { data: publishedAppsIdList } = await getFile_SkyDB(getProviderKeysByType("AGGREGATOR").publicKey, DK_AGGREGATED_PUBLISHED_APPS);
+    let result  = await getFile_SkyDB(getProviderKeysByType("AGGREGATOR").publicKey, DK_AGGREGATED_PUBLISHED_APPS_STATS);
+    console.log(" ########################### getAllPublishedApps :  " + publishedAppsIdList.length);
+    console.log(" ########################### getAllPublishedApps :  " + JSON.stringify(result.data));
+    let publishedAppsStatsList = result?.data;
     if (publishedAppsIdList) {
-      await Promise.all(
-        publishedAppsIdList.map(async (pubkeyAndAppId) => {
-          let temp = pubkeyAndAppId.split("#"); //userID#appId
-          //let appJSON = await getFile(null, temp[1], { store: IDB_STORE_SKAPP_AGGREGATED_DATA, publicKey: temp[0]})// TODO: need to fix IDB store
-          let { data: appJSON, dataLink } = await getFile_MySky(temp[1], {
-            userID: temp[0],
-          });
+      await Promise.all(publishedAppsIdList.map(async (pubkeyAndAppId) => {
+        let temp = pubkeyAndAppId.split('#'); //userID#appId
+        //let appJSON = await getFile(null, temp[1], { store: IDB_STORE_SKAPP_AGGREGATED_DATA, publicKey: temp[0]})// TODO: need to fix IDB store
+        let { data: appJSON, dataLink } = await getFile_MySky(temp[1], { userID: temp[0] });
           try {
-            //const contentDAC = await getContentDAC();
-            //await contentDAC.recordNewContent({ skylink: dataLink, metadata: { "contentType": "skapp", "contentSubType": "published", "skappID": temp[1], "action": "viewed" } });
+            const contentDAC = await getContentDAC();
+            await contentDAC.recordNewContent({ skylink: dataLink, metadata: { "contentType": "skapp", "contentSubType": "published", "skappID": temp[1], "action": "viewed" } });
           } catch (e) {
             console.log("content record failed: e" + e);
           }
@@ -1137,8 +1144,8 @@ export const getAggregatedAppStatsByAppId = async (appId) => {
   // let appStatsObj = await getJSONfromIDB(`${appId}#stats`, { store: IDB_STORE_SKAPP_AGGREGATED_DATA, });
   let appStatsList = (appStatsObj?.data ?? "0#0#0#0#0").split("#"); // View#access#likes#fav
   // try {
-  //   const contentDAC = await getContentDAC();
-  //   await contentDAC.recordInteraction({skylink: resultObj.dataLink,metadata: {"contentType":"skapp","contentSubType":"published","skappID":appJSON.id,"action":"viewed"}});
+  //   // const contentDAC = await getContentDAC();
+  //   // await contentDAC.recordInteraction({skylink: resultObj.dataLink,metadata: {"contentType":"skapp","contentSubType":"published","skappID":appJSON.id,"action":"viewed"}});
   // }
   // catch (e) {
   //   console.log("content record failed: e" + e)
