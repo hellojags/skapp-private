@@ -238,20 +238,6 @@ export const getMyPublishedApps = async () => {
   return publishedAppsMap;
 };
 
-export const getUsersPublishedAppsCount = async (userID) => {
-  //let publishedAppsMap = new Map();
-  let publishedAppsMap = [];
-  try {
-    let result = await getFile_MySky(DK_PUBLISHED_APPS, { userID, store: IDB_STORE_SKAPP });
-    publishedAppsMap = result.data
-  } catch (err) {
-    console.log(err);
-    return 0;
-  }
-  return publishedAppsMap ? publishedAppsMap.length : 0 ;
-}
-
-
 //Update published app and returns list of all Published apps by loggedin User.
 export const publishApp = async (appJSON) => {
   //let publishedAppsIdList = await getFile_MySky( DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
@@ -283,7 +269,7 @@ export const publishApp = async (appJSON) => {
     console.log("emitEvent failed: e" + e);
   }
   try {
-    // const contentDAC = await getContentDAC();
+    const contentDAC = await getContentDAC();
     if (firstTime) {
       await contentDAC.recordNewContent({
         skylink: resultObj.dataLink,
