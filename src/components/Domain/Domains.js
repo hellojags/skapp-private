@@ -68,35 +68,15 @@ const useStyles = makeStyles(theme => (
             justifyContent: 'center',
             color: '#B4C6CC',
         },
-        inputRoot: {
-            color: 'inherit',
-            border: '2px solid rgba(255, 255, 255, 0.1)',
+        lightInputRoot: {
+            // color: 'inherit',
+            color: '#2A2C34!important',
         },
-        lightInputInput: {
-            color: '#2A2C34',
-            background: '#fff!important',
-            paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('md')]: {
-                width: '100%',
-            },
-            [theme.breakpoints.up('lg')]: {
-                width: '50ch',
-            },
-            paddingTop: '10px',
-            paddingBottom: '10px',
-            '@media (max-width: 1660px)': {
-                width: '34ch'
-            },
-            '@media (max-width: 1460px)': {
-                width: '100%'
-            }
-
+        darkInputRoot: {
+            color: '#fff!important',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
         },
-        darkInputInput: {
-            color: '#fff',
-            background: '#2A2C34!important',
+        inputInput: {
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             transition: theme.transitions.create('width'),
             width: '100%',
@@ -115,7 +95,6 @@ const useStyles = makeStyles(theme => (
                 width: '100%'
             }
         },
-
         lightPageHeading: {
             color: '#131523',
             fontSize: '28px',
@@ -191,7 +170,7 @@ const Domains = ({toggle}) => {
     return (
 
         <Fragment >
-            {!addNew && <AddNewDomainTXT />}
+            {!addNew && <AddNewDomainTXT toggle={toggle} />}
             <AddNewDomain toggle={toggle} openModal={addNew} openModalHandler={openModalHandler} />
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
@@ -203,21 +182,14 @@ const Domains = ({toggle}) => {
                             <SearchIcon />
                         </div>
                     </Box>
-                    {toggle ? <InputBase
+                    <InputBase
                         placeholder="Search Apps"
                         classes={{
-                            root: classes.inputRoot,
-                            input: classes.darkInputInput,
+                            root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
+                            input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
-                    /> : <InputBase
-                        placeholder="Search Apps"
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.lightInputInput,
-                        }}
-                        inputProps={{ 'aria-label': 'search' }}
-                    />}
+                    />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
                     <Box>
@@ -233,7 +205,7 @@ const Domains = ({toggle}) => {
                         <InputBase
                             placeholder="Search Apps"
                             classes={{
-                                root: classes.inputRoot,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}

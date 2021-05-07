@@ -2,11 +2,13 @@ import React from 'react'
 import { Box, Button, Checkbox, FormControlLabel, makeStyles, Modal, Typography } from '@material-ui/core'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+
     },
     lightModalHeader: {
         fontSize: 32,
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     darkModalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#fff',
+        color: '#ffffff',
         borderBottom: '1px solid #70707085',
         padding: '1.3rem',
         '@media only screen and (max-width: 1440px)': {
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         opacity: 1,
         '&, &:focus': {
-            background: '#1E2029!important',
+            background: '#1E2029',
             border: 0,
             outline: 0,
         },
@@ -69,7 +71,6 @@ const useStyles = makeStyles((theme) => ({
                 marginBottom: 8, borderRadius: 10
             },
             // border: '1px solid #D9E1EC',
-            border: '1px solid #48494E',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -100,8 +101,7 @@ const useStyles = makeStyles((theme) => ({
                 flex: '100%',
                 marginBottom: 8, borderRadius: 10
             },
-            // border: '1px solid #D9E1EC',
-            border: '1px solid #48494E',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -130,7 +130,9 @@ const useStyles = makeStyles((theme) => ({
         '@media only screen and (max-width: 575px)': {
             fontSize: 16,
             marginTop: 9,
+
         }
+
     },
     submitBtn: {
         // height: '100%',
@@ -193,6 +195,7 @@ const useStyles = makeStyles((theme) => ({
         '@media only screen and (max-width: 575px)': {
             fontSize: 18,
             marginTop: 9,
+
         }
     },
     darkSubheading: {
@@ -204,6 +207,7 @@ const useStyles = makeStyles((theme) => ({
         '@media only screen and (max-width: 575px)': {
             fontSize: 18,
             marginTop: 9,
+
         }
     },
     p: {
@@ -212,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
     checkBox: {
         marginTop: 10,
         marginBottom: 10,
-        color: '#fff',
+
         '& span': {
             color: '#5A607F',
             '@media only screen and (max-width: 575px)': {
@@ -226,7 +230,7 @@ const useStyles = makeStyles((theme) => ({
             // fontSize: 18,
             // height: 50
         }
-    },
+    }
 }))
 const AddNewDomainTXT = ({toggle}) => {
     const classes = useStyles()
@@ -274,7 +278,7 @@ const AddNewDomainTXT = ({toggle}) => {
                             <Typography className={classes.varifyText}>
                                 Verification
                             </Typography>
-                            <Typography className={toggle ? classes.darkSubheading : classes.lightSubheading}>
+                            <Typography className={toggle ? classes.darkSubheading: classes.lightSubheading}>
                                 Add New TXT record to skapp.io
                             </Typography>
                             <p className={classes.p}>TXT records are simple text  notes for your domain and won't affect your email or website settings.</p>

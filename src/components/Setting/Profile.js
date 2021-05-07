@@ -267,6 +267,7 @@ const useStyles = makeStyles((theme) => ({
         '& input, & input': {
             fontSize: 18,
             width: '100%',
+            // borderColor: '#D9E1EC'
         },
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',

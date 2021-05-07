@@ -307,7 +307,7 @@ const darkReactSelectStyles = {
       borderColor: "#48494E",
       color: "#fff!important",
       borderRadius: 8,
-      '@media only screen and (max-width: 1440px)': {
+      '@media only screen and (min-width: 300px)': {
           height: 50,
           // width: '100%',
           fontSize: 16,
@@ -315,11 +315,19 @@ const darkReactSelectStyles = {
           borderColor: '#48494E',
           color: "#fff!important",
       },
+      '@media only screen and (max-width: 1440px)': {
+          height: 50,
+          // width: '100%',
+          fontSize: 16,
+          background: '#2A2C34!important',
+          borderColor: '#48494E',
+          color: "#fff!important",
+      },
       '@media only screen and (max-width: 575px)': {
           height: 43,
           // width: '100%',
           fontSize: 14,
-          background: '#2A2C34',
+          background: '#2A2C34!important',
           borderColor: '#48494E',
           color: "#fff!important",
       },
@@ -328,9 +336,10 @@ const darkReactSelectStyles = {
       }
   }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
-      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#fff',
+      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#2A2C34',
+      color: '#fff',
       '&:foucs': {
-          backgroundColor: '#1DBF73'
+          backgroundColor: '#1DBF73',
       }
   }),
 };

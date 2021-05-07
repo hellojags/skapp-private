@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'none'
         }
     },
-    searchIconDark: {
+    searchIcon: {
         padding: theme.spacing(0, 2),
         height: '100%',
         position: 'absolute',
@@ -108,49 +108,32 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // color: '#B4C6CC'
+        color: '#B4C6CC'
+    },
+    lightInputRoot: {
+        // color: 'inherit',
+        color: '#2A2C34!important',
+    },
+    darkInputRoot: {
         color: '#ffffff!important',
+        border: '1px solid D9E1EC'
     },
-    searchIconLight: {
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#2A2C34',
-        opacity: '0.4'
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '30ch',
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: '50ch',
+        },
     },
-    inputRoot: {
-        color: 'inherit',
+    lightInputColor: {
     },
-    inputInputDark: {
+    darkInputColor: {
         background: '#1E2029',
-        padding: theme.spacing(1, 1, 1, 0),
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '30ch',
-        },
-        [theme.breakpoints.up('lg')]: {
-            width: '50ch',
-        },
-
-    },
-    inputInputLight: {
-        padding: theme.spacing(1, 1, 1, 0),
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '30ch',
-        },
-        [theme.breakpoints.up('lg')]: {
-            width: '50ch',
-        },
-
     },
     sectionDesktop: {
         display: 'none',
@@ -454,39 +437,18 @@ export default function Navbar({toggle, setToggle}) {
                         {toggle ? <Logo1 /> : <Logo />} 
                     </div>
                     <div className={classes.search}>
-                    
-                        
-                        {toggle ? 
-                            <>
-                                <div className={classes.searchIconDark}>
-                                    <SearchIcon />
-                                    {/* <Icon style={{color: grey[50]}}>article</Icon> */}
-                                </div>
-                                <InputBase
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInputDark,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </> : 
-                            <>
-                                <div className={classes.searchIconLight}>
-                                    <SearchIcon />
-                                    {/* <Icon style={{color: grey[50]}}>article</Icon> */}
-                                </div>
-                            
-                                <InputBase
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInputLight,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </>
-                        }
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                            {/* <Icon style={{color: grey[50]}}>article</Icon> */}
+                        </div>
+                        <InputBase
+                            placeholder="Search…"
+                            classes={{
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
+                                input: `${classes.inputInput} ${toggle ? classes.darkInputColor : classes.lightInputColor}`,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
                     </div>
 
                     <div className={toggle ? classes.darkText : classes.lightText}>

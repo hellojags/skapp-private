@@ -325,7 +325,7 @@ const AddNewSiteStyles = () => ({
         }
     },
     placeholderImg: {
-        background: '#ffff',
+        background: '#2A2C34',
         width: '100%',
         height: '160px',
         borderRadius: '8px',

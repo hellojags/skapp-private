@@ -134,8 +134,7 @@ const useStyles = makeStyles({
         },
         '& .MuiPaper-root': {
             boxShadow: '0px 3px 6px #00000029',
-            // border: '1px solid #7070704F',
-            border: '1px solid #48494E',
+            border: '1px solid #7070704F',
             overflow: 'visible'
         },
         '& .MuiPaper-root::before': {
@@ -180,7 +179,6 @@ const useStyles = makeStyles({
         },
         '& .MuiPaper-root': {
             boxShadow: '0px 3px 6px #00000029',
-            // border: '1px solid #7070704F',
             border: '1px solid #48494E',
             overflow: 'visible'
         },
