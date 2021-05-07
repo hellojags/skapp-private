@@ -24,7 +24,7 @@ import useShowHostingLinks from '../../hooks/useShowHostingLinks';
 import { useLoadHostedAppFromUrl } from '../../hooks/useLoadHostedAppFromUrl';
 const useStyles = makeStyles(styles)
 
-const DeploySite = (props) => {
+const DeploySite = ({toggle}) => {
 
     const classes = useStyles();
 
@@ -57,6 +57,8 @@ const DeploySite = (props) => {
         setAppDetail(newAppDetail);
     };
 
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
     return (
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
@@ -76,7 +78,7 @@ const DeploySite = (props) => {
                 <Grid container spacing={2} className={classes.GridContainer}>
                     <Grid item lg={4} md={6} sm={6} xs={12}>
                         <h4 className={classes.h4}>DNS</h4>
-                        <div className={classes.DNSContainer}>
+                        <div className={toggle ? classes.darkDNSContainer : classes.lightDNSContainer}>
                             <p className={classes.ContentItemTitle}>Skapp URL</p>
                             <p className={classes.siteLink}>
                                 {genHostedAppSkappUrl(appDetail)}
@@ -96,7 +98,7 @@ const DeploySite = (props) => {
                     </Grid>
                     <Grid item lg={4} md={6} sm={6} xs={12}>
                         <h4 className={classes.h4}>Deployments</h4>
-                        <div className={classes.DevelopmentsContainer}>
+                        <div className={toggle ? classes.darkDevelopmentsContainer : classes.lightDevelopmentsContainer}>
 
                             <List
 
@@ -125,16 +127,16 @@ const DeploySite = (props) => {
                     </Grid>
                     <Grid item lg={4} md={12} sm={12} xs={12}>
                         <h4 className={classes.h4}>Statistics</h4>
-                        <div className={classes.StatsContainer}>
+                        <div className={toggle ? classes.darkStatsContainer : classes.lightStatsContainer}>
                             <Grid container>
                                 <Grid className={classes.statCol} item xs={12} sm={6} md={6} >
                                     <div className={classes.StatTitle}>
                                         Number Of Files
                                     </div>
-                                    <div className={classes.StatValue}>
+                                    <div className={toggle ? classes.darkStatValue : classes.lightStatValue}>
                                         400
                                     </div>
-                                    <div className={classes.graphText}>
+                                    <div className={toggle ? classes.darkGraphText : classes.lightGraphText}>
                                         <span>+10.01%</span> <IcIcon />
                                     </div>
                                 </Grid>
@@ -144,10 +146,10 @@ const DeploySite = (props) => {
                                         <div className={classes.StatTitle}>
                                             Number Of Files
                                     </div>
-                                        <div className={classes.StatValue}>
+                                        <div className={toggle ? classes.darkStatValue : classes.lightStatValue}>
                                             400
                                     </div>
-                                        <div className={classes.graphText}>
+                                        <div className={toggle ? classes.darkGraphText : classes.lightGraphText}>
                                             <span>+10.01%</span> <IcIcon />
                                         </div>
                                     </Box>
@@ -185,7 +187,7 @@ const DeploySite = (props) => {
                                     />
 
                                 </div>
-                                <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
+                                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
                                     <DropzoneArea
                                         showPreviewsInDropzone={false}
                                         onDrop={(files) => {

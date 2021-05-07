@@ -91,10 +91,9 @@ const appCardStyle = {
         }
     },
     lightIcon : {
-        color: '#2A2C34!important'
     },
     darkIcon : {
-        color: '#fff!important'
+        color: 'inherit',
     },
     footerItem: {
         opacity: .64,

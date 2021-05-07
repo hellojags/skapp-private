@@ -321,7 +321,7 @@ export default function AddNewSite({toggle}) {
                                                 />
 
                                             </div>
-                                            <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
+                                            <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
                                                 {/* <div><UploadIcon /></div>
 
                                             <div>

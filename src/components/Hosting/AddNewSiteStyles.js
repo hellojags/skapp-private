@@ -337,7 +337,7 @@ const AddNewSiteStyles = () => ({
     "MuiDropzoneArea-root": {
         border: "none",
     },
-    previewImg: {
+    lightPreviewImg: {
         background: '#fff',
         cursor: 'pointer',
         height: 160,
@@ -348,6 +348,27 @@ const AddNewSiteStyles = () => ({
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#fff'
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    darkPreviewImg: {
+        background: '#1E2029',
+        cursor: 'pointer',
+        height: 160,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#1E2029'
+        },
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }

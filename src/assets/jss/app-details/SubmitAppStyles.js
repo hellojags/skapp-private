@@ -534,8 +534,19 @@ const SubmitAppStyles = () => ({
         width: '100%',
         height: '160px',
         borderRadius: '8px',
-        // border: '1px dashed #5C5D5E',
-        border: '1px dashed rgba(0, 0, 0, 0.6)',
+        border: '1px dashed #5C5D5E',
+        // border: '1px dashed rgba(0, 0, 0, 0.6)',
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    darkPlaceholderImg: {
+        background: '#1E2029',
+        width: '100%',
+        height: '160px',
+        borderRadius: '8px',
+        border: '1px dashed #5C5D5E',
+        // border: '1px dashed rgba(0, 0, 0, 0.6)',
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
@@ -552,19 +563,8 @@ const SubmitAppStyles = () => ({
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {
-            background: '#1E2029'
+            background: '#fff'
         },
-        '@media only screen and (max-width: 575px)': {
-            height: '150px'
-        }
-    },
-    darkPlaceholderImg: {
-        background: '#1E2029',
-        width: '100%',
-        height: '160px',
-        borderRadius: '8px',
-        // border: '1px dashed #5C5D5E',
-        border: '1px dashed rgba(0, 0, 0, 0.6)',
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
@@ -577,8 +577,7 @@ const SubmitAppStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // border: '1px solid #D9E1EC',
-        border: '1px solid #1E2029',
+        border: '1px solid #D9E1EC',
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {
@@ -834,9 +833,21 @@ const SubmitAppStyles = () => ({
     GridContainer: {
         marginTop: 15
     },
-    DNSContainer: {
+    lightDNSContainer: {
+        background: '#fff',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '45px 35px',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '35px 25px',
+        },
+        '@media only screen and (max-width: 575px)': {
+            padding: '20px 15px'
+        },
+        minHeight: 190,
+    },
+    darkDNSContainer: {
         background: '#1E2029',
-        // border: '1px solid #D9E1EC',
         border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '45px 35px',
@@ -866,11 +877,22 @@ const SubmitAppStyles = () => ({
         color: '#1DBF73',
         cursor: 'pointer'
     },
-    DevelopmentsContainer: {
+    lightDevelopmentsContainer: {
         minHeight: 190,
         height: 200,
         overflowY: 'auto',
-        // background: '#FFFFFF',
+        background: '#fff',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '15px 0',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '15px 0',
+        }
+    },
+    darkDevelopmentsContainer: {
+        minHeight: 190,
+        height: 200,
+        overflowY: 'auto',
         background: '#1E2029',
         // border: '1px solid #D9E1EC',
         border: '1px solid rgba(0, 0, 0, 0.4)',
@@ -908,14 +930,21 @@ const SubmitAppStyles = () => ({
             color: '#7E84A3'
         }
     },
-    graphText: {
+    lightGraphText: {
         fontSize: 14,
-        // color: '#1DBF73'
+        color: '#1DBF73'
+    },
+    darkGraphText: {
+        fontSize: 14,
         color: '#fff'
     },
-    StatValue: {
+    lightStatValue: {
         fontSize: 32,
-        // color: '#242F57',
+        color: '#242F57',
+        fontWeight: 'bold'
+    },
+    darkStatValue: {
+        fontSize: 32,
         color: '#fff',
         fontWeight: 'bold'
     },
@@ -927,13 +956,25 @@ const SubmitAppStyles = () => ({
         background: `url(${GraphIcon})`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'right bottom',
+    },
+    lightStatsContainer: {
+        minHeight: 190,
+        background: '#FFFFFF',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '30px 15px',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '30px 15px',
+        },
+        '@media only screen and (max-width: 659px)': {
+            minHeight: 'auto'
+        },
 
     },
-    StatsContainer: {
+    darkStatsContainer: {
         minHeight: 190,
-        // background: '#FFFFFF',
         background: '#1E2029',
-        // border: '1px solid #D9E1EC',
         border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '30px 15px',

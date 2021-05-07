@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     },
     // search
     lightSearch: {
-        background: '#fff',
+        background: '#F0F5F7',
         position: 'relative',
         marginLeft: 0,
         width: '100%',
@@ -87,28 +87,18 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    inputRoot: {
-        color: 'inherit',
+    lightInputRoot: {
+        // color: 'inherit',
+        color: '#2A2C34!important',
     },
-    lightInputInput: {
+    darkInputRoot: {
+        color: '#fff!important',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        background: '#f0f5f78a',
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            width: '22ch',
-            '&:focus': {
-                width: '25ch',
-            },
-        },
-        borderRadius: 4
-    },
-    darkInputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        background: '#12141D',
+        // background: '#f0f5f78a',
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
@@ -193,8 +183,8 @@ const DescoverDev = ({toggle}) => {
                         <InputBase
                             placeholder="Search…"
                             classes={{
-                                root: classes.inputRoot,
-                                input: toggle ? classes.darkInputInput : classes.lightInputInput,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
+                                input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />
