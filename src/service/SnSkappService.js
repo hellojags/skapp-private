@@ -584,17 +584,21 @@ export const getDefaultAppStore = () => { }
 export const getMyHostedApps = async (appIds) => {
   const hostedAppIdList = { appIdList: [], appDetailsList: {} }
   try {
-    if (appIds == null || appIds.length === 0) {
-      let { data } = await getFile_MySky(DK_HOSTED_APPS, { store: IDB_STORE_SKAPP });
-      hostedAppIdList.appIdList = data;
-      appIds = appIds?.length === 0 ? data : appIds;
-    }
+    const skappDAC = await getSkappDAC();
+    let {data }= await skappDAC.getDeployedApps(appIds);
+  
+    // if (appIds == null || appIds.length === 0) {
+      
+    //   let { data } = await getFile_MySky(DK_HOSTED_APPS, { store: IDB_STORE_SKAPP });
+    //   hostedAppIdList.appIdList = data;
+    //   appIds = appIds?.length === 0 ? data : appIds;
+    // }
     appIds?.length > 0 && await Promise.all(appIds.map(async (appId) => {
-      const resultObj = await getFile_MySky(`${appId}#hosted`, { store: IDB_STORE_SKAPP });
-      hostedAppIdList.appDetailsList[appId] = resultObj.data;
+      //const resultObj = await getFile_MySky(`${appId}#hosted`, { store: IDB_STORE_SKAPP });
+      //hostedAppIdList.appDetailsList[appId] = resultObj.data;
       try {
         const contentDAC = await getContentDAC();
-        await contentDAC.recordInteraction({ skylink: resultObj.dataLink, metadata: { "contentType": "skapp", "contentSubType": "hosted", "skappID": appId, "action": "viewed" } });
+        await contentDAC.recordInteraction({ skylink: '', metadata: { "contentType": "skapp", "contentSubType": "hosted", "skappID": appId, "action": "viewed" } });
       }
       catch (e) {
         console.log("content record failed: e" + e)
@@ -635,10 +639,12 @@ export const setMyHostedApp = async (appJSON, previousId) => {
     ts
   };
   //alert("previousId" + previousId);
-  const resultObj = await putFile_MySky(`${id}#hosted`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  //const resultObj = await putFile_MySky(`${id}#hosted`, hostedAppJSON, { store: IDB_STORE_SKAPP });
+  const skappDAC = await getSkappDAC();
+  let {data, dataLink }= await skappDAC.deployApp(hostedAppJSON.id,hostedAppJSON);
   try {
     const contentDAC = await getContentDAC();
-    const status = await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "skapp", "contentSubType": "hosted", "skappID": appJSON.id, "action": "created" } });
+    const status = await contentDAC.recordNewContent({ skylink: dataLink, metadata: { "contentType": "skapp", "contentSubType": "hosted", "skappID": appJSON.id, "action": "created" } });
   }
   catch (e) {
     console.log("content record failed: e" + e)
