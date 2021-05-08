@@ -159,8 +159,18 @@ export const getPublishedApp = async (appId) => {
   let publishedAppJSON  = await skappDAC.getPublishedApps([appId]);
   //let publishedAppJSON = await getJSONfromIDB(appId, { store: IDB_STORE_SKAPP, });
   return publishedAppJSON[0];
-}
-
+} 
+export const getPublishedAppsCount = async (userId) => {
+  let count =0;
+ if(userId!=null){
+  let { data: publishedAppsIdList } = await getFile_MySky(DK_PUBLISHED_APPS, { store: IDB_STORE_SKAPP });
+  count= publishedAppsIdList.length;
+ }else{
+  const skappDAC = await getSkappDAC();
+  count= await skappDAC.getPublishedAppsCount();
+ }
+ return count;
+} 
 export const getMyPublishedApps = async () => {
   //let publishedAppsMap = new Map();
   let publishedAppsMap = [];
