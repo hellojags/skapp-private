@@ -1,7 +1,7 @@
 import { SkynetClient } from "skynet-js";
 import { ContentRecordDAC } from "@skynetlabs/content-record-library";
 import { UserProfileDAC, Profile } from '@skynethub/userprofile-library';
-import { SkappDAC } from '@kbiswas/skapps-record-library';
+import { SkappDAC } from '@kbiswas/skapp-library';
 import { FeedDAC } from "feed-dac-library";
 import {
     getJSONfromIDB,
