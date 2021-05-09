@@ -142,7 +142,7 @@ function StorageGateway() {
             {/* <AddNewDomainTXT /> */}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Domain Manager</h1>
+                    <h1 className={classes.pageHeading}>Storage Gateway Manager</h1>
                 </Box>
                 {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
@@ -160,9 +160,9 @@ function StorageGateway() {
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-                    <Box>
+                    {/* <Box>
                         <UtilitiesItem />
-                    </Box>
+                    </Box> */}
 
                     {width > 1249 && <div className={classes.search}>
                         <Box>
@@ -179,18 +179,19 @@ function StorageGateway() {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>}
-                    <Box>
+                    {/* <Box>
                         <ListFilter />
-                    </Box>
+                    </Box> */}
 
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}>
-                            Add Storage
+                            Add Storage Gateway
                     </SubmitBtn>
                     </Box>
                 </Box>
 
             </Box>
+            <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
             <StorageTable />
         </Fragment>
     )

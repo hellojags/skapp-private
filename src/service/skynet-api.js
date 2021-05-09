@@ -72,7 +72,7 @@ export const handleMySkyLogin = async (userSession) => {
 //             console.log("requestLoginAccess status: "+status);
 //         }
 //         // Initialize DAC, auto-adding permissions.
-//         const contentDAC = new ContentRecordDAC();
+//         // const contentDAC = new ContentRecordDAC();
 //         const userProfileDAC = new UserProfileDAC();
 //         const feedDAC = new FeedDAC();
 //         await mySky.loadDacs(contentDAC,userProfileDAC,feedDAC);

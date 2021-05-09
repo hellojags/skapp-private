@@ -6,7 +6,7 @@ const AddNewSite = (props) => {
     const classes = useStyles()
     return (
         <div className={classes.root} onClick={props?.onClick}>
-            <span>+ Add New Site</span>
+            <span><h1>+ Deploy New App</h1></span>
         </div>
     )
 }

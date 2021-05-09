@@ -200,7 +200,7 @@ const UserCard = ({
 
           <ul className={classes.userDetailsList}>
             <li>
-              <span>Skapp ID</span>
+              <span>User ID</span>
               <span title={user.uid}>{user.uid?.slice(0, 16)}...</span>
             </li>
             <li>
@@ -208,7 +208,7 @@ const UserCard = ({
               <span>{user.location}</span>
             </li>
             <li>
-              <span>GitID</span>
+              <span>GitHub/GitLab ID</span>
               <span>{user.github}</span>
             </li>
             <li>

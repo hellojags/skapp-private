@@ -189,15 +189,16 @@ export default function AddNewSite() {
                     onSubmit={submitForm}>
                     {formik => (<form onSubmit={formik.handleSubmit}>
                         <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                            <h1 className={classes.h1}>Add New Site</h1>
+                            <h1 className={classes.h1}>New App Deployment</h1>
                             <Box className={classes.btnBox}>
-                                <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}>Reset Form</Button>
-                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add />Submit</Button>
+                                <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}><b>Reset Form</b></Button>
+                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /><b>Deploy App</b></Button>
                             </Box>
                         </Box>
+                        <p className={classes.text}>( Note: Hosted App will NOT be Published to AppStore by default. If you wish to publish, you can do so after deployment from "App Hosting" or "Publish App" link)</p>
                         <Box component="form">
                             <Box>
-                                <label className={classes.label}>Site Logo</label>
+                                {/* <label className={classes.label}>Site Logo</label> */}
                                 <div className="d-none">
                                     <SnUpload
                                         name="files"
@@ -213,7 +214,7 @@ export default function AddNewSite() {
                                     <Box style={{ position: "relative", textAlign: 'center' }}>
                                         <ImgIcon />
                                     </Box> 
-                                    <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                                    <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload App Logo</Box> 
                                     </Box>}
                                     {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() !== "" && <img
                                         alt="app"
@@ -228,9 +229,9 @@ export default function AddNewSite() {
                                     />}
                                     {isLogoUploaded ? <Loader type="Oval" color="#57C074" height={50}  width={50} /> : null}
                                 </div>
-                                <div className={classes.inputGuide}>
-                                    Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
-                                </div>
+                                {/* <div className={classes.inputGuide}>
+                                   Note: Image Upload May Take sometime
+                                </div> */}
                                 <input type="text" hidden />
                             </Box>
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
@@ -252,13 +253,13 @@ export default function AddNewSite() {
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnTextInput
-                                        label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline/></Tooltip></span>}
                                         name="hns"
                                         className={classes.input}
                                         type="text" />
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1} >
-                                    <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+                                    <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline/></Tooltip></label>
                                     <Box>
                                         <SnSelect
                                             label="Storage Gateway"

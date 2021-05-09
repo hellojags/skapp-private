@@ -43,6 +43,20 @@ const useStyles = makeStyles(theme => (
             },
 
         },
+        text: {
+            color: '#FF6060',
+            fontSize: 20,
+            fontWeight: 500,
+            marginTop: '.5rem',
+            '@media only screen and (max-width: 1440px)': {
+                fontSize: 16,
+            },
+            '@media only screen and (max-width: 575px)': {
+                fontSize: 12,
+                marginTop: '1rem',
+            }
+    
+        },
         modal: {
             display: 'flex',
             alignItems: 'center',
@@ -267,7 +281,7 @@ function Hosting() {
         <Fragment >
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Hosting</h1>
+                    <h1 className={classes.pageHeading}>Hosted Apps(Websites)</h1>
                 </Box>
                 {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
@@ -312,12 +326,13 @@ function Hosting() {
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}
                             onClick={() => history.push("/submitsite")}>
-                            Add Site
+                            <b>Deploy New App</b>
                     </SubmitBtn>
                     </Box>
                 </Box>
 
             </Box>
+            <p className={classes.text}>( Note: Hosted App will NOT be Published to AppStore by default. If you wish to publish deployed app/site to Apptore, you can do so after deploying your code from this page or "Publish App" link)</p>
             <Box marginTop="1rem">
                 {hostedAppListObj?.appDetailsList &&
                     (Object.keys(hostedAppListObj.appDetailsList))

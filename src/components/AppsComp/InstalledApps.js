@@ -14,7 +14,7 @@ import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderActio
 import { useDispatch, useSelector } from 'react-redux';
 import AppsList from "./AppsList";
 import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } from "../../redux/action-reducers-epic/SnInstalledAppAction";
-import NoApp from '../NoApps/NoApps';
+import NoApp from '../OtherPages/NoApps';
 
 const useStyles = makeStyles(theme => (
     {

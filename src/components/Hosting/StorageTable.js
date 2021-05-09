@@ -125,9 +125,9 @@ function createData(portalName, portalURL, portalType, actions) {
 }
 
 const rows = [
-    createData('skyspaces.io', 'https://www.skyspaces.io', 'Portal Type',),
-    createData('cloudean.com', 'https://www.skyspaces.io', 'Portal Type',),
-    createData('mysite.net', 'https://www.skyspaces.io', 'Portal Type',),
+    createData('Skynet Labs Portal', 'https://siasky.net', 'Free Tier',),
+    createData('Community Portal', 'https://skyportal.xyz', 'Free Tier',),
+    createData('Another Provider Portal', 'https://skynethub.io', 'Free Tier',),
 ]
 
 const StorageTable = () => {

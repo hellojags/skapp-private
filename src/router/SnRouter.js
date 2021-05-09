@@ -2,7 +2,7 @@ import Apps from '../components/AppsComp/Apps'
 import SubmitApp from '../components/SubmitApp/SubmitApp'
 import EditPublishApp from '../components/SubmitApp/EditPublishApp'
 import Error from '../components/ErrorPage/Error'
-import NoApps from '../components/NoApps/NoApps'
+import NoApps from '../components/OtherPages/NoApps'
 import InstalledApps from '../components/AppsComp/InstalledApps'
 import Hosting from '../components/Hosting/Hosting'
 import SubmitNewSite from '../components/Hosting/SubmitNewSite'
@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
 import AddNewSite from '../components/Hosting/AddNewSite'
+import UnderDevelopment from '../components/OtherPages/UnderDevelopment';
 const SnRouter = (props) => (
    
         <Switch>
@@ -50,6 +51,15 @@ const SnRouter = (props) => (
             </Route>
             <Route exact path='/error'>
                 <Error />
+            </Route>
+            <Route exact path='/underdevelopment'>
+                <UnderDevelopment/>
+            </Route>
+            <Route exact path='/activitylog'>
+                <UnderDevelopment/>
+            </Route>
+            <Route exact path='/stats'>
+                <UnderDevelopment/>
             </Route>
             <Route exact path='/noapp'>
                 <NoApps />

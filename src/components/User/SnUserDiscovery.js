@@ -292,8 +292,7 @@ export default function SnUserDiscovery(props) {
             <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
               <Paper className={classes.tabsPaper_ef}>
                 <Typography className={classes.title1_ef}>
-                  {" "}
-                  User Discovery{" "}
+                  {" "}Discover & Follow Developers{" "}
                 </Typography>{" "}
                 <br />
                 <Grid

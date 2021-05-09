@@ -403,11 +403,11 @@ function AppStore() {
         <div><Fragment >
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Skynet Apps</h1>
+                    <h1 className={classes.pageHeading}>Skynet AppStore</h1>
                 </Box>
-                <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
+                {/* <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <small className={classes.smallText}>Count: {publishedAppsStore.length}</small>
-                </Box>
+                </Box> */}
                 {width < 1050 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
@@ -452,8 +452,8 @@ function AppStore() {
                         <ListFilter />
                     </Box>
                     {/* <Box>
-                    <SelectItem />
-                </Box> */}
+                        <SelectItem />
+                    </Box> */}
                     {/* <Box>
                     <SubmitBtn >
                         Add App

@@ -6,6 +6,28 @@ const AddNewSiteStyles = () => ({
             fontSize: 18
         }
     },
+    p: {
+        color: '#FF6060!important',
+        maxWidth: 425,
+        textAlign: "center",
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 14,
+        }
+    },
+    text: {
+        color: '#FF6060',
+        fontSize: 20,
+        fontWeight: 500,
+        marginTop: '.5rem',
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 16,
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 12,
+            marginTop: '1rem',
+        }
+
+    },
     btnBox: {
 
     },

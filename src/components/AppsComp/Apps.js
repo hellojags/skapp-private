@@ -17,7 +17,7 @@ import { getMyInstalledAppsAction, installedAppAction, unInstalledAppAction } fr
 import { useDispatch, useSelector } from "react-redux";
 import { installApp } from '../../service/SnSkappService'
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction'
-import NoApps from '../NoApps/NoApps';
+import NoApps from '../OtherPages/NoApps';
 
 const useStyles = makeStyles((theme) => ({
   search: {

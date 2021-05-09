@@ -244,10 +244,10 @@ export default function LandingPageNavbar() {
             className="profile-dropdown"
 
         >
-            <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
+            {/* <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
                 <SettingIcon className={classes.menuIcon} />
                 <span>Settings</span>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>

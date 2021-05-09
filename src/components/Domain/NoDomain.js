@@ -9,6 +9,7 @@ const NoDomain = () => {
     return (
         <Fragment>
             <h1 className={classes.h1}>Domain Manager</h1>
+            <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
             <Box display="flex" alignItems="center" justifyContent="center" minHeight="calc(100vh - 200px)" flexDirection="column" paddingTop="1rem" paddingBottom="1rem">
                 <DomainIcon className={classes.domainIcon} />
 

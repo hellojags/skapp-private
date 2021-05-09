@@ -192,7 +192,7 @@ const DescoverDev = () => {
         alignItems="center"
         className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}
       >
-        <h1 className={classes.pageHeading}>User Discovery</h1>
+        <h1 className={classes.pageHeading}>Discover & Follow Developers</h1>
       </Box>
 
       <Box
