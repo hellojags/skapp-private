@@ -62,16 +62,15 @@ export const skylinkToUrl = (skyLink) => {
       if (skyLink.indexOf("http://") === 0 || skyLink.indexOf("https://") === 0) {
         link = skyLink;
       } else if (skyLink.indexOf("sia://") === 0) {
-        link = skyLink.replace("sia://", "");
+        link = skyLink.replace("sia://", ""); 
       } else if (skyLink.indexOf("sia:") === 0) {
         link = skyLink.replace("sia:", "");
       }
-        else{
-            link = skyLink;
-        }
-     
+      else
+      {
+        link = skyLink;
+      }
       link = getPortalUrl() + link;
-      //console.log("skylinkToUrl():: full url " + link);
       return link;
     }
     catch (error) {

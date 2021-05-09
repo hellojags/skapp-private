@@ -14,7 +14,6 @@ import { ReactComponent as ImgIcon } from '../../assets/img/icons/image.svg';
 import { ReactComponent as LinkIcon } from '../../assets/img/icons/attachment-link.9.svg';
 import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-upload-outline.svg';
 import { SnTextInput, SnSelect } from '../Utils/SnFormikControlls';
-import { skylinkToUrl } from "../../service/skynet-api";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
 import { getHNSSkyDBURL, setMyHostedApp } from '../../service/SnSkappService';
 import { useHistory } from 'react-router-dom';
@@ -29,7 +28,7 @@ import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderActio
 import { getMyHostedApps } from '../../service/SnSkappService';
 import { useParams } from "react-router-dom";
 import Loader from "react-loader-spinner";
-import {getPortalUrl} from '../../service/skynet-api';
+import {getPortalUrl,skylinkToUrl} from '../../service/skynet-api';
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
