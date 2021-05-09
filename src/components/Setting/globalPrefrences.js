@@ -10,49 +10,26 @@ import { setPreferences } from "../../service/SnSkappService";
 import { SnSelect, SnSwitch } from "../Utils/SnFormikControlls";
 
 const useStyles = makeStyles((theme) => ({
-  lightProfileRoot: {
-    backgroundColor: '#fff',
-    boxShadow: '0px 2px 5px #15223214',
+  ProfileRoot: {
+    backgroundColor: "#fff",
+    boxShadow: "0px 2px 5px #15223214",
     borderRadius: 6,
-    padding: '50px 30px',
-    '@media only screen and (max-width: 575px)': {
-      padding: '20px 10px',
+    padding: "50px 30px",
+    "@media only screen and (max-width: 575px)": {
+      padding: "20px 10px",
     },
-    '& h2': {
-      color: '#242F57',
-      marginBottom: '1rem',
-      '@media only screen and (max-width: 575px)': {
+    "& h2": {
+      color: "#242F57",
+      marginBottom: "1rem",
+      "@media only screen and (max-width: 575px)": {
         fontSize: 22,
       },
-    }
-  },
-  darkProfileRoot: {
-    backgroundColor: '#1E2029',
-    boxShadow: '0px 2px 5px #12141D',
-    borderRadius: 6,
-    padding: '50px 30px',
-    '@media only screen and (max-width: 575px)': {
-      padding: '20px 10px',
-    },
-    '& h2': {
-      color: '#fff',
-      marginBottom: '1rem',
-      '@media only screen and (max-width: 575px)': {
-        fontSize: 22,
-      },
-    }
-  },
-  lightTextInfo: {
-    color: 'rgba(0, 0, 0, 0.5)',
-    fontSize: 14,
-    '@media only screen and (max-width: 575px)': {
-      fontSize: 13,
     },
   },
-  darkTextInfo: {
-    color: 'rgba(255, 255, 255, 0.5)',
+  textInfo: {
+    color: "#000",
     fontSize: 14,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       fontSize: 13,
     },
   },
@@ -161,89 +138,66 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   input: {
-    background: '#fff',
-    border: '1px solid #D9E1EC',
+    background: "#fff",
+    border: "1px solid #D9E1EC",
     borderRadius: 8,
     height: 55,
-    width: '100%',
+    width: "100%",
     fontSize: 18,
     padding: 20,
-    '@media only screen and (max-width: 1440px)': {
+    "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
       padding: 15,
     },
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
-      fontSize: '14px !important',
+      fontSize: "14px !important",
       padding: 10,
-    }
-
+    },
   },
   inputContainer: {
-    '& > label': {
-      display: 'block',
-      color: '#5A607F',
-      marginBottom: 7
+    "& > label": {
+      display: "block",
+      color: "#5A607F",
+      marginBottom: 7,
     },
-    '& input:focus, & select:focus': {
-      outline: 'none!important',
-      border: '1px solid #1DBF73'
+    "& input:focus, & select:focus": {
+      outline: "none!important",
+      border: "1px solid #1DBF73",
     },
-    marginTop: '25px',
-    '&': {
-      marginRight: '1rem'
+    marginTop: "25px",
+    "&": {
+      marginRight: "1rem",
     },
-    '& input, & input': {
+    "& input, & input": {
       fontSize: 18,
-      color: '#2A2C34'
     },
-    '@media only screen and (max-width: 575px)': {
-      marginTop: '16px',
-      marginRight: '10px'
+    "@media only screen and (max-width: 575px)": {
+      marginTop: "16px",
+      marginRight: "10px",
     },
   },
-  inputContainer: {
-  "& > label": {
-    display: "block",
-    color: "#5A607F",
-    marginBottom: 7,
-  },
-  "& input:focus, & select:focus": {
-    outline: "none!important",
-    border: "1px solid #1DBF73",
-  },
-  marginTop: "25px",
-  "&": {
-    marginRight: "1rem",
-  },
-  "& input, & input": {
-    fontSize: 18,
-  },
-  "@media only screen and (max-width: 575px)": {
-    marginTop: "16px",
-    marginRight: "10px",
-  },
-},
   firstInput: {
-  marginTop: 5,
-  "@media only screen and (max-width: 575px)": {
-    marginBottom: 10,
+    marginTop: 5,
+    "@media only screen and (max-width: 575px)": {
+      marginBottom: 10,
+    },
   },
-},
 }));
 
 const portalOptions = [
-  { value: "https://siasky.dev/", label: "https://siasky.dev/" },
+  { value: "https://siasky.net/", label: "https://siasky.net/" },
   { value: "https://skyportal.xyz", label: "https://skyportal.xyz" },
 ];
 const initailValueFormikObGB = {
   darkmode: true,
-  portal: "https://siasky.dev",
+  portal: "https://siasky.net",
 };
-const GlobalPrefrences = ({toggle}) => {
+
+const GlobalPrefrences = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [formikObjGB, setFormikObGB] = useState(initailValueFormikObGB); // to store Formik Form data
@@ -276,9 +230,11 @@ const GlobalPrefrences = ({toggle}) => {
     }
     setIsSuccess(false);
   };
-  //console.log(formikObjGB);
+
+//console.log(formikObjGB);
+
   return (
-    <div className={toggle ? classes.darkProfileRoot : classes.lightProfileRoot}>
+    <div className={classes.ProfileRoot}>
       <Box>
         {isSuccess && (
           <Snackbar
@@ -321,9 +277,6 @@ const GlobalPrefrences = ({toggle}) => {
                     <Add /> Save Changes{" "}
                   </Button>
                 </h2>
-                {/* <Typography className={toggle ? classes.darkTextInfo : classes.lightTextInfo}>
-                                    This information can be edited from your general prefrences page.
-                                </Typography> */}
                 <Box
                   display="flex"
                   className={`${classes.formRow} formSiteRow`}
@@ -350,4 +303,5 @@ const GlobalPrefrences = ({toggle}) => {
     </div>
   );
 };
+
 export default GlobalPrefrences;

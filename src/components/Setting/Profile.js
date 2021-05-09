@@ -44,268 +44,224 @@ import {
   getFollowingCountForUser
 } from "../../service/SnSkappService"
 
-
 const useStyles = makeStyles((theme) => ({
-  lightProfileRoot: {
-    backgroundColor: '#fff',
-    boxShadow: '0px 2px 5px #15223214',
+  ProfileRoot: {
+    backgroundColor: "#fff",
+    boxShadow: "0px 2px 5px #15223214",
     borderRadius: 6,
-    padding: '50px 30px',
-    '@media only screen and (max-width: 575px)': {
-      padding: '20px 10px',
+    padding: "50px 30px",
+    "@media only screen and (max-width: 575px)": {
+      padding: "20px 10px",
     },
-    '& h2': {
-      color: '#242F57',
-      marginBottom: '1rem',
-      '@media only screen and (max-width: 575px)': {
+    "& h2": {
+      color: "#242F57",
+      marginBottom: "1rem",
+      "@media only screen and (max-width: 575px)": {
         fontSize: 22,
       },
-    }
-  },
-  darkProfileRoot: {
-    backgroundColor: '#1E2029',
-    boxShadow: '0px 2px 5px #12141D',
-    borderRadius: 6,
-    padding: '50px 30px',
-    '@media only screen and (max-width: 575px)': {
-      padding: '20px 10px',
     },
-    '& h2': {
-      color: '#fff',
-      marginBottom: '1rem',
-      '@media only screen and (max-width: 575px)': {
-        fontSize: 22,
-      },
-    }
   },
-  lightTextInfo: {
-    color: 'rgba(0, 0, 0, 0.5)',
+  textInfo: {
+    color: "#000",
     fontSize: 14,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       fontSize: 13,
     },
   },
-  darkTextInfo: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 14,
-    '@media only screen and (max-width: 575px)': {
-      fontSize: 13,
-    },
+  addBtn: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+  },
+  removeBtn: {
+    border: `1px solid ${theme.palette.error.main}`,
+    color: theme.palette.error.main,
+    marginTop: 63,
   },
   submitBtn: {
-    background: '#1DBF73!important',
-    color: '#fff',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    display: 'inlin-flex',
-    alignItems: 'center',
-    float: 'right',
-    minWidth: 130,
-    '& svg': {
-      fontSize: '19px',
-      marginRight: '5px'
+    float: "right",
+    "& svg": {
+      fontSize: "19px",
+      marginRight: "5px",
     },
-    '@media only screen and (max-width: 575px)': {
-      fontSize: '12px',
-
-      paddingLeft: '.5rem',
-      paddingRight: '.5rem',
-      minWidth: 70,
-    }
+    "@media only screen and (max-width: 575px)": {
+      fontSize: "12px",
+    },
+  },
+  copyBtn: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    minWidth: 50,
+    height: '100%'
   },
   siteLogo: {
-    background: '#fff',
-    cursor: 'pointer',
+    background: "#fff",
+    cursor: "pointer",
     height: 150,
     width: 150,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    border: '1px solid #D9E1EC',
-    borderRadius: '50%',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "1px solid #D9E1EC",
+    borderRadius: "50%",
     marginBottom: 10,
     marginTop: 10,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       width: 75,
       height: 75,
       // maxWidth: 340,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    }
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
   },
   label: {
-    display: 'block',
-    color: '#5A607F',
+    display: "block",
+    color: "#5A607F",
     marginBottom: 8,
     fontSize: 18,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       fontSize: 16,
-    }
+    },
   },
-  lightProfilePlaceholder: {
+  profilePlaceholder: {
     width: 150,
     height: 150,
-    background: '#EFF5F7',
-    display: 'flex',
-    borderRadius: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    '& svg': {
+    background: "#EFF5F7",
+    display: "flex",
+    borderRadius: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    "& svg": {
       fontSize: 89,
       // marginTop: '2.9rem',
-      color: '#B4C6CC'
+      color: "#B4C6CC",
     },
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       width: 75,
       height: 75,
-      '& svg': {
+      "& svg": {
         fontSize: 45,
         // marginTop: '2.9rem',
-        color: '#B4C6CC'
+        color: "#B4C6CC",
       },
-    }
+    },
   },
-  darkProfilePlaceholder: {
-    width: 150,
-    height: 150,
-    background: '#2A2C34',
-    display: 'flex',
-    borderRadius: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    '& svg': {
-      fontSize: 89,
-      // marginTop: '2.9rem',
-      color: '#B4C6CC'
+  boxHalf: {
+    boxShadow: '15px 15px 25px 0px rgba(29,191,115,0.31)',
+    background: '#fff',
+    padding: ' 10px 1.5rem',
+    '& ._details': {
+      marginLeft: '1rem'
     },
-    '@media only screen and (max-width: 575px)': {
-      width: 75,
-      height: 75,
-      '& svg': {
-        fontSize: 45,
-        // marginTop: '2.9rem',
-        color: '#B4C6CC'
-      },
+    borderRadius: 6,
+    width: 230,
+    maxWidth: '100%'
+  },
+  UserProfile: {
+    width: 50,
+    height: 50,
+    background: 'rgb(29 191 115 / 20%)',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  WraperUserFollowing: {
+    '@media (max-width: 400px)': {
+      flexDirection: 'column',
+      '& .MuiBox-root': {
+        marginLeft: 0,
+        marginBottom: 10
+      }
     }
   },
   btnUpload: {
-    backgroundColor: '#869EA6!important',
-    color: '#fff',
+    backgroundColor: "#869EA6!important",
+    color: "#fff",
     fontSize: 14,
     minWidth: 150,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       fontSize: 12,
-      height: 40
+      height: 40,
     },
-    '& svg': {
-      marginRight: 7
-    }
+    "& svg": {
+      marginRight: 7,
+    },
   },
   textHelper: {
     fontSize: 13,
-    color: '#5C757D',
+    color: "#5C757D",
     marginTop: 5,
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       fontSize: 12,
     },
   },
   form: {
-    marginTop: 20
-  },
-  label: {
-    display: 'block',
-    marginTop: 10,
-    marginBottom: 8,
-    fontWeight: 600,
-    fontSize: 14,
-    '@media only screen and (max-width: 575px)': {
-      marginTop: 0,
-      marginBottom: 5,
-    },
+    marginTop: 20,
   },
   inputGuide: {
-    color: '#5C757D',
-    '@media only screen and (max-width: 575px)': {
+    color: "#5C757D",
+    "@media only screen and (max-width: 575px)": {
       fontSize: 12,
-    }
+    },
   },
-  lightInput: {
-    background: '#fff',
-    color: '#2A2C34!important',
-    border: '1px solid #D9E1EC',
+  input: {
+    background: "#fff",
+    border: "1px solid #D9E1EC",
     borderRadius: 8,
     height: 55,
-    width: '100%',
+    width: "100%",
     fontSize: 18,
     padding: 20,
-    '@media only screen and (max-width: 1440px)': {
+    "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
       padding: 15,
     },
-    '@media only screen and (max-width: 575px)': {
+    "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
-      fontSize: '14px !important',
+      fontSize: "14px !important",
       padding: 10,
-    }
-  },
-  darkInput: {
-    background: '#2A2C34',
-    color: '#D9E1EC!important',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
-    height: 55,
-    width: '100%',
-    fontSize: 18,
-    padding: 20,
-    '@media only screen and (max-width: 1440px)': {
-      height: 50,
-      // width: '100%',
-      fontSize: 16,
-      padding: 15,
     },
-    '@media only screen and (max-width: 575px)': {
-      height: 43,
-      // width: '100%',
-      fontSize: '14px !important',
-      padding: 10,
-    }
   },
   inputContainer: {
-    '& > label': {
-      display: 'block',
-      color: '#5A607F',
-      marginBottom: 7
+    "& > label": {
+      display: "block",
+      color: "#5A607F",
+      marginBottom: 7,
     },
-    '& input:focus, & select:focus, & textarea:focus': {
-      outline: 'none!important',
-      // border: '1px solid #1DBF73',
+    "& input:focus, & select:focus": {
+      outline: "none!important",
+      border: "1px solid #1DBF73",
     },
-    marginTop: '25px',
-    '&': {
-      marginRight: '1rem'
+    marginTop: "25px",
+    "&": {
+      marginRight: "1rem",
     },
-    '& input, & input': {
+    "& input, & input": {
       fontSize: 18,
-      width: '100%',
-      // borderColor: '#D9E1EC'
     },
-    '@media only screen and (max-width: 575px)': {
-      marginTop: '16px',
-      marginRight: '10px'
+    "@media only screen and (max-width: 575px)": {
+      marginTop: "16px",
+      marginRight: "10px",
     },
   },
   firstInput: {
     marginTop: 5,
-    '@media only screen and (max-width: 575px)': {
-      marginBottom: 10
+    "@media only screen and (max-width: 575px)": {
+      marginBottom: 10,
     },
-  }
-}))
+  },
+  small_avatar: {
+    margin: 8,
+    height: 64,
+    width: 64,
+    cursor: "pointer",
+  },
+}));
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required("This field is required"),
@@ -349,7 +305,7 @@ const socialConnectionList = [
   { name: "Telegram", icon: <Telegram /> },
 ];
 
-const Profile = ({ toggle }) => {
+const Profile = () => {
   const [isInitialDataAvailable, setIsInitialDataAvailable] = useState(false);
   const [followingCount, setFollowingCount] = useState(0);
   const [MyUserID, setMyUserID] = useState("");
@@ -394,7 +350,6 @@ const Profile = ({ toggle }) => {
     })();
   }, [userSession])
 
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -419,7 +374,12 @@ const Profile = ({ toggle }) => {
   };
 
   const handleImgUpload = (obj, formik) => {
-    formik.setFieldValue("avatar", { url: `sia:${obj.thumbnail}` }, true);
+    formik.setFieldValue("avatar", {
+      ext: "jpeg",
+      w: 300,
+      h: 300,
+      url: `sia:${obj.thumbnail}`
+    }, true);
     setIsLogoUploaded(false);
   };
 
@@ -468,20 +428,6 @@ const Profile = ({ toggle }) => {
     ...rest
   }) => {
     dispatch(setLoaderDisplay(true));
-    // let profileJSON = {
-    //   ...rest,
-    //   connections: [
-    //     { twitter },
-    //     { facebook },
-    //     { github },
-    //     { reddit },
-    //     { telegram },
-    //     ...rest.otherConnections
-    //       .filter((item) => !!item.channel)
-    //       .map((item) => ({ [item.channel]: item.url })),
-    //   ],
-    //   avatar: [avatar],
-    // };
     let profileJSON = {
       version: 1,
       username: rest.username,
@@ -504,7 +450,7 @@ const Profile = ({ toggle }) => {
       ],
       avatar: [avatar],
     };
-    //console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ BEFORE SAVING PROFILE using DAC ="+ JSON.stringify(profileJSON))
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ BEFORE SAVING PROFILE using DAC =" + JSON.stringify(profileJSON))
     await setProfile(profileJSON);
     dispatch(setUserProfileAction(profileJSON));
     setIsSuccess(true);
@@ -531,12 +477,12 @@ const Profile = ({ toggle }) => {
       h: 300,
       url: `sia://RABycdgWznT8YeIk57CDE9w0CiwWeHi7JoYOyTwq_UaSXQ/${rand}/300`,
     };
-
     setFieldValue("avatar", imgObj);
   };
+  
 
   return (
-    <div className={toggle ? classes.darkProfileRoot : classes.lightProfileRoot}>
+    <div className={classes.ProfileRoot}>
       <Box>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -566,6 +512,7 @@ const Profile = ({ toggle }) => {
             onSubmit={submitProfileForm}
           >
             {({ values, ...formik }) => (
+             
               <form onSubmit={formik.handleSubmit}>
                 <h2>
                   Global User Profile{" "}
@@ -585,6 +532,7 @@ const Profile = ({ toggle }) => {
                   {MyUserID ? <>
                     <Tooltip title={MyUserID}>
                       <Box textOverflow="ellipsis" overflow="hidden" style={{ width: 200, whiteSpace: 'nowrap' }} >
+                      {/* <Box> */}
                         {MyUserID}
                       </Box>
                     </Tooltip>
@@ -614,15 +562,23 @@ const Profile = ({ toggle }) => {
                         }
                       >
                         {!isLogoUploaded &&
-                          Object.keys(values.avatar).length === 0 && (
-                            <div className={toggle ? classes.darkProfilePlaceholder : classes.lightProfilePlaceholder}>
+                          Object.keys(values.avatar).length === 0 &&(
+                            <div className={classes.profilePlaceholder}>
+                              <PersonOutlineIcon className={classes.avatarIcon} />
+                            </div>
+                          )}
+                          {!isLogoUploaded &&
+                          Object.keys(values.avatar).length > 0 && 
+                          values.avatar.url == ""   &&(
+                            <div className={classes.profilePlaceholder}>
                               <PersonOutlineIcon className={classes.avatarIcon} />
                             </div>
                           )}
                         {!isLogoUploaded &&
-                          Object.keys(values.avatar).length > 0 && (
+                          Object.keys(values.avatar).length > 0 && 
+                          values.avatar.url !== ""  && (
                             <img
-                              alt="app"
+                              alt="Image"
                               src={skylinkToUrl(values.avatar.url)}
                               className={classes.siteLogo}
                               onClick={(evt) =>
@@ -677,7 +633,7 @@ const Profile = ({ toggle }) => {
                           </span>
                         }
                         name="username"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -685,7 +641,7 @@ const Profile = ({ toggle }) => {
                       <SnTextInput
                         label="First Name"
                         name="firstName"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -693,7 +649,7 @@ const Profile = ({ toggle }) => {
                       <SnTextInput
                         label="Last Name"
                         name="lastName"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -706,7 +662,7 @@ const Profile = ({ toggle }) => {
                       <SnTextInput
                         label="Location"
                         name="location"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -714,7 +670,7 @@ const Profile = ({ toggle }) => {
                       <SnTextInput
                         label="Email"
                         name="emailID"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -722,7 +678,7 @@ const Profile = ({ toggle }) => {
                       <SnTextInput
                         label="Contact"
                         name="contact"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                         type="text"
                       />
                     </Box>
@@ -735,7 +691,7 @@ const Profile = ({ toggle }) => {
                       <SnTextArea
                         label="About me"
                         name="aboutMe"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                       />
                     </Box>
                   </Box>
@@ -747,14 +703,14 @@ const Profile = ({ toggle }) => {
                       <SnTextInputTag disabled
                         label="Topics Hidden - Disabled (coming soon)"
                         name="topicsHidden"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                       />
                     </Box>
                     <Box className={`${classes.inputContainer}`} flex={1}>
                       <SnTextInputTag
                         label="Topics Discoverable"
                         name="topicsDiscoverable"
-                        className={toggle ? classes.darkInput : classes.lightInput}
+                        className={classes.input}
                       />
                     </Box>
                   </Box>
@@ -773,7 +729,6 @@ const Profile = ({ toggle }) => {
                       <Grid item sm={6} xs={12} key={item.name}>
                         <Box className={`${classes.inputContainer}`}>
                           <SnInputWithIcon
-                            toggle={toggle}
                             icon={item.icon}
                             label={item.name}
                             name={item.name.toLocaleLowerCase()}
@@ -793,7 +748,7 @@ const Profile = ({ toggle }) => {
                               <Grid item sm={5} xs={12}>
                                 <Box className={`${classes.inputContainer}`}>
                                   <SnTextInput
-                                    className={toggle ? classes.darkInput : classes.lightInput}
+                                    className={classes.input}
                                     label="Channel"
                                     name={`otherConnections[${ind}].channel`}
                                     type="text"
@@ -803,7 +758,7 @@ const Profile = ({ toggle }) => {
                               <Grid item sm={6} xs={12}>
                                 <Box className={`${classes.inputContainer}`}>
                                   <SnTextInput
-                                    className={toggle ? classes.darkInput : classes.lightInput}
+                                    className={classes.input}
                                     label="Channel Url"
                                     name={`otherConnections[${ind}].url`}
                                     type="text"
