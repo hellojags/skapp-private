@@ -66,6 +66,9 @@ export const skylinkToUrl = (skyLink) => {
       } else if (skyLink.indexOf("sia:") === 0) {
         link = skyLink.replace("sia:", "");
       }
+        else{
+            link = skyLink;
+        }
      
       link = getPortalUrl() + link;
       //console.log("skylinkToUrl():: full url " + link);
