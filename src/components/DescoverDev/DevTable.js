@@ -30,217 +30,215 @@ import Spiner from "../AppsComp/Spiner";
 import UserCard from "./UserCard";
 import { ReactComponent as ArrowsLight } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
 import { ReactComponent as ArrowsDark } from '../../assets/img/icons/arrows-diagrams-02-dark.svg'
-import {getPortalUrl} from '../../service/skynet-api'
+import { getPortalUrl } from '../../service/skynet-api'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   table: {
-      minWidth: 850,
+    minWidth: 850,
   },
   lightPaper: {
-      marginTop: 10,
+    marginTop: 10,
       "& th, & td": {
-          border: 0,
+      border: 0,
       },
-      '& tbody tr th ~ td:not(:last-child)': {
-          color: '#6E77AA',
-          fontWeight: 'normal'
-      },
-      '& tbody th': {
-          fontWeight: 700
-      },
-      '& thead': {
-          
-          '& th': {
-              padding: 0,
-              color: '#2A2C34',
-              // lineHeight: '',
-              background: '#F0F5F7',
+    '& tbody tr th ~ td:not(:last-child)': {
+      color: '#6E77AA',
+        fontWeight: 'normal'
+    },
+    '& tbody th': {
+      fontWeight: 700
+    },
+    '& thead': {
+
+      '& th': {
+        padding: 0,
+          color: '#2A2C34',
+            // lineHeight: '',
+            background: '#F0F5F7',
               '& svg': {
-                  marginLeft: '5px',
-                  width: 18,
+          marginLeft: '5px',
+            width: 18,
               },
-              '&:first-child': {
-                  borderRadius: '5px 0 0px 5px',
-                  paddingLeft: 5
-              },
-              '&:last-child': {
-                  paddingRight: 10,
-                  borderRadius: '0px 5px 5px 0px'
-              }
-          }
-      },
-      '& tr th, & tr td': {
-          padding: '10px 0',
-          fontSize: 18,
-          '@media only screen and (max-width: 1440px)': {
-              fontSize: 16
-          },
-      },
-      '& tr th': {
-          '&:first-child': {
-              borderRadius: '5px 0 0px 5px'
-          },
-          '&:last-child': {
-              borderRadius: '0px 5px 5px 0px'
-          }
-      },
-      '& tr td': {
-          borderBottom: '1px solid #7070702b',
-          '&:first-child': {
-
-              paddingLeft: 5
-          },
-          '&:last-child': {
-              paddingRight: 10,
-
-          }
-      },
-      '& table': {
-          borderCollapse: 'separate',
-          borderSpacing: '0 8px'
-      },
-      '& tbody tr td,& tbody tr th': {
-          background: '#fff',
-          color: '#2A2C34'
-      },
-      '& tbody th svg': {
-          marginRight: 10
+        '&:first-child': {
+          borderRadius: '5px 0 0px 5px',
+            paddingLeft: 5
+        },
+        '&:last-child': {
+          paddingRight: 10,
+            borderRadius: '0px 5px 5px 0px'
+        }
       }
+    },
+    '& tr th, & tr td': {
+      padding: '10px 0',
+        fontSize: 18,
+          '@media only screen and (max-width: 1440px)': {
+        fontSize: 16
+      },
+    },
+    '& tr th': {
+      '&:first-child': {
+        borderRadius: '5px 0 0px 5px'
+      },
+      '&:last-child': {
+        borderRadius: '0px 5px 5px 0px'
+      }
+    },
+    '& tr td': {
+      borderBottom: '1px solid #7070702b',
+        '&:first-child': {
+
+        paddingLeft: 5
+      },
+      '&:last-child': {
+        paddingRight: 10,
+
+          }
+    },
+    '& table': {
+      borderCollapse: 'separate',
+        borderSpacing: '0 8px'
+    },
+    '& tbody tr td,& tbody tr th': {
+      background: '#fff',
+        color: '#2A2C34'
+    },
+    '& tbody th svg': {
+      marginRight: 10
+    }
   },
   darkPaper: {
-      marginTop: 10,
+    marginTop: 10,
       "& th, & td": {
-          border: 0,
+      border: 0,
       },
-      '& tbody tr th ~ td:not(:last-child)': {
-          color: '#6E77AA',
-          fontWeight: 'normal'
-      },
-      '& tbody th': {
-          fontWeight: 700
-      },
-      '& thead': {
+    '& tbody tr th ~ td:not(:last-child)': {
+      color: '#6E77AA',
+        fontWeight: 'normal'
+    },
+    '& tbody th': {
+      fontWeight: 700
+    },
+    '& thead': {
+      color: '#fff',
+        '& th': {
+        padding: 0,
           color: '#fff',
-          '& th': {
-              padding: 0,
-              color: '#fff',
-              // lineHeight: '',
-              background: '#1E2029',
+            // lineHeight: '',
+            background: '#1E2029',
               '& svg': {
-                  marginLeft: '5px',
-                  width: 18,
+          marginLeft: '5px',
+            width: 18,
               },
-              '&:first-child': {
-                  borderRadius: '5px 0 0px 5px',
-                  paddingLeft: 5
-              },
-              '&:last-child': {
-                  paddingRight: 10,
-                  borderRadius: '0px 5px 5px 0px'
-              }
-          }
-      },
-      '& tr th, & tr td': {
-          padding: '10px 0',
-          fontSize: 18,
-          '@media only screen and (max-width: 1440px)': {
-              fontSize: 16
-          },
-      },
-      '& tr th': {
-          '&:first-child': {
-              borderRadius: '5px 0 0px 5px'
-          },
-          '&:last-child': {
-              borderRadius: '0px 5px 5px 0px'
-          }
-      },
-      '& tr td': {
-          borderBottom: '1px solid #7070702b',
-          '&:first-child': {
-
-              paddingLeft: 5
-          },
-          '&:last-child': {
-              paddingRight: 10,
-
-          }
-      },
-      '& table': {
-          borderCollapse: 'separate',
-          borderSpacing: '0 8px'
-      },
-      '& tbody tr td,& tbody tr th': {
-          color: '#fff',
-          background: '#2A2C34',
-      },
-      '& tbody th svg': {
-          marginRight: 10
+        '&:first-child': {
+          borderRadius: '5px 0 0px 5px',
+            paddingLeft: 5
+        },
+        '&:last-child': {
+          paddingRight: 10,
+            borderRadius: '0px 5px 5px 0px'
+        }
       }
+    },
+    '& tr th, & tr td': {
+      padding: '10px 0',
+        fontSize: 18,
+          '@media only screen and (max-width: 1440px)': {
+        fontSize: 16
+      },
+    },
+    '& tr th': {
+      '&:first-child': {
+        borderRadius: '5px 0 0px 5px'
+      },
+      '&:last-child': {
+        borderRadius: '0px 5px 5px 0px'
+      }
+    },
+    '& tr td': {
+      borderBottom: '1px solid #7070702b',
+        '&:first-child': {
+
+        paddingLeft: 5
+      },
+      '&:last-child': {
+        paddingRight: 10,
+
+          }
+    },
+    '& table': {
+      borderCollapse: 'separate',
+        borderSpacing: '0 8px'
+    },
+    '& tbody tr td,& tbody tr th': {
+      color: '#fff',
+        background: '#2A2C34',
+      },
+    '& tbody th svg': {
+      marginRight: 10
+    }
   },
 
   statusWorking: {
-      color: '#1DBF73'
+    color: '#1DBF73'
   },
   statusError: {
-      color: '#FF6060'
+    color: '#FF6060'
   },
   arrow: {
-      marginLeft: 10
+    marginLeft: 10
   },
   menuAction: {
-
-
-      marginTop: '3.4rem',
+    marginTop: '3.4rem',
       '& ul': {
-          minWidth: 230,
-          '& li': {
-              fontSize: 18,
-              paddingBottom: 12,
-              '@media only screen and (max-width: 1440px)': {
-                  fontSize: 16
-              }
-          }
-      },
-      '& .MuiPaper-root': {
-          background: '#2A2C34',
-          boxShadow: '0px 3px 6px #00000029',
-          border: '1px solid #7070704F', overflow: 'visible'
-      },
-      '& .MuiPaper-root::before': {
-          content: '""',
-          width: 0,
-          height: 0,
-          borderTop: '14px solid transparent',
-          borderBottom: '14px solid transparent',
-          borderRight: '14px solid #70707057',
-          position: 'absolute',
-          top: '-22px',
-          right: 19,
-          transform: 'rotate(90deg)'
-      },
-      '& .MuiPaper-root::after': {
-          content: '""',
-          width: 0,
-          height: 0,
-          borderTop: '14px solid transparent',
-          borderBottom: '14px solid transparent',
-          borderRight: '14px solid #fff',
-          // position: 'relative',
-          position: 'absolute',
-          top: '-21px',
-          right: 19,
-          transform: 'rotate(90deg)'
+      minWidth: 230,
+        '& li': {
+        fontSize: 18,
+          paddingBottom: 12,
+            '@media only screen and (max-width: 1440px)': {
+          fontSize: 16
+        }
       }
+    },
+    '& .MuiPaper-root': {
+      background: '#2A2C34',
+        boxShadow: '0px 3px 6px #00000029',
+          border: '1px solid #7070704F', overflow: 'visible'
+    },
+    '& .MuiPaper-root::before': {
+      content: '""',
+        width: 0,
+          height: 0,
+            borderTop: '14px solid transparent',
+              borderBottom: '14px solid transparent',
+                borderRight: '14px solid #70707057',
+                  position: 'absolute',
+                    top: '-22px',
+                      right: 19,
+                        transform: 'rotate(90deg)'
+    },
+    '& .MuiPaper-root::after': {
+      content: '""',
+        width: 0,
+          height: 0,
+            borderTop: '14px solid transparent',
+              borderBottom: '14px solid transparent',
+                borderRight: '14px solid #fff',
+                  // position: 'relative',
+                  position: 'absolute',
+                    top: '-21px',
+                      right: 19,
+                        transform: 'rotate(90deg)'
+    }
   },
   checkBox: {
-      color:'#4B5060'
+    color: '#4B5060'
   },
   colorDanger: {
-      color: '#FF6060'
+    color: '#FF6060'
   },
   devAvtar: {
-      borderRadius: '50%',
+    borderRadius: '50%',
       border: '1px solid rgba(0,0,0,0.3)'
   },
   followBtn: {
@@ -254,10 +252,34 @@ const useStyles = makeStyles({
           border: '1px solid #1DBF73!important'
       }
   },
+  unfollowBtn: {
+    width: 110,
+      background: palette.error.main,
+        color: palette.error.contrastText,
+          "&:hover": {
+      background: palette.error.main,
+        color: palette.error.contrastText,
+    },
+  },
+  // followBtn: {
+  //   width: 110,
+  //     background: palette.primary.main,
+  //       color: palette.primary.contrastText,
+  //         "&:hover": {
+  //     background: palette.primary.main,
+  //       color: palette.primary.contrastText,
+  //   },
+  // },
   moreIconV: {
-      transform: 'rotate(90deg)'
-  }
-})
+    transform: 'rotate(90deg)'
+  },
+  ellipsis: {
+    maxWidth: 100,
+      whiteSpace: "nowrap",
+        overflow: "hidden",
+          textOverflow: "ellipsis",
+  },
+}));
 
 // function createData(domainName, type, status, action) {
 //     return { domainName, type, status, action }
@@ -473,13 +495,13 @@ const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }
                           Follow
                         </Button>
                       )}
-                      <IconButton size="small">
+                      {/* <IconButton size="small">
                         <FontAwesomeIcon
                           className={classes.moreIconV}
                           size="small"
                           icon={MoreIcon}
                         />
-                      </IconButton>
+                      </IconButton> */}
                     </Box>
                   </TableCell>
                 </TableRow>
