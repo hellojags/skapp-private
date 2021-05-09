@@ -67,7 +67,7 @@ export const skylinkToUrl = (skyLink) => {
         link = skyLink.replace("sia:", "");
       }
      
-      link = getPortalUrl() + "/"+ link;
+      link = getPortalUrl() + link;
       //console.log("skylinkToUrl():: full url " + link);
       return link;
     }
