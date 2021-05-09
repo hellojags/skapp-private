@@ -10,13 +10,13 @@ import {
   IDB_STORE_SKYDB_CACHE,
 } from "./SnIndexedDB"
 import { encryptData, decryptData } from "./SnEncryption"
-import { getPortal } from '../utils/SnUtility'
+import { getPortalUrl } from './skynet-api';
 /* global BigInt */
 //above comment is required to enable BigInt
 // ################################ SkyDB Methods ######################
 
 // pick skynet portal
-const skynetClient = new SkynetClient("https://siasky.net");
+const skynetClient = new SkynetClient("https://siasky.dev");
 let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB
@@ -337,7 +337,7 @@ export const getSkylinkMetadata = async (skylink) => {
 // TODO: below method can be removed once all functionality is implemented. From getSkylinkMetadata we shall get all data.
 export const getSkylinkHeader = (skylink) => {
   //TODO: create URL from Skylink
-  const skylinkUrl = getPortal() + skylink;
+  const skylinkUrl = getPortalUrl + skylink;
   try {
     ajax({
       url: `${skylinkUrl}?format=concat`,

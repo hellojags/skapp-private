@@ -164,7 +164,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DescoverDev = () => {
+const DescoverDev = ({toggle}) => {
   const classes = useStyles();
   const [followingList, setFollowingList] = useState([]);
   // const [searchData, setSearchData] = useState([]);
@@ -209,41 +209,6 @@ const DescoverDev = () => {
     if (followingList.includes(id))
       setFollowingList((list) => list.filter((item) => item !== id));
     else setFollowingList((list) => [...list, id]);
-  };
-
-  const searchHandler = (e) => {
-    // const options = {
-    //     isCaseSensitive: false,
-    //     // includeScore: false,
-    //     shouldSort: true,
-    //     // includeMatches: false,
-    //     findAllMatches: true,
-    //     minMatchCharLength: 0,
-    //     // location: 0,
-    //     threshold: 0.0,
-    //     // distance: 100,
-    //     // useExtendedSearch: false,
-    //     // ignoreLocation: false,
-    //     // ignoreFieldNorm: false,
-    //     includeScore: true,
-    //     keys: [
-    //         "username",
-    //         "location",
-    //         "userid"
-    //     ]
-    // }
-    // const fuse = new Fuse(publishedAppsStore, options)
-    // // Change the pattern
-    // const pattern = e.target.value
-    // console.log(pattern)
-    // if (pattern) {
-    //     let _newD = fuse.search(pattern)
-    //     _newD = _newD.map(_ => _.item)
-    //     setSearchData(_newD)
-    //     console.log(_newD)
-    // } else {
-    //     setSearchData(publishedAppsStore)
-    // }
   };
   { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
   return (

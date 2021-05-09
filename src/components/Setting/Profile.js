@@ -33,7 +33,7 @@ import { setProfile } from "../../service/SnSkappService";
 import { getUserID } from '../../service/skynet-api';
 import SnUpload from "../../uploadUtil/SnUpload";
 import { UPLOAD_SOURCE_NEW_HOSTING_IMG } from "../../utils/SnConstants";
-import { skylinkToUrl } from "../../utils/SnUtility";
+import { skylinkToUrl } from "../../service/skynet-api";
 import {
   SnInputWithIcon,
   SnTextArea,

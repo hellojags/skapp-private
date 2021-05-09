@@ -37,6 +37,7 @@ import {
 import { getMyFollowersAction } from "../../redux/action-reducers-epic/SnMyFollowerAction"
 import useStyles from "./SnProfileStyle"
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction"
+import {getPortalUrl} from '../../service/skynet-api'
 
 const tableIcons = {
   Add: React.forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -199,7 +200,7 @@ export default function SnUserDiscovery(props) {
       render: (rowData) => (
         <Avatar
           alt={rowData.username}
-          src={`https://siasky.net/${rowData.avatar}`}
+          src={getPortalUrl() + `${rowData.avatar}`}
           className={classes.large}
         />
       ),

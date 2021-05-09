@@ -3,8 +3,8 @@ import { Box, makeStyles, Typography, Button } from "@material-ui/core";
 import ScreenShot from "../../assets/img/sc.jpg";
 // import SimilarApps from "./SimilarApps";
 import AppComments from "./AppComments";
-import { useHistory } from  'react-router-dom';
-
+import { useHistory } from 'react-router-dom';
+import { getPortalUrl } from '../../service/skynet-api'
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -163,6 +163,7 @@ const useStyles = makeStyles((theme) => ({
 const AppInfo = ({ data, appId, toggle }) => {
   const classes = useStyles();
   const history = useHistory();
+
   return (
     <Fragment>
       <Typography component="h2" className={`${toggle ? classes.darkh2 : classes.lighth2} ${classes.mb0}`}>
@@ -251,28 +252,26 @@ const AppInfo = ({ data, appId, toggle }) => {
             src={
               data &&
               data.content.previewVideo.thumbnail &&
-              `https://siasky.net/${
-                data.content.previewVideo.thumbnail.split("sia:")[1]
-              }`
+              (getPortalUrl() + `${data.content.previewVideo.thumbnail.split("sia:")[1]}`)
             }
             alt="sc"
           />
         </Box>
         {data && data.content.previewImages.images.length
           ? data.content.previewImages.images.map((i, index) => {
-              return (
-                <Box
-                  key={index}
-                  paddingRight=".5rem"
-                  className={classes.scContainer}
-                >
-                  <img
-                    src={`https://siasky.net/${i.thumbnail.split("sia:")[1]}`}
-                    alt="sc"
-                  />
-                </Box>
-              );
-            })
+            return (
+              <Box
+                key={index}
+                paddingRight=".5rem"
+                className={classes.scContainer}
+              >
+                <img
+                  src={getPortalUrl() + `${i.thumbnail.split("sia:")[1]}`}
+                  alt="sc"
+                />
+              </Box>
+            );
+          })
           : null}
 
         {/* // <Box paddingRight=".5rem" className={classes.scContainer}>

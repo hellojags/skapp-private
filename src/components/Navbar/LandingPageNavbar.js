@@ -349,9 +349,9 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                     <div className="logo-top" >
                         {toggle ? <Logo1 /> : <Logo />}
                     </div>
-                    <div className={classes.search}>
+                    {/* <div className={classes.search}>
                         <font color="red">Unit testing in-progress: Aggregated Test Data will be reset in couple of days</font>
-                        {/*   <div className={classes.searchIcon}>
+                          <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                         <InputBase
@@ -361,8 +361,8 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                        /> */}
-                    </div>
+                        /> 
+                    </div>*/}
                     <div className={classes.sectionDesktop}>
                         <div className={toggle ? classes.darkText : classes.lightText}>
                             Light

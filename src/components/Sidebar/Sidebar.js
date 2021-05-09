@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
 import { ReactComponent as DashboardIcon } from "../../assets/img/icons/dashboardIcon.svg"
 import { ReactComponent as SubmitAppIcon } from "../../assets/img/icons/submitIcon.svg"
 import { ReactComponent as MyAppIcon } from "../../assets/img/icons/grayMyApps.svg"
-import { ReactComponent as MyAppPinIcon } from "../../assets/img/icons/pin.svg"
+import { ReactComponent as MyAppPinIcon } from "../../assets/img/icons/Pin.svg"
 import { ReactComponent as HostingIcon } from "../../assets/img/icons/Cloud, Sync, Synchronize.6.svg"
 import { ReactComponent as DeployIcon } from "../../assets/img/icons/deployIcon.svg"
 import { ReactComponent as FilesIcon } from "../../assets/img/icons/filesIcon.svg"

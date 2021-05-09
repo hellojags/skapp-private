@@ -38,6 +38,8 @@ import millify from 'millify'
 //import styles
 import styles from "../../assets/jss/apps/AppCardStyle"
 import DataUsageIcon from '@material-ui/icons/DataUsage'
+import { getPortalUrl } from '../../service/skynet-api'
+
 const useStyles = makeStyles(styles)
 
 const appBg = {
@@ -216,26 +218,12 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
         {item &&
           <Card className={toggle ? classes.darkRoot : classes.lightRoot}>
             <CardActionArea className={classes.cardActionArea} component="div">
-              {/* <CardMedia
-                onClick={() => ViewAppDetail(item.id)}
-                className={`${classes.media} appCardHeader`}
-                style={{
-                  backgroundColor: appBg[item.content.category]
-                }}
-                image={
-                  item.content.skappLogo.thumbnail &&
-                  `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
-                  }`
-                }
-                title="Contemplative Reptile"
-              /> */}
               <div onClick={() => ViewAppDetail(item.id)}>
                 <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
                   backgroundColor: appBg[item.content.category] ? appBg[item.content.category] : Math.floor(Math.random() * 16777215).toString(16)
                 }}>
-                  <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail &&
-                    `https://siasky.net/${item.content.skappLogo.thumbnail.split("sia:")[1]
-                    }`} alt="" /></span>
+                  <span className="app-logo-img"><img src={item.content.skappLogo.thumbnail && (getPortalUrl() + `${item.content.skappLogo.thumbnail.split("sia:")[1]}`)} alt="" />
+                  </span>
                 </Box>
                 {toggle ? <div className="lightCategoryOnAppCard">
                   <span>

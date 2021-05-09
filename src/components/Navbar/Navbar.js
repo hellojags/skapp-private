@@ -42,7 +42,7 @@ import { useHistory } from "react-router-dom"
 import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
-import { skylinkToUrl } from "../../utils/SnUtility";
+import { skylinkToUrl } from "../../service/skynet-api";
 const useStyles = makeStyles((theme) => ({
     rootDark: {
         // backgroundColor: '#fff',

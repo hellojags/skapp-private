@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PersonOutline } from "@material-ui/icons";
 import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
-
+import {getPortalUrl} from '../../service/skynet-api'
 const useStyles = makeStyles((theme) => ({
   root: {
       height: 300,
@@ -184,7 +184,7 @@ const UserCard = ({toggle,
   const rootRef = React.useRef(null);
 
   const transformImageUrl = (siaUrl) => {
-    let skyUrl = `https://siasky.net/${siaUrl.slice(6)}`;
+    let skyUrl = getPortalUrl() + `${siaUrl.slice(6)}`;
     console.log(skyUrl);
     return skyUrl;
   };

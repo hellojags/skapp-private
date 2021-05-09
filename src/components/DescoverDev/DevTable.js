@@ -30,6 +30,7 @@ import Spiner from "../AppsComp/Spiner";
 import UserCard from "./UserCard";
 import { ReactComponent as ArrowsLight } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
 import { ReactComponent as ArrowsDark } from '../../assets/img/icons/arrows-diagrams-02-dark.svg'
+import {getPortalUrl} from '../../service/skynet-api'
 
 const useStyles = makeStyles({
   table: {
@@ -353,7 +354,7 @@ const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }
   };
 
   const transformImageUrl = (siaUrl) => {
-    let skyUrl = `https://siasky.net/${siaUrl.slice(6)}`;
+    let skyUrl = getPortalUrl() + `${siaUrl.slice(6)}`;
     return skyUrl;
   };
 

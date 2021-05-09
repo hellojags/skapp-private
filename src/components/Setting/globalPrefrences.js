@@ -236,12 +236,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const portalOptions = [
-  { value: "https://siasky.net/", label: "https://siasky.net/" },
+  { value: "https://siasky.dev/", label: "https://siasky.dev/" },
   { value: "https://skyportal.xyz", label: "https://skyportal.xyz" },
 ];
 const initailValueFormikObGB = {
   darkmode: true,
-  portal: "https://siasky.net",
+  portal: "https://siasky.dev",
 };
 const GlobalPrefrences = ({toggle}) => {
   const [isSuccess, setIsSuccess] = useState(false);

@@ -41,32 +41,12 @@ export const getSkyspaceListForCarousalMenu = (snSkyspaceList) => {
     return carousalMenuObj
   }
 }
-/** Start : Skynet Methods * */
-export const getPortal = () => {
-  // let skynetPortal = store.getState().snUserSetting?.setting?.portal
-  // skynetPortal =
-  //   skynetPortal && skynetPortal.trim() !== "" ? skynetPortal : DEFAULT_PORTAL
-  return "https://siasky.net/"
-}
 
 // It will generate base32 url for any Skapp
 const getbase32URlForSkapp = (skylink) => {
   let base32URL = null;
   return base32URL;
 }
-
-// // I think we can use idp field in session object for this
-// export const getUserSessionType = (userSession) => {
-//   let idType = ID_PROVIDER_SKYID
-//   // ID_PROVIDER_BLOCKSTACK;
-//   if (userSession.skydbseed) {
-//     idType = ID_PROVIDER_SKYDB
-//   } else if (userSession.skyid) {
-//     idType = ID_PROVIDER_SKYID
-//   }
-//   return idType
-// }
-
 /**
  * Compresses Image file to Skyspace params. Returns an Object of type File
  * 
@@ -124,34 +104,7 @@ export const videoToImg = async (video) => {
   return file;
 };
 
-export const getPortalFromUserSetting = (userSetting) => {
-  // TODO : extract user selected portal from store . Returning default portal for now.
-  return DEFAULT_PORTAL;
-};
-
-export const skylinkToUrl = (skyLink, userSetting) => {
-  let link = "";
-  const portal = userSetting ? getPortalFromUserSetting(userSetting) : DEFAULT_PORTAL;
-  if (skyLink.indexOf("http://") === 0 || skyLink.indexOf("https://") === 0) {
-    link = skyLink;
-  } else if (skyLink.indexOf("sia://") === 0) {
-    link = skyLink.replace("sia://", portal);
-  } else if (skyLink.indexOf("sia:") === 0) {
-    link = skyLink.replace("sia:", getPortalFromUserSetting(userSetting));
-  } else if (skyLink.length === 46) {
-    link = portal + skyLink;
-  }
-  return link;
-};
-
 export const hashFromSkylinkUploadResponse = (response) => response.skylink.replace("sia:", "");
-
-export const launchSkyLink = (skyLink, userSetting) => {
-  const link = skylinkToUrl(skyLink, userSetting);
-  if (link !== "") {
-    window.open(link, "_blank");
-  }
-};
 
 export const flattenObject = (obj) => {
   const flattened = {};

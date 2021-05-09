@@ -176,7 +176,7 @@ function createData(portalName, portalURL, portalType, actions) {
 }
 
 const rows = [
-    createData('Skynet Labs Portal', 'https://siasky.net', 'Free Tier',),
+    createData('Skynet Labs Portal', 'https://siasky.dev', 'Free Tier',),
     createData('Community Portal', 'https://skyportal.xyz', 'Free Tier',),
     createData('Another Provider Portal', 'https://skynethub.io', 'Free Tier',),
 ]

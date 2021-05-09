@@ -12,7 +12,7 @@ import {
 import store from "../redux"
 import { setUserSession } from "../redux/action-reducers-epic/SnUserSessionAction"
 
-const client = new SkynetClient("https://siasky.net/");
+const client = new SkynetClient("https://siasky.dev");
 //const hostApp = "awesomeskynet.hns";
 const hostApp = "localhost";
 
@@ -37,12 +37,17 @@ export const initMySky = async () => {
         // Try to login silently, requesting permissions for hostApp HNS.
         loggedIn = await mySky.checkLogin();// check if user is already logged-In
         console.log("checkLogin : loggedIn status: " + loggedIn);
+        let portalUrl = await client.portalUrl();
         userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC} };
         //userSession = { mySky, dacs: { userProfileDAC } };
         // if not logged-in
         if (loggedIn) {
             let userID = await mySky.userID();
-            userSession = { ...userSession, userID };
+            userSession = { ...userSession, userID, portalUrl };
+        }
+        else
+        {
+          userSession = { ...userSession,portalUrl};
         }
     } catch (e) {
         console.error(e);
@@ -51,39 +56,37 @@ export const initMySky = async () => {
     return { loggedIn, userSession };
 }
 
-export const handleMySkyLogin = async (userSession) => {
-
-};
-
-// export const handleMySkyLogin = async () => {
-//     try {
-//         // Initialize MySky.
-//         const mySky = await client.loadMySky(hostApp, { dev: true, debug: true });
-//         // Add additional needed permissions before checkLogin.
-//         // Can be Permissions object or list of Permissions objects
-//         //await mySky.addPermissions(new Permission("requestor.hns", "domain.hns/path", PermCategory.Hidden, PermType.Write));
-//         // Try to login silently, requesting permissions for hostApp HNS.
-//         //await mySky.logout();
-//         const loggedIn = await mySky.checkLogin();// check if user is already logged-In
-//         console.log("checkLogin : loggedIn status: "+loggedIn);
-//         // Add button action for login.
-//         if (!loggedIn) {
-//             const status = await mySky.requestLoginAccess();//login popup window
-//             console.log("requestLoginAccess status: "+status);
-//         }
-//         // Initialize DAC, auto-adding permissions.
-//         // const contentDAC = new ContentRecordDAC();
-//         const userProfileDAC = new UserProfileDAC();
-//         const feedDAC = new FeedDAC();
-//         await mySky.loadDacs(contentDAC,userProfileDAC,feedDAC);
-//         let userID = await mySky.userID();
-//         //await testUserProfile(userProfileDAC);
-//         return { mySky, dacs: {contentDAC, userProfileDAC,feedDAC}, userID };
-//     } catch (error) {
-//         console.log(error);
-//         return {mySky:null, dacs: {}, userID:null};
-//     }
-// }
+export const skylinkToUrl = (skyLink) => {
+    let link = "";
+    try {
+      if (skyLink.indexOf("http://") === 0 || skyLink.indexOf("https://") === 0) {
+        link = skyLink;
+      } else if (skyLink.indexOf("sia://") === 0) {
+        link = skyLink.replace("sia://", "");
+      } else if (skyLink.indexOf("sia:") === 0) {
+        link = skyLink.replace("sia:", "");
+      }
+     
+      link = getPortalUrl() + "/"+ link;
+      //console.log("skylinkToUrl():: full url " + link);
+      return link;
+    }
+    catch (error) {
+      console.log("skylinkToUrl() : error: " + error);
+      return link;
+    }
+  };
+export const getPortalUrl = () => {
+    // let portalUrl = null;
+    // try {
+    //   const state = store.getState();
+    //   portalUrl = state.userSession.portalUrl + "/";
+    // } catch (e) {
+    //   return portalUrl;
+    // }
+    // return portalUrl;
+    return "https://siasky.dev/"
+  };
 
 export const getUserSession = async () => {
     let session = null;
