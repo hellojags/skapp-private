@@ -39,10 +39,35 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: "transparent",
-    "& .MuiTabs-indicator": {
-      backgroundColor: "transparent",
+    lightRoot: {
+        backgroundColor: 'transparent',
+        backgroundColor: 'transparent',
+        '& .MuiTabs-indicator': {
+            backgroundColor: 'transparent',
+        },
+        '& .MuiTab-root': {
+            fontWeight: 600,
+            minWidth: 85,
+            color: '#869EA6',
+            "&.Mui-selected": {
+                color: '#2A2C34'
+            }
+        }
+    },
+    darkRoot: {
+        backgroundColor: 'transparent',
+        backgroundColor: 'transparent',
+        '& .MuiTabs-indicator': {
+            backgroundColor: 'transparent',
+        },
+        '& .MuiTab-root': {
+            fontWeight: 600,
+            minWidth: 85,
+            color: '#869EA6',
+            "&.Mui-selected": {
+                color: '#fff'
+            }
+        }
     },
     "& .MuiTab-root": {
       fontWeight: 600,
@@ -52,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
         color: "#000",
       },
     },
-  },
   h1: {
     fontSize: "28px",
     "@media only screen and (max-width: 575px)": {
@@ -84,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Settings = () => {
+const Settings = ({toggle}) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -93,16 +117,9 @@ const Settings = () => {
 
   return (
     <Fragment>
-      {/* <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                <h1 className={classes.h1}>Settings</h1>
-                <Box className={classes.btnBox}>
-                    <Button className={classes.submitBtn}>Save Changes</Button>
-                </Box>
-            </Box> */}
-
-      <div className={classes.root}>
+          <div className={toggle ? classes.darkRoot : classes.lightRoot}>
         <AppBar
-          className={classes.tabNavigation}
+          className={toggle ? classes.darkTabNavigation: classes.lightTabNavigation}
           position="static"
           color="default"
         >
@@ -127,3 +144,4 @@ const Settings = () => {
   );
 };
 export default Settings;
+           

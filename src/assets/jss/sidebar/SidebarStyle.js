@@ -1,7 +1,7 @@
 const sideabrStyle = theme => (
     {
         root: {
-            padding: 0
+            padding: 0,
         },
         nested: {
             paddingLeft: theme.spacing(4),
@@ -9,9 +9,22 @@ const sideabrStyle = theme => (
         sidebarItem: {
             display: 'flex',
             alignItems: 'center',
+            // background: '#2A2C34!important',
         },
-        sidebar: {
-            backgroundColor: '#fff',
+        darkSidebar: {
+            backgroundColor: '#2A2C34!important',
+            boxShadow: ' 0px 1px 4px #15223214',
+            maxWidth: '250px',
+            padding: '1rem',
+            paddingRight: '0',
+            height: 'calc(100vh - 64px)',
+            overflowY: 'auto',
+            '@media (max-width: 1440px)': {
+                maxWidth: '230px',
+            }
+        },
+        lightSidebar: {
+            backgroundColor: '#fff!important',
             boxShadow: ' 0px 1px 4px #15223214',
             maxWidth: '250px',
             padding: '1rem',
@@ -23,10 +36,16 @@ const sideabrStyle = theme => (
             }
         },
         listIcon: {
-            minWidth: '40px'
+            minWidth: '40px',
+
+            '&:hover': {
+                color: '#fff',
+                background: '#1DBF73'
+            }
         },
         dropArrow: {
-            color: '#323232'
+            // color: '#323232'
+            color: '#fff'
         },
         promoCard: {
             background: '#1DBF73',

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
 
-const AppDetailsPage = () => {
+const AppDetailsPage = ({toggle}) => {
   const { appId } = useParams();
 
   const dispatch = useDispatch();
@@ -27,10 +27,12 @@ const AppDetailsPage = () => {
     }
   }, [publishedAppsStore, appId]); // if id or publishedAppsStore is changing run this method.
 
+  {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
   return (
     <div>
-      <AppDetailsHeader data={data} />
-      <AppInfo data={data} appId={appId}/>
+      <AppDetailsHeader toggle={toggle} data={data} />
+      <AppInfo toggle={toggle} data={data} appId={appId}/>
     </div>
   );
 };

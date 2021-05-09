@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useDispatch } from "react-redux";
 import { HashRouter as Router } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
@@ -12,6 +12,7 @@ import { initMySky } from "./service/skynet-api";
 import { skappTheme } from "./theme/Theme";
 
 function App() {
+  const [toggle, setToggle] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     initMySky().then((data) => {
@@ -20,19 +21,18 @@ function App() {
         dispatch(setUserSession(data.userSession));
     });
   }, [dispatch]);
-
   return (
     <Router>
       <ThemeProvider theme={skappTheme}>
         <SnLoader />
         <div className="App">
-          <Nav />
+          <Nav toggle={toggle} setToggle={setToggle} />
           <section className="main-content">
             <aside className="app-sidebar">
-              <Sidebar />
+              <Sidebar toggle={toggle} />
             </aside>
             <main className="app-content" id="app-content">
-              <SnRouter />
+              <SnRouter toggle={toggle} />
             </main>
           </section>
         </div>

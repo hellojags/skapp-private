@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
 
-    modalHeader: {
+    lightModalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
         color: '#333333',
@@ -21,7 +21,18 @@ const useStyles = makeStyles((theme) => ({
             padding: '1rem',
         }
     },
-    root: {
+    darkModalHeader: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#fff',
+        borderBottom: '1px solid #70707085',
+        padding: '1.3rem',
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 24,
+            padding: '1rem',
+        }
+    },
+    lightRoot: {
         width: 1180,
         maxWidth: '95%',
         boxShadow: '0px 2px 5px #15223221',
@@ -31,10 +42,21 @@ const useStyles = makeStyles((theme) => ({
             background: '#fff',
             border: 0,
             outline: 0,
-
         }
     },
-    inputContainer: {
+    darkRoot: {
+        width: 1180,
+        maxWidth: '95%',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        opacity: 1,
+        '&, &:focus': {
+            background: '#1E2029',
+            border: 0,
+            outline: 0,
+        }
+    },
+    lightInputContainer: {
         '& input': {
             borderTopLeftRadius: 4,
             borderBottomLeftRadius: 4,
@@ -42,11 +64,14 @@ const useStyles = makeStyles((theme) => ({
             paddingRight: '1rem',
             flex: 1,
             height: 60,
+            color: '#2A2C34',
+            background: '#fff',
             '@media only screen and (max-width: 575px)': {
                 flex: '100%',
                 marginBottom: '1rem', borderRadius: 10
             },
-            border: '1px solid #D9E1EC',
+            // border: '1px solid #D9E1EC',
+            border: '1px solid rgba(0, 0, 0, 0.4)',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -62,9 +87,52 @@ const useStyles = makeStyles((theme) => ({
 
         }
     },
-    label: {
+    darkInputContainer: {
+        '& input': {
+            borderTopLeftRadius: 4,
+            borderBottomLeftRadius: 4,
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+            flex: 1,
+            height: 60,
+            color: '#fff',
+            background: '#2A2C34',
+            '@media only screen and (max-width: 575px)': {
+                flex: '100%',
+                marginBottom: '1rem', borderRadius: 10
+            },
+            // border: '1px solid #D9E1EC',
+            border: '1px solid rgba(0, 0, 0, 0.4)',
+            '&:focus': {
+                border: '1px solid #1DBF73',
+                outline: 0
+            },
+            '@media only screen and (max-width: 1440px)': {
+                height: 50,
+            },
+
+        },
+        '@media only screen and (max-width: 575px)': {
+            flexWrap: 'wrap',
+
+
+        }
+    },
+    lightLabel: {
         fontSize: 21,
         color: '#000',
+        marginBottom: 10,
+        display: 'block',
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 19,
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 16,
+        }
+    },
+    darkLabel: {
+        fontSize: 21,
+        color: '#fff',
         marginBottom: 10,
         display: 'block',
         '@media only screen and (max-width: 1440px)': {
@@ -110,7 +178,8 @@ const useStyles = makeStyles((theme) => ({
 
     }
 }))
-const AddNewDomain = ({ openModal, openModalHandler }) => {
+
+const AddNewDomain = ({ openModal, openModalHandler, toggle }) => {
     const classes = useStyles()
 
     // const [open, setOpen] = React.useState(true)
@@ -123,6 +192,8 @@ const AddNewDomain = ({ openModal, openModalHandler }) => {
         // setOpen(false)
         openModalHandler()
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
 
     return (
 
@@ -140,14 +211,14 @@ const AddNewDomain = ({ openModal, openModalHandler }) => {
                 }}
             >
                 <Fade in={openModal}>
-                    <Box className={classes.root}>
-                        <div className={classes.modalHeader}>
+                    <Box className={toggle ? classes.darkRoot : classes.lightRoot}>
+                        <div className={toggle ? classes.darkModalHeader : classes.lightModalHeader}>
                             New Custom Domain
                         </div>
 
                         <form className={classes.form}>
-                            <label className={classes.label} htmlFor="domainName">Enter Domain Name</label>
-                            <Box display="flex" className={classes.inputContainer}>
+                            <label className={toggle ? classes.darkLabel : classes.lightLabel} htmlFor="domainName">Enter Domain Name</label>
+                            <Box display="flex" className={toggle ? classes.darkInputContainer : classes.lightInputContainer}>
                                 <input required type="text" id="domainName" placeholder='e.g., mysite.com' />
                                 <Button className={classes.submitBtn} onClick={handleClose}> Next</Button>
                             </Box>

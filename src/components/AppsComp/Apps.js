@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Apps() {
+function Apps({toggle}) {
   const dispatch = useDispatch();
   const { publishedAppsStore } = useSelector((state) => state.snPublishedAppsStore);
   const { installedAppsStore } = useSelector((state) => state.snInstalledAppsStore);
@@ -177,6 +177,7 @@ function Apps() {
     }
   }
 
+  {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
 
   const AppsComp = (
     <Fragment>
@@ -257,14 +258,15 @@ function Apps() {
         <div>
           <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} updated={undefined} handleInstall={handleInstall}/>
         </div>
-        : <NoApps showTitle={true} pageTitle="My Published Apps" heading="No Published Apps to display" pharase="Publish your App using 'Publish App' BUTTON" />
+        : <NoApps toggle={toggle} showTitle={true} pageTitle="My Published Apps" heading="No Published Apps to display" pharase="Publish your App using 'Publish App' BUTTON" />
       }
       {/* <Box paddingTop="1.2rem" paddingBottom="1rem">
         <CustomPagination />
       </Box> */}
     </Fragment>
   )
-  const finalComp = (publishedAppsStore.length ? AppsComp : (<NoApps
+  const finalComp = (publishedAppsStore.length ? AppsComp : (<NoApps 
+    toggle={toggle}
     msg='No Published Apps to display in AppStore. Publish your App using "Publish App" BUTTON '
     btnText="Publish App"
     pageType="Published"

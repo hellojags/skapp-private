@@ -9,9 +9,20 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  h2: {
+  lighth2: {
     fontSize: 28,
     color: "#131523",
+    fontWeight: 700,
+    marginBottom: "10px",
+    marginTop: 15,
+    "@media only screen and (max-width: 575px)": {
+      fontSize: 20,
+      marginTop: 10,
+    },
+  },
+  darkh2: {
+    fontSize: 28,
+    color: "#fff",
     fontWeight: 700,
     marginBottom: "10px",
     marginTop: 15,
@@ -51,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: ".5rem",
     },
   },
-  infoText: {
+  lightInfoText: {
     color: "#131523",
     fontSize: 20,
     fontWeight: "bold",
@@ -65,9 +76,33 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 12,
     },
   },
-  descText: {
+  darkInfoText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+    "@media only screen and (max-width: 1600px)": {
+      fontSize: 18,
+    },
+    "@media only screen and (max-width: 1300px)": {
+      fontSize: 16,
+    },
+    "@media only screen and (max-width: 575px)": {
+      fontSize: 12,
+    },
+  },
+  lightDescText: {
     fontSize: 20,
     color: "#131523",
+    "@media only screen and (max-width: 1300px)": {
+      fontSize: 16,
+    },
+    "@media only screen and (max-width: 575px)": {
+      fontSize: 12,
+    },
+  },
+  darkDescText: {
+    fontSize: 20,
+    color: "#fff",
     "@media only screen and (max-width: 1300px)": {
       fontSize: 16,
     },
@@ -125,12 +160,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AppInfo = ({ data, appId }) => {
+const AppInfo = ({ data, appId, toggle }) => {
   const classes = useStyles();
   const history = useHistory();
   return (
     <Fragment>
-      <Typography component="h2" className={`${classes.h2} ${classes.mb0}`}>
+      <Typography component="h2" className={`${toggle ? classes.darkh2 : classes.lighth2} ${classes.mb0}`}>
         App Details <Button style={{ float: 'right' }} className={classes.submitBtn} onClick={(e) => history.push(`/editpublishapp/${appId}`)}> Edit </Button>
       </Typography>
 
@@ -138,7 +173,7 @@ const AppInfo = ({ data, appId }) => {
         <Box flex={1}>
           <Typography className={classes.subHeading}>Version</Typography>
 
-          <Typography className={classes.infoText}>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
             {data && data.version}
           </Typography>
         </Box>
@@ -147,7 +182,7 @@ const AppInfo = ({ data, appId }) => {
             Interface language
           </Typography>
 
-          <Typography className={classes.infoText}>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
             Russian, English, German, French, Spanish, Italian, Portuguese,
             Arabic
           </Typography>
@@ -155,7 +190,7 @@ const AppInfo = ({ data, appId }) => {
         <Box flex={1}>
           <Typography className={classes.subHeading}>The size</Typography>
 
-          <Typography className={classes.infoText}>183.9 MB</Typography>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>183.9 MB</Typography>
         </Box>
       </Box>
       <Box
@@ -167,21 +202,21 @@ const AppInfo = ({ data, appId }) => {
         <Box flex={1}>
           <Typography className={classes.subHeading}>Compatibility</Typography>
 
-          <Typography className={classes.infoText}>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
             OS X 10.9 or later, 64-bit processor
           </Typography>
         </Box>
         <Box flex={2}>
           <Typography className={classes.subHeading}>Verified</Typography>
 
-          <Typography className={classes.infoText}>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
             Dr.Web for Mac - No viruses
           </Typography>
         </Box>
         <Box flex={1}>
           <Typography className={classes.subHeading}>Tags</Typography>
 
-          <Typography className={classes.infoText}>
+          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
             Programs, Utilities
           </Typography>
         </Box>
@@ -192,7 +227,7 @@ const AppInfo = ({ data, appId }) => {
         className={classes.descTextContainer}
         marginTop="15px"
       >
-        <Typography component="h2" className={classes.h2}>
+        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
           Description
         </Typography>
         <Typography variant="body2" className={classes.descText}>
@@ -207,7 +242,7 @@ const AppInfo = ({ data, appId }) => {
           <span className={classes.readMoreBtn}>Read More</span> */}
         </Typography>
       </Box>
-      <Typography component="h2" className={classes.h2}>
+      <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
         Screenshots
       </Typography>
       <Box display="flex" flexWrap="wrap">
@@ -251,10 +286,10 @@ const AppInfo = ({ data, appId }) => {
         // </Box> */}
       </Box>
       <Box className={classes.descTextContainer} marginTop="15px">
-        <Typography component="h2" className={classes.h2}>
+        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
           Description
         </Typography>
-        <Typography variant="body2" className={classes.descText}>
+        <Typography variant="body2" className={toggle ? classes.darkDescText : classes.lightDescText}>
           What's new in iMazing 2.12.7 Licensing Server Change: iMazing will now
           connect to https://api.imazing.com for license validation. This change
           anticipates the upcoming retirement of our previous licensing
@@ -265,24 +300,24 @@ const AppInfo = ({ data, appId }) => {
           <br />
           <br />
         </Typography>
-        <Typography variant="body2" className={classes.descText}>
+        <Typography variant="body2" className={toggle ? classes.darkDescText : classes.lightDescText}>
           Fixes and improvements in 2.12.7 Licensing: fixed various activation
           issues Fixed inactive Choose Wallpaper button in Supervision wizard
           (macOS) Other minor fixes and stability improvements
         </Typography>
       </Box>
       <Box overflow="hidden" marginTop="15px">
-        <Typography component="h2" className={classes.h2}>
+        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
           Similar Apps
         </Typography>
         {/* <SimilarApps /> */}
       </Box>
       <Box overflow="hidden" marginTop="15px">
-        <Typography component="h2" className={classes.h2}>
+        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
           Comments (65)
         </Typography>
 
-        <AppComments uid={data && data.id} version={data && data.version} />
+        <AppComments toggle={toggle} uid={data && data.id} version={data && data.version} />
       </Box>
     </Fragment>
   );

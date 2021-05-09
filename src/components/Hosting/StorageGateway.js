@@ -13,7 +13,7 @@ import StorageTable from './StorageTable'
 // import AddNewSite from './AddNewSiteBtn'
 const useStyles = makeStyles(theme => (
     {
-        search: {
+        lightSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade('#fff', 1),
@@ -36,6 +36,29 @@ const useStyles = makeStyles(theme => (
             },
 
         },
+        darkSearch: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade('#2A2C34', 1),
+            '&:hover': {
+                backgroundColor: fade("#2A2C34", 0.9),
+            },
+            marginRight: theme.spacing(2),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(3),
+                width: 'auto',
+            },
+            color: '#8B9DA5',
+            boxShadow: '0px 1px 2px #15223214',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
+
+            marginLeft: '16px!important',
+            '@media (max-width: 1650px)': {
+                width: 'auto'
+            },
+
+        },
         searchIcon: {
             padding: theme.spacing(0, 2),
             height: '100%',
@@ -46,8 +69,13 @@ const useStyles = makeStyles(theme => (
             justifyContent: 'center',
             color: '#B4C6CC'
         },
-        inputRoot: {
-            color: 'inherit',
+        lightInputRoot: {
+            // color: 'inherit',
+            color: '#2A2C34!important',
+        },
+        darkInputRoot: {
+            color: '#fff!important',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
         },
         inputInput: {
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
@@ -69,9 +97,12 @@ const useStyles = makeStyles(theme => (
             }
 
         },
-
-        pageHeading: {
+        lightPageHeading: {
             color: '#131523',
+            fontSize: '28px',
+        },
+        darkPageHeading: {
+            color: '#fff',
             fontSize: '28px',
         },
         smallText: {
@@ -130,10 +161,12 @@ const useStyles = makeStyles(theme => (
 
     }
 ))
-function StorageGateway() {
+function StorageGateway({ toggle }) {
 
     const { width } = useWindowDimensions()
     const classes = useStyles()
+
+    { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
 
     return (
 
@@ -142,9 +175,9 @@ function StorageGateway() {
             {/* <AddNewDomainTXT /> */}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Storage Gateway Manager</h1>
+                    <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Storage Gateway Manager</h1>
                 </Box>
-                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                {width < 1250 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -153,7 +186,7 @@ function StorageGateway() {
                     <InputBase
                         placeholder="Search Apps"
                         classes={{
-                            root: classes.inputRoot,
+                            root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
@@ -161,10 +194,10 @@ function StorageGateway() {
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
                     {/* <Box>
-                        <UtilitiesItem />
+                        <UtilitiesItem toggle={toggle}/>
                     </Box> */}
 
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -173,28 +206,26 @@ function StorageGateway() {
                         <InputBase
                             placeholder="Search Apps"
                             classes={{
-                                root: classes.inputRoot,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>}
                     {/* <Box>
-                        <ListFilter />
+                        <ListFilter toggle={toggle} />
                     </Box> */}
-
                     <Box>
                         <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}>
                             Add Storage Gateway
-                    </SubmitBtn>
+                        </SubmitBtn>
                     </Box>
                 </Box>
 
             </Box>
             <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
-            <StorageTable />
+            <StorageTable toggle={toggle} />
         </Fragment>
     )
 }
-
 export default StorageGateway

@@ -294,7 +294,7 @@ const SnUpload = React.forwardRef((props, ref) => {
       {files.length > 0 && (
         <div className="home-uploaded-files d-none">
           {files.map((file, i) => {
-            return <UploadFile key={i} {...file} />;
+            return <UploadFile toggle={props.toggle} key={i} {...file} />;
           })}
         </div>
       )}

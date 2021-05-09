@@ -1,7 +1,15 @@
 import GraphIcon from '../../img/icons/grahpIcon.svg'
 const SubmitAppStyles = () => ({
-    h1: { 
+    lighth1: { 
         fontSize: '28px',
+        color: '#2A2C34',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 18
+        }
+    },
+    darkh1: { 
+        fontSize: '28px',
+        color: '#fff',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
         }
@@ -9,22 +17,39 @@ const SubmitAppStyles = () => ({
     btnBox: {
 
     },
-    okBtn: {
+    lightOkBtn: {
         border: '1px solid #ea052f',
         marginRight: '10px',
         borderRadius: '5px',
         boxShadow: '0px 2px 5px #15223221',
         height: 48,
         marginTop: '2rem',
-        textTransform: 'none'
+        textTransform: 'none',
+        color: '#2A2C34'
     },
-    modalTitle: {
+    darkOkBtn: {
+        border: '1px solid #ea052f',
+        marginRight: '10px',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none',
+        color: '#fff'
+    },
+    lightModalTitle: {
         fontSize: 32,
         color: '#333333',
         fontWeight: 700,
         marginBottom: '1rem'
     },
-    shareCardContainer: {
+    darkModalTitle: {
+        fontSize: 32,
+        color: '#ffffff',
+        fontWeight: 700,
+        marginBottom: '1rem'
+    },
+    lightShareCardContainer: {
         background: '#fff',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
@@ -54,20 +79,60 @@ const SubmitAppStyles = () => ({
                 transition: '.25s ease'
             }
         }
-
+    },
+    darkShareCardContainer: {
+        background: '#1E2029',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        padding: '48px 60px',
+        '@media only screen and (max-width: 575px)': {
+            padding: '40px 20px',
+            paddingTop: '50px'
+        },
+        '&:focus': {
+            outline: 0,
+            border: 0
+        },
+        width: '90%',
+        maxWidth: 500,
+        '& p': {
+            color: '#5A607F',
+            marginBottom: '5px'
+        },
+        '& .s-links-title': {
+            marginTop: '.4rem'
+        },
+        '& a': {
+            marginRight: '1rem',
+            '&:focus': {
+                textDecoration: 'none',
+                opacity: .8,
+                transition: '.25s ease'
+            }
+        }
     },
     modal: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    closeBtn: {
+    lightCloseBtn: {
         border: '1px solid #1DBF73',
         borderRadius: '5px',
         boxShadow: '0px 2px 5px #15223221',
         height: 48,
         marginTop: '2rem',
-        textTransform: 'none'
+        textTransform: 'none',
+        color: '#2A2C34'
+    },
+    darkCloseBtn: {
+        border: '1px solid #1DBF73',
+        borderRadius: '5px',
+        boxShadow: '0px 2px 5px #15223221',
+        height: 48,
+        marginTop: '2rem',
+        textTransform: 'none',
+        color: '#fff'
     },
     cancelBtn: {
         background: '#FF6060!important',
@@ -104,7 +169,7 @@ const SubmitAppStyles = () => ({
             minWidth: 70,
         }
     },
-    siteLogo: {
+    lightSiteLogo: {
         background: '#fff',
         cursor: 'pointer',
         height: 160,
@@ -120,9 +185,25 @@ const SubmitAppStyles = () => ({
             maxWidth: 340,
             marginLeft: 'auto',
             marginRight: 'auto',
-
         }
-
+    },
+    darkSiteLogo: {
+        background: '#1E2029',
+        cursor: 'pointer',
+        height: 160,
+        width: 260,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #48494E',
+        borderRadius: 8,
+        marginBottom: 10,
+        '@media only screen and (max-width: 575px)': {
+            width: "100%",
+            maxWidth: 340,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        }
     },
     label: {
         display: 'block',
@@ -139,14 +220,14 @@ const SubmitAppStyles = () => ({
             fontSize: 12,
         }
     },
-    input: {
-        background: '#fff',
-        border: '1px solid #D9E1EC',
+    lightInput: {
+        border: '1px solid #1DBF73',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
         padding: 20,
+        color: '#2A2C34',
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -159,9 +240,30 @@ const SubmitAppStyles = () => ({
             fontSize: '14px !important',
             padding: 10,
         }
-
     },
-    inputTag: {
+    darkInput: {
+        border: '1px solid #1DBF73',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 20,
+        color: '#fff',
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 15,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+    },
+    lightInputTag: {
+        color: '#000',
         background: '#fff',
         border: '1px solid #D9E1EC',
         borderRadius: 8,
@@ -169,6 +271,35 @@ const SubmitAppStyles = () => ({
         width: '100%',
         fontSize: 18,
         padding: 10,
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            color: '#000',
+            fontSize: 16,
+            padding: 10,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+    },
+    darkInputTag: {
+        color: '#fff',
+        background: '#1E2029',
+        border: '1px solid #48494E',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 10,
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -181,17 +312,22 @@ const SubmitAppStyles = () => ({
             fontSize: '14px !important',
             padding: 10,
         }
-
     },
-    inputContainer: {
+    lightInputContainer: {
         '& > label': {
             display: 'block',
             color: '#5A607F',
             marginBottom: 7
         },
+        '& input': {
+            border: '1px solid #D9E1EC',
+            background: '#fff',
+        },
         '& input:focus, & select:focus': {
             outline: 'none!important',
-            border: '1px solid #1DBF73'
+            color: '#2A2C34',
+            border: '1px solid #1DBF73',
+            background: '#fff',
         },
         marginTop: '25px',
         '&': {
@@ -203,10 +339,35 @@ const SubmitAppStyles = () => ({
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
             marginRight: '10px'
-
-
         },
-
+    },
+    darkInputContainer: {
+        '& > label': {
+            display: 'block',
+            color: '#5A607F',
+            marginBottom: 7
+        },
+        '& input': {
+            border: '1px solid #48494E',
+            background: '#1E2029',
+        },
+        '& input:focus, & select:focus': {
+            outline: 'none!important',
+            color: '#fff',
+            border: '1px solid #1DBF73',
+            background: '#1E2029',
+        },
+        marginTop: '25px',
+        '&': {
+            marginRight: '1rem'
+        },
+        '& input, & input': {
+            fontSize: 18
+        },
+        '@media only screen and (max-width: 575px)': {
+            marginTop: '16px',
+            marginRight: '10px'
+        },
     },
     inputContainerTag: {
         '& > label': {
@@ -366,20 +527,31 @@ const SubmitAppStyles = () => ({
 
                 fontSize: '12px'
             },
-
         }
     },
-    placeholderImg: {
+    lightPlaceholderImg: {
         background: '#ffff',
         width: '100%',
         height: '160px',
         borderRadius: '8px',
         border: '1px dashed #5C5D5E',
+        // border: '1px dashed rgba(0, 0, 0, 0.6)',
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
     },
-    previewImg: {
+    darkPlaceholderImg: {
+        background: '#1E2029',
+        width: '100%',
+        height: '160px',
+        borderRadius: '8px',
+        border: '1px dashed #5C5D5E',
+        // border: '1px dashed rgba(0, 0, 0, 0.6)',
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    lightPreviewImg: {
         background: '#fff',
         cursor: 'pointer',
         height: 160,
@@ -390,11 +562,32 @@ const SubmitAppStyles = () => ({
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#fff'
+        },
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
     },
-    textarea: {
+    darkPreviewImg: {
+        background: '#1E2029',
+        cursor: 'pointer',
+        height: 160,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#1E2029'
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    lightTextarea: {
         background: '#fff',
         boxShadow: '0px 1px 2px #15223214',
         border: '1px solid #7070701A',
@@ -404,10 +597,54 @@ const SubmitAppStyles = () => ({
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
-        color: '#000',
+        color: '#2A2C34',
         '&:focus': {
+            color: '#2A2C34',
             outline: 'none!important',
-            border: '1px solid #1DBF73',
+            border: '1px solid #7070701A',
+        },
+        '&:placeholder': {
+            color: 'rgba(126, 132, 163 , .32)'
+        },
+        '&::-webkit-input-placeholder': {
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&:-moz-placeholder": { /* Firefox 18- */
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&::-moz-placeholder": {  /* Firefox 19+ */
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        " &:-ms-input-placeholder": {
+            color: 'rgba(126, 132, 163 , .32)'
+        }
+        ,
+        "&::placeholder": {
+            color: 'rgba(126, 132, 163 , .32)'
+        },
+        marginTop: '0',
+        '@media only screen and (max-width: 575px)': {
+            padding: "10px"
+        }
+    },
+    darkTextarea: {
+        background: '#1E2029',
+        boxShadow: '0px 1px 2px #15223214',
+        border: '1px solid #48494E',
+        color: '#fff',
+        borderRadius: '8px',
+        // minHeight: '90px',
+        width: `100%`,
+        maxWidth: '100%',
+        resize: 'none',
+        padding: "1rem",
+        '&:focus': {
+            color: '#fff',
+            outline: 'none!important',
+            border: '1px solid #48494E',
         },
         '&:placeholder': {
             color: 'rgba(126, 132, 163 , .32)'
@@ -465,7 +702,7 @@ const SubmitAppStyles = () => ({
             marginTop: '16px',
         }
     },
-    socilaMediaSelect: {
+    lightSocilaMediaSelect: {
         maxWidth: 120,
         minWidth: 120,
         '& .socialMedia__control, & ~ input': {
@@ -476,7 +713,6 @@ const SubmitAppStyles = () => ({
         '& ~ input': {
             width: '100%',
             paddingRight: 10
-
         },
         '& ~ input:hover, & ~ input:focus': {
             border: 0,
@@ -491,8 +727,34 @@ const SubmitAppStyles = () => ({
             minWidth: 100,
         },
     },
-    socialOptionContainer: {
-        background: '#fff',
+    darkSocilaMediaSelect: {
+        maxWidth: 120,
+        minWidth: 120,
+        '& .socialMedia__control, & ~ input': {
+            border: 0,
+            borderRadius: 8,
+            height: '100%'
+        },
+        '& ~ input': {
+            width: '100%',
+            paddingRight: 10,
+            color: '#fff',
+            background: '#2A2C34',
+        },
+        '& ~ input:hover, & ~ input:focus': {
+            border: 0,
+            outline: 0
+        },
+        '& .socialMedia__indicator-separator': {
+            display: 'none'
+        },
+        '@media only screen and (max-width: 575px)': {
+            margin: 'auto',
+            maxWidth: 100,
+            minWidth: 100,
+        },
+    },
+    lightSocialOptionContainer: {
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         height: 55,
@@ -500,11 +762,29 @@ const SubmitAppStyles = () => ({
         fontSize: 18,
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
-            height: 50
+            height: 50,
         },
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
-            height: 43
+            height: 43,
+        },
+    },
+    darkSocialOptionContainer: {
+        background: '#2A2C34',
+        border: '1px solid #48494E',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 16,
+            height: 50,
+            background: '#2A2C34!important',
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 14,
+            height: 43,
+            background: '#2A2C34!important',
         },
     },
 
@@ -553,9 +833,22 @@ const SubmitAppStyles = () => ({
     GridContainer: {
         marginTop: 15
     },
-    DNSContainer: {
-        background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+    lightDNSContainer: {
+        background: '#fff',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '45px 35px',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '35px 25px',
+        },
+        '@media only screen and (max-width: 575px)': {
+            padding: '20px 15px'
+        },
+        minHeight: 190,
+    },
+    darkDNSContainer: {
+        background: '#1E2029',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '45px 35px',
         '@media only screen and (max-width: 1440px)': {
@@ -584,12 +877,25 @@ const SubmitAppStyles = () => ({
         color: '#1DBF73',
         cursor: 'pointer'
     },
-    DevelopmentsContainer: {
+    lightDevelopmentsContainer: {
         minHeight: 190,
         height: 200,
         overflowY: 'auto',
-        background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+        background: '#fff',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '15px 0',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '15px 0',
+        }
+    },
+    darkDevelopmentsContainer: {
+        minHeight: 190,
+        height: 200,
+        overflowY: 'auto',
+        background: '#1E2029',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '15px 0',
         '@media only screen and (max-width: 1440px)': {
@@ -624,13 +930,22 @@ const SubmitAppStyles = () => ({
             color: '#7E84A3'
         }
     },
-    graphText: {
+    lightGraphText: {
         fontSize: 14,
         color: '#1DBF73'
     },
-    StatValue: {
+    darkGraphText: {
+        fontSize: 14,
+        color: '#fff'
+    },
+    lightStatValue: {
         fontSize: 32,
         color: '#242F57',
+        fontWeight: 'bold'
+    },
+    darkStatValue: {
+        fontSize: 32,
+        color: '#fff',
         fontWeight: 'bold'
     },
     StatTitle: {
@@ -641,12 +956,26 @@ const SubmitAppStyles = () => ({
         background: `url(${GraphIcon})`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'right bottom',
-
     },
-    StatsContainer: {
+    lightStatsContainer: {
         minHeight: 190,
         background: '#FFFFFF',
-        border: '1px solid #D9E1EC',
+        // border: '1px solid #D9E1EC',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '30px 15px',
+        '@media only screen and (max-width: 1440px)': {
+            padding: '30px 15px',
+        },
+        '@media only screen and (max-width: 659px)': {
+            minHeight: 'auto'
+        },
+
+    },
+    darkStatsContainer: {
+        minHeight: 190,
+        background: '#1E2029',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         padding: '30px 15px',
         '@media only screen and (max-width: 1440px)': {

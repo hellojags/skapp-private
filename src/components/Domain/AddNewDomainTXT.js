@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Button, Checkbox, FormControlLabel, makeStyles, Modal, Typography } from '@material-ui/core'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
@@ -9,8 +10,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
 
     },
-
-    modalHeader: {
+    lightModalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
         color: '#333333',
@@ -21,7 +21,18 @@ const useStyles = makeStyles((theme) => ({
             padding: '1rem',
         }
     },
-    root: {
+    darkModalHeader: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        borderBottom: '1px solid #70707085',
+        padding: '1.3rem',
+        '@media only screen and (max-width: 1440px)': {
+            fontSize: 24,
+            padding: '1rem',
+        }
+    },
+    lightRoot: {
         width: 1180,
         maxWidth: '95%',
         boxShadow: '0px 2px 5px #15223221',
@@ -31,11 +42,21 @@ const useStyles = makeStyles((theme) => ({
             background: '#fff',
             border: 0,
             outline: 0,
-
         },
-
     },
-    inputContainer: {
+    darkRoot: {
+        width: 1180,
+        maxWidth: '95%',
+        boxShadow: '0px 2px 5px #15223221',
+        borderRadius: 15,
+        opacity: 1,
+        '&, &:focus': {
+            background: '#1E2029',
+            border: 0,
+            outline: 0,
+        },
+    },
+    lightInputContainer: {
         '& input': {
             borderRadius: 10,
             paddingLeft: '1rem',
@@ -43,11 +64,44 @@ const useStyles = makeStyles((theme) => ({
             flex: 1,
             height: 60,
             fontSize: 21,
+            color: '#2A2C34',
+            background: '#fff',
             '@media only screen and (max-width: 575px)': {
                 flex: '100%',
                 marginBottom: 8, borderRadius: 10
             },
-            border: '1px solid #D9E1EC',
+            // border: '1px solid #D9E1EC',
+            '&:focus': {
+                border: '1px solid #1DBF73',
+                outline: 0
+            },
+            '@media only screen and (max-width: 1440px)': {
+                height: 50,
+                fontSize: 18,
+            },
+
+        },
+        '@media only screen and (max-width: 575px)': {
+            flexWrap: 'wrap',
+            fontSize: 16,
+
+        }
+    },
+    darkInputContainer: {
+        '& input': {
+            borderRadius: 10,
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+            flex: 1,
+            height: 60,
+            fontSize: 21,
+            color: '#fff',
+            background: '#2A2C34',
+            '@media only screen and (max-width: 575px)': {
+                flex: '100%',
+                marginBottom: 8, borderRadius: 10
+            },
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             '&:focus': {
                 border: '1px solid #1DBF73',
                 outline: 0
@@ -132,8 +186,20 @@ const useStyles = makeStyles((theme) => ({
         }
 
     },
-    subheading: {
+    lightSubheading: {
         color: '#333333',
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginTop: '1rem',
+
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 18,
+            marginTop: 9,
+
+        }
+    },
+    darkSubheading: {
+        color: '#fff',
         fontSize: 24,
         fontWeight: 'bold',
         marginTop: '1rem',
@@ -166,7 +232,7 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }))
-const AddNewDomainTXT = () => {
+const AddNewDomainTXT = ({toggle}) => {
     const classes = useStyles()
 
     const [open, setOpen] = React.useState(true)
@@ -204,25 +270,25 @@ const AddNewDomainTXT = () => {
                 }}
             >
                 <Fade in={open}>
-                    <Box className={classes.root}>
-                        <div className={classes.modalHeader}>
+                    <Box className={toggle ? classes.darkRoot : classes.lightRoot}>
+                        <div className={toggle ? classes.darkModalHeader : classes.lightModalHeader}>
                             New Custom Domain
                         </div>
                         <div className={classes.contentContainer}>
                             <Typography className={classes.varifyText}>
                                 Verification
                             </Typography>
-                            <Typography className={classes.subheading}>
+                            <Typography className={toggle ? classes.darkSubheading: classes.lightSubheading}>
                                 Add New TXT record to skapp.io
                             </Typography>
                             <p className={classes.p}>TXT records are simple text  notes for your domain and won't affect your email or website settings.</p>
                             <form className={classes.form}>
                                 <label className={classes.label} htmlFor="domainName">Name/Host</label>
-                                <Box display="flex" className={classes.inputContainer}>
+                                <Box display="flex" className={toggle ? classes.darkInputContainer : classes.lightInputContainer}>
                                     <input type="text" id="domainName" placeholder='Enter host name' />
                                 </Box>
                                 <label className={classes.label} htmlFor="domainName">Value / Answer / Destination</label>
-                                <Box display="flex" className={classes.inputContainer}>
+                                <Box display="flex" className={toggle ? classes.darkInputContainer : classes.lightInputContainer}>
                                     <input type="text" id="domainName" placeholder='add' value="sdf6ds4fsd5f46dsf5ds6f5ds46f6sdf45sdf46sd4f65sdf46" />
                                 </Box>
                                 <FormControlLabel

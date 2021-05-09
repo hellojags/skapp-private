@@ -88,7 +88,7 @@ const formikObj = {
     imgThumbnailSkylink: ['']
 };
 
-export default function EditSite() {
+export default function EditSite({toggle}) {
     const [selectedOption, setSelectedOption] = useState(null);
     const classes = useStyles();
     let history = useHistory();
@@ -214,6 +214,8 @@ export default function EditSite() {
         formik.setFieldValue("skylink", obj.skylink, true)
         formik.setFieldValue("sourceCode", `https://siasky.net/${obj.skylink}`, true)
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
     
     return (
         <>
@@ -228,7 +230,7 @@ export default function EditSite() {
                             onSubmit={submitForm}>
                             {formik => (<form onSubmit={formik.handleSubmit}>
                                 <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                                    <h1 className={classes.h1}>Edit Site</h1>
+                                    <h1 className={toggle ? classes.darkh1 : classes.lighth1}>Edit Site</h1>
                                     <Box className={classes.btnBox}>
                                         <Button className={classes.cancelBtn} onClick={onCancel}>Cancel </Button>
                                         <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /> Save </Button>
@@ -247,7 +249,7 @@ export default function EditSite() {
                                                 uploadStarted={(e) => setIsLogoUploaded(e)}
                                             />
                                         </div>
-                                        <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                        <div className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
                                             {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() === "" &&<Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                                             <Box style={{ position: "relative", textAlign: 'center' }}>
                                                 <ImgIcon />
@@ -278,14 +280,14 @@ export default function EditSite() {
                                                 label={<span>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                                 name="appName"
                                                 disabled={true}
-                                                className={classes.input}
+                                                className={toggle ? classes.darkInput : classes.lightInput}
                                                 type="text" />
                                         </Box>
                                         <Box className={classes.inputContainer} flex={1}>
                                             <SnTextInput
                                                 label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                                 name="defaultPath"
-                                                className={classes.input}
+                                                className={toggle ? classes.darkInput : classes.lightInput}
                                                 type="text" />
                                         </Box>
                                     </Box>
@@ -294,7 +296,7 @@ export default function EditSite() {
                                             <SnTextInput
                                                 label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                                 name="hns"
-                                                className={classes.input}
+                                                className={toggle ? classes.darkInput : classes.lightInput}
                                                 type="text" />
                                         </Box>
                                         <Box className={`${classes.inputContainer}`} flex={1}>
@@ -311,7 +313,7 @@ export default function EditSite() {
                                             <SnTextInput
                                                 label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                                 name="portalMinVersion"
-                                                className={classes.input}
+                                                className={toggle ? classes.darkInput : classes.lightInput}
                                                 type="text" />
                                         </Box>
                                     </Box>
@@ -320,7 +322,7 @@ export default function EditSite() {
                                             <SnTextInput
                                                 label={<span>Source Code <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
                                                 name="sourceCode"
-                                                className={classes.input}
+                                                className={toggle ? classes.darkInput : classes.lightInput}
                                                 type="text" />
                                         </Box>
                                     </Box>
@@ -350,7 +352,7 @@ export default function EditSite() {
                                                         />
 
                                                     </div>
-                                                    <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
+                                                    <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
                                                         {/* <div><UploadIcon /></div>
 
                                             <div>

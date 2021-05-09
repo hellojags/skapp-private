@@ -1,9 +1,16 @@
 // import appListStyle from "./AppListStyle"
 
 const appCardStyle = {
-    root: {
+    darkRoot: {
         maxWidth: 'auto',
         borderRadius: 10,
+        background: '#2A2C34',
+        boxShadow: ' 0px 1px 4px #15223214',
+    },
+    lightRoot: {
+        maxWidth: 'auto',
+        borderRadius: 10,
+        background: '#fff',
         boxShadow: ' 0px 1px 4px #15223214',
     },
     media: {
@@ -44,7 +51,15 @@ const appCardStyle = {
         },
         cursor: 'context-menu'
     },
-    cardH2: {
+    darkCardH2: {
+        fontWeight: 700,
+        textTransform: 'capitalize',
+        color: '#FFF',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: '15px'
+        }
+    },
+    lightCardH2: {
         fontWeight: 700,
         textTransform: 'capitalize',
         color: '#000',
@@ -75,6 +90,11 @@ const appCardStyle = {
             marginBottom: 1
         }
     },
+    lightIcon : {
+    },
+    darkIcon : {
+        color: 'inherit',
+    },
     footerItem: {
         opacity: .64,
         marginLeft: '.7rem',
@@ -94,7 +114,8 @@ const appCardStyle = {
     versionBtn: {
         height: 22,
         backgroundColor: '#9d9d9d33',
-        color: '#9D9D9D',
+        // color: '#9D9D9D',
+        color: '#1DBF73',
         marginLeft: "1rem",
         fontSize: 12,
         '@media only screen and (max-width: 575px)': {
@@ -104,6 +125,7 @@ const appCardStyle = {
     },
     cardSmallText: {
         // padding: " 0!important",
+        color: '#48494E',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
@@ -113,7 +135,6 @@ const appCardStyle = {
         }
     },
     shareAndSaveBtn: {
-
         '@media only screen and (max-width: 575px)': {
             display: 'flex'
         }
@@ -122,9 +143,16 @@ const appCardStyle = {
     ratingDiv: {
         opacity: 1,
         // alignItems: 'center'
-
     },
-    detailsArea: {
+    lightDetailsArea: {
+        paddingTop: 4,
+        paddingBottom: 0,
+        '& .MuiBox-root': {
+            paddingTop: 0
+        }
+    },
+    darkDetailsArea: {
+        color: '#fff',
         paddingTop: 4,
         paddingBottom: 0,
         '& .MuiBox-root': {

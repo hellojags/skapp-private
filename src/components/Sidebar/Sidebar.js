@@ -32,7 +32,7 @@ import { NavLink } from "react-router-dom"
 import { useSelector } from "react-redux"
 const useStyles = makeStyles(style)
 
-const Sidebar = (props) => {
+const Sidebar = ({style, toggle}) => {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
 
@@ -45,7 +45,8 @@ const Sidebar = (props) => {
   let location = useLocation()
 
   let sidebar = (
-    <div className={`${classes.sidebar} sidebar`} style={props.style}>
+    <>
+    {toggle ? <div className={`${toggle ? classes.darkSidebar : classes.lightSidebar} darkSidebar`} style={style}>
       <PerfectScrollbar>
         <List
           component="nav"
@@ -206,7 +207,173 @@ const Sidebar = (props) => {
           <p className={classes.promoText}>Explore our marketing solutions</p>
         </div>
       </PerfectScrollbar>
-    </div>
+    </div> : <div className={`${toggle ? classes.darkSidebar : classes.lightSidebar} lightSidebar`} style={style}>
+      <PerfectScrollbar>
+        <List
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          className={classes.root}
+        >
+          <NavLink exact to="/">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="App Store" />
+            </ListItem>
+          </NavLink>
+          <NavLink to="/submitapp">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <SubmitAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Publish App" />
+            </ListItem>
+          </NavLink>
+          <NavLink exact to="/apps">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <MyAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Published Apps" />
+            </ListItem>
+          </NavLink>
+          <NavLink exact to="/installedapps">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <MyAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Installed Apps" />
+            </ListItem>
+          </NavLink>
+          {/* <NavLink exact to="/installedappps">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <MyAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Apps" />
+            </ListItem>
+          </NavLink> */}
+          <NavLink exact to='/descoverdev'>
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Developer Discovery" />
+            </ListItem>
+          </NavLink>
+          <NavLink exact to="/hosting">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <HostingIcon />
+              </ListItemIcon>
+              <ListItemText primary="Hosting" />
+              {snShowHostingLinks ? (
+                <ExpandLess className={classes.dropArrow} />
+              ) : (
+                <ExpandMore className={classes.dropArrow} />
+              )}
+            </ListItem>
+          </NavLink>
+          <Collapse in={snShowHostingLinks} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <NavLink to="/deploysite">
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon className={classes.listIcon}>
+                    <DeployIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Deploy" />
+                </ListItem>
+              </NavLink>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.listIcon}>
+                  <FilesIcon />
+                </ListItemIcon>
+                <ListItemText primary="Files" />
+              </ListItem>
+              <NavLink exact to="/nodomain">
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon className={classes.listIcon}>
+                    <DomainIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Domain" />
+                </ListItem>
+              </NavLink>
+              <NavLink exact to="/storagegateway">
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon className={classes.listIcon}>
+                    <StorageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Storage" />
+                </ListItem>
+              </NavLink>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.listIcon}>
+                  <StatsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Usage Stats" />
+              </ListItem>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.listIcon}>
+                  <ActivityLogIcon />
+                </ListItemIcon>
+                <ListItemText primary="Activity Log" />
+              </ListItem>
+            </List>
+          </Collapse>
+        </List>
+        {/* Other Information section */}
+        <List
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Other Information
+            </ListSubheader>
+          }
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          className={classes.root}
+        >
+          <ListItem button>
+            <ListItemIcon className={classes.listIcon}>
+              <KnowlBaseIcon />
+            </ListItemIcon>
+            <ListItemText primary="Knowledge Base" />
+          </ListItem>
+
+          <ListItem button>
+            <ListItemIcon className={classes.listIcon}>
+              <ProductUpdateIcon />
+            </ListItemIcon>
+            <ListItemText primary="Product Updates" />
+          </ListItem>
+        </List>
+        {/* Settings section */}
+        <List
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Settings
+            </ListSubheader>
+          }
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          className={classes.root}
+        >
+          <NavLink exact to="/usersettings">
+            <ListItem button>
+              <ListItemIcon className={classes.listIcon}>
+                <SettingNavLogIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+          </NavLink>
+        </List>
+        <div className={classes.promoCard}>
+          <h3 className={classes.promoTitle}>Promo Title</h3>
+          <p className={classes.promoText}>Explore our marketing solutions</p>
+        </div>
+      </PerfectScrollbar>
+    </div>}
+    </>
   )
   if (!userSession || location.pathname === '/login') {
     sidebar = null

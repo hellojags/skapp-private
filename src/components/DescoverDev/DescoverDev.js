@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
     color: "#131523",
     fontSize: "28px",
   },
+  darkPageHeading: {
+    color: '#fff',
+    fontSize: '28px',
+  },
   UserProfile: {
     width: 50,
     height: 50,
@@ -35,17 +39,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     color: "#5A607F",
   },
-  boxHalf: {
-    boxShadow: "0px 1px 3px #00000012",
-    background: "#fff",
-    padding: " 10px 1.5rem",
-    "& ._details": {
-      marginLeft: "1rem",
-    },
-    borderRadius: 6,
-    width: 300,
-    maxWidth: "100%",
-  },
   // search
   search: {
     position: "relative",
@@ -54,6 +47,51 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
       width: "auto",
+    },
+  },
+  lightBoxHalf: {
+    boxShadow: '0px 1px 3px #00000012',
+    background: '#fff',
+    color: '#2A2C34',
+    padding: ' 10px 1.5rem',
+    '& ._details': {
+      marginLeft: '1rem'
+    },
+    borderRadius: 6,
+    width: 300,
+    maxWidth: '100%'
+  },
+  darkBoxHalf: {
+    boxShadow: '0px 1px 3px #00000012',
+    background: '#2A2C34',
+    color: '#fff',
+    padding: ' 10px 1.5rem',
+    '& ._details': {
+      marginLeft: '1rem'
+    },
+    borderRadius: 6,
+    width: 300,
+    maxWidth: '100%'
+  },
+  // search
+  lightSearch: {
+    background: '#F0F5F7',
+    position: 'relative',
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  },
+  darkSearch: {
+    background: '#1E2029',
+    position: 'relative',
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
     },
   },
   searchIcon: {
@@ -66,13 +104,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
-  inputRoot: {
-    color: "inherit",
+  lightInputRoot: {
+    // color: 'inherit',
+    color: '#2A2C34!important',
+  },
+  darkInputRoot: {
+    color: '#fff!important',
+    border: '1px solid rgba(255, 255, 255, 0.1)'
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    background: "#f0f5f78a",
+    //background: "#f0f5f78a",
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -84,14 +127,32 @@ const useStyles = makeStyles((theme) => ({
     },
     borderRadius: 4,
   },
-  tableSearch: {
-    background: "#fff",
+  lightTableSearch: {
+    background: '#fff'
   },
-  tableContent: {
-    background: "#fff",
-    paddingLeft: "1rem",
-    paddingRight: "1rem",
+  lightTableContent: {
+    color: '#2A2C34',
+    background: '#fff',
+    paddingLeft: '1rem',
+    paddingRight: '1rem'
   },
+  darkTableSearch: {
+    background: '#2A2C34'
+  },
+  darkTableContent: {
+    color: '#fff',
+    background: '#2A2C34',
+    paddingLeft: '1rem',
+    paddingRight: '1rem'
+  },
+  // tableSearch: {
+  //   background: "#fff",
+  // },
+  // tableContent: {
+  //   background: "#fff",
+  //   paddingLeft: "1rem",
+  //   paddingRight: "1rem",
+  // },
   WraperUserFollowing: {
     "@media (max-width: 400px)": {
       flexDirection: "column",
@@ -184,7 +245,7 @@ const DescoverDev = () => {
     //     setSearchData(publishedAppsStore)
     // }
   };
-
+  { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
   return (
     <div>
       <Box
@@ -192,7 +253,7 @@ const DescoverDev = () => {
         alignItems="center"
         className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}
       >
-        <h1 className={classes.pageHeading}>Discover & Follow Developers</h1>
+        <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Discover & Follow Developers</h1>
       </Box>
 
       <Box
@@ -200,7 +261,7 @@ const DescoverDev = () => {
         display="flex"
         marginTop="1rem"
       >
-        <Box className={classes.boxHalf} display="flex" alignItems="center">
+        <Box className={toggle ? classes.darkBoxHalf : classes.lightBoxHalf} display="flex" alignItems="center">
           <div className={classes.UserProfile}>
             <UserProfileIcon />
           </div>
@@ -210,7 +271,7 @@ const DescoverDev = () => {
           </div>
         </Box>
         <Box
-          className={classes.boxHalf}
+          className={toggle ? classes.darkBoxHalf : classes.lightBoxHalf}
           display="flex"
           marginLeft="1rem"
           alignItems="center"
@@ -225,30 +286,20 @@ const DescoverDev = () => {
         </Box>
       </Box>
 
-      <div className={classes.tableContent}>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          className={classes.tableSearch}
-          marginTop="1rem"
-          padding="1rem"
-          paddingBottom="0px"
-          flexWrap="wrap"
-        >
+      <div className={toggle ? classes.darkTableContent : classes.lightTableContent}>
+        <Box display="flex" alignItems="center" justifyContent="space-between" className={toggle ? classes.darkTableSearch : classes.lightTableSearch} marginTop='1rem' padding="1rem" paddingBottom="0px" flexWrap="wrap">
           <p>Search developers to follow</p>
-          <div className={classes.search}>
+          <div className={toggle ? classes.darkSearch : classes.lightSearch}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
             <InputBase
-              onChange={searchHandler}
               placeholder="Search…"
               classes={{
-                root: classes.inputRoot,
+                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                 input: classes.inputInput,
               }}
-              inputProps={{ "aria-label": "search" }}
+              inputProps={{ 'aria-label': 'search' }}
             />
           </div>
         </Box>
@@ -257,10 +308,11 @@ const DescoverDev = () => {
           userList={userList}
           followingList={followingList}
           toggleFollowing={toggleFollowing}
+          toggle={toggle}
         />
       </div>
+      {/* <UserCard toggle={toggle} /> */}
     </div>
   );
 };
-
 export default DescoverDev;

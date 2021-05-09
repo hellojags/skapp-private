@@ -1,6 +1,14 @@
 import GraphIcon from '../../assets/img/icons/grahpIcon.svg';
 const AddNewSiteStyles = () => ({
-    h1: {
+    lighth1: {
+        color: '#2A2C34',
+        fontSize: '28px',
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 18
+        }
+    },
+    darkh1: {
+        color: '#fff',
         fontSize: '28px',
         '@media only screen and (max-width: 575px)': {
             fontSize: 18
@@ -66,8 +74,8 @@ const AddNewSiteStyles = () => ({
             minWidth: 70,
         }
     },
-    siteLogo: {
-        background: '#fff',
+    lightSiteLogo: {
+        // background: '#fff',
         cursor: 'pointer',
         height: 160,
         width: 260,
@@ -82,9 +90,25 @@ const AddNewSiteStyles = () => ({
             maxWidth: 340,
             marginLeft: 'auto',
             marginRight: 'auto',
-
         }
-
+    },
+    darkSiteLogo: {
+        background: '#1E2029',
+        cursor: 'pointer',
+        height: 160,
+        width: 260,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
+        borderRadius: 8,
+        marginBottom: 10,
+        '@media only screen and (max-width: 575px)': {
+            width: "100%",
+            maxWidth: 340,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        }
     },
     label: {
         display: 'block',
@@ -101,9 +125,33 @@ const AddNewSiteStyles = () => ({
             fontSize: 12,
         }
     },
-    input: {
-        background: '#fff',
+    lightInput: {
+        // background: '#1E2029',
+        color: '#2A2C34',
         border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        height: 55,
+        width: '100%',
+        fontSize: 18,
+        padding: 20,
+        '@media only screen and (max-width: 1440px)': {
+            height: 50,
+            // width: '100%',
+            fontSize: 16,
+            padding: 15,
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: 43,
+            // width: '100%',
+            fontSize: '14px !important',
+            padding: 10,
+        }
+
+    },
+    darkInput: {
+        background: '#1E2029',
+        color: '#fff',
+        border: '1px solid rgba(0, 0, 0, 0.4)',
         borderRadius: 8,
         height: 55,
         width: '100%',
@@ -138,13 +186,14 @@ const AddNewSiteStyles = () => ({
             marginRight: '1rem'
         },
         '& input, & input': {
-            fontSize: 18
+            fontSize: 18,
+            '&:hover': {
+                border: '1px solid #1DBF73'
+            }
         },
         '@media only screen and (max-width: 575px)': {
             marginTop: '16px',
             marginRight: '10px'
-
-
         },
 
     },
@@ -298,7 +347,7 @@ const AddNewSiteStyles = () => ({
         }
     },
     placeholderImg: {
-        background: '#ffff',
+        background: '#2A2C34',
         width: '100%',
         height: '160px',
         borderRadius: '8px',
@@ -308,9 +357,9 @@ const AddNewSiteStyles = () => ({
         }
     },
     "MuiDropzoneArea-root": {
-        border: "none"
+        border: "none",
     },
-    previewImg: {
+    lightPreviewImg: {
         background: '#fff',
         cursor: 'pointer',
         height: 160,
@@ -321,6 +370,27 @@ const AddNewSiteStyles = () => ({
         border: '1px solid #D9E1EC',
         borderRadius: 8,
         marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#fff'
+        },
+        '@media only screen and (max-width: 575px)': {
+            height: '150px'
+        }
+    },
+    darkPreviewImg: {
+        background: '#1E2029',
+        cursor: 'pointer',
+        height: 160,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #D9E1EC',
+        borderRadius: 8,
+        marginBottom: 0,
+        '& .MuiDropzoneArea-root': {
+            background: '#1E2029'
+        },
         '@media only screen and (max-width: 575px)': {
             height: '150px'
         }
@@ -431,7 +501,7 @@ const AddNewSiteStyles = () => ({
         fontSize: 18,
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
-            height: 50
+            height: 50,
         },
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,

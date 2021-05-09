@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     table: {
         minWidth: 650,
     },
-    paper: {
+    lightPaper: {
         marginTop: 10,
         "& th, & td": {
             border: 0
@@ -55,8 +55,59 @@ const useStyles = makeStyles({
             borderCollapse: 'separate',
             borderSpacing: '0 8px'
         },
+        /* 'tr.MuiTableRow-root': {
+            background: '#2A2C34!important'
+        }, */
         '& tbody tr td,& tbody tr th': {
             background: '#fff'
+        },
+        '& tbody th svg': {
+            marginRight: 10
+        }
+    },
+    darkPaper: {
+        marginTop: 10,
+        "& th, & td": {
+            border: 0
+        },
+        '& tbody tr th ~ td:not(:last-child)': {
+            color: '#6E77AA',
+            fontWeight: 'normal'
+        },
+        '& tbody th': {
+            fontWeight: 700
+        },
+        '& thead': {
+
+            '& th': {
+                color: '#fff',
+                lineHeight: '.8rem',
+                background: '#1DBF73',
+
+            }
+        },
+        '& tr th, & tr td': {
+            fontSize: 18,
+            '@media only screen and (max-width: 1440px)': {
+                fontSize: 16
+            },
+            '&:first-child': {
+                borderRadius: '5px 0 0px 5px'
+            },
+            '&:last-child': {
+                borderRadius: '0px 5px 5px 0px'
+            }
+        },
+        '& table': {
+            borderCollapse: 'separate',
+            borderSpacing: '0 8px'
+        },
+        /* 'tr.MuiTableRow-root': {
+            background: '#2A2C34!important'
+        }, */
+        '& tbody tr td,& tbody tr th': {
+            background: '#2A2C34',
+            color: '#fff'
         },
         '& tbody th svg': {
             marginRight: 10
@@ -130,7 +181,7 @@ const rows = [
     createData('Another Provider Portal', 'https://skynethub.io', 'Free Tier',),
 ]
 
-const StorageTable = () => {
+const StorageTable = ({toggle}) => {
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     // const [clicked, setClicked] = React.useState(false)
@@ -146,7 +197,7 @@ const StorageTable = () => {
     }
     return (
         <Fragment>
-            <TableContainer className={classes.paper}>
+            <TableContainer className={toggle ? classes.darkPaper : classes.lightPaper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -172,10 +223,10 @@ const StorageTable = () => {
 
                                 <TableCell align="right">
                                     <IconButton size="small" style={{ marginRight: '1rem' }} >
-                                        <CreateOutlinedIcon style={{ color: '#323232' }} />
+                                        {toggle ? <CreateOutlinedIcon style={{ color: '#fff' }} /> : <CreateOutlinedIcon style={{ color: '#323232' }} />}
                                     </IconButton>
                                     <IconButton size="small" >
-                                        <FontAwesomeIcon color='#323232' icon={DeleteIcon} />
+                                        {toggle ? <FontAwesomeIcon color='#fff' icon={DeleteIcon} /> : <FontAwesomeIcon color='#323232' icon={DeleteIcon} />}
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

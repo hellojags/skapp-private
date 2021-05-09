@@ -28,165 +28,235 @@ import {
 } from "../../service/SnSkappService";
 import Spiner from "../AppsComp/Spiner";
 import UserCard from "./UserCard";
+import { ReactComponent as ArrowsLight } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
+import { ReactComponent as ArrowsDark } from '../../assets/img/icons/arrows-diagrams-02-dark.svg'
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles({
   table: {
-    minWidth: 850,
+      minWidth: 850,
   },
-  paper: {
-    marginTop: 10,
-    "& th, & td": {
-      border: 0,
-    },
-    "& tbody tr th ~ td:not(:last-child)": {
-      color: "#6E77AA",
-      fontWeight: "normal",
-    },
-    "& tbody th": {
-      fontWeight: 700,
-    },
-    "& thead": {
-      "& th": {
-        padding: 0,
-        color: "#000",
-        // lineHeight: '',
-        background: "#F0F5F7",
-        "& svg": {
-          marginLeft: "5px",
-          width: 18,
-        },
-        "&:first-child": {
-          borderRadius: "5px 0 0px 5px",
-          paddingLeft: 5,
-        },
-        "&:last-child": {
-          paddingRight: 10,
-          borderRadius: "0px 5px 5px 0px",
-        },
+  lightPaper: {
+      marginTop: 10,
+      "& th, & td": {
+          border: 0,
       },
-    },
-    "& tr th, & tr td": {
-      padding: "10px 0",
-      fontSize: 18,
-      "@media only screen and (max-width: 1440px)": {
-        fontSize: 16,
+      '& tbody tr th ~ td:not(:last-child)': {
+          color: '#6E77AA',
+          fontWeight: 'normal'
       },
-    },
-    "& tr th": {
-      "&:first-child": {
-        borderRadius: "5px 0 0px 5px",
+      '& tbody th': {
+          fontWeight: 700
       },
-      "&:last-child": {
-        borderRadius: "0px 5px 5px 0px",
+      '& thead': {
+          
+          '& th': {
+              padding: 0,
+              color: '#2A2C34',
+              // lineHeight: '',
+              background: '#F0F5F7',
+              '& svg': {
+                  marginLeft: '5px',
+                  width: 18,
+              },
+              '&:first-child': {
+                  borderRadius: '5px 0 0px 5px',
+                  paddingLeft: 5
+              },
+              '&:last-child': {
+                  paddingRight: 10,
+                  borderRadius: '0px 5px 5px 0px'
+              }
+          }
       },
-    },
-    "& tr td": {
-      borderBottom: "1px solid #7070702b",
-      "&:first-child": {
-        paddingLeft: 5,
+      '& tr th, & tr td': {
+          padding: '10px 0',
+          fontSize: 18,
+          '@media only screen and (max-width: 1440px)': {
+              fontSize: 16
+          },
       },
-      "&:last-child": {
-        paddingRight: 10,
+      '& tr th': {
+          '&:first-child': {
+              borderRadius: '5px 0 0px 5px'
+          },
+          '&:last-child': {
+              borderRadius: '0px 5px 5px 0px'
+          }
       },
-    },
-    "& table": {
-      borderCollapse: "separate",
-      borderSpacing: "0 8px",
-    },
-    "& tbody tr td,& tbody tr th": {
-      background: "#fff",
-    },
-    "& tbody th svg": {
-      marginRight: 10,
-    },
+      '& tr td': {
+          borderBottom: '1px solid #7070702b',
+          '&:first-child': {
+
+              paddingLeft: 5
+          },
+          '&:last-child': {
+              paddingRight: 10,
+
+          }
+      },
+      '& table': {
+          borderCollapse: 'separate',
+          borderSpacing: '0 8px'
+      },
+      '& tbody tr td,& tbody tr th': {
+          background: '#fff',
+          color: '#2A2C34'
+      },
+      '& tbody th svg': {
+          marginRight: 10
+      }
   },
+  darkPaper: {
+      marginTop: 10,
+      "& th, & td": {
+          border: 0,
+      },
+      '& tbody tr th ~ td:not(:last-child)': {
+          color: '#6E77AA',
+          fontWeight: 'normal'
+      },
+      '& tbody th': {
+          fontWeight: 700
+      },
+      '& thead': {
+          color: '#fff',
+          '& th': {
+              padding: 0,
+              color: '#fff',
+              // lineHeight: '',
+              background: '#1E2029',
+              '& svg': {
+                  marginLeft: '5px',
+                  width: 18,
+              },
+              '&:first-child': {
+                  borderRadius: '5px 0 0px 5px',
+                  paddingLeft: 5
+              },
+              '&:last-child': {
+                  paddingRight: 10,
+                  borderRadius: '0px 5px 5px 0px'
+              }
+          }
+      },
+      '& tr th, & tr td': {
+          padding: '10px 0',
+          fontSize: 18,
+          '@media only screen and (max-width: 1440px)': {
+              fontSize: 16
+          },
+      },
+      '& tr th': {
+          '&:first-child': {
+              borderRadius: '5px 0 0px 5px'
+          },
+          '&:last-child': {
+              borderRadius: '0px 5px 5px 0px'
+          }
+      },
+      '& tr td': {
+          borderBottom: '1px solid #7070702b',
+          '&:first-child': {
+
+              paddingLeft: 5
+          },
+          '&:last-child': {
+              paddingRight: 10,
+
+          }
+      },
+      '& table': {
+          borderCollapse: 'separate',
+          borderSpacing: '0 8px'
+      },
+      '& tbody tr td,& tbody tr th': {
+          color: '#fff',
+          background: '#2A2C34',
+      },
+      '& tbody th svg': {
+          marginRight: 10
+      }
+  },
+
   statusWorking: {
-    color: "#1DBF73",
+      color: '#1DBF73'
   },
   statusError: {
-    color: "#FF6060",
+      color: '#FF6060'
   },
   arrow: {
-    marginLeft: 10,
+      marginLeft: 10
   },
   menuAction: {
-    marginTop: "3.4rem",
-    "& ul": {
-      minWidth: 230,
-      "& li": {
-        fontSize: 18,
-        paddingBottom: 12,
-        "@media only screen and (max-width: 1440px)": {
-          fontSize: 16,
-        },
+
+
+      marginTop: '3.4rem',
+      '& ul': {
+          minWidth: 230,
+          '& li': {
+              fontSize: 18,
+              paddingBottom: 12,
+              '@media only screen and (max-width: 1440px)': {
+                  fontSize: 16
+              }
+          }
       },
-    },
-    "& .MuiPaper-root": {
-      boxShadow: "0px 3px 6px #00000029",
-      border: "1px solid #7070704F",
-      overflow: "visible",
-    },
-    "& .MuiPaper-root::before": {
-      content: '""',
-      width: 0,
-      height: 0,
-      borderTop: "14px solid transparent",
-      borderBottom: "14px solid transparent",
-      borderRight: "14px solid #70707057",
-      position: "absolute",
-      top: "-22px",
-      right: 19,
-      transform: "rotate(90deg)",
-    },
-    "& .MuiPaper-root::after": {
-      content: '""',
-      width: 0,
-      height: 0,
-      borderTop: "14px solid transparent",
-      borderBottom: "14px solid transparent",
-      borderRight: "14px solid #fff",
-      // position: 'relative',
-      position: "absolute",
-      top: "-21px",
-      right: 19,
-      transform: "rotate(90deg)",
-    },
+      '& .MuiPaper-root': {
+          background: '#2A2C34',
+          boxShadow: '0px 3px 6px #00000029',
+          border: '1px solid #7070704F', overflow: 'visible'
+      },
+      '& .MuiPaper-root::before': {
+          content: '""',
+          width: 0,
+          height: 0,
+          borderTop: '14px solid transparent',
+          borderBottom: '14px solid transparent',
+          borderRight: '14px solid #70707057',
+          position: 'absolute',
+          top: '-22px',
+          right: 19,
+          transform: 'rotate(90deg)'
+      },
+      '& .MuiPaper-root::after': {
+          content: '""',
+          width: 0,
+          height: 0,
+          borderTop: '14px solid transparent',
+          borderBottom: '14px solid transparent',
+          borderRight: '14px solid #fff',
+          // position: 'relative',
+          position: 'absolute',
+          top: '-21px',
+          right: 19,
+          transform: 'rotate(90deg)'
+      }
+  },
+  checkBox: {
+      color:'#4B5060'
   },
   colorDanger: {
-    color: "#FF6060",
+      color: '#FF6060'
   },
   devAvtar: {
-    borderRadius: "50%",
-    border: "1px solid rgba(0,0,0,0.3)",
-  },
-  unfollowBtn: {
-    width: 110,
-    background: palette.error.main,
-    color: palette.error.contrastText,
-    "&:hover": {
-      background: palette.error.main,
-      color: palette.error.contrastText,
-    },
+      borderRadius: '50%',
+      border: '1px solid rgba(0,0,0,0.3)'
   },
   followBtn: {
-    width: 110,
-    background: palette.primary.main,
-    color: palette.primary.contrastText,
-    "&:hover": {
-      background: palette.primary.main,
-      color: palette.primary.contrastText,
-    },
+      width: 110,
+      background: '#1DBF73!important',
+      color: '#fff',
+
+      '&:hover': {
+          background: '#2A2C34!important',
+          color: '#1DBF73',
+          border: '1px solid #1DBF73!important'
+      }
   },
   moreIconV: {
-    transform: "rotate(90deg)",
-  },
-  ellipsis: {
-    maxWidth: 100,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-}));
+      transform: 'rotate(90deg)'
+  }
+})
 
 // function createData(domainName, type, status, action) {
 //     return { domainName, type, status, action }
@@ -197,8 +267,7 @@ const useStyles = makeStyles(({ palette }) => ({
 //     // createData('cloudean.com', 'External DNS', false,),
 //     // createData('mysite.net', 'External DNS', true,),
 // ]
-
-const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
+const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }) => {
   const [items, setItems] = useState([]);
   // const [alldata, setAlldata] = useState([]);
   const [user, setUser] = useState(null);
@@ -305,7 +374,7 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
         loader={<Spiner />}
         style={{ overflow: "none" }}
       >
-        <TableContainer className={classes.paper}>
+        <TableContainer className={toggle ? classes.darkPaper : classes.lightPaper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -319,33 +388,28 @@ const DevTable = ({ userList = [], followingList = [], toggleFollowing }) => {
                 <TableCell>UserId</TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>UserName </span>
-                    <Arrows />
+                    <span>UserName </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Location </span>
-                    <Arrows />
+                    <span>Location </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Git ID </span>
-                    <Arrows />
+                    <span>Git ID </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
 
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Following </span>
-                    <Arrows />
+                    <span>Following </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Apps </span>
-                    <Arrows />
+                    <span>Apps </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
 
