@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect } from "react";
-import { Box, makeStyles, Typography, Button } from "@material-ui/core";
-import ScreenShot from "../../assets/img/sc.jpg";
+import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import React, { Fragment } from "react";
+import { useHistory } from "react-router-dom";
+import { getPortalUrl } from "../../service/skynet-api";
+import { transformImageUrl } from "../../service/SnSkappService";
 // import SimilarApps from "./SimilarApps";
 import AppComments from "./AppComments";
-import { useHistory } from 'react-router-dom';
-import { getPortalUrl } from '../../service/skynet-api'
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -32,24 +32,24 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   submitBtn: {
-    background: '#1DBF73!important',
-    color: '#fff',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    display: 'inlin-flex',
-    alignItems: 'center',
+    background: "#1DBF73!important",
+    color: "#fff",
+    paddingLeft: "1rem",
+    paddingRight: "1rem",
+    display: "inlin-flex",
+    alignItems: "center",
     minWidth: 130,
-    '& svg': {
-      fontSize: '19px',
-      marginRight: '5px'
+    "& svg": {
+      fontSize: "19px",
+      marginRight: "5px",
     },
-    '@media only screen and (max-width: 575px)': {
-      fontSize: '12px',
+    "@media only screen and (max-width: 575px)": {
+      fontSize: "12px",
 
-      paddingLeft: '.5rem',
-      paddingRight: '.5rem',
+      paddingLeft: ".5rem",
+      paddingRight: ".5rem",
       minWidth: 70,
-    }
+    },
   },
   subHeading: {
     color: "#7E84A3",
@@ -91,7 +91,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   lightDescText: {
-    fontSize: 20,
+    fontSize: 18,
+    whiteSpace: "pre-wrap",
     color: "#131523",
     "@media only screen and (max-width: 1300px)": {
       fontSize: 16,
@@ -101,7 +102,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   darkDescText: {
-    fontSize: 20,
+    fontSize: 18,
+    whiteSpace: "pre-wrap",
     color: "#fff",
     "@media only screen and (max-width: 1300px)": {
       fontSize: 16,
@@ -164,35 +166,58 @@ const AppInfo = ({ data, appId, toggle }) => {
   const classes = useStyles();
   const history = useHistory();
 
+  console.log(data);
+
   return (
     <Fragment>
-      <Typography component="h2" className={`${toggle ? classes.darkh2 : classes.lighth2} ${classes.mb0}`}>
-        App Details <Button style={{ float: 'right' }} className={classes.submitBtn} onClick={(e) => history.push(`/editpublishapp/${appId}`)}> Edit </Button>
+      <Typography
+        component="h2"
+        className={`${toggle ? classes.darkh2 : classes.lighth2} ${
+          classes.mb0
+        }`}
+      >
+        App Details{" "}
+        <Button
+          style={{ float: "right" }}
+          className={classes.submitBtn}
+          onClick={(e) => history.push(`/editpublishapp/${appId}`)}
+        >
+          {" "}
+          Edit{" "}
+        </Button>
       </Typography>
 
       <Box display="flex" className={classes.informationContainer}>
         <Box flex={1}>
           <Typography className={classes.subHeading}>Version</Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
             {data && data.version}
           </Typography>
         </Box>
-        <Box flex={2}>
+        {/* <Box flex={2}>
           <Typography className={classes.subHeading}>
             Interface language
           </Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
             Russian, English, German, French, Spanish, Italian, Portuguese,
             Arabic
           </Typography>
-        </Box>
-        <Box flex={1}>
+        </Box> */}
+        {/* <Box flex={1}>
           <Typography className={classes.subHeading}>The size</Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>183.9 MB</Typography>
-        </Box>
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
+            183.9 MB
+          </Typography>
+        </Box> */}
       </Box>
       <Box
         display="flex"
@@ -200,25 +225,31 @@ const AppInfo = ({ data, appId, toggle }) => {
         marginBottom="15px"
         className={classes.informationContainer}
       >
-        <Box flex={1}>
+        {/* <Box flex={1}>
           <Typography className={classes.subHeading}>Compatibility</Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
             OS X 10.9 or later, 64-bit processor
           </Typography>
-        </Box>
-        <Box flex={2}>
+        </Box> */}
+        {/* <Box flex={2}>
           <Typography className={classes.subHeading}>Verified</Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
             Dr.Web for Mac - No viruses
           </Typography>
-        </Box>
+        </Box> */}
         <Box flex={1}>
           <Typography className={classes.subHeading}>Tags</Typography>
 
-          <Typography className={toggle ? classes.darkInfoText : classes.lightInfoText}>
-            Programs, Utilities
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
+            {data?.content?.tags?.join(", ")}
           </Typography>
         </Box>
       </Box>
@@ -228,50 +259,48 @@ const AppInfo = ({ data, appId, toggle }) => {
         className={classes.descTextContainer}
         marginTop="15px"
       >
-        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
+        <Typography
+          component="h2"
+          className={toggle ? classes.darkh2 : classes.lighth2}
+        >
           Description
         </Typography>
-        <Typography variant="body2" className={classes.descText}>
-          {data && data.content.appDescription}
-          {/* Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-          sed diam voluptua. At vero eos et accusam et.
-          <br />
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-          sed diam voluptua. At vero eos et accusam et.
-          <span className={classes.readMoreBtn}>Read More</span> */}
+        <Typography
+          className={toggle ? classes.darkDescText : classes.lightDescText}
+        >
+          {data?.content?.appDescription}
         </Typography>
       </Box>
-      <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
+      <Typography
+        component="h2"
+        className={toggle ? classes.darkh2 : classes.lighth2}
+      >
         Screenshots
       </Typography>
       <Box display="flex" flexWrap="wrap">
-        <Box paddingRight=".5rem" className={classes.scContainer}>
-          <img
-            src={
-              data &&
-              data.content.previewVideo.thumbnail &&
-              (getPortalUrl() + `${data.content.previewVideo.thumbnail.split("sia:")[1]}`)
-            }
-            alt="sc"
-          />
-        </Box>
+        {data?.content?.previewVideo?.thumbnail && (
+          <Box paddingRight=".5rem" className={classes.scContainer}>
+            <img
+              src={transformImageUrl(data?.content?.previewVideo?.thumbnail)}
+              alt="sc"
+            />
+          </Box>
+        )}
         {data && data.content.previewImages.images.length
           ? data.content.previewImages.images.map((i, index) => {
-            return (
-              <Box
-                key={index}
-                paddingRight=".5rem"
-                className={classes.scContainer}
-              >
-                <img
-                  src={getPortalUrl() + `${i.thumbnail.split("sia:")[1]}`}
-                  alt="sc"
-                />
-              </Box>
-            );
-          })
+              return (
+                <Box
+                  key={index}
+                  paddingRight=".5rem"
+                  className={classes.scContainer}
+                >
+                  <img
+                    src={getPortalUrl() + `${i.thumbnail.split("sia:")[1]}`}
+                    alt="sc"
+                  />
+                </Box>
+              );
+            })
           : null}
 
         {/* // <Box paddingRight=".5rem" className={classes.scContainer}>
@@ -285,38 +314,40 @@ const AppInfo = ({ data, appId, toggle }) => {
         // </Box> */}
       </Box>
       <Box className={classes.descTextContainer} marginTop="15px">
-        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
-          Description
+        <Typography
+          component="h2"
+          className={toggle ? classes.darkh2 : classes.lighth2}
+        >
+          Release Notes
         </Typography>
-        <Typography variant="body2" className={toggle ? classes.darkDescText : classes.lightDescText}>
-          What's new in iMazing 2.12.7 Licensing Server Change: iMazing will now
-          connect to https://api.imazing.com for license validation. This change
-          anticipates the upcoming retirement of our previous licensing
-          platform, Devmate. Please make sure to whitelist api.imazing.com if
-          you're experiencing activation issues. Licensing: added support for
-          new license types (imz *** license codes). Licensing: new license and
-          trial screens. Misc: added assets for new Apple devices.
-          <br />
-          <br />
-        </Typography>
-        <Typography variant="body2" className={toggle ? classes.darkDescText : classes.lightDescText}>
-          Fixes and improvements in 2.12.7 Licensing: fixed various activation
-          issues Fixed inactive Choose Wallpaper button in Supervision wizard
-          (macOS) Other minor fixes and stability improvements
+        <Typography
+          className={toggle ? classes.darkDescText : classes.lightDescText}
+        >
+          {data?.content?.releaseNotes}
         </Typography>
       </Box>
       <Box overflow="hidden" marginTop="15px">
-        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
+        <Typography
+          component="h2"
+          className={toggle ? classes.darkh2 : classes.lighth2}
+        >
           Similar Apps
         </Typography>
         {/* <SimilarApps /> */}
       </Box>
       <Box overflow="hidden" marginTop="15px">
-        <Typography component="h2" className={toggle ? classes.darkh2 : classes.lighth2}>
-          Comments (65)
+        <Typography
+          component="h2"
+          className={toggle ? classes.darkh2 : classes.lighth2}
+        >
+          Comments
         </Typography>
 
-        <AppComments toggle={toggle} uid={data && data.id} version={data && data.version} />
+        <AppComments
+          toggle={toggle}
+          uid={data && data.id}
+          version={data && data.version}
+        />
       </Box>
     </Fragment>
   );

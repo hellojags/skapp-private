@@ -1,6 +1,4 @@
-import { faEllipsisH as MoreIcon } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Box, Button, Checkbox, IconButton } from "@material-ui/core";
+import { Avatar, Box, Button, Checkbox } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -17,20 +15,19 @@ import React, {
   useState,
 } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-// import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
-import { ReactComponent as Arrows } from "../../assets/img/icons/arrows-diagrams-02.svg";
+import { ReactComponent as ArrowsDark } from "../../assets/img/icons/arrows-diagrams-02-dark.svg";
+import { ReactComponent as ArrowsLight } from "../../assets/img/icons/arrows-diagrams-02-light.svg";
 import {
   follow,
   getFollowingCountForUser,
+  getGithubUrl,
   getProfile,
   getUsersPublishedAppsCount,
+  transformImageUrl,
   unfollow,
 } from "../../service/SnSkappService";
 import Spiner from "../AppsComp/Spiner";
 import UserCard from "./UserCard";
-import { ReactComponent as ArrowsLight } from '../../assets/img/icons/arrows-diagrams-02-light.svg'
-import { ReactComponent as ArrowsDark } from '../../assets/img/icons/arrows-diagrams-02-dark.svg'
-import { getPortalUrl } from '../../service/skynet-api'
 
 const useStyles = makeStyles(({ palette }) => ({
   table: {
@@ -38,227 +35,223 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   lightPaper: {
     marginTop: 10,
-      "& th, & td": {
+    "& th, & td": {
       border: 0,
-      },
-    '& tbody tr th ~ td:not(:last-child)': {
-      color: '#6E77AA',
-        fontWeight: 'normal'
     },
-    '& tbody th': {
-      fontWeight: 700
+    "& tbody tr th ~ td:not(:last-child)": {
+      color: "#6E77AA",
+      fontWeight: "normal",
     },
-    '& thead': {
-
-      '& th': {
+    "& tbody th": {
+      fontWeight: 700,
+    },
+    "& thead": {
+      "& th": {
         padding: 0,
-          color: '#2A2C34',
-            // lineHeight: '',
-            background: '#F0F5F7',
-              '& svg': {
-          marginLeft: '5px',
-            width: 18,
-              },
-        '&:first-child': {
-          borderRadius: '5px 0 0px 5px',
-            paddingLeft: 5
+        color: "#2A2C34",
+        // lineHeight: '',
+        background: "#F0F5F7",
+        "& svg": {
+          marginLeft: "5px",
+          width: 18,
         },
-        '&:last-child': {
+        "&:first-child": {
+          borderRadius: "5px 0 0px 5px",
+          paddingLeft: 5,
+        },
+        "&:last-child": {
           paddingRight: 10,
-            borderRadius: '0px 5px 5px 0px'
-        }
-      }
-    },
-    '& tr th, & tr td': {
-      padding: '10px 0',
-        fontSize: 18,
-          '@media only screen and (max-width: 1440px)': {
-        fontSize: 16
+          borderRadius: "0px 5px 5px 0px",
+        },
       },
     },
-    '& tr th': {
-      '&:first-child': {
-        borderRadius: '5px 0 0px 5px'
+    "& tr th, & tr td": {
+      padding: "10px 0",
+      fontSize: 18,
+      "@media only screen and (max-width: 1440px)": {
+        fontSize: 16,
       },
-      '&:last-child': {
-        borderRadius: '0px 5px 5px 0px'
-      }
     },
-    '& tr td': {
-      borderBottom: '1px solid #7070702b',
-        '&:first-child': {
-
-        paddingLeft: 5
+    "& tr th": {
+      "&:first-child": {
+        borderRadius: "5px 0 0px 5px",
       },
-      '&:last-child': {
+      "&:last-child": {
+        borderRadius: "0px 5px 5px 0px",
+      },
+    },
+    "& tr td": {
+      borderBottom: "1px solid #7070702b",
+      "&:first-child": {
+        paddingLeft: 5,
+      },
+      "&:last-child": {
         paddingRight: 10,
-
-          }
+      },
     },
-    '& table': {
-      borderCollapse: 'separate',
-        borderSpacing: '0 8px'
+    "& table": {
+      borderCollapse: "separate",
+      borderSpacing: "0 8px",
     },
-    '& tbody tr td,& tbody tr th': {
-      background: '#fff',
-        color: '#2A2C34'
+    "& tbody tr td,& tbody tr th": {
+      background: "#fff",
+      color: "#2A2C34",
     },
-    '& tbody th svg': {
-      marginRight: 10
-    }
+    "& tbody th svg": {
+      marginRight: 10,
+    },
   },
   darkPaper: {
     marginTop: 10,
-      "& th, & td": {
+    "& th, & td": {
       border: 0,
-      },
-    '& tbody tr th ~ td:not(:last-child)': {
-      color: '#6E77AA',
-        fontWeight: 'normal'
     },
-    '& tbody th': {
-      fontWeight: 700
+    "& tbody tr th ~ td:not(:last-child)": {
+      color: "#6E77AA",
+      fontWeight: "normal",
     },
-    '& thead': {
-      color: '#fff',
-        '& th': {
+    "& tbody th": {
+      fontWeight: 700,
+    },
+    "& thead": {
+      color: "#fff",
+      "& th": {
         padding: 0,
-          color: '#fff',
-            // lineHeight: '',
-            background: '#1E2029',
-              '& svg': {
-          marginLeft: '5px',
-            width: 18,
-              },
-        '&:first-child': {
-          borderRadius: '5px 0 0px 5px',
-            paddingLeft: 5
+        color: "#fff",
+        // lineHeight: '',
+        background: "#1E2029",
+        "& svg": {
+          marginLeft: "5px",
+          width: 18,
         },
-        '&:last-child': {
+        "&:first-child": {
+          borderRadius: "5px 0 0px 5px",
+          paddingLeft: 5,
+        },
+        "&:last-child": {
           paddingRight: 10,
-            borderRadius: '0px 5px 5px 0px'
-        }
-      }
-    },
-    '& tr th, & tr td': {
-      padding: '10px 0',
-        fontSize: 18,
-          '@media only screen and (max-width: 1440px)': {
-        fontSize: 16
+          borderRadius: "0px 5px 5px 0px",
+        },
       },
     },
-    '& tr th': {
-      '&:first-child': {
-        borderRadius: '5px 0 0px 5px'
+    "& tr th, & tr td": {
+      padding: "10px 0",
+      fontSize: 18,
+      "@media only screen and (max-width: 1440px)": {
+        fontSize: 16,
       },
-      '&:last-child': {
-        borderRadius: '0px 5px 5px 0px'
-      }
     },
-    '& tr td': {
-      borderBottom: '1px solid #7070702b',
-        '&:first-child': {
-
-        paddingLeft: 5
+    "& tr th": {
+      "&:first-child": {
+        borderRadius: "5px 0 0px 5px",
       },
-      '&:last-child': {
+      "&:last-child": {
+        borderRadius: "0px 5px 5px 0px",
+      },
+    },
+    "& tr td": {
+      borderBottom: "1px solid #7070702b",
+      "&:first-child": {
+        paddingLeft: 5,
+      },
+      "&:last-child": {
         paddingRight: 10,
-
-          }
-    },
-    '& table': {
-      borderCollapse: 'separate',
-        borderSpacing: '0 8px'
-    },
-    '& tbody tr td,& tbody tr th': {
-      color: '#fff',
-        background: '#2A2C34',
       },
-    '& tbody th svg': {
-      marginRight: 10
-    }
+    },
+    "& table": {
+      borderCollapse: "separate",
+      borderSpacing: "0 8px",
+    },
+    "& tbody tr td,& tbody tr th": {
+      color: "#fff",
+      background: "#2A2C34",
+    },
+    "& tbody th svg": {
+      marginRight: 10,
+    },
   },
 
   statusWorking: {
-    color: '#1DBF73'
+    color: "#1DBF73",
   },
   statusError: {
-    color: '#FF6060'
+    color: "#FF6060",
   },
   arrow: {
-    marginLeft: 10
+    marginLeft: 10,
   },
   menuAction: {
-    marginTop: '3.4rem',
-      '& ul': {
+    marginTop: "3.4rem",
+    "& ul": {
       minWidth: 230,
-        '& li': {
+      "& li": {
         fontSize: 18,
-          paddingBottom: 12,
-            '@media only screen and (max-width: 1440px)': {
-          fontSize: 16
-        }
-      }
+        paddingBottom: 12,
+        "@media only screen and (max-width: 1440px)": {
+          fontSize: 16,
+        },
+      },
     },
-    '& .MuiPaper-root': {
-      background: '#2A2C34',
-        boxShadow: '0px 3px 6px #00000029',
-          border: '1px solid #7070704F', overflow: 'visible'
+    "& .MuiPaper-root": {
+      background: "#2A2C34",
+      boxShadow: "0px 3px 6px #00000029",
+      border: "1px solid #7070704F",
+      overflow: "visible",
     },
-    '& .MuiPaper-root::before': {
+    "& .MuiPaper-root::before": {
       content: '""',
-        width: 0,
-          height: 0,
-            borderTop: '14px solid transparent',
-              borderBottom: '14px solid transparent',
-                borderRight: '14px solid #70707057',
-                  position: 'absolute',
-                    top: '-22px',
-                      right: 19,
-                        transform: 'rotate(90deg)'
+      width: 0,
+      height: 0,
+      borderTop: "14px solid transparent",
+      borderBottom: "14px solid transparent",
+      borderRight: "14px solid #70707057",
+      position: "absolute",
+      top: "-22px",
+      right: 19,
+      transform: "rotate(90deg)",
     },
-    '& .MuiPaper-root::after': {
+    "& .MuiPaper-root::after": {
       content: '""',
-        width: 0,
-          height: 0,
-            borderTop: '14px solid transparent',
-              borderBottom: '14px solid transparent',
-                borderRight: '14px solid #fff',
-                  // position: 'relative',
-                  position: 'absolute',
-                    top: '-21px',
-                      right: 19,
-                        transform: 'rotate(90deg)'
-    }
+      width: 0,
+      height: 0,
+      borderTop: "14px solid transparent",
+      borderBottom: "14px solid transparent",
+      borderRight: "14px solid #fff",
+      // position: 'relative',
+      position: "absolute",
+      top: "-21px",
+      right: 19,
+      transform: "rotate(90deg)",
+    },
   },
   checkBox: {
-    color: '#4B5060'
+    color: "#4B5060",
   },
   colorDanger: {
-    color: '#FF6060'
+    color: "#FF6060",
   },
   devAvtar: {
-    borderRadius: '50%',
-      border: '1px solid rgba(0,0,0,0.3)'
+    borderRadius: "50%",
+    border: "1px solid rgba(0,0,0,0.3)",
   },
   followBtn: {
-      width: 110,
-      background: '#1DBF73!important',
-      color: '#fff',
+    width: 110,
+    background: "#1DBF73!important",
+    color: "#fff",
 
-      '&:hover': {
-          background: '#2A2C34!important',
-          color: '#1DBF73',
-          border: '1px solid #1DBF73!important'
-      }
+    "&:hover": {
+      background: "#2A2C34!important",
+      color: "#1DBF73",
+      border: "1px solid #1DBF73!important",
+    },
   },
   unfollowBtn: {
     width: 110,
+    background: palette.error.main,
+    color: palette.error.contrastText,
+    "&:hover": {
       background: palette.error.main,
-        color: palette.error.contrastText,
-          "&:hover": {
-      background: palette.error.main,
-        color: palette.error.contrastText,
+      color: palette.error.contrastText,
     },
   },
   // followBtn: {
@@ -271,13 +264,13 @@ const useStyles = makeStyles(({ palette }) => ({
   //   },
   // },
   moreIconV: {
-    transform: 'rotate(90deg)'
+    transform: "rotate(90deg)",
   },
   ellipsis: {
     maxWidth: 100,
-      whiteSpace: "nowrap",
-        overflow: "hidden",
-          textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 }));
 
@@ -290,7 +283,12 @@ const useStyles = makeStyles(({ palette }) => ({
 //     // createData('cloudean.com', 'External DNS', false,),
 //     // createData('mysite.net', 'External DNS', true,),
 // ]
-const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }) => {
+const DevTable = ({
+  toggle,
+  userList = [],
+  followingList = [],
+  toggleFollowing,
+}) => {
   const [items, setItems] = useState([]);
   // const [alldata, setAlldata] = useState([]);
   const [user, setUser] = useState(null);
@@ -362,30 +360,9 @@ const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }
     setUser(data);
   };
 
-  const getGithubUrl = (list = []) => {
-    let gitID = "";
-
-    if (!list) return gitID;
-
-    list.map((item) => {
-      if (Object.keys(item)[0] === "github") gitID = item.github;
-      return item;
-    });
-
-    return gitID;
-  };
-
-  const transformImageUrl = (siaUrl) => {
-    let skyUrl = getPortalUrl() + `${siaUrl.slice(6)}`;
-    return skyUrl;
-  };
-
   useEffect(() => {
     loadMoreUserDetails();
   }, [loadMoreUserDetails]);
-
-  console.log(userList.length);
-  console.log(items.length);
 
   return (
     <Fragment>
@@ -397,7 +374,9 @@ const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }
         loader={<Spiner />}
         style={{ overflow: "none" }}
       >
-        <TableContainer className={toggle ? classes.darkPaper : classes.lightPaper}>
+        <TableContainer
+          className={toggle ? classes.darkPaper : classes.lightPaper}
+        >
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -411,28 +390,33 @@ const DevTable = ({ toggle, userList = [], followingList = [], toggleFollowing }
                 <TableCell>UserId</TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>UserName </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
+                    <span>UserName </span>
+                    {toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Location </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
+                    <span>Location </span>
+                    {toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Git ID </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
+                    <span>Git ID </span>
+                    {toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
 
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Following </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
+                    <span>Following </span>
+                    {toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
-                    <span>Apps </span>{toggle ? <ArrowsLight /> : <ArrowsDark />}
+                    <span>Apps </span>
+                    {toggle ? <ArrowsLight /> : <ArrowsDark />}
                   </Box>
                 </TableCell>
 

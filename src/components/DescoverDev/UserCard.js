@@ -4,177 +4,173 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PersonOutline } from "@material-ui/icons";
 import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
-import {getPortalUrl} from '../../service/skynet-api'
+import { getGithubUrl, transformImageUrl } from "../../service/SnSkappService";
 const useStyles = makeStyles((theme) => ({
   root: {
-      height: 300,
-      flexGrow: 1,
-      minWidth: 300,
-      transform: 'translateZ(0)',
-      // The position fixed scoping doesn't work in IE 11.
-      // Disable this demo to preserve the others.
-      '@media all and (-ms-high-contrast: none)': {
-          display: 'none',
-      },
+    height: 300,
+    flexGrow: 1,
+    minWidth: 300,
+    transform: "translateZ(0)",
+    // The position fixed scoping doesn't work in IE 11.
+    // Disable this demo to preserve the others.
+    "@media all and (-ms-high-contrast: none)": {
+      display: "none",
+    },
   },
   modal: {
-      display: 'flex',
-      padding: theme.spacing(1),
-      alignItems: 'center',
-      justifyContent: 'center',
-      
+    display: "flex",
+    padding: theme.spacing(1),
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   lightUserCard: {
-      background: '#fff',
-      paddingTop: '4rem',
-      paddingBottom: '3rem',
-      width: 460,
-      maxWidth: '98%',
-      // textAlign: 
-      borderRadius: 20,
-      boxShadow: '0px 1px 4px #00000012',
-      '&:focus': {
-          border: 'none',
-          outline: "none"
-      },
-      position: 'relative',
+    background: "#fff",
+    paddingTop: "4rem",
+    paddingBottom: "3rem",
+    width: 460,
+    maxWidth: "98%",
+    // textAlign:
+    borderRadius: 20,
+    boxShadow: "0px 1px 4px #00000012",
+    "&:focus": {
+      border: "none",
+      outline: "none",
+    },
+    position: "relative",
 
-      '@media only screen and (max-width: 370px)': {
-          paddingTop: '3rem',
-          paddingRight: '1.4rem',
-          paddingLeft: '1.4rem',
-          paddingBottom: '1rem'
-      }
+    "@media only screen and (max-width: 370px)": {
+      paddingTop: "3rem",
+      paddingRight: "1.4rem",
+      paddingLeft: "1.4rem",
+      paddingBottom: "1rem",
+    },
   },
   darkUserCard: {
-      background: '#2A2C34',
-      paddingTop: '4rem',
-      paddingBottom: '3rem',
-      width: 460,
-      maxWidth: '98%',
-      // textAlign: 
-      borderRadius: 20,
-      boxShadow: '0px 1px 4px #00000012',
-      '&:focus': {
-          border: 'none',
-          outline: "none"
-      },
-      position: 'relative',
+    background: "#2A2C34",
+    paddingTop: "4rem",
+    paddingBottom: "3rem",
+    width: 460,
+    maxWidth: "98%",
+    // textAlign:
+    borderRadius: 20,
+    boxShadow: "0px 1px 4px #00000012",
+    "&:focus": {
+      border: "none",
+      outline: "none",
+    },
+    position: "relative",
 
-      '@media only screen and (max-width: 370px)': {
-          paddingTop: '3rem',
-          paddingRight: '1.4rem',
-          paddingLeft: '1.4rem',
-          paddingBottom: '1rem'
-      }
+    "@media only screen and (max-width: 370px)": {
+      paddingTop: "3rem",
+      paddingRight: "1.4rem",
+      paddingLeft: "1.4rem",
+      paddingBottom: "1rem",
+    },
   },
   lightCardUserName: {
-      fontSize: 18,
-      fontWeight: 800,
-      color: '#4E4E4E'
+    fontSize: 18,
+    fontWeight: 800,
+    color: "#4E4E4E",
   },
   darkCardUserName: {
-      fontSize: 18,
-      fontWeight: 800,
-      color: '#fff'
+    fontSize: 18,
+    fontWeight: 800,
+    color: "#fff",
   },
   lightCardUserAd: {
-      fontSize: 18,
-      color: '#4E4E4E'
+    fontSize: 18,
+    color: "#4E4E4E",
   },
   darkCardUserAd: {
-      fontSize: 18,
-      color: '#fff'
+    fontSize: 18,
+    color: "#fff",
   },
   userProfile: {
-      marginBottom: '6px',
-      textAlign: 'center',
-      '& img': {
-          borderRadius: '50%',
-          border: '8px solid #70707026'
-      }
+    marginBottom: "6px",
+    textAlign: "center",
+    "& img": {
+      borderRadius: "50%",
+      border: "8px solid #70707026",
+    },
   },
   ul: {
-      color: '#48494E',
-      marginTop: '.4rem',
-      justifyContent: 'center',
-      '& li:not(:last-child)': {
-          marginRight: '1.7rem'
+    color: "#48494E",
+    marginTop: ".4rem",
+    justifyContent: "center",
+    "& li:not(:last-child)": {
+      marginRight: "1.7rem",
+    },
+    display: "flex",
+    listStyle: "none",
+    "& span": {
+      // color: '#2a2c3499',
+      // color: '#48494E',
+      color: "#6A6F89",
+      fontSize: 13,
+      display: "block",
+      "&:first-child": {
+        color: "#6A6F89",
+        fontWeight: "bold",
+        fontSize: 15,
       },
-      display: 'flex',
-      listStyle: 'none',
-      '& span': {
-          // color: '#2a2c3499',
-          // color: '#48494E',
-          color: '#6A6F89',
-          fontSize: 13,
-          display: 'block',
-          '&:first-child': {
-              color: '#6A6F89',
-              fontWeight: 'bold',
-              fontSize: 15
-          }
-      }
+    },
   },
   userDetails: {
-      textAlign: "center"
+    textAlign: "center",
   },
   lightUserDetailsList: {
-      
-      listStyle: "none",
-      margin: '1rem auto',
-      '& li': {
-          display: 'flex',
-          maxWidth: 315,
-          justifyContent: 'space-between',
-          margin: '0 auto',
-          '& span': {
-              fontSize: 18,
-              lineHeight: 1.6,
-              color: '#4E4E4E',
-              '&:last-child': {
-                  fontWeight: 'bold'
-              }
-          }
+    listStyle: "none",
+    margin: "1rem auto",
+    "& li": {
+      display: "flex",
+      maxWidth: 315,
+      justifyContent: "space-between",
+      margin: "0 auto",
+      "& span": {
+        fontSize: 18,
+        lineHeight: 1.6,
+        color: "#4E4E4E",
+        "&:last-child": {
+          fontWeight: "bold",
+        },
       },
-
+    },
   },
   darkUserDetailsList: {
-      
-      listStyle: "none",
-      margin: '1rem auto',
-      '& li': {
-          display: 'flex',
-          maxWidth: 315,
-          justifyContent: 'space-between',
-          margin: '0 auto',
-          '& span': {
-              fontSize: 18,
-              lineHeight: 1.6,
-              color: '#6A6F89',
-              '&:last-child': {
-                  fontWeight: 'bold'
-              }
-          }
+    listStyle: "none",
+    margin: "1rem auto",
+    "& li": {
+      display: "flex",
+      maxWidth: 315,
+      justifyContent: "space-between",
+      margin: "0 auto",
+      "& span": {
+        fontSize: 18,
+        lineHeight: 1.6,
+        color: "#6A6F89",
+        "&:last-child": {
+          fontWeight: "bold",
+        },
       },
-
+    },
   },
   btnF: {
-      background: '#1DBF73!important',
-      width: 315,
-      maxWidth: '100%',
-      color: '#fff',
+    background: "#1DBF73!important",
+    width: 315,
+    maxWidth: "100%",
+    color: "#fff",
   },
   closeBtn: {
-      position: 'absolute',
-      right: 10,
-      top: 10,
-      color: '#6A6F89',
-  }
-}))
+    position: "absolute",
+    right: 10,
+    top: 10,
+    color: "#6A6F89",
+  },
+}));
 
-const UserCard = ({toggle,
+const UserCard = ({
+  toggle,
   user,
   followingList = [],
   handleClose,
@@ -183,11 +179,6 @@ const UserCard = ({toggle,
   const classes = useStyles();
   const rootRef = React.useRef(null);
 
-  const transformImageUrl = (siaUrl) => {
-    let skyUrl = getPortalUrl() + `${siaUrl.slice(6)}`;
-    console.log(skyUrl);
-    return skyUrl;
-  };
   return (
     user && (
       <Modal
@@ -214,10 +205,18 @@ const UserCard = ({toggle,
             )}
           </div>
           <div className={classes.userDetails}>
-          <Typography className={toggle ? classes.darkCardUserName : classes.lightCardUserName}>
+            <Typography
+              className={
+                toggle ? classes.darkCardUserName : classes.lightCardUserName
+              }
+            >
               {user.username}
             </Typography>
-            <Typography className={toggle ? classes.darkCardUserAd : classes.lightCardUserAd}>
+            <Typography
+              className={
+                toggle ? classes.darkCardUserAd : classes.lightCardUserAd
+              }
+            >
               {user.github}
             </Typography>
 
@@ -237,7 +236,13 @@ const UserCard = ({toggle,
             </ul>
           </div>
 
-          <ul className={toggle ? classes.darkUserDetailsList : classes.lightUserDetailsList}>
+          <ul
+            className={
+              toggle
+                ? classes.darkUserDetailsList
+                : classes.lightUserDetailsList
+            }
+          >
             <li>
               <span>User ID</span>
               <span title={user.uid}>{user.uid?.slice(0, 16)}...</span>
@@ -248,7 +253,7 @@ const UserCard = ({toggle,
             </li>
             <li>
               <span>GitHub/GitLab ID</span>
-              <span>{user.github}</span>
+              <span>{getGithubUrl(user.connections || [])}</span>
             </li>
             <li>
               <span>No of apps</span>
