@@ -1,7 +1,6 @@
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { useHistory } from "react-router-dom";
-import { getPortalUrl } from "../../service/skynet-api";
 import { transformImageUrl } from "../../service/SnSkappService";
 // import SimilarApps from "./SimilarApps";
 import AppComments from "./AppComments";
@@ -156,9 +155,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   mb0: {
+    maxWidth: "1440px",
     "@media only screen and (max-width: 575px)": {
       marginBottom: 0,
     },
+  },
+  ellipsis: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 }));
 
@@ -225,33 +230,70 @@ const AppInfo = ({ data, appId, toggle }) => {
         marginBottom="15px"
         className={classes.informationContainer}
       >
-        {/* <Box flex={1}>
-          <Typography className={classes.subHeading}>Compatibility</Typography>
-
-          <Typography
-            className={toggle ? classes.darkInfoText : classes.lightInfoText}
-          >
-            OS X 10.9 or later, 64-bit processor
-          </Typography>
-        </Box> */}
-        {/* <Box flex={2}>
-          <Typography className={classes.subHeading}>Verified</Typography>
-
-          <Typography
-            className={toggle ? classes.darkInfoText : classes.lightInfoText}
-          >
-            Dr.Web for Mac - No viruses
-          </Typography>
-        </Box> */}
         <Box flex={1}>
-          <Typography className={classes.subHeading}>Tags</Typography>
+          <Typography className={classes.subHeading}>Git URL</Typography>
 
           <Typography
             className={toggle ? classes.darkInfoText : classes.lightInfoText}
           >
-            {data?.content?.tags?.join(", ")}
+            <a
+              href={data?.content?.sourceCode}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              https://github.com
+            </a>
           </Typography>
         </Box>
+        <Box flex={1}>
+          <Typography className={classes.subHeading}>Demo URL</Typography>
+
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+          >
+            <a
+              href={data?.content?.demoUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {data?.content?.demoUrl?.slice(0, 30)}...
+            </a>
+          </Typography>
+        </Box>
+        <Box flex={1}>
+          <Typography className={classes.subHeading}>Target User</Typography>
+
+          <Typography
+            className={toggle ? classes.darkInfoText : classes.lightInfoText}
+            style={{
+              textTransform: "capitalize",
+            }}
+          >
+            {data?.content?.age}
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box display="flex">
+        {Object.keys(data?.content?.connections).map((item, ind) => (
+          <Box flex={1} minWidth="0px" key={ind}>
+            <Typography className={classes.subHeading}>{item}</Typography>
+
+            <Typography
+              className={`${
+                toggle ? classes.darkInfoText : classes.lightInfoText
+              } ${classes.ellipsis}`}
+            >
+              <a
+                href={data?.content?.connections[item]}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {data?.content?.connections[item]}
+              </a>
+            </Typography>
+          </Box>
+        ))}
       </Box>
 
       <Box
@@ -271,12 +313,7 @@ const AppInfo = ({ data, appId, toggle }) => {
           {data?.content?.appDescription}
         </Typography>
       </Box>
-      <Typography
-        component="h2"
-        className={toggle ? classes.darkh2 : classes.lighth2}
-      >
-        Screenshots
-      </Typography>
+
       <Box display="flex" flexWrap="wrap">
         {data?.content?.previewVideo?.thumbnail && (
           <Box paddingRight=".5rem" className={classes.scContainer}>
@@ -286,33 +323,8 @@ const AppInfo = ({ data, appId, toggle }) => {
             />
           </Box>
         )}
-        {data && data.content.previewImages.images.length
-          ? data.content.previewImages.images.map((i, index) => {
-              return (
-                <Box
-                  key={index}
-                  paddingRight=".5rem"
-                  className={classes.scContainer}
-                >
-                  <img
-                    src={getPortalUrl() + `${i.thumbnail.split("sia:")[1]}`}
-                    alt="sc"
-                  />
-                </Box>
-              );
-            })
-          : null}
-
-        {/* // <Box paddingRight=".5rem" className={classes.scContainer}>
-        //   <img src={ScreenShot} alt="sc" />
-        // </Box>
-        // <Box paddingRight=".5rem" className={classes.scContainer}>
-        //   <img src={ScreenShot} alt="sc" />
-        // </Box>
-        // <Box className={classes.scContainer}>
-        //   <img src={ScreenShot} alt="sc" />
-        // </Box> */}
       </Box>
+
       <Box className={classes.descTextContainer} marginTop="15px">
         <Typography
           component="h2"
@@ -326,15 +338,27 @@ const AppInfo = ({ data, appId, toggle }) => {
           {data?.content?.releaseNotes}
         </Typography>
       </Box>
-      <Box overflow="hidden" marginTop="15px">
-        <Typography
-          component="h2"
-          className={toggle ? classes.darkh2 : classes.lighth2}
-        >
-          Similar Apps
-        </Typography>
-        {/* <SimilarApps /> */}
-      </Box>
+
+      {data?.content?.previewImages?.images?.length && (
+        <Fragment>
+          <Typography
+            component="h2"
+            className={toggle ? classes.darkh2 : classes.lighth2}
+          >
+            Screenshots
+          </Typography>
+          {data.content.previewImages.images.map((i, index) => (
+            <Box
+              key={index}
+              paddingRight=".5rem"
+              className={classes.scContainer}
+            >
+              <img src={transformImageUrl(i.thumbnail)} alt="sc" />
+            </Box>
+          ))}
+        </Fragment>
+      )}
+
       <Box overflow="hidden" marginTop="15px">
         <Typography
           component="h2"

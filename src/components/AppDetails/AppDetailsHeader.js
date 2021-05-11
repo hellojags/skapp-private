@@ -33,12 +33,11 @@ import {
 
 const useStyles = makeStyles({
   AppHeaderContainer: {
-    paddingLeft: "40px",
-    paddingRight: "30px",
-    paddingTop: "25px",
-    background: (props) => props.bgColor || "#1DBF73",
+    padding: "2rem",
     color: "#fff",
+    maxWidth: "1440px",
     borderRadius: 15,
+    background: (props) => props.bgColor || "#1DBF73",
     "@media only screen and (max-width: 575px)": {
       paddingLeft: "20px",
       paddingRight: "20px",
@@ -96,8 +95,9 @@ const useStyles = makeStyles({
     fontSize: "48px",
     fontWeight: "700",
     lineHeight: 1,
-    marginTop: 5,
-    marginBottom: 10,
+    marginRight: "1rem",
+    // marginTop: 5,
+    // marginBottom: 10,
     "@media only screen and (max-width: 575px)": {
       fontSize: "25px",
     },
@@ -109,8 +109,6 @@ const useStyles = makeStyles({
     paddingRight: "10px",
     fontSize: 14,
     fontWeight: 600,
-    marginTop: ".8rem",
-    margin: "22px 0",
   },
   installBtn: {
     background: "#fff!important",
@@ -128,8 +126,7 @@ const useStyles = makeStyles({
     },
   },
   box1: {
-    maxWidth: "1130px",
-    marginRight: "2rem",
+    marginRight: "3rem",
   },
   box2: {
     textAlign: "center",
@@ -164,6 +161,10 @@ const useStyles = makeStyles({
       marginRight: "8px",
       marginLeft: "0",
     },
+  },
+  tags: {
+    textTransform: "capitalize",
+    marginLeft: "1rem",
   },
 });
 
@@ -210,9 +211,14 @@ const AppDetailsHeader = ({ data }) => {
   // }, [data,appStats]);
 
   return (
-    <Box className={classes.AppHeaderContainer} display="flex">
+    <Box
+      className={classes.AppHeaderContainer}
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
       <Box className={classes.box1}>
-        <Box display="flex" width="100%">
+        <Box display="flex">
           <Box
             display="flex"
             alignItems="center"
@@ -305,32 +311,34 @@ const AppDetailsHeader = ({ data }) => {
           </Box>
         </Box>
         <Box marginTop="10px">
-          <Typography>Skapp</Typography>
-          <Typography component="h1" className={classes.h1}>
-            {data && data.content.appname}
-          </Typography>
-          <Typography component="p" className={classes.text}>
-            {data && data.content.appDescription}
-          </Typography>
-
-          <Box>
+          <Box display="flex" alignItems="center">
+            <Typography component="h1" className={classes.h1}>
+              {data && data.content.appname}
+            </Typography>
+            <Button size="small" className={classes.programBtn}>
+              {data?.content?.appStatus} | {data?.version}
+            </Button>
+          </Box>
+          <Box display="flex" mt="1rem" alignItems="center">
             <Button size="small" className={classes.programBtn}>
               {data && data.content.category}
             </Button>
-            {/* <Button className={classes.installBtn}>+ Install</Button> */}
+
+            <Typography className={classes.tags}>
+              {data?.content?.tags?.join(", ")}
+            </Typography>
           </Box>
         </Box>
       </Box>
-      <Box alignSelf="center" className={classes.box2} flex={1}>
-        <img
-          src={
-            (data?.content?.skappLogo?.thumbnail &&
-              transformImageUrl(data?.content?.skappLogo?.thumbnail)) ||
-            cubsImg
-          }
-          alt="igm"
-        />
-      </Box>
+      <img
+        src={
+          (data?.content?.skappLogo?.thumbnail &&
+            transformImageUrl(data?.content?.skappLogo?.thumbnail)) ||
+          cubsImg
+        }
+        width="180px"
+        alt="igm"
+      />
     </Box>
   );
 };

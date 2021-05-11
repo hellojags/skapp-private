@@ -19,8 +19,6 @@ const AppDetailsPage = ({ toggle }) => {
     (state) => state.snPublishedAppsStore
   );
 
-  console.log(publishedAppsStore);
-
   useEffect(() => {
     if (publishedAppsStore) {
       let appJSON = publishedAppsStore.find((appData) => appData.id === appId);
