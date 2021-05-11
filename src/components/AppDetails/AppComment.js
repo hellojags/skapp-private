@@ -88,7 +88,7 @@ const AppComment = ({ uid: id, commentList, toggle, handleDeleteComment }) => {
               </Box>
               <Box>
                 <Typography variant="caption" className={classes.opcity60}>
-                  {moment(i.timestamp).format("MMMM D, YYYY")}
+                  {moment(i.timestamp).format("MMMM D, YYYY | hh:mm A")}
                 </Typography>
                 <Typography
                   variant="caption"

@@ -5,11 +5,9 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
+import { Star } from "@material-ui/icons";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@material-ui/icons/FavoriteOutlined";
-import LaunchIcon from "@material-ui/icons/Launch";
-import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
-import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -27,8 +25,6 @@ import {
 import {
   EVENT_APP_FAVORITE,
   EVENT_APP_FAVORITE_REMOVED,
-  EVENT_APP_LIKED,
-  EVENT_APP_LIKED_REMOVED,
 } from "../../utils/SnConstants";
 
 const useStyles = makeStyles({
@@ -163,7 +159,6 @@ const useStyles = makeStyles({
     },
   },
   tags: {
-    textTransform: "capitalize",
     marginLeft: "1rem",
   },
 });
@@ -227,29 +222,25 @@ const AppDetailsHeader = ({ data }) => {
             <VisibilityIcon />
             <Typography>{aggregatedAppStats[0]}</Typography>
           </Box>
+
           <Box
             display="flex"
             alignItems="center"
-            className={classes.VisiIconContainer}
+            className={classes.msgIconContainer}
           >
-            <LaunchIcon />
-            <Typography>{aggregatedAppStats[1]}</Typography>
+            <MsgIcon className={classes.MsgIcon} />
+            <Typography>1.3k</Typography>
           </Box>
-          <Box display="flex" alignItems="center" marginRight="0">
-            {/* <ThumbUpAltIcon/> */}
-            {parseInt(appStats[2]) === parseInt(1) ? (
-              <ThumbUpAltIcon
-                className={classes.StarIcon}
-                onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
-              />
-            ) : (
-              <ThumbUpAltOutlinedIcon
-                className={classes.StarIcon}
-                onClick={() => appStatsAction(EVENT_APP_LIKED)}
-              />
-            )}
-            <Typography>{aggregatedAppStats[2]}</Typography>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.msgIconContainer}
+          >
+            <Star fontSize="small" className={classes.MsgIcon} />
+            <Typography>5.0 (1k+)</Typography>
           </Box>
+
           <Box display="flex" alignItems="center" className={classes.favrIcon}>
             {/* <FavoriteOutlinedIcon/> */}
             {parseInt(appStats[3]) === parseInt(1) ? (
@@ -266,44 +257,6 @@ const AppDetailsHeader = ({ data }) => {
             <Typography>{aggregatedAppStats[3]}</Typography>
           </Box>
 
-          {/* <Box display="flex" alignItems="center" marginRight="0">
-            {(parseInt(appStats[2]) === parseInt(1)) ? (
-              <ThumbUpAltIcon
-                className={classes.StarIcon}
-                onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
-              />
-            ) : (
-              <ThumbUpAltOutlinedIcon
-                style={{ height: 19 }}
-                className={classes.StarIcon}
-                onClick={() => appStatsAction(EVENT_APP_LIKED)}
-              />
-            )}
-            <Typography>{appStats?.content?.liked}</Typography>
-          </Box> */}
-          {/* <Box className={classes.favrIcon}>
-            <IconButton aria-label="Favourite Button" size="small">
-              {(parseInt(appStats[3]) === parseInt(1)) ? (
-                <FavoriteBorderOutlinedIcon
-                  className={classes.HeartIcon}
-                  onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}
-                />
-              ) : (
-                <FavoriteOutlinedIcon
-                  className={classes.addFav}
-                  onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
-                />
-              )}
-            </IconButton>
-          </Box> */}
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.msgIconContainer}
-          >
-            <MsgIcon className={classes.MsgIcon} />
-            <Typography>1.3k</Typography>
-          </Box>
           <Box className={classes.sharIcon}>
             <IconButton aria-label="Share Button" size="small">
               <ShareIcon className={classes.ShareIcon} />
@@ -319,6 +272,17 @@ const AppDetailsHeader = ({ data }) => {
               {data?.content?.appStatus} | {data?.version}
             </Button>
           </Box>
+
+          <Box mt="1rem">
+            <a
+              href={data?.content?.appUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {data?.content?.appUrl?.slice(0, 60)}...
+            </a>
+          </Box>
+
           <Box display="flex" mt="1rem" alignItems="center">
             <Button size="small" className={classes.programBtn}>
               {data && data.content.category}

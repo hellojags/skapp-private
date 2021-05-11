@@ -229,13 +229,15 @@ const AppInfo = ({ data, appId, toggle }) => {
           </Typography>
         </Box>
         <Box flex={1}>
-          <Typography className={classes.subHeading}>Target User</Typography>
+          <Typography
+            className={classes.subHeading}
+            style={{ textTransform: "capitalize" }}
+          >
+            Target User
+          </Typography>
 
           <Typography
             className={toggle ? classes.darkInfoText : classes.lightInfoText}
-            style={{
-              textTransform: "capitalize",
-            }}
           >
             {data?.content?.age}
           </Typography>
@@ -243,7 +245,7 @@ const AppInfo = ({ data, appId, toggle }) => {
       </Box>
 
       <Box display="flex">
-        {Object.keys(data?.content?.connections).map((item, ind) => (
+        {Object.keys(data?.content?.connections || {}).map((item, ind) => (
           <Box flex={1} minWidth="0px" key={ind}>
             <Typography className={classes.subHeading}>{item}</Typography>
 
