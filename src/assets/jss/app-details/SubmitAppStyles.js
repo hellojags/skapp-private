@@ -390,6 +390,9 @@ const SubmitAppStyles = () => ({
             marginRight: '10px'
         },
     },
+    iconWithField: {
+        fontSize: 18
+    },
     max33: {
         maxWidth: 'calc(33.33% - 1rem)',
 
@@ -597,6 +600,7 @@ const SubmitAppStyles = () => ({
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
+        fontSize: 18,
         color: '#2A2C34',
         '&:focus': {
             color: '#2A2C34',
@@ -641,6 +645,7 @@ const SubmitAppStyles = () => ({
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
+        fontSize: 18,
         '&:focus': {
             color: '#fff',
             outline: 'none!important',
