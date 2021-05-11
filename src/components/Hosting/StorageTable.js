@@ -181,7 +181,7 @@ const rows = [
     createData('Another Provider Portal', 'https://skynethub.io', 'Free Tier',),
 ]
 
-const StorageTable = ({toggle}) => {
+const StorageTable = ({toggle, handleDelete, handleEdit, userStorages }) => {
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     // const [clicked, setClicked] = React.useState(false)
@@ -211,21 +211,21 @@ const StorageTable = ({toggle}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {userStorages.map((row, index) => (
                             <TableRow key={row.portalName}>
                                 <TableCell component="th" scope="row">
                                     <Box display="flex" component="span" alignItems="center">
                                         <DomainListIcon /> <span>{row.portalName}</span>
                                     </Box>
                                 </TableCell>
-                                <TableCell>{row.portalURL}</TableCell>
+                                <TableCell>{row.portalUrl}</TableCell>
                                 <TableCell>{row.portalType}</TableCell>
 
                                 <TableCell align="right">
-                                    <IconButton size="small" style={{ marginRight: '1rem' }} >
+                                    <IconButton onClick={() => handleEdit(index, row)} size="small" style={{ marginRight: '1rem' }} >
                                         {toggle ? <CreateOutlinedIcon style={{ color: '#fff' }} /> : <CreateOutlinedIcon style={{ color: '#323232' }} />}
                                     </IconButton>
-                                    <IconButton size="small" >
+                                    <IconButton onClick={() => handleDelete(index)} size="small" >
                                         {toggle ? <FontAwesomeIcon color='#fff' icon={DeleteIcon} /> : <FontAwesomeIcon color='#323232' icon={DeleteIcon} />}
                                     </IconButton>
                                 </TableCell>

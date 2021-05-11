@@ -1,5 +1,5 @@
 import { Box, InputBase } from '@material-ui/core'
-import React, { Fragment } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import UtilitiesItem from '../AppsComp/UtilitiesItem'
@@ -7,10 +7,13 @@ import ListFilter from '../AppsComp/ListFilter'
 import SubmitBtn from '../AppsComp/SubmitBtn'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import StorageTable from './StorageTable'
-// import AddNewDomain from './AddNewDomain'
-// import AddNewDomainTXT from './AddNewDomainTXT'
-// import HostingItem from './HostingItem'
-// import AddNewSite from './AddNewSiteBtn'
+import AddEditStorage from './AddEditStorage'
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
+import { getStorageAction, setStorageEpic, setEditStorageEpic, setDeleteStorageEpic } from "../../redux/action-reducers-epic/SnStorageAction";
+
+
 const useStyles = makeStyles(theme => (
     {
         lightSearch: {
@@ -161,18 +164,84 @@ const useStyles = makeStyles(theme => (
 
     }
 ))
+
+const validationSchema = Yup.object().shape({
+    portalName: Yup.string().required("This field is required"),
+    portalUrl: Yup.string().required("This field is required"),
+    portalType: Yup.string().required("This field is required"),
+    version: Yup.string().required("This field is required"),
+});
+
+let initailValueFormikObj = {
+    portalName: "",
+    portalUrl: "",
+    version: "1",
+};
+
 function StorageGateway({ toggle }) {
 
     const { width } = useWindowDimensions()
-    const classes = useStyles()
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const userStorages = useSelector((state) => state.SnStorages.storages);
+
+    const [newDomain, setNewDomain] = useState(false);
+    const [editDomain, setEditDomain] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    
+    const handleSetDomain = (val) => {
+        setNewDomain(val)
+        setEditDomain(null);
+        initailValueFormikObj = {
+            portalName: "",
+            portalUrl: "",
+            version: "1"
+        };
+    } 
+
+    useEffect(async () => {
+        // console.log("came here");
+        setIsLoading(true);
+        await dispatch(getStorageAction());
+        setIsLoading(false);
+      }, []);
+
+    const submitProfileForm = async (e) => {
+        if (editDomain !== null) {
+            handleEdit({ index: editDomain, storage: e });
+            handleSetDomain(false);
+            setEditDomain(null);
+        } else {
+            dispatch(setStorageEpic(e));
+            handleSetDomain(false);
+        }
+    };
+
+    const handleDelete = async (e) => {
+        dispatch(setDeleteStorageEpic(e));
+    }
+  
+    const handleEdit = async (e) => {
+        dispatch(setEditStorageEpic(e));
+    }
+
+    const handleEditSet = async (e, domain) => {
+        setEditDomain(e);
+        initailValueFormikObj = {
+            portalName: domain.portalName,
+            portalUrl: domain.portalUrl,
+            portalType: domain.portalType,
+            version: domain.version
+        };
+        setNewDomain(true)
+    }
 
     { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
 
-    return (
-
-        <Fragment >
-            {/* <AddNewDomain /> */}
-            {/* <AddNewDomainTXT /> */}
+    return ( 
+        <Fragment>
+            {newDomain && <AddEditStorage editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Storage Gateway Manager</h1>
@@ -193,10 +262,6 @@ function StorageGateway({ toggle }) {
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-                    {/* <Box>
-                        <UtilitiesItem toggle={toggle}/>
-                    </Box> */}
-
                     {width > 1249 && <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <Box>
                             <div className={classes.searchIcon}>
@@ -212,11 +277,8 @@ function StorageGateway({ toggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>}
-                    {/* <Box>
-                        <ListFilter toggle={toggle} />
-                    </Box> */}
                     <Box>
-                        <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}>
+                        <SubmitBtn addSite={true} onClick={() => setNewDomain(true)} styles={{ justifyContent: "space-around" }}>
                             Add Storage Gateway
                         </SubmitBtn>
                     </Box>
@@ -224,7 +286,7 @@ function StorageGateway({ toggle }) {
 
             </Box>
             <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
-            <StorageTable toggle={toggle} />
+            { !isLoading ? <StorageTable  handleDelete={(e)=> handleDelete(e)} handleEdit={(e, val) => handleEditSet(e, val)} userStorages={userStorages} toggle={toggle} />: null }
         </Fragment>
     )
 }

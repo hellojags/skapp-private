@@ -11,6 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH as MoreIcon } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
 import { ReactComponent as Arrow } from '../../assets/img/icons/arrowdow.svg'
+import { faTrashAlt as DeleteIcon } from '@fortawesome/free-solid-svg-icons'
+
+import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 
 import { Box, IconButton, MenuItem } from '@material-ui/core'
 
@@ -223,7 +226,7 @@ const rows = [
     createData('mysite.net', 'External DNS', true,),
 ]
 
-const DomainTable = ({toggle}) => {
+const DomainTable = ({ toggle, userDomains, handleDelete, handleEdit }) => {
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [clicked, setClicked] = React.useState(false)
@@ -253,14 +256,14 @@ const DomainTable = ({toggle}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {userDomains.map((row, index) => (
                             <TableRow key={row.domainName}>
                                 <TableCell component="th" scope="row">
                                     <Box display="flex" component="span" alignItems="center">
                                         <DomainListIcon /> <span>{row.domainName}</span>
                                     </Box>
                                 </TableCell>
-                                <TableCell>{row.type}</TableCell>
+                                <TableCell>{row.domainType}</TableCell>
                                 <TableCell>
                                     {row.status
                                         ?
@@ -269,11 +272,19 @@ const DomainTable = ({toggle}) => {
                                         <span className={classes.statusError}>Error</span>
                                     }
                                 </TableCell>
-                                <TableCell align="right">
+                                {/* <TableCell align="right">
                                     <IconButton size="small" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                                         <FontAwesomeIcon color={clicked ? '#1DBF73' : '#7E84A3'} icon={MoreIcon} />
                                     </IconButton>
 
+                                </TableCell> */}
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleEdit(index, row)} size="small" style={{ marginRight: '1rem' }} >
+                                        {toggle ? <CreateOutlinedIcon style={{ color: '#fff' }} /> : <CreateOutlinedIcon style={{ color: '#323232' }} />}
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDelete(index)} size="small" >
+                                        {toggle ? <FontAwesomeIcon color='#fff' icon={DeleteIcon} /> : <FontAwesomeIcon color='#323232' icon={DeleteIcon} />}
+                                    </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}

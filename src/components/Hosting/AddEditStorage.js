@@ -5,10 +5,6 @@ import Fade from '@material-ui/core/Fade'
 import { SnTextInput, SnSelect } from "../Utils/SnFormikControlls";
 import { FieldArray, Formik } from "formik";
 
-import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
-import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
-
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -292,7 +288,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const options = [
-    { value: 'HNS', label: 'HNS' },
+    { value: 'FREE', label: 'FREE' },
+    { value: 'PAID', label: 'PAID' },
 ]
 
 const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj, validationSchema, submitProfileForm, setNewDomain }) => {
@@ -317,7 +314,7 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                 <Fade in={newDomain}>
                     <Box className={toggle ? classes.darkRoot : classes.lightRoot}>
                         <div className={toggle ? classes.darkModalHeader : classes.lightModalHeader}>
-                            { editDomain !== null ? "Edit Custom Domain" : "New Custom Domain" }
+                            { editDomain !== null ? "Edit Custom Storage" : "New Custom Storage" }
                         </div>
                         <div className={classes.contentContainer}>
 
@@ -335,29 +332,24 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                                             <Typography className={classes.varifyText}>
                                                 Verification
                                             </Typography>
-                                            <Typography className={toggle ? classes.darkSubheading: classes.lightSubheading}>
-                                                Add New TXT record to skapp.io
-                                            </Typography>
-                                            <p className={classes.p}>TXT records are simple text  notes for your domain and won't affect your email or website settings.</p>
-                                            
                                             <Box display="flex" className={`${classes.formRow} formSiteRow`}>
                                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                                     <SnTextInput
-                                                        label="DomainName"
-                                                        name="domainName"
+                                                        label="PortalName"
+                                                        name="portalName"
                                                         className={classes.input}
                                                         type="text"
                                                     />
                                                 </Box>
                                             </Box>
-                                            <Box display="flex"  style={{ pointerEvents: "none" }} className={`${classes.formRow} formSiteRow`}>
+                                            <Box display="flex" className={`${classes.formRow} formSiteRow`}>
                                                 <Box className={`${classes.inputContainer}`} flex={1}>
-                                                    <label>Domain Type</label>
+                                                    <label>Portal Type</label>
                                                     <Box>
                                                         <SnSelect
                                                             toggle={toggle}
-                                                            label="Domain Type"
-                                                            name="domainType"
+                                                            label="Portal Type"
+                                                            name="portalType"
                                                             options={options}
                                                         />
                                                     </Box>
@@ -366,8 +358,8 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                                             <Box display="flex" className={`${classes.formRow} formSiteRow`}>
                                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                                     <SnTextInput
-                                                        label="DataLink"
-                                                        name="dataLink"
+                                                        label="PortalUrl"
+                                                        name="portalUrl"
                                                         className={classes.input}
                                                         type="text"
                                                     />

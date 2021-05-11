@@ -23,6 +23,7 @@ import {
   EVENT_APP_UNINSTALLED,
   EVENT_APP_VIEWED,
   EVENT_PUBLISHED_APP,
+  BROWSER_STORAGE
 } from "../utils/SnConstants";
 import {
   getContentDAC,
@@ -87,6 +88,133 @@ export const getProfile = async (userID) => {
   }
   // getFile_MySky( "userProfile", { skydb: true })
 };
+
+export const getDomains = async (userID) => {
+  try {
+    const domains = await BROWSER_STORAGE.getItem('domains');
+    return domains ? JSON.parse(domains) : [];
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const deleteDomain = async (index) => {
+  try {
+    const domains = await getDomains();
+    domains.splice(index, 1);
+    if (domains) {
+      await BROWSER_STORAGE.setItem('domains', JSON.stringify(domains));
+    } else {
+      await BROWSER_STORAGE.removeItem('domains');
+    }
+    return domains ? domains : [];
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const editDomain = async (payload) => {
+  try {
+
+    const domains = await getDomains();
+    domains[payload.index] = payload.domain;
+    await BROWSER_STORAGE.setItem('domains', JSON.stringify(domains));
+    return domains;
+
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const setDomain = async (domain) => {
+  try {
+    //set options
+    const domains = await getDomains();
+    if (domains) {
+      domains.push(domain);
+    } else {
+      domains = [];
+      domains.push(domain);
+    }
+    await BROWSER_STORAGE.setItem('domains', JSON.stringify(domains));
+    return domains;
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+
+export const getStorages = async (userID) => {
+  try {
+    const storages = await BROWSER_STORAGE.getItem('storages');
+    return storages ? JSON.parse(storages) : [];
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const deleteStorage = async (index) => {
+  try {
+    const storages = await getStorages();
+    storages.splice(index, 1);
+    if (storages) {
+      await BROWSER_STORAGE.setItem('storages', JSON.stringify(storages));
+    } else {
+      await BROWSER_STORAGE.removeItem('storages');
+    }
+    return storages ? storages : [];
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const editStorage = async (payload) => {
+  try {
+
+    const storages = await getStorages();
+    storages[payload.index] = payload.storage;
+    await BROWSER_STORAGE.setItem('storages', JSON.stringify(storages));
+    return storages;
+
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+export const setStorage = async (storage) => {
+  try {
+    //set options
+    const storages = await getStorages();
+    if (storages) {
+      storages.push(storage);
+    } else {
+      storages = [];
+      storages.push(storage);
+    }
+    await BROWSER_STORAGE.setItem('storage', JSON.stringify(storages));
+    return storages;
+  } catch (e) {
+    console.log("profileDAC.getProfile : failed =" + e);
+    return null;
+  }
+  // getFile_MySky( "userProfile", { skydb: true })
+};
+
+
 
 export const setProfile = async (profileJSON) => {
   //set options
