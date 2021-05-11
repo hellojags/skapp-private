@@ -176,11 +176,18 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "4px",
         padding: 0
     },
-    userName: {
+    lightUserName: {
         paddingLeft: "10px",
         paddingRight: "1rem",
         textTransform: 'capitalize',
         maxWidth: 110,
+    },
+    darkUserName: {
+        paddingLeft: "10px",
+        paddingRight: "1rem",
+        textTransform: 'capitalize',
+        maxWidth: 110,
+        color: '#fff',
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -500,8 +507,8 @@ export default function Navbar({ toggle, setToggle }) {
                                     <PersonOutlineIcon className={classes.avatarIcon} />
                                 )}
                             </Button>
-                            <Tooltip title={person.username} placement="top" arrow >
-                                <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                            <Tooltip title={toggle ? person.darkUsername : person.lightUsername} placement="top" arrow >
+                                <Typography className={toggle ? person.darkUsername : person.lightUsername} noWrap>{toggle ? person.darkUsername : person.lightUsername}</Typography>
                             </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>

@@ -49,13 +49,13 @@ const SnRouter = ({ toggle }) => (
             <Error toggle={toggle} />
         </Route>
         <Route exact path='/underdevelopment'>
-            <UnderDevelopment />
+            <UnderDevelopment toggle={toggle} />
         </Route>
         <Route exact path='/activitylog'>
-            <UnderDevelopment />
+            <UnderDevelopment toggle={toggle} />
         </Route>
         <Route exact path='/stats'>
-            <UnderDevelopment />
+            <UnderDevelopment toggle={toggle} />
         </Route>
         <Route exact path='/noapp'>
             <NoApps toggle={toggle} />
