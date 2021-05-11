@@ -192,38 +192,6 @@ const AppInfo = ({ data, appId, toggle }) => {
         </Button>
       </Typography>
 
-      <Box display="flex" className={classes.informationContainer}>
-        <Box flex={1}>
-          <Typography className={classes.subHeading}>Version</Typography>
-
-          <Typography
-            className={toggle ? classes.darkInfoText : classes.lightInfoText}
-          >
-            {data && data.version}
-          </Typography>
-        </Box>
-        {/* <Box flex={2}>
-          <Typography className={classes.subHeading}>
-            Interface language
-          </Typography>
-
-          <Typography
-            className={toggle ? classes.darkInfoText : classes.lightInfoText}
-          >
-            Russian, English, German, French, Spanish, Italian, Portuguese,
-            Arabic
-          </Typography>
-        </Box> */}
-        {/* <Box flex={1}>
-          <Typography className={classes.subHeading}>The size</Typography>
-
-          <Typography
-            className={toggle ? classes.darkInfoText : classes.lightInfoText}
-          >
-            183.9 MB
-          </Typography>
-        </Box> */}
-      </Box>
       <Box
         display="flex"
         marginTop="1rem"
