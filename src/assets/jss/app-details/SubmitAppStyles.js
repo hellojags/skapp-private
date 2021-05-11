@@ -577,7 +577,7 @@ const SubmitAppStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        border: '1px solid #48494E',
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {

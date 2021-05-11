@@ -586,7 +586,7 @@ const SubmitApp = ({toggle}) => {
           </Box>
         </Fade>
       </Modal>
-      <Box component="form">
+      <Box component="form" autocomplete="off">
         <Box>
           <label className={classes.label}>Site Logo</label>
           <div className="d-none">
