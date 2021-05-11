@@ -5,17 +5,19 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { Star } from "@material-ui/icons";
-import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
-import FavoriteOutlinedIcon from "@material-ui/icons/FavoriteOutlined";
+import {
+  FavoriteBorder,
+  FavoriteOutlined,
+  OpenInNew,
+  Share,
+  ThumbUpSharp,
+} from "@material-ui/icons";
+import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-// img import
 import cubsImg from "../../assets/img/cubs.png";
 import { ReactComponent as MsgIcon } from "../../assets/img/icons/Messages, Chat.15.svg";
-// Icons
-import { ReactComponent as ShareIcon } from "../../assets/img/icons/share.1.svg";
 import { setAppStatsAction } from "../../redux/action-reducers-epic/SnAppStatsAction";
 import {
   getAggregatedAppStatsByAppId,
@@ -25,6 +27,8 @@ import {
 import {
   EVENT_APP_FAVORITE,
   EVENT_APP_FAVORITE_REMOVED,
+  EVENT_APP_LIKED,
+  EVENT_APP_LIKED_REMOVED,
 } from "../../utils/SnConstants";
 
 const useStyles = makeStyles({
@@ -47,6 +51,7 @@ const useStyles = makeStyles({
     // color: '#fff'
   },
   ShareIcon: {
+    color: "inherit",
     "& g > path": {
       stroke: "#fff",
     },
@@ -213,7 +218,7 @@ const AppDetailsHeader = ({ data }) => {
       alignItems="center"
     >
       <Box className={classes.box1}>
-        <Box display="flex">
+        <Box display="flex" alignItems="center">
           <Box
             display="flex"
             alignItems="center"
@@ -221,6 +226,50 @@ const AppDetailsHeader = ({ data }) => {
           >
             <VisibilityIcon />
             <Typography>{aggregatedAppStats[0]}</Typography>
+          </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.VisiIconContainer}
+          >
+            <OpenInNew />
+            <Typography>{aggregatedAppStats[1]}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center">
+            {/* <ThumbUpAltIcon/> */}
+            {parseInt(appStats[2]) === parseInt(1) ? (
+              <ThumbUpSharp
+                fontSize="small"
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED_REMOVED)}
+              />
+            ) : (
+              <ThumbUpAltOutlinedIcon
+                className={classes.StarIcon}
+                onClick={() => appStatsAction(EVENT_APP_LIKED)}
+              />
+            )}
+            <Typography>{aggregatedAppStats[2]}</Typography>
+          </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            mr="0.5rem"
+            className={classes.favrIcon}
+          >
+            {/* <FavoriteOutlinedIcon/> */}
+            {parseInt(appStats[3]) === parseInt(1) ? (
+              <FavoriteOutlined
+                className={classes.HeartIcon}
+                onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}
+              />
+            ) : (
+              <FavoriteBorder
+                className={classes.addFav}
+                onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
+              />
+            )}
+            <Typography>{aggregatedAppStats[3]}</Typography>
           </Box>
 
           <Box
@@ -232,37 +281,13 @@ const AppDetailsHeader = ({ data }) => {
             <Typography>1.3k</Typography>
           </Box>
 
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.msgIconContainer}
-          >
-            <Star fontSize="small" className={classes.MsgIcon} />
-            <Typography>5.0 (1k+)</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" className={classes.favrIcon}>
-            {/* <FavoriteOutlinedIcon/> */}
-            {parseInt(appStats[3]) === parseInt(1) ? (
-              <FavoriteOutlinedIcon
-                className={classes.HeartIcon}
-                onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}
-              />
-            ) : (
-              <FavoriteBorderOutlinedIcon
-                className={classes.addFav}
-                onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
-              />
-            )}
-            <Typography>{aggregatedAppStats[3]}</Typography>
-          </Box>
-
           <Box className={classes.sharIcon}>
-            <IconButton aria-label="Share Button" size="small">
-              <ShareIcon className={classes.ShareIcon} />
+            <IconButton aria-label="Share Button" color="inherit" size="small">
+              <Share className={classes.ShareIcon} color="inherit" />
             </IconButton>
           </Box>
         </Box>
+
         <Box marginTop="10px">
           <Box display="flex" alignItems="center">
             <Typography component="h1" className={classes.h1}>
