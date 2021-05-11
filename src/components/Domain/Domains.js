@@ -179,7 +179,7 @@ let initailValueFormikObj = {
     domainType: "HNS",
     txtRecord: "",
     version: "1",
-    status: "active"
+    status: "Active"
 };
 
 
@@ -208,7 +208,7 @@ const Domains = ({ toggle }) => {
             domainType: "HNS",
             txtRecord: "",
             version: "1",
-            status: "active"
+            status: "Active"
         };
     } 
 
@@ -253,7 +253,7 @@ const Domains = ({ toggle }) => {
         };
         setNewDomain(true)
     }
-    
+
     { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
       
     return (
