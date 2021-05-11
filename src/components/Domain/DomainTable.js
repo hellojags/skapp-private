@@ -12,10 +12,11 @@ import { faEllipsisH as MoreIcon } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as DomainListIcon } from '../../assets/img/icons/listicon.svg'
 import { ReactComponent as Arrow } from '../../assets/img/icons/arrowdow.svg'
 import { faTrashAlt as DeleteIcon } from '@fortawesome/free-solid-svg-icons'
+import { ReactComponent as CopyIcon } from '../../assets/img/icons/copy.svg'
 
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 
-import { Box, IconButton, MenuItem } from '@material-ui/core'
+import { Box, IconButton, MenuItem, Tooltip, Button } from '@material-ui/core'
 
 const useStyles = makeStyles({
     table: {
@@ -236,6 +237,18 @@ const DomainTable = ({ toggle, userDomains, handleDelete, handleEdit }) => {
         setAnchorEl(event.currentTarget)
     }
 
+    const copyToClipboard = (e) => {
+        const el = document.createElement('textarea');
+        el.value = e;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      }
+
     const handleClose = () => {
         setClicked(false)
         setAnchorEl(null)
@@ -251,6 +264,7 @@ const DomainTable = ({ toggle, userDomains, handleDelete, handleEdit }) => {
                             <Arrow className={classes.arrow} />
                             </TableCell>
                             <TableCell>Type</TableCell>
+                            <TableCell>TXT Record</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell align="right"> Action</TableCell>
                         </TableRow>
@@ -264,6 +278,22 @@ const DomainTable = ({ toggle, userDomains, handleDelete, handleEdit }) => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>{row.domainType}</TableCell>
+                                <TableCell>
+                                    <Box display="flex" >
+                                        <Box flex={0.1}>
+                                            <Button onClick={() => copyToClipboard(row.txtRecord)}>
+                                                <CopyIcon />
+                                            </Button>
+                                        </Box>
+                                        <Box flex={0.9}>
+                                            <Tooltip title={row.txtRecord}>
+                                                <Box textOverflow="ellipsis" overflow="hidden" style={{ width: 200, whiteSpace: 'nowrap' }} >
+                                                    {row.txtRecord}
+                                                </Box>
+                                            </Tooltip>
+                                        </Box>
+                                    </Box>
+                                </TableCell>
                                 <TableCell>
                                     {row.status
                                         ?

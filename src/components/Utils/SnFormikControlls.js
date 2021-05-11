@@ -166,13 +166,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const SnTextInput = ({ label, className, showError, ...props }) => {
+const darkText = {
+  color: '#8B9DA5',
+}
+
+const darkInput = {
+  color: '#fff',
+  backgroundColor: fade('#2A2C34', 1),
+  border: '1px solid #48494E'
+}
+
+export const SnTextInput = ({ toggle, label, className, showError, ...props }) => {
   const [field, meta] = useField(props);
   const { submitCount } = useFormikContext();
   return (
     <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className={className} {...field} {...props} />
+      <label style={toggle ? darkText : {}} htmlFor={props.id || props.name}>{label}</label>
+      <input style={toggle ? darkInput : {}} className={className} {...field} {...props} />
       {(showError ?? true) && submitCount>0 && meta.error ? (
         <div className="required-field">{meta.error}</div>
       ) : null}

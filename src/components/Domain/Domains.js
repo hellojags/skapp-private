@@ -13,7 +13,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { getDomainsAction, setDomainEpic, setEditDomainEpic, setDeleteDomainEpic } from "../../redux/action-reducers-epic/SnDomainAction";
-
+import { getHNSSkyDBURL } from '../../service/SnSkappService';
 // import HostingItem from './HostingItem'
 // import AddNewSite from './AddNewSiteBtn'
 const useStyles = makeStyles(theme => (
@@ -220,6 +220,9 @@ const Domains = ({ toggle }) => {
       }, []);
 
     const submitProfileForm = async (e) => {
+
+        const txtUrl = await getHNSSkyDBURL(e.domainName);
+        e.txtRecord = txtUrl;
         if (editDomain !== null) {
             handleEdit({ index: editDomain, domain: e });
             handleSetDomain(false);
@@ -250,7 +253,9 @@ const Domains = ({ toggle }) => {
         };
         setNewDomain(true)
     }
-
+    
+    { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
+      
     return (
         <Fragment>
             {newDomain && <AddNewDomainTXT editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}

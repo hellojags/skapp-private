@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
     lightRoot: {
         width: 1180,
-        maxWidth: '95%',
+        maxWidth: '60%',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
         opacity: 1,
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
     darkRoot: {
         width: 1180,
-        maxWidth: '95%',
+        maxWidth: '60%',
         boxShadow: '0px 2px 5px #15223221',
         borderRadius: 15,
         opacity: 1,
@@ -339,6 +339,7 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                                                         name="portalName"
                                                         className={classes.input}
                                                         type="text"
+                                                        toggle={toggle}
                                                     />
                                                 </Box>
                                             </Box>
@@ -362,6 +363,7 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                                                         name="portalUrl"
                                                         className={classes.input}
                                                         type="text"
+                                                        toggle={toggle}
                                                     />
                                                 </Box>
                                             </Box>
