@@ -317,15 +317,21 @@ const AppInfo = ({ data, appId, toggle }) => {
           >
             Screenshots
           </Typography>
-          {data.content.previewImages.images.map((i, index) => (
-            <Box
-              key={index}
-              paddingRight=".5rem"
-              className={classes.scContainer}
-            >
-              <img src={transformImageUrl(i.thumbnail)} alt="sc" />
-            </Box>
-          ))}
+          <Box display="flex" flexWrap="wrap">
+            {data.content.previewImages.images.map((i, index) => (
+              <Box
+                key={index}
+                paddingRight=".5rem"
+                className={classes.scContainer}
+              >
+                <img
+                  src={transformImageUrl(i.thumbnail)}
+                  height="100%"
+                  alt="sc"
+                />
+              </Box>
+            ))}
+          </Box>
         </Fragment>
       )}
 
