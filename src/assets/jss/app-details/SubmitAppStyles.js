@@ -822,9 +822,16 @@ const SubmitAppStyles = () => ({
             marginRight: 7
         }
     },
-    uploadBtn: {
+    lightUploadBtn: {
         border: '1px solid #4E4E4E',
         color: '#4E4E4E',
+        minWidth: 250,
+        marginTop: '1rem',
+        height: 45
+    },
+    darkUploadBtn: {
+        border: '1px solid #4E4E4E',
+        color: '#5C757D',
         minWidth: 250,
         marginTop: '1rem',
         height: 45
@@ -872,9 +879,15 @@ const SubmitAppStyles = () => ({
         }
 
     },
-    siteLink: {
+    lightSiteLink: {
         fontWeight: 'bold',
         color: '#131523',
+        marginTop: 2,
+        wordBreak: 'break-word'
+    },
+    darkSiteLink: {
+        fontWeight: 'bold',
+        color: '#fff',
         marginTop: 2,
         wordBreak: 'break-word'
     },

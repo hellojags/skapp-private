@@ -345,7 +345,7 @@ function Hosting({toggle}) {
                     .filter((appId)=>filterApps(searchStr, hostedAppListObj.appDetailsList[appId]))
                     .sort((appId1, appId2)=>(hostedAppListObj.appDetailsList[appId2].ts-hostedAppListObj.appDetailsList[appId1].ts))
                     .map((appId, idx) =>
-                        hostedAppListObj.appDetailsList[appId] && <HostingItem handleOpen={handleOpen} key={idx} ActiveSite={true} id={appId} app={hostedAppListObj.appDetailsList[appId]} />
+                        hostedAppListObj.appDetailsList[appId] && <HostingItem toggle={toggle} handleOpen={handleOpen} key={idx} ActiveSite={true} id={appId} app={hostedAppListObj.appDetailsList[appId]} />
                     )}
                 <AddNewSite toggle={toggle} onClick={() => history.push("/submitsite")} />
             </Box>

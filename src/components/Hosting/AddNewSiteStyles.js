@@ -385,7 +385,7 @@ const AddNewSiteStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        border: '1px solid #1E2029',
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {
