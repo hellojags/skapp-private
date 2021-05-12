@@ -298,15 +298,19 @@ const AppDetailsHeader = ({ data }) => {
             </Button>
           </Box>
 
-          <Box mt="1rem">
+          {data?.content?.appUrl && (
             <a
               href={data?.content?.appUrl}
               target="_blank"
               rel="noreferrer noopener"
             >
-              {data?.content?.appUrl?.slice(0, 60)}...
+              <Box mt="1rem" display="flex" alignItems="center">
+                <Box mr="0.25rem">{data?.content?.appUrl}</Box>
+
+                <OpenInNew fontSize="small" />
+              </Box>
             </a>
-          </Box>
+          )}
 
           <Box display="flex" mt="1rem" alignItems="center">
             <Button size="small" className={classes.programBtn}>
@@ -314,7 +318,7 @@ const AppDetailsHeader = ({ data }) => {
             </Button>
 
             <Typography className={classes.tags}>
-              {data?.content?.tags?.join(", ")}
+              {data?.content?.tags?.map((i) => `#${i}`).join(" ")}
             </Typography>
           </Box>
         </Box>

@@ -224,20 +224,16 @@ const AppInfo = ({ data, appId, toggle }) => {
               target="_blank"
               rel="noreferrer noopener"
             >
-              {data?.content?.demoUrl?.slice(0, 30)}...
+              {data?.content?.demoUrl}
             </a>
           </Typography>
         </Box>
         <Box flex={1}>
-          <Typography
-            className={classes.subHeading}
-            style={{ textTransform: "capitalize" }}
-          >
-            Target User
-          </Typography>
+          <Typography className={classes.subHeading}>Target User</Typography>
 
           <Typography
             className={toggle ? classes.darkInfoText : classes.lightInfoText}
+            style={{ textTransform: "capitalize" }}
           >
             {data?.content?.age}
           </Typography>
@@ -250,9 +246,7 @@ const AppInfo = ({ data, appId, toggle }) => {
             <Typography className={classes.subHeading}>{item}</Typography>
 
             <Typography
-              className={`${
-                toggle ? classes.darkInfoText : classes.lightInfoText
-              } ${classes.ellipsis}`}
+              className={toggle ? classes.darkInfoText : classes.lightInfoText}
             >
               <a
                 href={data?.content?.connections[item]}
