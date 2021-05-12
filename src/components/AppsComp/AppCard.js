@@ -216,7 +216,7 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
       <>
         <ShareApp shareModelOpen={modalOpen} shareModelFn={HandleShareModel} />
         {item &&
-          <Card className={toggle ? classes.darkRoot : classes.lightRoot}>
+          <Card className={`${toggle ? classes.darkRoot : classes.lightRoot}`}>
             <CardActionArea className={classes.cardActionArea} component="div">
               <div onClick={() => ViewAppDetail(item.id)}>
                 <Box display="flex" justifyContent="center" alignContent="center" className={`${classes.media} appCardHeader`} style={{
