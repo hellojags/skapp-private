@@ -111,6 +111,12 @@ const useStyles = makeStyles(theme => (
             paddingLeft: '1rem',
             fontWeight: '400'
         },
+        lighth3: {
+            color: '#2A2C34'
+        },
+        darkh3: {
+            color: '#fff'
+        },
         Media1249: {
             width: 'calc(100% - 230px)',
             marginLeft: 'auto!important',
@@ -223,7 +229,7 @@ function StorageGateway({ toggle }) {
                 </Box>
 
             </Box>
-            <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
+            <p className={toggle ? classes.darkh3 : classes.lighth3}>(Under Active Development. Coming soon...)</p>
             <StorageTable toggle={toggle} />
         </Fragment>
     )

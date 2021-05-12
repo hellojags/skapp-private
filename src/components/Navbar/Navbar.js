@@ -43,6 +43,8 @@ import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { skylinkToUrl } from "../../service/skynet-api";
+import Announcement from './../Announcement'
+
 const useStyles = makeStyles((theme) => ({
     rootDark: {
         // backgroundColor: '#fff',
@@ -422,7 +424,7 @@ export default function Navbar({ toggle, setToggle }) {
                     )}
                 </Button>
                 <Tooltip title={person.username} placement="top" arrow >
-                    <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                    <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                 </Tooltip>
                 <KeyboardArrowDownIcon className={classes.AngleDown} />
             </MenuItem>
@@ -455,6 +457,7 @@ export default function Navbar({ toggle, setToggle }) {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
+                <Announcement toggle={toggle} />
             <AppBar position="static" className={toggle ? classes.rootDark : classes.rootLight} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
                     <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
@@ -507,8 +510,8 @@ export default function Navbar({ toggle, setToggle }) {
                                     <PersonOutlineIcon className={classes.avatarIcon} />
                                 )}
                             </Button>
-                            <Tooltip title={toggle ? person.darkUsername : person.lightUsername} placement="top" arrow >
-                                <Typography className={toggle ? person.darkUsername : person.lightUsername} noWrap>{toggle ? person.darkUsername : person.lightUsername}</Typography>
+                            <Tooltip title={person.username} placement="top" arrow >
+                                <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                             </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>
