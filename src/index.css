@@ -528,7 +528,7 @@ button[data-cat="All"] .count-cat{
 
 /* dark tag button */
 
-.darktagButton.selected{
+.darkTagButton.selected{
   background-color: #1DBF73!important;
   color: #fff;
 }
