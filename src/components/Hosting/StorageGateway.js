@@ -188,9 +188,10 @@ function StorageGateway({ toggle }) {
     const [newDomain, setNewDomain] = useState(false);
     const [editDomain, setEditDomain] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [error, setError] = useState(null);
     
     const handleSetDomain = (val) => {
+        setError(null);
         setNewDomain(val)
         setEditDomain(null);
         initailValueFormikObj = {
@@ -208,11 +209,16 @@ function StorageGateway({ toggle }) {
       }, []);
 
     const submitProfileForm = async (e) => {
+        setError(null);
         if (editDomain !== null) {
             handleEdit({ index: editDomain, storage: e });
             handleSetDomain(false);
             setEditDomain(null);
         } else {
+            if (userStorages.some(x => x.portalName.toLowerCase() === e.portalName.toLowerCase())) {
+                setError('Portal Name already exists');
+                return;
+            }
             dispatch(setStorageEpic(e));
             handleSetDomain(false);
         }
@@ -241,7 +247,7 @@ function StorageGateway({ toggle }) {
 
     return ( 
         <Fragment>
-            {newDomain && <AddEditStorage editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
+            {newDomain && <AddEditStorage error={error} editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Storage Gateway Manager</h1>

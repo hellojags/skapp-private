@@ -294,7 +294,7 @@ const options = [
     { value: 'HNS', label: 'HNS' },
 ]
 
-const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj, validationSchema, submitProfileForm, setNewDomain }) => {
+const AddNewDomainTXT = ({ toggle, error, editDomain, newDomain, initailValueFormikObj, validationSchema, submitProfileForm, setNewDomain }) => {
     const classes = useStyles()
     const [formikObj, setFormikObj] = useState(initailValueFormikObj); // to store Formik Form data
 
@@ -378,6 +378,11 @@ const AddNewDomainTXT = ({ toggle, editDomain, newDomain, initailValueFormikObj,
                                                 <Button className={classes.cancelBtn} onClick={()=>setNewDomain(false)}>Cancel</Button>                                                
                                                 <Button className={classes.submitBtn} onClick={formik.handleSubmit}>Save</Button>
                                             </Box>
+                                            { error ? <Box display="flex" style={{ marginBottom: 10, marginTop: 10 }} className={`${classes.formRow} formSiteRow`}>
+                                                <Typography style={{ color: 'red' }}>
+                                                    {error}
+                                                </Typography>
+                                            </Box> : null }
                                         </Box>
                                     </form>
                                 )}

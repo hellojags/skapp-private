@@ -194,12 +194,14 @@ const Domains = ({ toggle }) => {
     const [newDomain, setNewDomain] = useState(false);
     const [editDomain, setEditDomain] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const openModalHandler = () => {
         addNew ? setAddNew(false) : setAddNew(true)
     }
 
     const handleSetDomain = (val) => {
+        setError(null);
         setNewDomain(val)
         setEditDomain(null);
         initailValueFormikObj = {
@@ -220,14 +222,20 @@ const Domains = ({ toggle }) => {
       }, []);
 
     const submitProfileForm = async (e) => {
-
-        const txtUrl = await getHNSSkyDBURL(e.domainName);
-        e.txtRecord = txtUrl;
+        setError(null);
         if (editDomain !== null) {
+            const txtUrl = await getHNSSkyDBURL(e.domainName);
+            e.txtRecord = txtUrl;
             handleEdit({ index: editDomain, domain: e });
             handleSetDomain(false);
             setEditDomain(null);
         } else {
+            if (userDomains.some(x => x.domainName.toLowerCase() === e.domainName.toLowerCase())) {
+                setError('Domain Name Already exist');
+                return;
+            }
+            const txtUrl = await getHNSSkyDBURL(e.domainName);
+            e.txtRecord = txtUrl;
             dispatch(setDomainEpic(e));
             handleSetDomain(false);
         }
@@ -258,7 +266,7 @@ const Domains = ({ toggle }) => {
       
     return (
         <Fragment>
-            {newDomain && <AddNewDomainTXT editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
+            {newDomain && <AddNewDomainTXT error={error} editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
             {/* <AddNewDomain toggle={toggle} openModal={addNew} openModalHandler={openModalHandler} /> */}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
