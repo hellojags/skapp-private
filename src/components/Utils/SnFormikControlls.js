@@ -305,7 +305,6 @@ const darkReactSelectStyles = {
       height: 55, 
       boxShadow: 0,
       borderColor: "#48494E",
-      color: "#fff!important",
       borderRadius: 8,
       '@media only screen and (min-width: 300px)': {
           height: 50,
@@ -313,7 +312,7 @@ const darkReactSelectStyles = {
           fontSize: 16,
           background: '#1E2029',
           borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff!important",
+          color: "#fff !important",
       },
       '@media only screen and (max-width: 1440px)': {
           height: 50,
@@ -322,7 +321,7 @@ const darkReactSelectStyles = {
           background: '#1E2029!important',
           // borderColor: '#48494E',
           borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff!important",
+          color: "#fff !important",
       },
       '@media only screen and (max-width: 575px)': {
           height: 43,
@@ -330,7 +329,7 @@ const darkReactSelectStyles = {
           fontSize: 14,
           background: '#1E2029!important',
           borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff!important",
+          color: "#fff !important",
       },
       '&:hover': {
           borderColor: '#1DBF73'

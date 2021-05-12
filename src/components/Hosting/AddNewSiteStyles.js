@@ -54,6 +54,12 @@ const AddNewSiteStyles = () => ({
             minWidth: 70,
         }
     },
+    lightLinkName: {
+        color: '#2A2C34',
+    },
+    darkLinkName: {
+        color: '#fff',
+    },
     submitBtn: {
         background: '#1DBF73!important',
         color: '#fff',

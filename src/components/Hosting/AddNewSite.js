@@ -374,16 +374,16 @@ export default function AddNewSite({ toggle }) {
                                                                         >
                                                                             <div >
 
-                                                                                <Typography className={classes.linkName}>
+                                                                                <Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     <span>
                                                                                         <DescriptionIcon className={classes.descIcon} />
                                                                                     </span>
                                                                                     {fileObj?.file?.path || fileObj?.file?.name}
                                                                                 </Typography>
-                                                                                {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
+                                                                                {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
-                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
+                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     <><Loader type="Oval" color="#57C074" height={50} width={50} /></>
                                                                                     {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
@@ -419,6 +419,7 @@ export default function AddNewSite({ toggle }) {
                 </Formik>
             </Box>
             <SnInfoModal
+                toggle={toggle}
                 open={showInfoModal}
                 onClose={onInfoModalClose}
                 title={infoModalTitle}
