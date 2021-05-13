@@ -1,11 +1,10 @@
-import React from "react";
+import { Box, Button, CircularProgress, makeStyles } from "@material-ui/core";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import { Button, makeStyles } from "@material-ui/core";
-import { setAppCommentAction } from "../../redux/action-reducers-epic/SnAppCommentsAction";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
 
 const useStyles = makeStyles({
   lightTextarea: {
+    fontSize: "18px",
     background: "#fff",
     boxShadow: "0px 1px 2px #15223214",
     border: "1px solid #7070701A",
@@ -41,6 +40,7 @@ const useStyles = makeStyles({
     marginTop: "1rem",
   },
   darkTextarea: {
+    fontSize: "18px",
     background: "#2A2C34",
     boxShadow: "0px 1px 2px #15223214",
     border: "1px solid #7070701A",
@@ -80,7 +80,8 @@ const useStyles = makeStyles({
     boxShadow: "0px 1px 2px #00000029",
     borderRadius: 4,
     color: "#fff",
-    display: "block",
+    display: "flex",
+    alignItems: "center",
     minWidth: 180,
     maxWidth: 200,
     paddingTop: 7,
@@ -93,27 +94,32 @@ const useStyles = makeStyles({
     },
   },
 });
-const CommentForm = ({ uid, version, toggle }) => {
+
+const CommentForm = ({ uid, version, handleAddComment, toggle }) => {
   const classes = useStyles();
   const [comment, setComment] = React.useState("");
+  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const submitComment = () => {
+  const submitComment = async () => {
     if (comment === "") {
     } else {
-      let obj = {
-        $type: "skapp",
-        $subType: "comments",
-        id: uid,
-        version: version,
-        prevSkylink: "",
-        content: {
-          comments: [{ timestamp: new Date(), comment: comment }],
-        },
-        ts: "1610328319",
-      };
-      dispatch(setAppCommentAction(obj));
+      setLoading(true);
+      await handleAddComment(comment);
+      setLoading(false);
+      // let obj = {
+      //   $type: "skapp",
+      //   $subType: "comments",
+      //   id: uid,
+      //   version: version,
+      //   prevSkylink: "",
+      //   content: {
+      //     comments: [{ timestamp: new Date(), comment: comment }],
+      //   },
+      //   ts: "1610328319",
+      // };
+      // dispatch(setAppCommentAction(obj));
       setComment("");
     }
   };
@@ -129,6 +135,11 @@ const CommentForm = ({ uid, version, toggle }) => {
         placeholder="Write your Comment"
       />
       <Button className={classes.button} onClick={submitComment}>
+        {loading && (
+          <Box display="flex" alignItems="center" mr="0.5rem">
+            <CircularProgress color="secondary" size={18} />
+          </Box>
+        )}
         Submit
       </Button>
     </form>

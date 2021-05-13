@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@material-ui/core";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { HashRouter as Router } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
