@@ -44,6 +44,7 @@ import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserPro
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { skylinkToUrl } from "../../service/skynet-api";
 import Announcement from './../Announcement'
+import ToggleButton from './../ToggleButton'
 
 const useStyles = makeStyles((theme) => ({
     rootDark: {
@@ -481,12 +482,13 @@ export default function Navbar({ toggle, setToggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         /> 
                     </div>*/}
-                    <div className={toggle ? classes.darkText : classes.lightText}>
+                    {/* <div className={toggle ? classes.darkText : classes.lightText}>
                         Light
                         <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
                         Dark
-                        {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
-                    </div>
+                    </div> */}
+
+                    <ToggleButton toggle={toggle} setToggle={setToggle} />
 
                     <div className={classes.sectionDesktop}>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
