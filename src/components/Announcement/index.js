@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import { ReactComponent as RightArrowGreen } from '../../assets/img/icons/rightArrowGreen.svg'
 import { ReactComponent as DiscordGreen } from '../../assets/img/icons/discordGreen.svg'
 import { makeStyles } from '@material-ui/core/styles'
@@ -9,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         background: '#fff',
         height: 60,
-        margin: 'auto 0'
+        margin: 'auto 0',
+        transition: '0.2s all'
     },
     darkAnnouncementBar: {
         display: 'flex',
@@ -27,10 +29,13 @@ const useStyles = makeStyles((theme) => ({
             justifyContent: 'center',
             alignItems: 'center'
         },
-        '& > .iconWithText .icon': {
+        '& > .iconWithText .icon1': {
             margin: '0px 15px',
             paddingTop: 5,
-            color: '#1DBF73'
+            color: '#1DBF73',
+            '&:hover': {
+                cursor: 'pointer'
+            }
         },
         '& > .iconWithText .text': {
             color: '#9E9E9E'
@@ -56,13 +61,23 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Announcement = ({toggle}) => {
+    const [checkClicked, setCheckClicked] = useState(false)
+
     const classes = useStyles();
 
+    const handleSubmit = () => {
+        setCheckClicked(true)
+    }
+
+    const displayNone = {
+        display: 'none',
+    }
+
     return (
-        <div className={toggle ? classes.darkAnnouncementBar : classes.lightAnnouncementBar}>
+        <div className={toggle ? classes.darkAnnouncementBar : classes.lightAnnouncementBar} style={checkClicked ? displayNone : null}>
             <div className={classes.leftSide}>
                 <div className="iconWithText">
-                    <div className='icon'><RightArrowGreen /></div>
+                    <div className='icon1' onClick={() => handleSubmit()}><RightArrowGreen /></div>
                     <div className='text'>Build to Explore: The Skynet Spring 2021 Hackathon</div>
                 </div>
             </div>
