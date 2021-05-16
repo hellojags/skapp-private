@@ -1,4 +1,4 @@
-import React from "react"
+import React,{useEffect} from "react"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import "react-perfect-scrollbar/dist/css/styles.css"
 import { makeStyles } from "@material-ui/core/styles"
@@ -30,17 +30,23 @@ import { ExpandLess, ExpandMore } from "@material-ui/icons"
 import style from "../../assets/jss/sidebar/SidebarStyle"
 import { NavLink } from "react-router-dom"
 import { useSelector } from "react-redux"
+import {getPublishedAppsCount} from "../../service/SnSkappService"
 const useStyles = makeStyles(style)
 
 const Sidebar = ({ style, toggle }) => {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
+  const [noOfpublishApps, setNoOfpublishApps] = React.useState(0)
 
   const snShowHostingLinks = useSelector(state => state.snShowHostingLinks)
   let userSession = useSelector((state) => state.userSession)
   const handleClick = () => {
     setOpen(!open)
   }
+  useEffect(async () => {
+    const noOfpublishApps = await getPublishedAppsCount();
+    setNoOfpublishApps(noOfpublishApps);
+  }, [userSession]);
 
   let location = useLocation()
 
@@ -113,7 +119,7 @@ const Sidebar = ({ style, toggle }) => {
                 <ListItemIcon className={classes.listIcon}>
                   <MyAppIcon />
                 </ListItemIcon>
-                <ListItemText primary="My Apps (Published)" />
+                <ListItemText primary={"My Apps (Published) " + noOfpublishApps} />
               </ListItem>
             </NavLink>
             <NavLink exact to="/installedapps">
@@ -274,7 +280,7 @@ const Sidebar = ({ style, toggle }) => {
                 <ListItemIcon className={classes.listIcon}>
                   <MyAppIcon />
                 </ListItemIcon>
-                <ListItemText primary="My Apps (Published)" />
+                <ListItemText primary={"My Apps (Published) " + noOfpublishApps} />
               </ListItem>
             </NavLink>
             <NavLink exact to="/installedapps">

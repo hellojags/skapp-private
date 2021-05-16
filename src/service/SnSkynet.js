@@ -16,7 +16,7 @@ import { getPortalUrl } from './skynet-api';
 // ################################ SkyDB Methods ######################
 
 // pick skynet portal
-const skynetClient = new SkynetClient("https://siasky.dev");
+const skynetClient = new SkynetClient("https://siasky.net");
 let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB
@@ -57,7 +57,7 @@ export const getFile_SkyDB = async (publicKey, dataKey, options) => {
   return await skynetClient.db.getJSON(publicKey, dataKey);
 }
 export const putFile_SkyDB = async (publicKey, dataKey, content, options) => {
-  await skynetClient.db.setJSON(options.privateKey, dataKey, content)
+  return await skynetClient.db.setJSON(options.privateKey, dataKey, content)
 }
 // gets JSON file from SkyDB
 export const getFile = async (publicKey, dataKey, options) => {
@@ -269,7 +269,7 @@ export const setRegistryEntry = async (dataKey, content, options) => {
       revision++;
     }
     let entry = { dataKey: dataKey, data: content + "", revision: BigInt(revision) };
-    await skynetClient.registry.setEntry(privateKey, entry);
+    let value = await skynetClient.registry.setEntry(privateKey, entry);
     if (options.skipIDB && options.skipIDB != true) {
       await setJSONinIDB(dataKey, [BigInt(revision), content], options)
     }
@@ -281,9 +281,9 @@ export const setRegistryEntry = async (dataKey, content, options) => {
   }
 }
 
-export function getRegistryEntryURL(publicKey, dataKey) {
+export async function getRegistryEntryURL(publicKey, dataKey) {
   try {
-    const url = skynetClient.registry.getEntryUrl(publicKey, dataKey);
+    const url = await skynetClient.registry.getEntryUrl(publicKey, dataKey);
     return url;
   } catch (error) {
     console.log(error);

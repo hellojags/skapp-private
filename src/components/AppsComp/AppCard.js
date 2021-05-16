@@ -97,12 +97,6 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
   const [Fav, setFav] = useState({});
   const [liked, setLiked] = useState({});
 
-  const favHandler = (value) => {
-    setFav(value);
-  };
-  const likeHandler = (value) => {
-    setLiked(value);
-  };
   useEffect(() => {
     if (item) {
       if (stUserSession) {
@@ -114,7 +108,7 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
     }
   }, [item]);
 
-  // View|access|likes|fav
+  //JSON Object
   const fetchMyAppStats = async () => {
     const result = await getAppStats(item.id);
     setAppStats(result);
@@ -139,8 +133,8 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
   };
 
   const ViewAppDetail = async (appId) => {
-    //dispatch(setAppStatsAction(EVENT_APP_VIEWED, appId));
-    await setAppStatsEvent(EVENT_APP_VIEWED, appId);
+    dispatch(setAppStatsAction(EVENT_APP_VIEWED, appId));
+    //await setAppStatsEvent(EVENT_APP_VIEWED, appId);
     history.push(`/appdetail/${appId}`);
   };
 
@@ -480,43 +474,7 @@ Lorem ipsum dolor sit amet co
                   alignItems="center"
                   className={classes.footerItem}
                 >
-                  {/* <FavoriteOutlinedIcon className={classes.cardFooterIcon} />
-                  <Typography variant="caption">2.5k</Typography> */}
-                  {parseInt(appStats[3]) === parseInt(1) ? (
-                    <Tooltip
-                      title="Number of user marked this App Favorite"
-                      placement="top"
-                      arrow
-                    >
-                      <FavoriteOutlinedIcon
-                        className={`${classes.cardFooterIcon} unFav`}
-                        onClick={() =>
-                          appStatsAction(EVENT_APP_FAVORITE_REMOVED)
-                        }
-                      />
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title="Number of user marked this App Favorite"
-                      placement="top"
-                      arrow
-                    >
-                      <FavoriteBorderOutlinedIcon
-                        className={`${classes.cardFooterIcon} fav`}
-                        onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
-                      />
-                    </Tooltip>
-                  )}
-                  <Typography variant="caption">
-                    {aggregatedAppStats[3] && millify(aggregatedAppStats[3])}
-                  </Typography>
-                </Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  className={classes.footerItem}
-                >
-                  {parseInt(appStats[2]) === parseInt(1) ? (
+                  {parseInt(appStats?.content?.liked) === parseInt(1) ? (
                     <Tooltip
                       title="Number of user liked this app"
                       placement="top"
@@ -579,7 +537,42 @@ Lorem ipsum dolor sit amet co
                   {/* <ThumbUpAltIcon className={classes.cardFooterIcon} />
                   <Typography variant="caption">2.5k</Typography> */}
                 </Box>
-
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  className={classes.footerItem}
+                >
+                  {/* <FavoriteOutlinedIcon className={classes.cardFooterIcon} />
+                  <Typography variant="caption">2.5k</Typography> */}
+                  {parseInt(appStats?.content?.favorite) === parseInt(1) ? (
+                    <Tooltip
+                      title="Number of user marked this App Favorite"
+                      placement="top"
+                      arrow
+                    >
+                      <FavoriteOutlinedIcon
+                        className={`${classes.cardFooterIcon} unFav`}
+                        onClick={() =>
+                          appStatsAction(EVENT_APP_FAVORITE_REMOVED)
+                        }
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip
+                      title="Number of user marked this App Favorite"
+                      placement="top"
+                      arrow
+                    >
+                      <FavoriteBorderOutlinedIcon
+                        className={`${classes.cardFooterIcon} fav`}
+                        onClick={() => appStatsAction(EVENT_APP_FAVORITE)}
+                      />
+                    </Tooltip>
+                  )}
+                  <Typography variant="caption">
+                    {aggregatedAppStats[3] && millify(aggregatedAppStats[3])}
+                  </Typography>
+                </Box>
                 <Box
                   display="flex"
                   alignItems="center"

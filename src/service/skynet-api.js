@@ -1,6 +1,7 @@
 import { SkynetClient } from "skynet-js";
 import { ContentRecordDAC } from "@skynetlabs/content-record-library";
-import { UserProfileDAC, Profile } from '@skynethub/userprofile-library';
+import { UserProfileDAC } from '@skynethub/userprofile-library';
+import { SkappDAC } from '@skynethub/skapp-library';
 import { SocialDAC } from "social-dac-library";
 import { FeedDAC } from "feed-dac-library";
 import {
@@ -12,7 +13,7 @@ import {
 import store from "../redux"
 import { setUserSession } from "../redux/action-reducers-epic/SnUserSessionAction"
 
-const client = new SkynetClient("https://siasky.dev");
+const client = new SkynetClient("https://siasky.net");
 //const hostApp = "awesomeskynet.hns";
 const hostApp = "localhost";
 
@@ -29,7 +30,8 @@ export const initMySky = async () => {
         const userProfileDAC = new UserProfileDAC();
         const socialDAC = new SocialDAC();
         const feedDAC = new FeedDAC();
-        await mySky.loadDacs(contentDAC, userProfileDAC, feedDAC,socialDAC);
+        const skappDAC = new SkappDAC();
+        await mySky.loadDacs(contentDAC, userProfileDAC, feedDAC,socialDAC, skappDAC);
         //await mySky.loadDacs(userProfileDAC);
         // Add additional needed permissions before checkLogin.
         // Can be Permissions object or list of Permissions objects
@@ -38,7 +40,7 @@ export const initMySky = async () => {
         loggedIn = await mySky.checkLogin();// check if user is already logged-In
         console.log("checkLogin : loggedIn status: " + loggedIn);
         let portalUrl = await client.portalUrl();
-        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC} };
+        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC, skappDAC} };
         //userSession = { mySky, dacs: { userProfileDAC } };
         // if not logged-in
         if (loggedIn) {
@@ -115,6 +117,10 @@ export const getMySky = async () => {
 export const getContentDAC = async () => {
     const userSession = await getUserSession();
     return userSession?.dacs?.contentDAC ?? null;
+}
+export const getSkappDAC = async () => {
+    const userSession = await getUserSession();
+    return userSession?.dacs?.skappDAC ?? null;
 }
 export const getProfileDAC = async () => {
     const userSession = await getUserSession();

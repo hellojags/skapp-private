@@ -237,7 +237,7 @@ const AppDetailsHeader = ({ data }) => {
           </Box>
           <Box display="flex" alignItems="center">
             {/* <ThumbUpAltIcon/> */}
-            {parseInt(appStats[2]) === parseInt(1) ? (
+            {parseInt(appStats?.content?.liked) === parseInt(1) ? (
               <ThumbUpSharp
                 fontSize="small"
                 className={classes.StarIcon}
@@ -258,7 +258,7 @@ const AppDetailsHeader = ({ data }) => {
             className={classes.favrIcon}
           >
             {/* <FavoriteOutlinedIcon/> */}
-            {parseInt(appStats[3]) === parseInt(1) ? (
+            {parseInt(appStats?.content?.favorite) === parseInt(1) ? (
               <FavoriteOutlined
                 className={classes.HeartIcon}
                 onClick={() => appStatsAction(EVENT_APP_FAVORITE_REMOVED)}

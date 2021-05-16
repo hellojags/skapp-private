@@ -224,7 +224,7 @@ const Domains = ({ toggle }) => {
     const submitProfileForm = async (e) => {
         setError(null);
         if (editDomain !== null) {
-            const txtUrl = await getHNSSkyDBURL(e.domainName);
+            const txtUrl = await getHNSSkyDBURL(e.domainName, e.dataLink);
             e.txtRecord = txtUrl;
             handleEdit({ index: editDomain, domain: e });
             handleSetDomain(false);
@@ -234,7 +234,7 @@ const Domains = ({ toggle }) => {
                 setError('Domain Name Already exist');
                 return;
             }
-            const txtUrl = await getHNSSkyDBURL(e.domainName);
+            const txtUrl = await getHNSSkyDBURL(e.domainName, e.dataLink);
             e.txtRecord = txtUrl;
             dispatch(setDomainEpic(e));
             handleSetDomain(false);
