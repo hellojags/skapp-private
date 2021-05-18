@@ -198,6 +198,9 @@ const useStyles = makeStyles((theme) => ({
     pr_4: {
         paddingRight: '2rem'
     },
+    pr_2: {
+        paddingRight: '1rem!important'
+    },
     AngleDown: {
         color: '#B4C6CC'
     },
@@ -249,7 +252,7 @@ const useStyles = makeStyles((theme) => ({
     switchButton: {
         marginLeft: '5px',
         marginRight: '5px'
-    }
+    },
 }))
 
 export default function Navbar({ toggle, setToggle }) {
@@ -488,15 +491,13 @@ export default function Navbar({ toggle, setToggle }) {
                         Dark
                     </div> */}
 
-                    <ToggleButton toggle={toggle} setToggle={setToggle} />
-
                     <div className={classes.sectionDesktop}>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
                         </Box> */}
+                        <ToggleButton toggle={toggle} setToggle={setToggle} className={classes.pr_2} />
                         <Box display="flex" alignItems="center" className={classes.pr_4}>
-
                             <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                                 <Badge color="secondary" variant="dot">
                                     <NotificationIcon />

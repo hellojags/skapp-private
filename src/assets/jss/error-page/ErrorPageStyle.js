@@ -45,7 +45,8 @@ const errorPageStyle = {
     },
     small: {
         fontSize: 14,
-        color: '#242F57',
+        // color: '#242F57',
+        color: 'grey',
         marginTop: '10px',
         '& > a': {
             color: '#1DBF73',
