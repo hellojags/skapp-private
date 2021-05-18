@@ -222,7 +222,7 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                       src={
                         item.content.skappLogo.thumbnail &&
                         getPortalUrl() +
-                          `${item.content.skappLogo.thumbnail.split("sia:")[1]}`
+                        `${item.content.skappLogo.thumbnail.split("sia:")[1]}`
                       }
                       alt=""
                     />
@@ -424,9 +424,8 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
             </CardActionArea>
 
             <CardActions
-              className={`${
-                toggle ? classes.darkDetailsArea : classes.lightDetailsArea
-              } cardFooter`}
+              className={`${toggle ? classes.darkDetailsArea : classes.lightDetailsArea
+                } cardFooter`}
             >
               <Box
                 display="flex"
@@ -578,9 +577,8 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                   className={classes.footerItem}
                 >
                   <MsgIcon
-                    className={`${classes.cardFooterIcon} ${
-                      toggle ? classes.darkIcon : classes.lightIcon
-                    }`}
+                    className={`${classes.cardFooterIcon} ${toggle ? classes.darkIcon : classes.lightIcon
+                      }`}
                   />
                   <Typography variant="caption">{millify(1456044)}</Typography>
                 </Box>
@@ -599,9 +597,8 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
               <Box>
                 <Button
                   size="medium"
-                  className={`${classes.installBtn} ${
-                    updated ? classes.bgUnistall : classes.bgUpdate
-                  }`}
+                  className={`${classes.installBtn} ${updated ? classes.bgUnistall : classes.bgUpdate
+                    }`}
                   onClick={(e) =>
                     handleInstall(item, updated ? "uninstall" : "install")
                   }
@@ -622,7 +619,7 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
               </Box> */}
             </CardActions>
           </Card>
-        )}
+        }
       </>
     </Box>
   );
