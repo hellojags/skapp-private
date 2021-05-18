@@ -36,22 +36,6 @@ export const SKYDB_SERIALIZATION_SEPERATOR = "."
 export const UPLOAD = "Upload"
 export const DOWNLOAD = "Download"
 export const PUBLIC_IMPORT = "Public Import"
-export const DEFAULT_PORTAL = "https://siasky.net/"
-// export const PUBLIC_SHARE_BASE_URL = "https://siasky.net/AAB-SesrL4TJn8l6F0besVVWYCK8axTjTmffFK4WTBPLWA/?#/";
-export const PUBLIC_SHARE_BASE_URL = "https://skyspace.hns.siasky.net/?#/"
-export const PUBLIC_SHARE_APP_HASH = "AACUSyTS5w3gcQ21_h0WTviSXt9laQggkBl5TWEYY_ZwKA"
-export const PUBLIC_SHARE_ROUTE = "public-skapps/"
-// export const DOWNLOAD_PORTAL = process.env.REACT_APP_SIASKYNET_HOST;
-// export const SKYNETHUB_PORTAL = process.env.REACT_APP_SKYNETHUB_HOST;
-export const SKYSPACE_DEFAULT_PATH = "https://skyspace.hns.siasky.net/#/upload"
-export const SKYSPACE_HOSTNAME = "https://skyspace.hns.siasky.net/skapp/index.html"
-export const PUBLIC_TO_ACC_QUERY_PARAM = "sharedhash"
-export const MUSIC_SVG_BASE64_DATA =
-  "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjUgMjUiID48c3R5bGUgdHlwZT0idGV4dC9jc3MiPi5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTEyIDNsLjAxIDEwLjU1Yy0uNTktLjM0LTEuMjctLjU1LTItLjU1QzcuNzkgMTMgNiAxNC43OSA2IDE3czEuNzkgNCA0LjAxIDRTMTQgMTkuMjEgMTQgMTdWN2g0VjNoLTZ6bS0xLjk5IDE2Yy0xLjEgMC0yLS45LTItMnMuOS0yIDItMiAyIC45IDIgMi0uOSAyLTIgMnoiLz48L2c+PC9zdmc+"
-export const APPSTORE_PROVIDER_MASTER_PUBKEY =
-  "7555d3153fab77242f6ab85f6a9d66811eeb93e29673402574f49d057ee373b1"
-export const APPSTORE_PROVIDER_APP_PUBKEY =
-  "c3bfbcb6e2fc64af8408512ddef155a470641ca6beb030154ca4e315be2f94d7"
 export const MUI_THEME_LIGHT = "light"
 export const MUI_THEME_DARK = "dark"
 
@@ -124,6 +108,7 @@ export const DK_HOSTED_APPS = "hostedApps";
 
 export const DK_AGGREGATED_PUBLISHED_APPS = "aggregatedPublishedApps";
 export const DK_AGGREGATED_PUBLISHED_APPS_STATS = "aggregatedPublishedAppsStats";
+export const DK_AGGREGATED_USERIDS = "aggregatedUserIDs";
 
 //Stats Action Type
 // export const VIEW_COUNT = "view";

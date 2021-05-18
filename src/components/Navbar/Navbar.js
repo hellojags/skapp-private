@@ -6,17 +6,22 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import Badge from '@material-ui/core/Badge'
+import Switch from "@material-ui/core/Switch";
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 // import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
+// import Icon from '@material-ui/core/Icon'
+// import grey from '@material-ui/core/colors/grey'
 // import MailIcon from '@material-ui/icons/Mail'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -37,12 +42,19 @@ import { useHistory } from "react-router-dom"
 import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
+import { skylinkToUrl } from "../../service/skynet-api";
 const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: '#fff',
+    rootDark: {
+        // backgroundColor: '#fff',
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
 
+    },
+    rootLight: {
+        backgroundColor: '#fff',
+        background: "#ffff 0 % 0 % no-repeat padding-box",
+        boxShadow: '0px 1px 4px #15223214',
     },
     toolBarRoot: {
         justifyContent: 'space-between',
@@ -70,12 +82,31 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
         },
     },
-    search: {
+    lightSearch: {
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade('#F0F5F7', 1),
         '&:hover': {
             backgroundColor: fade("#F0F5F7", 0.7),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+        color: '#8B9DA5',
+        '@media only screen and (max-width: 890px)': {
+            display: 'none'
+        }
+    },
+    darkSearch: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade('#1E2029', 1),
+        '&:hover': {
+            backgroundColor: fade("#1E2029", 0.7),
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
@@ -99,8 +130,13 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         color: '#B4C6CC'
     },
-    inputRoot: {
-        color: 'inherit',
+    lightInputRoot: {
+        // color: 'inherit',
+        color: '#2A2C34!important',
+    },
+    darkInputRoot: {
+        color: '#ffffff!important',
+        border: '1px solid D9E1EC'
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
@@ -113,8 +149,12 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('lg')]: {
             width: '50ch',
         },
-
     },
+    // lightInputColor: {
+    // },
+    // darkInputColor: {
+    //     background: '#1E2029',
+    // },
     sectionDesktop: {
         display: 'none',
         [theme.breakpoints.up('md')]: {
@@ -167,6 +207,14 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '12px'
         }
     },
+    /* darkMenuColor: {
+        color: '#fff',
+        background:'#2A2C34',
+    },
+    lightMenuColor: {
+        color: '#000',
+        background:'#fff',
+    }, */
     menuIcon: {
         marginRight: ".90rem",
         '@media(max-width: 1440px)': {
@@ -181,16 +229,49 @@ const useStyles = makeStyles((theme) => ({
     },
     mobileHelpItem: {
         paddingLeft: ".5rem"
+    },
+    lightText: {
+        color: '#000'
+    },
+    darkText: {
+        color: '#fff'
+    },
+    switchButton: {
+        marginLeft: '5px',
+        marginRight: '5px'
     }
 }))
 
-export default function Navbar() {
+export default function Navbar({ toggle, setToggle }) {
+
     const dispatch = useDispatch()
     const history = useHistory()
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+
+    const LightTheme = createMuiTheme({
+        palette: {
+            type: 'light',
+        }
+    })
+
+    const DarkTheme = createMuiTheme({
+        palette: {
+            type: 'dark',
+        }
+    })
+
+    /* const handleChange = (e) => {
+        setLightMode(!lightMode);
+
+        if(lightMode) {
+            LightTheme();
+        } else {
+            DarkTheme();
+        }
+    } */
 
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -199,29 +280,27 @@ export default function Navbar() {
     // alert("NAV--userSession:userID"+userSession?.userID);
     // alert("NAV--userSession:mysky"+userSession?.mySky);
     // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
-    const [person, setPerson] = useState({ username: "MySky User" })
+    const [person, setPerson] = useState({ username: "Anonymous", url: "" });
 
     const userProfile = useSelector((state) => state.snUserProfile)
     const userPreferences = useSelector((state) => state.snUserPreferences)
     useEffect(() => {
-        setPerson({ username: userProfile?.username })
+        let avatarURl = userProfile?.avatar ? userProfile?.avatar[0]?.url : null;
+        setPerson({ username: userProfile?.username, url: avatarURl });
     }, [userProfile]);
 
     useEffect(() => {
         const reloadReduxState = async () => {
             if (userSession?.mySky != null) {
                 console.log("#### On Refresh : Reload Redux State ####");
-                if (!userProfile) {
-                    console.log("#### On Refresh : Reload Redux State #### [userProfile]");
-                    const userProfile = await getProfile();
-                    setPerson({ username: userProfile?.username })
-                    dispatch(setUserProfileAction(userProfile));
-                }
-                if (!userPreferences) {
-                    console.log("#### On Refresh : Reload Redux State #### [userPrefrences]");
-                    const userPrefrences = await getPreferences();
-                    dispatch(setUserPreferencesAction(userPrefrences));
-                }
+                console.log("#### On Refresh : Reload Redux State #### [userProfile]");
+                const userProfile = await getProfile();
+                let avatarURl = userProfile?.avatar ? userProfile?.avatar[0]?.url : null;
+                setPerson({ username: userProfile?.username, url: avatarURl });
+                dispatch(setUserProfileAction(userProfile));
+                console.log("#### On Refresh : Reload Redux State #### [userPrefrences]");
+                const userPrefrences = await getPreferences();
+                dispatch(setUserPreferencesAction(userPrefrences));
             }
         }
         reloadReduxState();
@@ -284,13 +363,13 @@ export default function Navbar() {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            className="profile-dropdown"
+            className={toggle ? 'darkProfile-dropdown' : 'lightProfile-dropdown'}
 
         >
-            <MenuItem onClick={handleSettings} className={classes.MenuItem}>
+            {/* <MenuItem onClick={handleSettings} className={classes.MenuItem}>
                 <SettingIcon className={classes.menuIcon} />
                 <span>Settings</span>
-            </MenuItem>
+            </MenuItem>*/}
             <MenuItem onClick={handleSettings} className={classes.MenuItem}>
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
@@ -329,9 +408,11 @@ export default function Navbar() {
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <Button className={classes.usrIcon}>
-                    {/* <PersonOutlineIcon className={classes.avatarIcon} /> */}
-                    <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
-                        alt="" />
+                    {person.url ? (
+                        <img width="100%" src={skylinkToUrl(person.url)} alt="" />
+                    ) : (
+                        <PersonOutlineIcon className={classes.avatarIcon} />
+                    )}
                 </Button>
                 <Tooltip title={person.username} placement="top" arrow >
                     <Typography className={classes.userName} noWrap>{person.username}</Typography>
@@ -367,26 +448,34 @@ export default function Navbar() {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
-            <AppBar position="static" className={classes.root} color='default'>
+            <AppBar position="static" className={toggle ? classes.rootDark : classes.rootLight} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
                     <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
                         <CustomMenuIcon />
                     </IconButton>
                     <div className="logo-top" >
-                        <Logo />
+                        {toggle ? <Logo1 /> : <Logo />}
                     </div>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
+                    {/* <div className={toggle ? classes.darkSearch : classes.lightSearch}>
+                        <font color="red">Unit testing in-progress: Aggregated Test Data will be reset in couple of days</font>
+                       <div className={classes.searchIcon}>
                             <SearchIcon />
+                            {/* <Icon style={{color: grey[50]}}>article</Icon>
                         </div>
                         <InputBase
                             placeholder="Search…"
                             classes={{
-                                root: classes.inputRoot,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                        />
+                        /> 
+                    </div>*/}
+                    <div className={toggle ? classes.darkText : classes.lightText}>
+                        Light
+                        <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
+                        Dark
+                        {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
                     </div>
 
                     <div className={classes.sectionDesktop}>
@@ -405,10 +494,11 @@ export default function Navbar() {
 
                         <Box display="flex" alignItems="center" onClick={handleProfileMenuOpen}>
                             <Button className={classes.usrIcon} >
-                                {/* <PersonOutlineIcon className={classes.avatarIcon} />
-                                 */}
-                                <img width="100%" src="https://siasky.net/DACbyw6auUWhumhBTaJLUhoCmSW8ifK7muvKvkTcz7nYhA"
-                                    alt="" />
+                                {person.url ? (
+                                    <img width="100%" src={skylinkToUrl(person.url)} alt="" />
+                                ) : (
+                                    <PersonOutlineIcon className={classes.avatarIcon} />
+                                )}
                             </Button>
                             <Tooltip title={person.username} placement="top" arrow >
                                 <Typography className={classes.userName} noWrap>{person.username}</Typography>

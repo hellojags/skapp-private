@@ -6,7 +6,6 @@ import '../SubmitApp/taginput.css';
 import { TextareaAutosize, InputBase, Box, Switch  } from '@material-ui/core';
 import { fade, makeStyles } from "@material-ui/core/styles";
 
-
 const useStyles = makeStyles((theme) => ({
   search: {
     position: "relative",
@@ -24,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
     },
     // color: "#8B9DA5",
     boxShadow: "0px 1px 2px #15223214",
-    border: "1px solid #7070701A;",
+    // border: "1px solid #7070701A;",
+    border: "1px solid rgba(0, 0, 0, 0.8);",
     // hieght: '41px',
     marginLeft: "16px!important",
     "@media (max-width: 1650px)": {
@@ -45,7 +45,33 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     width: '100%',
   },
-  inputInput: {
+  
+  lightInputInput: {
+    color: '#2A2C34',
+    background: '#fff',
+    border: '1px solid rgba(0, 0, 0, 0.2)',
+    // padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: "100%",
+    },
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    "@media (max-width: 1660px)": {
+      width: "100%",
+    },
+    "@media (max-width: 1460px)": {
+      width: "100%",
+    },
+  },
+  darkInputInput: {
+    color: '#fff',
+    background: '#2A2C34',
     // padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
@@ -85,6 +111,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   margnBottomMediaQuery: {
+    /* '& .MuiSvgIcon-root': {
+    background: '#fff',
+    }, */
     "@media only screen and (max-width: 1249px)": {
       marginBottom: ".75rem",
     },
@@ -137,13 +166,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const SnTextInput = ({ label, className, showError, ...props }) => {
+const darkText = {
+  color: '#8B9DA5',
+}
+
+const darkInput = {
+  color: '#fff',
+  backgroundColor: fade('#2A2C34', 1),
+  border: '1px solid #48494E'
+}
+
+export const SnTextInput = ({ toggle, label, className, showError, ...props }) => {
   const [field, meta] = useField(props);
   const { submitCount } = useFormikContext();
   return (
     <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className={className} {...field} {...props} />
+      <label style={toggle ? darkText : {}} htmlFor={props.id || props.name}>{label}</label>
+      <input style={toggle ? darkInput : {}} className={className} {...field} {...props} />
       {(showError ?? true) && submitCount>0 && meta.error ? (
         <div className="required-field">{meta.error}</div>
       ) : null}
@@ -184,7 +223,7 @@ export const SnTextArea = ({ label, className, showError, ...props }) => {
   );
 };
 
-export const SnInputWithIcon = ({ icon, label, className, showError, ...props }) => {
+export const SnInputWithIcon = ({ icon, label, className, showError, toggle, ...props }) => {
   const [field, meta] = useField(props);
   const { submitCount } = useFormikContext();
   const classes = useStyles();
@@ -202,7 +241,7 @@ export const SnInputWithIcon = ({ icon, label, className, showError, ...props })
           {...field} {...props}
           classes={{
             root: classes.inputRoot,
-            input: classes.inputInput,
+            input: toggle ? classes.darkInputInput : classes.lightInputInput,
           }}
           inputProps={{ "aria-label": "search" }}
         />
@@ -236,20 +275,27 @@ export const SnTextInputTag = ({ label, className, showError, ...props }) => {
   );
 };
 
-const reactSelectStyles = {
+const lightReactSelectStyles = {
   control: styles => ({
-      ...styles, backgroundColor: 'white', height: 55, boxShadow: 0, borderColor: '#D9E1EC', color: '#000', borderRadius: 8,
+      ...styles, 
+      backgroundColor: 'white', 
+      height: 55, 
+      boxShadow: 0, 
+      borderColor: '#D9E1EC',
+      borderRadius: 8,
       '@media only screen and (max-width: 1440px)': {
           height: 50,
           // width: '100%',
           fontSize: 16,
-
+          background: '#fff',
+          borderColor: '#D9E1EC'
       },
       '@media only screen and (max-width: 575px)': {
           height: 43,
           // width: '100%',
           fontSize: 14,
-
+          background: '#fff',
+          borderColor: '#D9E1EC'
       },
       '&:hover': {
           borderColor: '#1DBF73'
@@ -263,7 +309,53 @@ const reactSelectStyles = {
   }),
 };
 
-export const SnSelect1 = ({ label, className, showError, options, ...props }) => {
+const darkReactSelectStyles = {
+  control: styles => ({
+      ...styles, 
+      height: 55, 
+      boxShadow: 0,
+      borderColor: "#48494E",
+      color: "#fff!important",
+      borderRadius: 8,
+      '@media only screen and (min-width: 300px)': {
+          height: 50,
+          // width: '100%',
+          fontSize: 16,
+          background: '#1E2029',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          color: "#fff!important",
+      },
+      '@media only screen and (max-width: 1440px)': {
+          height: 50,
+          // width: '100%',
+          fontSize: 16,
+          background: '#1E2029!important',
+          // borderColor: '#48494E',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          color: "#fff!important",
+      },
+      '@media only screen and (max-width: 575px)': {
+          height: 43,
+          // width: '100%',
+          fontSize: 14,
+          background: '#1E2029!important',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          color: "#fff!important",
+      },
+      '&:hover': {
+          borderColor: '#1DBF73'
+      }
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#2A2C34',
+      color: '#fff',
+      '&:foucs': {
+          backgroundColor: '#1DBF73',
+      }
+  }),
+};
+
+export const SnSelect1 = ({ label, className, showError, options, toggle, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>
@@ -271,7 +363,7 @@ export const SnSelect1 = ({ label, className, showError, options, ...props }) =>
       <>
       <Select {...field} {...props}
         options={options}
-        styles={reactSelectStyles}
+        styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
       </> 
       {(showError ?? true) && meta.error ? (
@@ -281,7 +373,7 @@ export const SnSelect1 = ({ label, className, showError, options, ...props }) =>
   );
 };
 
-export const SnSelect = ({ label, className, showError, options, ...props }) => {
+export const SnSelect = ({ label, className, showError, options, toggle, ...props }) => {
   const [field, meta, helpers] = useField(props);
   const { touched, error, value } = meta;
   const { setValue } = helpers;
@@ -295,7 +387,7 @@ export const SnSelect = ({ label, className, showError, options, ...props }) => 
         name={field.name}
         onChange={(option) => setValue(option.value)}
         instanceId={props.iid}
-        styles={reactSelectStyles}
+        styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
 
       {(showError ?? true) && submitCount>0 && meta.error ? (

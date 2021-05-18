@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Paper, withStyles, Grid, Link, Typography } from '@material-ui/core';
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
-import { ReactComponent as SiteLogoGray } from '../../assets/img/icons/siteLogoGray.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
+import { ReactComponent as SiteLogoWhite } from '../../assets/img/icons/siteLogoWhite.svg'
+import { ReactComponent as SiteLogoDark } from '../../assets/img/icons/siteLogoDark.svg'
 import SnDisclaimer from "../Utils/SnDisclaimer";
 import { useHistory } from "react-router-dom"
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
@@ -46,20 +48,27 @@ const useStyles = makeStyles({
         display: 'flex',
         height: '100%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        
+    },
+    lightText: {
+        color:'#fff'
+    },
+    darkText: {
+        color:'#2A2C34!important'
     },
     poweredBy: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        '& span': {
-            color: '#4E4E4E'
-        },
+        /* '& span': {
+            color: '#fff'
+        }, */
         marginTop: '2.5rem',
         marginBottom: '3.5rem'
-    }
+    },
 })
-const Login = () => {
+const Login = ({toggle}) => {
     const classes = useStyles()
     const dispatch = useDispatch()
     const history = useHistory()
@@ -124,16 +133,20 @@ const Login = () => {
             dispatch(setLoaderDisplay(false));
         }
     }
+
+    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
     return (
         <div className={classes.loginFormContainer}>
-            <form className="login-form">
+            <form className={toggle ? 'darkLogin-form' : 'lightLogin-form'}>
                 <div>
-                    <Logo />
-                    <h3>Sign In to Skapp</h3>
+                    {toggle ? <Logo1 /> : <Logo />}
+                    <h3 className={toggle ? classes.lightText : classes.darkText}>Sign In to Skapp</h3>
                     <Button onClick={handleLogin}> Login using MySky
                     </Button>
                     <div className={classes.poweredBy}>
-                        <span>Powered by </span><SiteLogoGray />
+                        <span className={toggle ? classes.lightText : classes.darkText}>Powered by </span>
+                        <SiteLogoDark />
                     </div>
                 </div>
             </form>

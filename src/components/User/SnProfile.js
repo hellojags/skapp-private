@@ -22,7 +22,7 @@ import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action"
 import { bsSetUserAppProfile } from "../../blockstack/blockstack-api"
 import { createEmptyErrObj } from "../new/sn.new.constants"
 import { addUserPubKeyInCache } from "../../api/sn.api"
-import { DEFAULT_PORTAL } from "../../sn.constants"
+import {getPortalUrl} from '../../service/skynet-api'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />

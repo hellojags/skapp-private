@@ -26,6 +26,10 @@ import snAppCommentsStore from "./action-reducers-epic/SnAppCommentsReducer";
 import {snGetAppCommentsEpic,snSetAppCommentEpic} from "./action-reducers-epic/SnAppCommentsEpic";
 import snShowHostingLinks from "./action-reducers-epic/SnShowHostingLinksReducer";
 import SnUserSessionReducer from "./action-reducers-epic/SnUserSessionReducer";
+import { snDomainEpic, snGetDomainEpic, snDeleteDomainEpic, snEditDomainEpic } from "./action-reducers-epic/SnDomainEpic";
+import SnDomains from "./action-reducers-epic/SnDomainReducer";
+import { snStorageEpic, snGetStorageEpic, snDeleteStorageEpic, snEditStorageEpic } from "./action-reducers-epic/SnStorageEpic";
+import SnStorages from "./action-reducers-epic/SnStorageReducer";
 
 const redux = require("redux")
 const { createEpicMiddleware } = require("redux-observable")
@@ -41,6 +45,8 @@ const rootReducer = combineReducers({
   snUploadListStore: SnUploadListReducer,
   snAllPublishedAppsStore,
   snPublishedAppsStore,
+  SnDomains,
+  SnStorages,
   snInstalledAppsStore,
   snAppStatsStore,
   snAppCommentsStore,
@@ -52,6 +58,14 @@ const rootEpic = combineEpics(
   snGetAllPublishedAppsEpic,
   snGetPublishedAppsEpic,
   snSetPublishAppEpic,
+  snDomainEpic,
+  snGetDomainEpic,
+  snDeleteDomainEpic,
+  snEditDomainEpic,
+  snStorageEpic,
+  snGetStorageEpic,
+  snDeleteStorageEpic,
+  snEditStorageEpic,
   snGetInstalledAppsEpic,
   snSetInstallAppEpic,
   snSetUnInstallAppEpic,

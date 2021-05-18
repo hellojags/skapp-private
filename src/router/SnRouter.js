@@ -2,7 +2,7 @@ import Apps from '../components/AppsComp/Apps'
 import SubmitApp from '../components/SubmitApp/SubmitApp'
 import EditPublishApp from '../components/SubmitApp/EditPublishApp'
 import Error from '../components/ErrorPage/Error'
-import NoApps from '../components/NoApps/NoApps'
+import NoApps from '../components/OtherPages/NoApps'
 import InstalledApps from '../components/AppsComp/InstalledApps'
 import Hosting from '../components/Hosting/Hosting'
 import SubmitNewSite from '../components/Hosting/SubmitNewSite'
@@ -23,74 +23,80 @@ import {
 } from "react-router-dom";
 import { APPSTORE_PROVIDER_MASTER_PUBKEY } from "../utils/SnConstants";
 import AddNewSite from '../components/Hosting/AddNewSite'
-const SnRouter = (props) => (
-   
-        <Switch>
-            <Route exact path='/'>
-                  <AppStore />
+import UnderDevelopment from '../components/OtherPages/UnderDevelopment';
+// const SnRouter = (props) => (
+const SnRouter = ({ toggle }) => (
+    <Switch>
+        <Route exact path='/'>
+            <AppStore toggle={toggle} />
+        </Route>
+        <Route exact path='/descoverdev'>
+            <DescoverDev toggle={toggle} />
+        </Route>
+        <Route exact path='/login'>
+            <Login toggle={toggle} />
+        </Route>
+        <Route exact path='/appdetail/:appId'>
+            <AppDetailsPage toggle={toggle} />
+        </Route>
+        <Route path='/submitapp/:appId?'>
+            <SubmitApp toggle={toggle} />
+        </Route>
+        <Route path='/editpublishapp/:appId'>
+            <EditPublishApp toggle={toggle} />
+        </Route>
+        <Route exact path='/error'>
+            <Error toggle={toggle} />
+        </Route>
+        <Route exact path='/underdevelopment'>
+            <UnderDevelopment />
+        </Route>
+        <Route exact path='/activitylog'>
+            <UnderDevelopment />
+        </Route>
+        <Route exact path='/stats'>
+            <UnderDevelopment />
+        </Route>
+        <Route exact path='/noapp'>
+            <NoApps toggle={toggle} />
+        </Route>
+        <Route exact path='/installedapps'>
+            <InstalledApps toggle={toggle} />
+        </Route>
+        <Route exact path='/hosting'>
+            <Hosting toggle={toggle} />
+        </Route>
+        <Route exact path='/submitsite'>
+            <AddNewSite toggle={toggle} />
+        </Route>
+        <Route exact path='/editsite/:appId'>
+            <EditSite toggle={toggle} />
+        </Route>
+        <Route exact path='/domains'>
+            <Domains toggle={toggle} />
+        </Route>
+        {/* <Route exact path='/addnewdomain'>
+            <AddNewDomain />
             </Route>
-            <Route exact path='/descoverdev'>
-                  <DescoverDev />
-            </Route>
-            {/* <Route exact path="/">
-                <Redirect to={`/login`}/>
-                 <Redirect to={`/public-skapps/?provider=${APPSTORE_PROVIDER_MASTER_PUBKEY}`}/> */}
-            {/* </Route> */}
-            <Route exact path='/login'>
-                  <Login />
-            </Route>
-            <Route exact path='/appdetail/:appId'>
-                <AppDetailsPage />
-            </Route>
-            <Route path='/submitapp/:appId?'>
-                <SubmitApp />
-            </Route>
-            <Route path='/editpublishapp/:appId'>
-                <EditPublishApp />
-            </Route>
-            <Route exact path='/error'>
-                <Error />
-            </Route>
-            <Route exact path='/noapp'>
-                <NoApps />
-            </Route>
-            <Route exact path='/installedapps'>
-                <InstalledApps />
-            </Route>
-            <Route exact path='/hosting'>
-                <Hosting />
-            </Route>
-            <Route exact path='/submitsite'>
-                <AddNewSite />
-            </Route>
-            <Route exact path='/editsite/:appId'>
-                <EditSite />
-            </Route>
-            <Route exact path='/domains'>
-                <Domains />
-            </Route>
-            {/* <Route exact path='/addnewdomain'>
-  <AddNewDomain />
-</Route>
-<Route exact path='/adddomaintxt'>
-  <AddNewDomainTXT />
-</Route> */}
-            <Route exact path='/nodomain'>
-                <NoDomain />
-            </Route>
-            <Route exact path='/storagegateway'>
-                <StorageGateway />
-            </Route>
-            <Route exact path='/usersettings'>
-                <Settings />
-            </Route>
-            <Route exact path='/deploysite/:appId?'>
-                <DeploySite />
-            </Route>
-            <Route exact path='/apps'>
-                <Apps />
-            </Route>
-        </Switch>
-  
+            <Route exact path='/adddomaintxt'>
+            <AddNewDomainTXT />
+        </Route> */}
+        <Route exact path='/nodomain'>
+            <NoDomain toggle={toggle} />
+        </Route>
+        <Route exact path='/storagegateway'>
+            <StorageGateway toggle={toggle} />
+        </Route>
+        <Route exact path='/usersettings'>
+            <Settings toggle={toggle} />
+        </Route>
+        <Route exact path='/deploysite/:appId?'>
+            <DeploySite toggle={toggle} />
+        </Route>
+        <Route exact path='/apps'>
+            <Apps toggle={toggle} />
+        </Route>
+    </Switch>
+
 )
 export default SnRouter

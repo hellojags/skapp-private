@@ -11,7 +11,6 @@ import imageCompression from "browser-image-compression";
 import path from "path-browserify";
 import Snackbar from "@material-ui/core/Snackbar";
 import { useDropzone } from "react-dropzone";
-import { DEFAULT_PORTAL } from "../utils/SnConstants";
 import { getCompressedImageFile, generateThumbnailFromVideo, skylinkToUrl, hashFromSkylinkUploadResponse } from "../utils/SnUtility";
 // import "./sn.upload.scss";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -19,6 +18,7 @@ import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { SkynetClient, parseSkylink } from "skynet-js";
 import UploadFile from "./UploadFile";
 import { useDispatch, useSelector } from "react-redux";
+import {getPortalUrl} from '../service/skynet-api'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -31,7 +31,7 @@ const SnUpload = React.forwardRef((props, ref) => {
   const [uploadErr, setUploadErr] = useState(false);
   const [isDir, setIsDir] = useState(false);
   const snUploadListStore = useSelector((state) => state.snUploadListStore);
-  const apiUrl = props.portal != null ? props.portal : DEFAULT_PORTAL;
+  const apiUrl = props.portal != null ? props.portal : getPortalUrl();
   const gridRef = useRef();
   const client = new SkynetClient(apiUrl);
 
@@ -294,7 +294,7 @@ const SnUpload = React.forwardRef((props, ref) => {
       {files.length > 0 && (
         <div className="home-uploaded-files d-none">
           {files.map((file, i) => {
-            return <UploadFile key={i} {...file} />;
+            return <UploadFile toggle={props.toggle} key={i} {...file} />;
           })}
         </div>
       )}

@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import Badge from '@material-ui/core/Badge'
+import Switch from "@material-ui/core/Switch";
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
@@ -18,6 +19,7 @@ import SearchIcon from '@material-ui/icons/Search'
 // import MoreIcon from '@material-ui/icons/MoreVert'
 // logo
 import { ReactComponent as Logo } from '../../assets/img/icons/logo.svg'
+import { ReactComponent as Logo1 } from '../../assets/img/icons/logo1.svg'
 
 // icons custom
 import { ReactComponent as QuestionIcon } from '../../assets/img/icons/question.svg'
@@ -33,8 +35,14 @@ import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    lightRoot: {
         backgroundColor: '#fff',
+        background: "#ffff 0 % 0 % no-repeat padding-box",
+        boxShadow: '0px 1px 4px #15223214',
+
+    },
+    darkRoot: {
+        backgroundColor: '#2A2C34',
         background: "#ffff 0 % 0 % no-repeat padding-box",
         boxShadow: '0px 1px 4px #15223214',
 
@@ -93,12 +101,13 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#B4C6CC'
+        // color: '#B4C6CC'
     },
     inputRoot: {
         color: 'inherit',
     },
     inputInput: {
+        background: '#1E2029',
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
@@ -206,10 +215,23 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: '10px',
         },
 
+    },
+    lightText: {
+        color: '#000'
+    },
+    darkText: {
+        color: '#fff'
+    },
+    switchButton: {
+        marginLeft: '5px',
+        marginRight: '5px'
+    },
+    mr15: {
+        marginRight: '15px'
     }
 }))
 
-export default function LandingPageNavbar() {
+export default function LandingPageNavbar({ toggle, setToggle }) {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -241,13 +263,13 @@ export default function LandingPageNavbar() {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            className="profile-dropdown"
+            className={toggle ? 'darkProfile-dropdown' : 'lightProfile-dropdown'}
 
         >
-            <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
+            {/* <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
                 <SettingIcon className={classes.menuIcon} />
                 <span>Settings</span>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleMenuClose} className={classes.MenuItem}>
                 <EditProfileIcon className={classes.menuIcon} />
                 <span>Edit Profile</span>
@@ -321,14 +343,15 @@ export default function LandingPageNavbar() {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
-            <AppBar position="static" className={classes.root} color='default'>
+            <AppBar position="static" className={`${toggle ? classes.darkRoot : classes.lightRoot}`} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
 
                     <div className="logo-top" >
-                        <Logo />
+                        {toggle ? <Logo1 /> : <Logo />}
                     </div>
                     {/* <div className={classes.search}>
-                        <div className={classes.searchIcon}>
+                        <font color="red">Unit testing in-progress: Aggregated Test Data will be reset in couple of days</font>
+                          <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                         <InputBase
@@ -338,10 +361,15 @@ export default function LandingPageNavbar() {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div> */}
-
+                        /> 
+                    </div>*/}
                     <div className={classes.sectionDesktop}>
+                        <div className={toggle ? classes.darkText : classes.lightText}>
+                            Light
+                            <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
+                            <span className={classes.mr15}>Dark</span>
+                            {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
+                        </div>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>

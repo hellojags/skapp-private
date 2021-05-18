@@ -8,32 +8,32 @@ import { ReactComponent as InstaIcon } from '../../assets/img/icons/011-instagra
 import { ReactComponent as TwitterIcon } from '../../assets/img/icons/013-twitter.svg'
 import { ReactComponent as RedditIcon } from '../../assets/img/icons/015-reddit.svg'
 import Dis from '../../svg/Discord'
-import axios from 'axios'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from 'react-redux'
 // import {  as filledStar } from "@fortawesome/free-solid-svg-icons"
-const Footer = () => {
+const Footer = ({toggle}) => {
     const userSession = useSelector((state) => state.userSession)
 
     return (
         <>
-            { !userSession && < footer className="footer" >
+            { 
+            !userSession && < footer className={toggle ? 'darkFooter' : 'lightFooter'} >
                 <ul>
 
                     <li>
                         Help
-</li>
+                    </li>
                     <li>
 
                         <a href="/SkySpaces-Privacy.Notice.pdf" target="_blank" rel="noopener noreferrer">
                             Privacy Policy
-    </a>
+                        </a>
                     </li>
                     <li>
                         <a href="/SkySpaces-Terms.pdf" target="_blank" rel="noopener noreferrer">
                             Terms & Conditions
-    </a>
+                        </a>
 
                     </li>
                 </ul>

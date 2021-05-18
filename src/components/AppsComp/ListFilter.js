@@ -13,8 +13,8 @@ const useStyles = makeStyles(theme => ({
     dropArrow: {
         color: '#323232'
     },
-    utilBtn: {
-        background: '#2A2C34',
+    lightUtilBtn: {
+        background: '#fff',
         textTransform: 'none',
         minWidth: '175px',
         display: 'flex',
@@ -30,24 +30,40 @@ const useStyles = makeStyles(theme => ({
             marginLeft: '1rem'
         }
     },
+    darkUtilBtn: {
+        background: '#2A2C34',
+        textTransform: 'none',
+        minWidth: '175px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        boxShadow: '0px 1px 2px #15223214',
+        border: '1px solid #7070701A;',
+        '&:hover': {
+            background: '#1DBF73',
+            color: '#7E84A3'
+        },
+        '@media only screen and (max-width: 1249px)': {
+            marginLeft: '1rem'
+        }
+    },
+    darkLists: {
+        background: '#2A2C34',
+        color: '#fff'
+    },
+    lightLists: {
+        background: '#fff',
+        color: '#000'
+    },
     textColor: {
         color: '#7E84A3'
         // color: '#fff'
     },
     popper: {
         zIndex: 9,
-
-        '& ul': {
-            background: '#2A2C34',
-            color: '#7E84A3',
-            '& li:hover': {
-                background: '#1DBF73',
-                color: '#fff'
-            }
-        }
     }
 }))
-function ListFilter() {
+function ListFilter({toggle}) {
     const { width } = useWindowDimensions()
     const classes = useStyles()
     const dispatch = useDispatch()
@@ -106,7 +122,7 @@ function ListFilter() {
         < Fragment >
 
             <Button
-                className={`${classes.utilBtn} ${classes.textColor}`}
+                className={`${toggle ? classes.darkUtilBtn : classes.lightUtilBtn} ${classes.textColor}`}
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
@@ -135,7 +151,7 @@ function ListFilter() {
                     >
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                                <MenuList className={toggle ? classes.darkLists : classes.lightLists} autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                     {/* <MenuItem data-value="">Access Count (Highest first)</MenuItem> */}
                                     <MenuItem data-value="ACCESS DESC" onClick={handleChange}>Access Count (Highest first)</MenuItem>
                                     <MenuItem data-value="VIEWS DESC" onClick={handleChange}>View Count (Highest first)</MenuItem>

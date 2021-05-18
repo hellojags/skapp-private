@@ -10,10 +10,19 @@ body {
   font-family: 'Nunito', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #F5F6FA;
+  /* background-color: #F5F6FA; */
+  /* background-color: #12141D; */
   font-weight: normal;
   color: #000;
   line-height: 1.3;
+}
+
+.lightBodyColor {
+  background-color: #F5F6FA;
+}
+
+.darkBodyColor {
+  background-color: #12141D;
 }
 
 code {
@@ -28,17 +37,22 @@ button{
   text-transform: none!important;
 }
 /* app sidebar */
-.sidebar .MuiListItem-button{
+
+/* light sidebar */
+
+.lightSidebar .MuiListItem-button{
   background-color:#F5F6FA;
+  /* background-color:#fff; */
+  /* background-color:#2A2C34; */
 }
-.sidebar .MuiListItemText-root > span{
+.lightSidebar .MuiListItemText-root > span{
   font-weight: 600;
   color: #7E84A3;
 }
-.sidebar .activeNav{
+.lightSidebar .activeNav{
   background-color: #1DBF73!important;
 }
-.sidebar .activeNav span{
+.lightSidebar .activeNav span{
   color: #fff;
 }
 nav.MuiList-root{
@@ -46,13 +60,47 @@ nav.MuiList-root{
   overflow: hidden;
   margin-right: 1rem;
 }
-.sidebar .MuiListItem-root{
+.lightSidebar .MuiListItem-root{
   padding-top: 6px;
   padding-bottom: 6px;
 }
-.sidebar .MuiListSubheader-root {
+.lightSidebar .MuiListSubheader-root {
   color: #A1A7C4;
 }
+
+/* end light sidebar */
+
+/* dark sidebar */
+
+.darkSidebar .MuiListItem-button{
+  background: color #2a2c34;;
+  /* background-color:#2A2C34; */
+}
+.darkSidebar .MuiListItemText-root > span{
+  font-weight: 600;
+  color: #7E84A3;
+}
+.darkSidebar .activeNav{
+  background-color: #1DBF73!important;
+}
+.darkSidebar .activeNav span{
+  color: #fff;
+}
+nav.MuiList-root{
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+.darkSidebar .MuiListItem-root{
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.darkSidebar .MuiListSubheader-root {
+  color: #A1A7C4;
+}
+
+/* end dark sidebar */
+
 /* main content area */
 .main-content{
   display: flex;
@@ -73,8 +121,12 @@ main{
 .second-nav .MuiButton-text{
   padding: 7.25px 14px;
 }
+
 /* profile-dropdwon -> main-menu */
-.profile-dropdown .MuiPaper-root{ 
+
+/* light profile-dropdown */
+
+.lightProfile-dropdown .MuiPaper-root{ 
   margin-top: 60px;
   min-width: 175px;
   background: #fff 0% 0% no-repeat padding-box;
@@ -83,18 +135,19 @@ main{
   opacity: 1;
   /* position: relative; */
 }
-.profile-dropdown .MuiPaper-root .MuiMenu-list{
+.lightProfile-dropdown .MuiPaper-root .MuiMenu-list{
+  color: #000;
   padding-bottom: 0;
 }
-.profile-dropdown .MuiPaper-root .MuiMenu-list li:last-child{
+.lightProfile-dropdown .MuiPaper-root .MuiMenu-list li:last-child{
   border-bottom: none;
 }
-.profile-dropdown .MuiPaper-root {
+.lightProfile-dropdown .MuiPaper-root {
   border-radius: 0;
   overflow: visible;
   /* position: relative; */
 }
-.profile-dropdown .MuiPaper-root::before{
+.lightProfile-dropdown .MuiPaper-root::before{
   content: '';
   width: 0; 
   height: 0; 
@@ -105,6 +158,46 @@ main{
   right: 10px;
   top: -9px;
 }
+
+/* end light profile-dropdown */
+
+/* dark profile-dropdown */
+
+.darkProfile-dropdown .MuiPaper-root{ 
+  margin-top: 60px;
+  min-width: 175px;
+  background: #2A2C34 0% 0% no-repeat padding-box;
+  box-shadow: 0px 1px 4px #15223214;
+  border: 1px solid #00000000;
+  opacity: 1;
+  /* position: relative; */
+}
+.darkProfile-dropdown .MuiPaper-root .MuiMenu-list{
+  color: #fff;
+  padding-bottom: 0
+}
+.darkProfile-dropdown .MuiPaper-root .MuiMenu-list li:last-child{
+  border-bottom: none;
+}
+.darkProfile-dropdown .MuiPaper-root {
+  border-radius: 0;
+  overflow: visible;
+  /* position: relative; */
+}
+.darkProfile-dropdown .MuiPaper-root::before{
+  content: '';
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+  position: absolute;
+  right: 10px;
+  top: -9px;
+}
+
+/* end dark profile-dropdown */
+
 /* dfdfdfdfdfdf */
 /* :root{
 --unnamed-color-1dbf73: #1DBF73;
@@ -154,9 +247,23 @@ main{
     max-width: 33.333333%!important;
     flex-basis: 33.333333%!important;
   }
-  .sidebar .MuiListItemText-root > span{
+  
+  
+  /* light sidebar */
+  
+  .lightSidebar .MuiListItemText-root > span{
     font-size: 14px;
   }
+  
+  /* end light sidebar */
+  
+  /* dark sidrbar */
+  
+  .darkSidebar .MuiListItemText-root > span{
+    font-size: 14px;
+  }
+  
+  /* end dark sidrbar */
 }
 
 @media only screen and (max-width: 1200px) {
@@ -169,10 +276,23 @@ main{
   }
 }
 @media only screen and (max-width: 890px){
-  .sidebar{
+  /* light sidebar */
+  
+  .lightSidebar{
     position: fixed;
     display: none;
   }
+  
+  /* end light sidebar */
+
+  /* dark theme */
+  
+  .darkSidebar{
+    position: fixed;
+    display: none;
+  }
+  
+  /* end dark theme */
 }
 @media only screen and (max-width: 660px){
   .second-nav .MuiButton-text{
@@ -181,7 +301,6 @@ main{
   .secon-nav__ItemText{
     padding-left: 4px;
     padding-right: 4px;
-
   }
 }
 @media only screen and (max-width: 575px){
@@ -227,32 +346,69 @@ border-top: 0;
 #menu- .MuiPaper-root ul{
   min-width: 150px;
 }
-.sidebar .active .MuiButtonBase-root{
+
+/* light sidebar */
+
+.lightSidebar .active .MuiButtonBase-root{
   background-color: #1DBF73;
   
 }
-.sidebar .active .MuiListItemText-root > span, .sidebar .active .MuiSvgIcon-root{
+.lightSidebar .active .MuiListItemText-root > span, .lightSidebar .active .MuiSvgIcon-root{
   color: #fff!important
 }
-.sidebar .MuiCollapse-wrapperInner .active .MuiListItemText-root > span{
+.lightSidebar .MuiCollapse-wrapperInner .active .MuiListItemText-root > span{
   color: #1DBF73!important
 }
-.sidebar .active #Group_68408 path,.sidebar .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .sidebar .active [data-name="Path 52239"], .sidebar .active #Group_68339 > * {
+.lightSidebar .active #Group_68408 path,.lightSidebar .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .lightSidebar .active [data-name="Path 52239"], .lightSidebar .active #Group_68339 > * {
   stroke: #fff
 }
-.sidebar .MuiCollapse-wrapperInner .active svg g > *, .sidebar .MuiCollapse-wrapperInner .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .sidebar .MuiCollapse-wrapperInner .active [data-name="Path 52239"] {
+.lightSidebar .MuiCollapse-wrapperInner .active svg g > *, .lightSidebar .MuiCollapse-wrapperInner .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .lightSidebar .MuiCollapse-wrapperInner .active [data-name="Path 52239"] {
   stroke: #1DBF73
 }
 
-.sidebar .active [data-name="Path 201"],.sidebar .active #apps {
+.lightSidebar .active [data-name="Path 201"],.lightSidebar .active #apps {
   fill: #fff
 }
-.sidebar .MuiCollapse-wrapperInner .active .MuiListItem-root{
+.lightSidebar .MuiCollapse-wrapperInner .active .MuiListItem-root{
   background-color: #F5F6FA!important;
 }
-.sidebar .MuiCollapse-wrapperInner .active #deployment{
+.lightSidebar .MuiCollapse-wrapperInner .active #deployment{
   fill: #1DBF73;
 }
+
+/* end light sidebar */
+
+/* dark sidebar */
+
+.darkSidebar .active .MuiButtonBase-root{
+  background-color: #1DBF73;
+  
+}
+.darkSidebar .active .MuiListItemText-root > span, .darkSidebar .active .MuiSvgIcon-root{
+  color: #fff!important
+}
+.darkSidebar .MuiCollapse-wrapperInner .active .MuiListItemText-root > span{
+  color: #1DBF73!important
+}
+.darkSidebar .active #Group_68408 path,.darkSidebar .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .darkSidebar .active [data-name="Path 52239"], .darkSidebar .active #Group_68339 > * {
+  stroke: #fff
+}
+.darkSidebar .MuiCollapse-wrapperInner .active svg g > *, .darkSidebar .MuiCollapse-wrapperInner .active [data-name='Cloud, Sync, Synchronize.6'] path:not(:first-child), .darkSidebar .MuiCollapse-wrapperInner .active [data-name="Path 52239"] {
+  stroke: #1DBF73
+}
+
+.darkSidebar .active [data-name="Path 201"],.darkSidebar .active #apps {
+  fill: #fff
+}
+.darkSidebar .MuiCollapse-wrapperInner .active .MuiListItem-root{
+  background-color: #F5F6FA!important;
+}
+.darkSidebar .MuiCollapse-wrapperInner .active #deployment{
+  fill: #1DBF73;
+}
+
+/* end dark sidebar */
+
 .d-none {
   display: none !important;
 }
@@ -261,31 +417,68 @@ border-top: 0;
   stroke: #7E84A3
 }
 
-/* tags buttons */
-.tagButton{
+/* light tags buttons */
+
+.lightTagButton{
   background-color: #fff!important;
+  color: #fff;
+  /* background-color: #12141D!important; */
   border: 1px solid #7070701f!important;
   width: 125px!important;
   border-radius: 50px!important;
   text-align: center;
   box-shadow: 0px 1px 2px #15223214;
 }
-.tagButton .MuiButton-label{
+.lightTagButton .MuiButton-label{
   display: flex;
   justify-content: space-around;
 } 
 
-.tagButton.slickNex .MuiButton-label{
+.lightTagButton.slickNex .MuiButton-label{
   display: flex;
   justify-content: flex-start;
 }
-.tagButton.slickPrev .MuiButton-label{
+.lightTagButton.slickPrev .MuiButton-label{
   display: flex;
   justify-content: flex-end;
 }
-.tagButton:hover:not(.slickNex, .slickPrev){
+.lightTagButton:hover:not(.slickNex, .slickPrev){
   background-color: #1dbf7378!important;
 }
+
+/* end light tags buttons */
+
+/* dark tags buttons */
+
+.darkTagButton{
+  background-color: #2A2C34!important;
+  color: #fff;
+  /* background-color: #12141D!important; */
+  border: 1px solid #7070701f!important;
+  width: 125px!important;
+  border-radius: 50px!important;
+  text-align: center;
+  box-shadow: 0px 1px 2px #15223214;
+}
+.darkTagButton .MuiButton-label{
+  display: flex;
+  justify-content: space-around;
+} 
+
+.darkTagButton.slickNex .MuiButton-label{
+  display: flex;
+  justify-content: flex-start;
+}
+.darkTagButton.slickPrev .MuiButton-label{
+  display: flex;
+  justify-content: flex-end;
+}
+.darkTagButton:hover:not(.slickNex, .slickPrev){
+  background-color: #1dbf7378!important;
+}
+
+/* end dark tags buttons */
+
 /* button[data-cat="All"]{
   background-color: #1dbf73!important;
   color: #fff;
@@ -323,10 +516,25 @@ button[data-cat="All"] .count-cat{
   background-color: #1DBF73!important;
   color: #fff;
 } */
-.tagButton.selected{
+
+/* light tag button */
+
+.lightTagButton.selected{
   background-color: #1DBF73!important;
   color: #fff;
 }
+
+/* end light tag button */
+
+/* dark tag button */
+
+.darktagButton.selected{
+  background-color: #1DBF73!important;
+  color: #fff;
+}
+
+/* end dark tag button */
+
 .app-content{
   max-width: 1800px;
   margin: auto;
@@ -436,26 +644,29 @@ button[data-cat="All"] .count-cat{
   top: -1px;
   bottom: -1px;
 }
-.tagButton{
+
+/* light tag button */
+
+.lightTagButton{
   background-color: #1dbf73!important;
   color: #fff;
 }
-.tagButton.notselected{
+.lightTagButton.notselected{
   background-color: #fff!important;
   color: rgba(0, 0, 0, 0.87);
 }
-.tagButton{
+.lightTagButton{
   background-color: #fff!important;
 }
-.tagButton.slickNex svg, .tagButton.slickPrev svg{
+.lightTagButton.slickNex svg, .lightTagButton.slickPrev svg{
   font-size: 14px;
   
 }
 
-.tagButton.slickNex, .tagButton.slickPrev{
+.lightTagButton.slickNex, .lightTagButton.slickPrev{
   height: 38px;
 }
-.tagButton.slickPrev{
+.lightTagButton.slickPrev{
   position: absolute;
   left: -105px;
   z-index: 5;
@@ -465,7 +676,7 @@ button[data-cat="All"] .count-cat{
   top: 50%;
   transform: translateY(-50%);
 }
-.tagButton.slickNex{
+.lightTagButton.slickNex{
   position: absolute;
   right: -105px;
   top: 50%;
@@ -475,25 +686,86 @@ button[data-cat="All"] .count-cat{
   justify-content: flex-start;
   padding-left: 10px;
 }
-.tagButton.slickNex:focus, .tagButton.slickPrev:focus{
+.lightTagButton.slickNex:focus, .lightTagButton.slickPrev:focus{
   background: #fff!important;
 }
-.tagButton.slickNex:focus > *, .tagButton.slickPrev:focus  > *{
+.lightTagButton.slickNex:focus > *, .lightTagButton.slickPrev:focus  > *{
   color: #1dbf73
   
 }
-.tagButton.slickNex, .tagButton.slickPrev{
+.lightTagButton.slickNex, .lightTagButton.slickPrev{
   color: #9D9D9D;
 }
-.tagButton.slickNex:hover, .tagButton.slickNex:focus, .tagButton.slickPrev:focus, .tagButton.slickPrev:hover{
+.lightTagButton.slickNex:hover, .lightTagButton.slickNex:focus, .lightTagButton.slickPrev:focus, .lightTagButton.slickPrev:hover{
   color: #1dbf73;
 }
+
+/* end light tag button */
+
+/* dark tag button */
+
+.darkTagButton{
+  background-color: #1dbf73!important;
+  color: rgb(75, 33, 33);
+}
+.darkTagButton.notselected{
+  background-color: #fff!important;
+  color: rgba(0, 0, 0, 0.87);
+}
+.darkTagButton{
+  background-color: #2A2C34!important;
+  color: #fff!important;
+}
+.darkTagButton.slickNex svg, .darkTagButton.slickPrev svg{
+  font-size: 14px; 
+}
+
+.darkTagButton.slickNex, .darkTagButton.slickPrev{
+  height: 38px;
+}
+.darkTagButton.slickPrev{
+  position: absolute;
+  left: -105px;
+  z-index: 5;
+  text-align: right;
+  justify-content: flex-end;
+  padding-right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.darkTagButton.slickNex{
+  position: absolute;
+  right: -105px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9;
+  text-align: right;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+.darkTagButton.slickNex:focus, .darkTagButton.slickPrev:focus{
+  background: #fff!important;
+}
+.darkTagButton.slickNex:focus > *, .darkTagButton.slickPrev:focus  > *{
+  color: #1dbf73
+  
+}
+.darkTagButton.slickNex, .darkTagButton.slickPrev{
+  color: #9D9D9D;
+}
+.darkTagButton.slickNex:hover, .darkTagButton.slickNex:focus, .darkTagButton.slickPrev:focus, .darkTagButton.slickPrev:hover{
+  color: #1dbf73;
+}
+
+/* end dark tag button */
+
 /* material ui overwrite the checkbox color  */
 .MuiCheckbox-colorPrimary.Mui-checked{
   color: #1DBF73!important;
 }
-/* footer */
-.footer{
+/* light footer */
+
+.lightFooter{
   display: flex;
   position: fixed;
   bottom: 0;
@@ -508,54 +780,120 @@ button[data-cat="All"] .count-cat{
   justify-content: center;
   align-items: center;
 }
-.footer ul {
+.lightFooter ul {
   display: flex;
   list-style: none;
 }
-.footer ul li {
+.lightFooter ul li {
   color: #9D9D9D;
   font-size: 16px;
   cursor: pointer;
 
 }
-.footer ul li  svg{
+.lightFooter ul li  svg{
   width: 16px;
   height: 16px;
   vertical-align: middle;
 }
-.footer ul li a:hover, .footer ul li:hover {
+.lightFooter ul li a:hover, .lightFooter ul li:hover {
   color: #1dbf73;
 }
 
-.footer ul li a:hover svg, .footer ul li a:hover path {
+.lightFooter ul li a:hover svg, .lightFooter ul li a:hover path {
   fill: #1dbf73;
 }
-.footer ul:first-child {
+.lightFooter ul:first-child {
   margin-right: 1.5rem;
 }
-.footer ul:first-child li:not(:last-child) {
+.lightFooter ul:first-child li:not(:last-child) {
   margin-right: 1rem;
 }
-.footer .md-links li:not(:last-child){
+.lightFooter .md-links li:not(:last-child){
   margin-right: 13px;
 
 }
 @media (max-width: 575px) {
-  .footer {
+  .lightFooter {
     flex-direction: column;
     height: 70px;
   }
-  .footer ul:first-child{
+  .lightFooter ul:first-child{
     font-size: 12px;
     margin-right: 0;
     margin-bottom: 10px;
   }
 }
 
-/* login form */
-.login-form{
+/* end light footer */
+
+/* dark footer */
+
+.darkFooter{
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  background: #2A2C34;
+  width: 100%;
+  height: 50px;
+  z-index: 9;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  align-items: center;
+}
+.darkFooter ul {
+  display: flex;
+  list-style: none;
+}
+.darkFooter ul li {
+  color: #9D9D9D;
+  font-size: 16px;
+  cursor: pointer;
+
+}
+.darkFooter ul li  svg{
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+.darkFooter ul li a:hover, .darkFooter ul li:hover {
+  color: #1dbf73;
+}
+
+.darkFooter ul li a:hover svg, .darkFooter ul li a:hover path {
+  fill: #1dbf73;
+}
+.darkFooter ul:first-child {
+  margin-right: 1.5rem;
+}
+.darkFooter ul:first-child li:not(:last-child) {
+  margin-right: 1rem;
+}
+.darkFooter .md-links li:not(:last-child){
+  margin-right: 13px;
+
+}
+@media (max-width: 575px) {
+  .darkFooter {
+    flex-direction: column;
+    height: 70px;
+  }
+  .darkFooter ul:first-child{
+    font-size: 12px;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* end dark footer */
+
+/* light login form */
+
+.lightLogin-form{
   box-shadow: 0px 2px 5px #15223221;
-  background: #ffffffdb;
+  background: #fff;
   width: 500px;
   /* display: flex; */
   border-radius: 6px;
@@ -565,33 +903,33 @@ button[data-cat="All"] .count-cat{
 
   justify-content: center;
 }
-.login-form h3{
+.lightLogin-form h3{
   font-size: 32px;
-  color: #333333;
+  color: #fff;
 
 }
-.login-form p{
+.lightLogin-form p{
   color: #5A607F;
   text-align: center;
 }
-.login-form .secrect-key{
+.lightLogin-form .secrect-key{
   color: #1DBF73;
 }
-.login-form > div{
+.lightLogin-form > div{
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
-.login-form div:first-child > svg{
+.lightLogin-form div:first-child > svg{
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.login-form p{
+.lightLogin-form p{
   margin-top: 1rem;
   margin-bottom: 1.7rem;
 }
-.login-form button{
+.lightLogin-form button{
   background: #1DBF73!important;
   color: #fff;
   width: 100%;
@@ -601,11 +939,71 @@ button[data-cat="All"] .count-cat{
   margin-bottom: 1.6rem;
 }
 @media (max-width: 459px){
-  .login-form{
+  .lightLogin-form{
     padding: 1rem;
     padding-top: 2rem;
   }
 }
+
+/* end light login form */
+
+/* dark login form */
+
+.darkLogin-form{
+  box-shadow: 0px 2px 5px #15223221;
+  background: #1E2029;
+  width: 500px;
+  /* display: flex; */
+  border-radius: 6px;
+  padding: 2rem 3rem ;
+  padding-top: 4.5rem;
+  display: flex;
+
+  justify-content: center;
+}
+.darkLogin-form h3{
+  font-size: 32px;
+  color: #fff;
+
+}
+.darkLogin-form p{
+  color: #5A607F;
+  text-align: center;
+}
+.darkLogin-form .secrect-key{
+  color: #1DBF73;
+}
+.darkLogin-form > div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.darkLogin-form div:first-child > svg{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.darkLogin-form p{
+  margin-top: 1rem;
+  margin-bottom: 1.7rem;
+}
+.darkLogin-form button{
+  background: #1DBF73!important;
+  color: #fff;
+  width: 100%;
+  min-width: 100%;
+  margin-top: 1rem;
+  height: 42px;
+  margin-bottom: 1.6rem;
+}
+@media (max-width: 459px){
+  .darkLogin-form{
+    padding: 1rem;
+    padding-top: 2rem;
+  }
+}
+
+/* end dark login form */
 
 .react-tagsinput-input{
   padding: 0px !important;
@@ -635,7 +1033,10 @@ button[data-cat="All"] .count-cat{
 .regular.slider.appTagsButtons button {
   margin-right: 1rem;
 }
-.tagButton::after{
+
+/* light tag button */
+
+.lightTagButton::after{
   content: '';
   left: 0;
   right: 0;
@@ -645,6 +1046,24 @@ button[data-cat="All"] .count-cat{
   position: absolute;
 
 }
+
+/* end light tag button */
+
+/* dark tag button */
+
+.darkTagButton::after{
+  content: '';
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* background-color: #000; */
+  position: absolute;
+
+}
+
+/* end dark tag button */
+
 /*  */
 .appCardHeader{
   background-size: 110px!important;
@@ -658,8 +1077,24 @@ button[data-cat="All"] .count-cat{
 .tagOnAppCard:not(:last-child){
   margin-right: 7px;
 } */
-/* categoryOnAppCard */
-.categoryOnAppCard span{
+
+/* light categoryOnAppCard */
+.lightCategoryOnAppCard span{
+  background-color: #2A2C34;
+    position: absolute;
+    /* right: 0; */
+    left: 16px;
+    top: 4px;
+    color: #1dbf73;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 300;
+}
+/* end light categoryOnAppCard */
+
+/* dark categoryOnAppCard */
+.darkCategoryOnAppCard span{
   background-color: #ffffff;
     position: absolute;
     /* right: 0; */
@@ -671,6 +1106,8 @@ button[data-cat="All"] .count-cat{
     font-size: 14px;
     font-weight: 300;
 }
+/* end dark categoryOnAppCard */
+
 @media (max-width: 575px) {
   .categoryOnAppCard span{
       padding: 5px 10px;
@@ -737,10 +1174,25 @@ input[type="search"]::-webkit-search-cancel-button {
 .value-cat{
   margin: auto;
 }
-.tagButton.selected .count-cat {
+
+/* light tag button */
+
+.lightTagButton.selected .count-cat {
   background-color: #4e4e4e;
   color: #fff;
 }
+
+/* end light tag button */
+
+/* dark tag button */
+
+.darkTagButton.selected .count-cat {
+  background-color: #4e4e4e;
+  color: #fff;
+}
+
+/* end dark tag button */
+
 .app-logo-img{
   width: 100px;
   height: 100px;

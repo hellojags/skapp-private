@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { Box, Button, makeStyles, Grid, FormGroup, FormControlLabel, Typography, Tooltip  } from '@material-ui/core';
+import { Box, Button, makeStyles, Grid, FormGroup, FormControlLabel, Typography, Tooltip } from '@material-ui/core';
 
 import Select from 'react-select';
 import { Field, Formik, useFormik } from 'formik';
@@ -14,7 +14,7 @@ import { ReactComponent as ImgIcon } from '../../assets/img/icons/image.svg';
 import { ReactComponent as LinkIcon } from '../../assets/img/icons/attachment-link.9.svg';
 import { ReactComponent as UploadIcon } from '../../assets/img/icons/cloud-upload-outline.svg';
 import { SnTextInput, SnSelect } from '../Utils/SnFormikControlls';
-import { skylinkToUrl } from "../../utils/SnUtility";
+import { skylinkToUrl } from "../../service/skynet-api";
 import { getInitValAndValidationSchemaFromSnFormikObj } from '../../service/SnFormikUtilService';
 import { getHNSSkyDBURL, setMyHostedApp } from '../../service/SnSkappService';
 import { useHistory } from 'react-router-dom';
@@ -27,6 +27,7 @@ import SnInfoModal from '../Modals/SnInfoModal';
 import { getPortalList } from '../../utils/SnNewObject';
 import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderAction';
 import Loader from "react-loader-spinner";
+import {getPortalUrl} from '../../service/skynet-api'
 
 const useStyles = makeStyles(styles)
 const versionOptions = [
@@ -49,18 +50,22 @@ const storageGatewayOption = getPortalList().map(portal => ({ "value": portal, "
 
 const reactSelectStyles = {
     control: styles => ({
-        ...styles, backgroundColor: 'white', height: 55, boxShadow: 0, borderColor: '#D9E1EC', color: '#000', borderRadius: 8,
+        ...styles,
+        backgroundColor: 'white',
+        height: 55,
+        boxShadow: 0,
+        borderColor: '#D9E1EC',
+        color: '#000',
+        borderRadius: 8,
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
             fontSize: 16,
-
         },
         '@media only screen and (max-width: 575px)': {
             height: 43,
             // width: '100%',
             fontSize: 14,
-
         },
         '&:hover': {
             borderColor: '#1DBF73'
@@ -85,8 +90,7 @@ const formikObj = {
     imgSkylink: [''],
     imgThumbnailSkylink: ['']
 };
-
-export default function AddNewSite() {
+export default function AddNewSite({ toggle }) {
     const [selectedOption, setSelectedOption] = useState(null);
     const classes = useStyles();
     let history = useHistory();
@@ -112,7 +116,7 @@ export default function AddNewSite() {
             dispatch(setUploadList(snUploadListStore));
         };
     }, []);
-    
+
     const cancelUpload = (e, formik) => {
         e.preventDefault();
         e.stopPropagation();
@@ -126,7 +130,7 @@ export default function AddNewSite() {
         dispatch(setLoaderDisplay(true));
         await setMyHostedApp(values);
         dispatch(setLoaderDisplay(false));
-        const hnsSkyDBURL = await getHNSSkyDBURL(values.hns);
+        const hnsSkyDBURL = await getHNSSkyDBURL(null,values.hns,values.skylink);
         setInfoModalParams({
             title: `HNS SkyDB URL`,
             content: hnsSkyDBURL,
@@ -175,9 +179,11 @@ export default function AddNewSite() {
 
     const setValueOfForm = (obj, formik) => {
         formik.setFieldValue("skylink", obj.skylink, true)
-        formik.setFieldValue("sourceCode", `https://siasky.net/${obj.skylink}`, true)
+        formik.setFieldValue("sourceCode", getPortalUrl() + `${obj.skylink}`, true)
     }
-    
+
+    { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
+
     return (
         <>
             <Box >
@@ -189,15 +195,16 @@ export default function AddNewSite() {
                     onSubmit={submitForm}>
                     {formik => (<form onSubmit={formik.handleSubmit}>
                         <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                            <h1 className={classes.h1}>Add New Site</h1>
+                            <h1 className={toggle ? classes.darkh1 : classes.lighth1}>New App Deployment</h1>
                             <Box className={classes.btnBox}>
-                                <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}>Reset Form</Button>
-                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add />Submit</Button>
+                                <Button className={classes.cancelBtn} onClick={(e) => onCancel(e, formik)}><b>Reset Form</b></Button>
+                                <Button className={classes.submitBtn} onClick={formik.handleSubmit}><Add /><b>Deploy App</b></Button>
                             </Box>
                         </Box>
+                        <p className={classes.text}>( Note: Hosted App will NOT be Published to AppStore by default. If you wish to publish, you can do so after deployment from "App Hosting" or "Publish App" link)</p>
                         <Box component="form">
                             <Box>
-                                <label className={classes.label}>Site Logo</label>
+                                {/* <label className={classes.label}>Site Logo</label> */}
                                 <div className="d-none">
                                     <SnUpload
                                         name="files"
@@ -208,12 +215,12 @@ export default function AddNewSite() {
                                         uploadStarted={(e) => setIsLogoUploaded(e)}
                                     />
                                 </div>
-                                <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
-                                    {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() === "" && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
-                                    <Box style={{ position: "relative", textAlign: 'center' }}>
-                                        <ImgIcon />
-                                    </Box> 
-                                    <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload Image</Box> 
+                                <div className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+                                    {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() === "" && <Box style={{ flexDirection: "column", justifyItems: 'center' }}>
+                                        <Box style={{ position: "relative", textAlign: 'center' }}>
+                                            <ImgIcon />
+                                        </Box>
+                                        <Box style={{ position: "relative", color: "grey", textAlign: 'center' }}>click to upload App Logo</Box>
                                     </Box>}
                                     {!isLogoUploaded && formik.values.imgThumbnailSkylink.trim() !== "" && <img
                                         alt="app"
@@ -226,11 +233,11 @@ export default function AddNewSite() {
                                         onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)}
                                         name="1"
                                     />}
-                                    {isLogoUploaded ? <Loader type="Oval" color="#57C074" height={50}  width={50} /> : null}
+                                    {isLogoUploaded ? <Loader type="Oval" color="#57C074" height={50} width={50} /> : null}
                                 </div>
-                                <div className={classes.inputGuide}>
-                                    Max. size of 5 MB in: JPG or PNG. 300x500 or larger recommended
-                                </div>
+                                {/* <div className={classes.inputGuide}>
+                                   Note: Image Upload May Take sometime
+                                </div> */}
                                 <input type="text" hidden />
                             </Box>
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
@@ -238,41 +245,41 @@ export default function AddNewSite() {
                                     <SnTextInput
                                         label={<span>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="appName"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                                 <Box className={classes.inputContainer} flex={1}>
                                     <SnTextInput
-                                        label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>Default Path <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="defaultPath"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                     <SnTextInput
-                                        label={<span>HNS Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>Domain <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="hns"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                                 <Box className={`${classes.inputContainer}`} flex={1} >
-                                    <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
+                                    <label>Skynet Portal <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
                                     <Box>
                                         <SnSelect
+                                            toggle={toggle}
                                             label="Storage Gateway"
                                             name="storageGateway"
                                             options={storageGatewayOption}
                                         />
                                     </Box>
                                 </Box>
-                            
                                 <Box className={`${classes.inputContainer}`} flex={1} >
                                     <SnTextInput
-                                        label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="portalMinVersion"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>
@@ -281,9 +288,9 @@ export default function AddNewSite() {
                             <Box display='flex' className={`${classes.formRow} formSiteRow`}>
                                 <Box className={classes.inputContainer} flex={1} position="relative">
                                     <SnTextInput
-                                        label={<span>Deployed Code Skylink <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></span>}
+                                        label={<span>Deployed Code Skylink <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></span>}
                                         name="sourceCode"
-                                        className={classes.input}
+                                        className={toggle ? classes.darkInput : classes.lightInput}
                                         type="text" />
                                 </Box>
                             </Box>
@@ -299,12 +306,12 @@ export default function AddNewSite() {
                                         />
                                     </FormGroup>
                                 </div>
-
                                 <Grid container spacing={2}>
                                     <Grid item md={12} sm={12} xs={12}>
                                         <Box>
                                             <div className="d-none">
                                                 <SnUpload
+                                                    toggle={toggle}
                                                     name="files"
                                                     source={UPLOAD_SOURCE_NEW_HOSTING}
                                                     ref={uploadEleRef}
@@ -313,7 +320,7 @@ export default function AddNewSite() {
                                                 />
 
                                             </div>
-                                            <div className={classes.previewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
+                                            <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} style={{ flexDirection: 'column', width: '100%', minHeight: '230px' }}>
                                                 {/* <div><UploadIcon /></div>
 
                                             <div>
@@ -336,7 +343,7 @@ export default function AddNewSite() {
                                                     showAlerts={false}
                                                     dropzoneText={
                                                         <div id="dropzone-text" onClick={(evt) => handleDropZoneClick(evt, uploadEleRef)}>
-                                                            {  snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length <= 0 && 
+                                                            {snUploadListStore && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING] && snUploadListStore[UPLOAD_SOURCE_NEW_HOSTING].length <= 0 &&
                                                                 <>
                                                                     <div><UploadIcon /></div>
                                                                     <div style={{ color: '#5C757D' }}>
@@ -377,10 +384,10 @@ export default function AddNewSite() {
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
                                                                                 {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
-                                                                                    <><Loader type="Oval" color="#57C074" height={50}  width={50} /></> 
+                                                                                    <><Loader type="Oval" color="#57C074" height={50} width={50} /></>
                                                                                     {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
-                                                                                <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e)=> cancelUpload(e, formik)}>
+                                                                                <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e) => cancelUpload(e, formik)}>
                                                                                     Cancel
                                                                                 </Button>
                                                                             </div>

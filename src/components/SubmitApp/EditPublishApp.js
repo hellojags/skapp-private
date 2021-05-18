@@ -33,7 +33,7 @@ import Loader from "react-loader-spinner";
 import { useParams, useHistory } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
-import { skylinkToUrl } from "../../utils/SnUtility";
+import { skylinkToUrl } from "../../service/skynet-api";
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import { getMyPublishedAppsAction } from "../../redux/action-reducers-epic/SnPublishAppAction";
@@ -81,24 +81,64 @@ const socialOption = [
   { value: "Dlink", label: "Dlink" },
 ];
 
-const reactSelectStyles = {
+const lightReactSelectStyles = {
   control: (styles) => ({
     ...styles,
     backgroundColor: "white",
     height: 55,
     boxShadow: 0,
+    // borderColor: "#1DBF73",
     borderColor: "#D9E1EC",
-    color: "#000",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
+      background: '#fff',
+      borderColor: '#D9E1EC'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
+      background: '#fff',
+      borderColor: '#D9E1EC'
+    },
+    "&:hover": {
+      borderColor: "#1DBF73",
+    },
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+    ...styles,
+    backgroundColor: isSelected ? "#1DBF73" : "#fff",
+    "&:foucs": {
+      backgroundColor: "#1DBF73",
+    },
+  }),
+};
+
+const darkReactSelectStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: "#2A2C34",
+    height: 55,
+    boxShadow: 0,
+    borderColor: "#48494E",
+    color: "#fff!important",
+    borderRadius: 8,
+    "@media only screen and (max-width: 1440px)": {
+      height: 50,
+      // width: '100%',
+      fontSize: 16,
+      background: '#2A2C34',
+      borderColor: '#48494E'
+    },
+    "@media only screen and (max-width: 575px)": {
+      height: 43,
+      // width: '100%',
+      fontSize: 14,
+      background: '#2A2C34',
+      borderColor: '#48494E'
     },
     "&:hover": {
       borderColor: "#1DBF73",
@@ -114,7 +154,7 @@ const reactSelectStyles = {
 };
 
 let forImagesPreview = [];
-const EditPublishApp = () => {
+const EditPublishApp = ({toggle}) => {
   const [category, setCategory] = useState("");
   const [appStatus, setAppStatus] = useState("");
   const [age, setAge] = useState("");
@@ -458,6 +498,8 @@ const EditPublishApp = () => {
     // setIsLogoUploaded(true);
     dropZoneRef.current.gridRef.current.click();
   };
+
+  {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
   
   // get
 
@@ -470,7 +512,7 @@ const EditPublishApp = () => {
         justifyContent="space-between"
         marginTop="7px"
       >
-        <h1 className={classes.h1}>Edit Publish App</h1>
+        <h1 className={toggle ? classes.darkh1 : classes.lighth1}>Edit Publish App</h1>
         <Box className={classes.btnBox}>
           <Button className={classes.cancelBtn} onClick={handleReset}> Cancel </Button>
           <Button
@@ -501,7 +543,7 @@ const EditPublishApp = () => {
                 uploadStarted={(e) => setIsLogoUploaded(e)}
             />
           </div>
-          <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+          <div className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
             {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
               <Box style={{ position: "relative", textAlign: 'center' }}>
                 <ImgIcon />
@@ -542,12 +584,12 @@ const EditPublishApp = () => {
           className={`${classes.formRow} ${classes.formRow1}`}
         >
           <Box
-            className={`${classes.inputContainer} ${classes.max33}`}
+            className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.max33}`}
             flex={1}
           >
             <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="App Name"
               name="appname"
               ref={register}
@@ -556,31 +598,31 @@ const EditPublishApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.max33}`} flex={1}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.max33}`} flex={1}>
             <label>App URL(Skylink) <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="appUrl"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://[hns name].hns"
             />
             {isAppUrlTrue && (
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer}`} flex={1}>
+          <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="verson"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="Version"
             />
             { isAppVersionTrue && (
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.selectVersion}`}>
             <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Select
@@ -590,7 +632,7 @@ const EditPublishApp = () => {
                 defaultValue={appStatus}
                 onChange={(e)=> setAppStatus(e)}
                 options={appStatusOptions}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
           </Box>
@@ -600,7 +642,7 @@ const EditPublishApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-          <Box className={`${classes.inputContainer}`}  flex={0.38}>
+          <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={0.38}>
             <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Select
@@ -610,7 +652,7 @@ const EditPublishApp = () => {
                 value={category}
                 onChange={(e) => setCategory(e)}
                 options={appCatOptions}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
               {isAppCatTrue && (
                 <div className="required-field">This field is required</div>
@@ -621,7 +663,7 @@ const EditPublishApp = () => {
             <label>Custom Tags <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <TagsInput
               value={tags}
-              className={`${classes.inputTag}`}
+              className={toggle ? classes.darkInputTag : classes.lightInputTag}
               onChange={(tags) => setTags(tags)}
             />
             {/* <input
@@ -636,25 +678,25 @@ const EditPublishApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-           <Box className={classes.inputContainer} flex={1}>
+           <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>Git URL <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <input
               name="sourceCode"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://github.com"
             />
           </Box>
-          <Box className={classes.inputContainer} flex={1}>
+          <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>Demo URL</label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               name="demoUrl"
               ref={register}
               placeholder="https://www.demo.com/UJJ5Rgbu2TM"
             />
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.selectVersion}`}>
             <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline  /></Tooltip></label>
             <Box>
               <Select
@@ -664,7 +706,7 @@ const EditPublishApp = () => {
                 defaultValue={age}
                 onChange={e => setAge(e)}
                 options={optionsAge}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
           </Box>
@@ -692,7 +734,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst1(e)}
                   />
                 </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
                   {!isImageUploadFirst1 && !Object.keys(isImageUploadFirstObj1).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -737,7 +779,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst(e)}
                   />
                 </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
                   {!isImageUploadFirst && !Object.keys(isImageUploadFirstObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -785,7 +827,7 @@ const EditPublishApp = () => {
                     uploadStarted={(e) => setIsImageUploadingSecond(e)}
                   />
                 </div>
-                  <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
+                  <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
                     {!isImageUploadSecond && !Object.keys(isImageUploadSecondObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -833,7 +875,7 @@ const EditPublishApp = () => {
                   uploadStarted={(e) => setIsImageUploadingThird(e)}
                 />
               </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
                   {!isImageUploadThird && !Object.keys(isImageUploadThirdObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -881,7 +923,7 @@ const EditPublishApp = () => {
               name="appDescription"
               ref={register}
               maxLength={5000}
-              className={classes.textarea}
+              className={toggle ? classes.darkTextarea : classes.lightTextarea}
               aria-label="minimum height"
               rowsMin={6}
               // value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."
@@ -902,7 +944,7 @@ const EditPublishApp = () => {
           </div>
           <Box position="relative">
             <TextareaAutosize
-              className={classes.textarea}
+              className={toggle ? classes.darkTextarea : classes.lightTextarea}
               aria-label="minimum height"
               rowsMin={4}
               ref={register}
@@ -924,16 +966,16 @@ const EditPublishApp = () => {
           <Box position="relative">
             <Grid container spacing={2}>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                    <Select
                         isMulti={false}
                         ref={register}
                         onChange={(e) => setfirstSocialLinkTitle(e)}
                         options={socialOption}
-                        styles={reactSelectStyles}
+                        styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                         value={firstSocialLinkTitle}
                         classNamePrefix="socialMedia"
-                        className={classes.socilaMediaSelect}
+                        className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                         name="firstSocialLinkTitle"
                         defaultValue={firstSocialLinkTitle}
                     />
@@ -945,19 +987,19 @@ const EditPublishApp = () => {
                 </Box>
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                   <Select
                     isMulti={false}
                     as={Select}
                     ref={register}
                     classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
+                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                     name="secondSocialLinkTitle"
                     value={secondSocialLinkTitle}
                     defaultValue={secondSocialLinkTitle}
                     onChange={(e) => setSecondSocialLinkTitle(e)}
                     options={socialOption}
-                    styles={reactSelectStyles}
+                    styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                   />
                   <input
                     placeholder=""
@@ -967,19 +1009,19 @@ const EditPublishApp = () => {
                 </Box>
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                   <Select
                     isMulti={false}
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
+                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                     name="thirdSocialLinkTitle"
                     value={thirdSocialLinkTitle}
                     defaultValue={thirdSocialLinkTitle}
                     onChange={(e) => setThirdSocialLinkTitle(e)}
                     options={socialOption}
-                    styles={reactSelectStyles}
+                    styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                   />
                   <input
                     placeholder=""

@@ -34,7 +34,7 @@ import Loader from "react-loader-spinner";
 import { useParams, useHistory } from "react-router-dom";
 import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
 import { useLoadHostedAppFromUrl } from "../../hooks/useLoadHostedAppFromUrl";
-import { skylinkToUrl } from "../../utils/SnUtility";
+import { skylinkToUrl } from "../../service/skynet-api";
 import SnUpload from '../../uploadUtil/SnUpload';
 import { UPLOAD_SOURCE_DEPLOY, UPLOAD_SOURCE_NEW_HOSTING, UPLOAD_SOURCE_NEW_HOSTING_IMG } from '../../utils/SnConstants';
 import Modal from '@material-ui/core/Modal';
@@ -84,24 +84,64 @@ const socialOption = [
   { value: "Dlink", label: "Dlink" },
 ];
 
-const reactSelectStyles = {
+const lightReactSelectStyles = {
   control: (styles) => ({
     ...styles,
     backgroundColor: "white",
     height: 55,
     boxShadow: 0,
+    // borderColor: "#1DBF73",
     borderColor: "#D9E1EC",
-    color: "#000",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
+      background: '#fff',
+      borderColor: '#D9E1EC'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
+      background: '#fff',
+      borderColor: '#D9E1EC'
+    },
+    "&:hover": {
+      borderColor: "#1DBF73",
+    },
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+    ...styles,
+    backgroundColor: isSelected ? "#1DBF73" : "#fff",
+    "&:foucs": {
+      backgroundColor: "#1DBF73",
+    },
+  }),
+};
+
+const darkReactSelectStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: "#2A2C34",
+    height: 55,
+    boxShadow: 0,
+    borderColor: "#48494E",
+    color: "#fff!important",
+    borderRadius: 8,
+    "@media only screen and (max-width: 1440px)": {
+      height: 50,
+      // width: '100%',
+      fontSize: 16,
+      background: '#2A2C34',
+      borderColor: '#48494E'
+    },
+    "@media only screen and (max-width: 575px)": {
+      height: 43,
+      // width: '100%',
+      fontSize: 14,
+      background: '#2A2C34',
+      borderColor: '#48494E'
     },
     "&:hover": {
       borderColor: "#1DBF73",
@@ -117,7 +157,7 @@ const reactSelectStyles = {
 };
 
 let forImagesPreview = [];
-const SubmitApp = () => {
+const SubmitApp = ({toggle}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const dispatch = useDispatch();
 
@@ -483,6 +523,8 @@ const SubmitApp = () => {
     dropZoneRef.current.gridRef.current.click();
   };
 
+  {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+
   // get
 
   return (
@@ -494,7 +536,7 @@ const SubmitApp = () => {
         justifyContent="space-between"
         marginTop="7px"
       >
-        <h1 className={classes.h1}>Publish App</h1>
+        <h1 className={toggle ? classes.darkh1 : classes.lighth1}>Publish App</h1>
         <Box className={classes.btnBox}>
           <Button className={classes.cancelBtn} onClick={handleReset}> Reset Form </Button>
           <Button
@@ -526,18 +568,18 @@ const SubmitApp = () => {
         }}
       >
         <Fade in={(isModelOpen && !SnLoader)}>
-          <Box className={classes.shareCardContainer}>
-            <Typography component='h2' className={classes.modalTitle}>
+          <Box className={toggle ? classes.darkShareCardContainer : classes.lightShareCardContainer}>
+            <Typography component='h2' className={toggle ? classes.darkModalTitle : classes.lightModalTitle}>
               App Published Successfully
             </Typography>
             <Typography component="p">
               Now you will be redirected to AppStore page, If you want to stay on same page click Cancel Button
             </Typography>
             <Box style={{ textAlign: 'right' }}>
-              <Button onClick={(e)=> history.push('/apps')} className={classes.okBtn}>
+              <Button onClick={(e)=> history.push('/apps')} className={toggle ? classes.darkOkBtn : classes.lightOkBtn}>
                 Ok
               </Button>
-              <Button onClick={(e)=>setIsModelOpen(false)} className={classes.closeBtn}>
+              <Button onClick={(e)=>setIsModelOpen(false)} className={toggle ? classes.darkCloseBtn : classes.lightCloseBtn}>
                 Cancel
               </Button>
             </Box>
@@ -557,7 +599,7 @@ const SubmitApp = () => {
               uploadStarted={(e) => setIsLogoUploaded(e)}
             />
           </div>
-          <div className={classes.siteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
+          <div className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef)} >
             {!isLogoUploaded && !Object.keys(appLogo).length && !appDetail && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
               <Box style={{ position: "relative", textAlign: 'center' }}>
                 <ImgIcon />
@@ -598,12 +640,12 @@ const SubmitApp = () => {
           className={`${classes.formRow} ${classes.formRow1}`}
         >
           <Box
-            className={`${classes.inputContainer} ${classes.max33}`}
+            className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.max33}`}
             flex={1}
           >
             <label>App Name <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder=""
               name="appname"
               ref={register}
@@ -612,31 +654,31 @@ const SubmitApp = () => {
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.max33}`} flex={1}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.max33}`} flex={1}>
             <label>App URL(Skylink) <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="appUrl"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://[hns name].hns"
             />
             {isAppUrlTrue && (
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer}`} flex={1}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer}`} flex={1}>
             <label>App Version <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="verson"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="Version"
             />
             {isAppVersionTrue && (
               <div className="required-field">This field is required</div>
             )}
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.selectVersion}`}>
             <label>App Status <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
@@ -648,7 +690,7 @@ const SubmitApp = () => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appStatus}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
           </Box>
@@ -658,7 +700,7 @@ const SubmitApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-          <Box className={`${classes.inputContainer}`} flex={0.38}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer}`} flex={0.38}>
             <label>App Category <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
@@ -669,7 +711,7 @@ const SubmitApp = () => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appCatOptions}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
               {isAppCatTrue && (
                 <div className="required-field">This field is required</div>
@@ -680,7 +722,7 @@ const SubmitApp = () => {
             <label>Custom Tags <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <TagsInput
               value={tags}
-              className={`${classes.inputTag}`}
+              className={toggle ? classes.darkInputTag : classes.lightInputTag}
               onChange={(tags) => setTags(tags)}
             />
             {/* <input
@@ -695,25 +737,25 @@ const SubmitApp = () => {
           display="flex"
           className={`${classes.formRow} ${classes.formRow2}`}
         >
-          <Box className={classes.inputContainer} flex={1}>
+          <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>Git URL <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <input
               name="sourceCode"
               ref={register}
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               placeholder="https://github.com"
             />
           </Box>
-          <Box className={classes.inputContainer} flex={1}>
+          <Box className={toggle ? classes.darkInputContainer : classes.lightInputContainer} flex={1}>
             <label>Demo URL</label>
             <input
-              className={classes.input}
+              className={toggle ? classes.darkInput : classes.lightInput}
               name="demoUrl"
               ref={register}
               placeholder="https://www.demo.com/UJJ5Rgbu2TM"
             />
           </Box>
-          <Box className={`${classes.inputContainer} ${classes.selectVersion}`}>
+          <Box className={`${toggle ? classes.darkInputContainer : classes.lightInputContainer} ${classes.selectVersion}`}>
             <label>Age Restriction? <Tooltip className="iconLablel" title="site logo"><HelpOutline /></Tooltip></label>
             <Box>
               <Controller
@@ -727,7 +769,7 @@ const SubmitApp = () => {
                   return { value: selected };
                 }}
                 options={optionsAge}
-                styles={reactSelectStyles}
+                styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
           </Box>
@@ -755,7 +797,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst1(e)}
                   />
                 </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef1)} >
                   {!isImageUploadFirst1 && !Object.keys(isImageUploadFirstObj1).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -800,7 +842,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingFirst(e)}
                   />
                 </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef2)} >
                   {!isImageUploadFirst && !Object.keys(isImageUploadFirstObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -848,7 +890,7 @@ const SubmitApp = () => {
                     uploadStarted={(e) => setIsImageUploadingSecond(e)}
                   />
                 </div>
-                  <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
+                  <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef3)} >
                     {!isImageUploadSecond && !Object.keys(isImageUploadSecondObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -896,7 +938,7 @@ const SubmitApp = () => {
                   uploadStarted={(e) => setIsImageUploadingThird(e)}
                 />
               </div>
-                <div className={classes.previewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
+                <div className={toggle ? classes.darkPreviewImg : classes.lightPreviewImg} onClick={(evt) => handleDropZoneClick(evt, imgUploadEleRef4)} >
                   {!isImageUploadThird && !Object.keys(isImageUploadThirdObj).length && <Box style={{ flexDirection: "column", justifyItems: 'center' }}> 
                       <Box style={{ position: "relative", textAlign: 'center' }}>
                         <ImgIcon />
@@ -943,7 +985,7 @@ const SubmitApp = () => {
             <TextareaAutosize
               name="appDescription"
               ref={register}
-              className={classes.textarea}
+              className={toggle ? classes.darkTextarea : classes.lightTextarea}
               aria-label="minimum height"
               rowsMin={6}
               maxLength={5000}
@@ -965,7 +1007,7 @@ const SubmitApp = () => {
           </div>
           <Box position="relative">
             <TextareaAutosize
-              className={classes.textarea}
+              className={toggle ? classes.darkTextarea : classes.lightTextarea}
               aria-label="minimum height"
               rowsMin={4}
               ref={register}
@@ -987,19 +1029,19 @@ const SubmitApp = () => {
           <Box position="relative">
             <Grid container spacing={2}>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                   <Controller
                     isMulti={false}
                     as={Select}
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
+                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                     name="firstSocialLinkTitle"
                     defaultValue={firstSocialLinkTitle}
                     onChange={(e) => setfirstSocialLinkTitle(e.value)}
                     options={socialOption}
-                    styles={reactSelectStyles}
+                    styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                   />
                   <input
                     value={firstSocialLink}
@@ -1009,19 +1051,19 @@ const SubmitApp = () => {
                 </Box>
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                   <Controller
                     isMulti={false}
                     as={Select}
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
+                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                     name="secondSocialLinkTitle"
                     defaultValue={secondSocialLinkTitle}
                     onChange={(e) => setSecondSocialLinkTitle(e.value)}
                     options={socialOption}
-                    styles={reactSelectStyles}
+                    styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                   />
                   <input
                     placeholder=""
@@ -1031,19 +1073,19 @@ const SubmitApp = () => {
                 </Box>
               </Grid>
               <Grid item md={6} lg={4} sm={12} xs={12}>
-                <Box display="flex" className={classes.socialOptionContainer}>
+                <Box display="flex" className={toggle ? classes.darkSocialOptionContainer : classes.lightSocialOptionContainer}>
                   <Controller
                     isMulti={false}
                     as={Select}
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={classes.socilaMediaSelect}
+                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
                     name="thirdSocialLinkTitle"
                     defaultValue={thirdSocialLinkTitle}
                     onChange={(e) => setThirdSocialLinkTitle(e.value)}
                     options={socialOption}
-                    styles={reactSelectStyles}
+                    styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
                   />
                   <input
                     placeholder=""

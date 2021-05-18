@@ -1,5 +1,5 @@
 import { Box, InputBase } from '@material-ui/core'
-import React, { Fragment } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import UtilitiesItem from '../AppsComp/UtilitiesItem'
@@ -7,13 +7,16 @@ import ListFilter from '../AppsComp/ListFilter'
 import SubmitBtn from '../AppsComp/SubmitBtn'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import StorageTable from './StorageTable'
-// import AddNewDomain from './AddNewDomain'
-// import AddNewDomainTXT from './AddNewDomainTXT'
-// import HostingItem from './HostingItem'
-// import AddNewSite from './AddNewSiteBtn'
+import AddEditStorage from './AddEditStorage'
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoaderDisplay } from "../../redux/action-reducers-epic/SnLoaderAction";
+import { getStorageAction, setStorageEpic, setEditStorageEpic, setDeleteStorageEpic } from "../../redux/action-reducers-epic/SnStorageAction";
+
+
 const useStyles = makeStyles(theme => (
     {
-        search: {
+        lightSearch: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade('#fff', 1),
@@ -28,8 +31,30 @@ const useStyles = makeStyles(theme => (
             },
             color: '#8B9DA5',
             boxShadow: '0px 1px 2px #15223214',
-            // border: '1px solid #7070701A;',
-            border: '1px solid #48494E;',
+            border: '1px solid #7070701A;',
+
+            marginLeft: '16px!important',
+            '@media (max-width: 1650px)': {
+                width: 'auto'
+            },
+
+        },
+        darkSearch: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade('#2A2C34', 1),
+            '&:hover': {
+                backgroundColor: fade("#2A2C34", 0.9),
+            },
+            marginRight: theme.spacing(2),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(3),
+                width: 'auto',
+            },
+            color: '#8B9DA5',
+            boxShadow: '0px 1px 2px #15223214',
+            border: '1px solid rgba(0, 0, 0, 0.8);',
 
             marginLeft: '16px!important',
             '@media (max-width: 1650px)': {
@@ -47,11 +72,15 @@ const useStyles = makeStyles(theme => (
             justifyContent: 'center',
             color: '#B4C6CC'
         },
-        inputRoot: {
-            color: 'inherit',
+        lightInputRoot: {
+            // color: 'inherit',
+            color: '#2A2C34!important',
+        },
+        darkInputRoot: {
+            color: '#fff!important',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
         },
         inputInput: {
-            background: '#2A2C34',
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             transition: theme.transitions.create('width'),
             width: '100%',
@@ -71,9 +100,11 @@ const useStyles = makeStyles(theme => (
             }
 
         },
-
-        pageHeading: {
-            // color: '#131523',
+        lightPageHeading: {
+            color: '#131523',
+            fontSize: '28px',
+        },
+        darkPageHeading: {
             color: '#fff',
             fontSize: '28px',
         },
@@ -133,21 +164,95 @@ const useStyles = makeStyles(theme => (
 
     }
 ))
-function StorageGateway() {
+
+const validationSchema = Yup.object().shape({
+    portalName: Yup.string().required("This field is required"),
+    portalUrl: Yup.string().required("This field is required"),
+    portalType: Yup.string().required("This field is required"),
+    version: Yup.string().required("This field is required"),
+});
+
+let initailValueFormikObj = {
+    portalName: "",
+    portalUrl: "",
+    version: "1",
+};
+
+function StorageGateway({ toggle }) {
 
     const { width } = useWindowDimensions()
-    const classes = useStyles()
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const userStorages = useSelector((state) => state.SnStorages.storages);
 
-    return (
+    const [newDomain, setNewDomain] = useState(false);
+    const [editDomain, setEditDomain] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    const handleSetDomain = (val) => {
+        setError(null);
+        setNewDomain(val)
+        setEditDomain(null);
+        initailValueFormikObj = {
+            portalName: "",
+            portalUrl: "",
+            version: "1"
+        };
+    } 
 
-        <Fragment >
-            {/* <AddNewDomain /> */}
-            {/* <AddNewDomainTXT /> */}
+    useEffect(async () => {
+        // console.log("came here");
+        setIsLoading(true);
+        await dispatch(getStorageAction());
+        setIsLoading(false);
+      }, []);
+
+    const submitProfileForm = async (e) => {
+        setError(null);
+        if (editDomain !== null) {
+            handleEdit({ index: editDomain, storage: e });
+            handleSetDomain(false);
+            setEditDomain(null);
+        } else {
+            if (userStorages.some(x => x.portalName.toLowerCase() === e.portalName.toLowerCase())) {
+                setError('Portal Name already exists');
+                return;
+            }
+            dispatch(setStorageEpic(e));
+            handleSetDomain(false);
+        }
+    };
+
+    const handleDelete = async (e) => {
+        dispatch(setDeleteStorageEpic(e));
+    }
+  
+    const handleEdit = async (e) => {
+        dispatch(setEditStorageEpic(e));
+    }
+
+    const handleEditSet = async (e, domain) => {
+        setEditDomain(e);
+        initailValueFormikObj = {
+            portalName: domain.portalName,
+            portalUrl: domain.portalUrl,
+            portalType: domain.portalType,
+            version: domain.version
+        };
+        setNewDomain(true)
+    }
+
+    { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
+
+    return ( 
+        <Fragment>
+            {newDomain && <AddEditStorage error={error} editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
-                    <h1 className={classes.pageHeading}>Domain Manager</h1>
+                    <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Storage Gateway Manager</h1>
                 </Box>
-                {width < 1250 && <div className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
+                {width < 1250 && <div className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}>
                     <Box>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -156,18 +261,14 @@ function StorageGateway() {
                     <InputBase
                         placeholder="Search Apps"
                         classes={{
-                            root: classes.inputRoot,
+                            root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </div>}
                 <Box className={classes.secondNavRow2} display="flex" alignItems="center" flex={1} justifyContent='flex-end'>
-                    <Box>
-                        <UtilitiesItem />
-                    </Box>
-
-                    {width > 1249 && <div className={classes.search}>
+                    {width > 1249 && <div className={toggle ? classes.darkSearch : classes.lightSearch}>
                         <Box>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -176,27 +277,23 @@ function StorageGateway() {
                         <InputBase
                             placeholder="Search Apps"
                             classes={{
-                                root: classes.inputRoot,
+                                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>}
                     <Box>
-                        <ListFilter />
-                    </Box>
-
-                    <Box>
-                        <SubmitBtn addSite={true} styles={{ justifyContent: "space-around" }}>
-                            Add Storage
-                    </SubmitBtn>
+                        <SubmitBtn addSite={true} onClick={() => setNewDomain(true)} styles={{ justifyContent: "space-around" }}>
+                            Add Storage Gateway
+                        </SubmitBtn>
                     </Box>
                 </Box>
 
             </Box>
-            <StorageTable />
+            <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
+            { !isLoading ? <StorageTable  handleDelete={(e)=> handleDelete(e)} handleEdit={(e, val) => handleEditSet(e, val)} userStorages={userStorages} toggle={toggle} />: null }
         </Fragment>
     )
 }
-
 export default StorageGateway

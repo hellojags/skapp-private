@@ -7,7 +7,7 @@ import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined'
 import { ReactComponent as FolderIcon } from '../../assets/img/icons/folderIcon.svg'
 import { ReactComponent as ShareIcon } from '../../assets/img/icons/shareSite.svg'
 import styles from '../../assets/jss/hosting/HostingItemStyle'
-import { skylinkToUrl } from '../../utils/SnUtility'
+import { skylinkToUrl } from "../../service/skynet-api";
 import moment from 'moment'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
