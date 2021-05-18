@@ -586,7 +586,7 @@ const SubmitApp = ({toggle}) => {
           </Box>
         </Fade>
       </Modal>
-      <Box component="form">
+      <Box component="form" autocomplete="off">
         <Box>
           <label className={classes.label}>Site Logo</label>
           <div className="d-none">
@@ -1046,6 +1046,7 @@ const SubmitApp = ({toggle}) => {
                   <input
                     value={firstSocialLink}
                     placeholder=""
+                    classes={classes.iconWithField}
                     onChange={(e) => setfirstSocialLink(e.target.value)}
                   />
                 </Box>
@@ -1067,6 +1068,7 @@ const SubmitApp = ({toggle}) => {
                   />
                   <input
                     placeholder=""
+                    classes={classes.iconWithField}
                     value={secondSocialLink}
                     onChange={(e) => setSecondSocialLink(e.target.value)}
                   />
@@ -1089,6 +1091,7 @@ const SubmitApp = ({toggle}) => {
                   />
                   <input
                     placeholder=""
+                    classes={classes.iconWithField}
                     value={thirdSocialLink}
                     onChange={(e) => setThirdSocialLink(e.target.value)}
                   />

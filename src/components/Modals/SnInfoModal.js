@@ -16,6 +16,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const useStyles = makeStyles(theme => ({
+  lightRoot: {
+    background: '#fff',
+  },
+  darkRoot: {
+    background: '#2A2C34',
+  },
+  lightText: {
+    background: '#fff',
+    color: '#2A2C34'
+  },
+  darkText: {
+    background: '#2A2C34',
+    color: '#fff'
+  },
   submitBtn: {
     background: '#1DBF73!important',
     color: '#fff',
@@ -38,18 +52,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SnInfoModal({ open, onClose, type, title, content, showClipboardCopy = false, clipboardCopyTooltip, ...props }) {
+export default function SnInfoModal({ open, onClose, type, title, content, showClipboardCopy = false, clipboardCopyTooltip, toggle, ...props }) {
   // class SnInfoModal extends React.Component {
   const classes = useStyles();
   const displayContent = () => {
     switch (type) {
       case 'public-share':
         return (
-          <DialogContent>
+          <DialogContent className={toggle ? classes.darkRoot : classes.lightRoot}>
             <DialogContentText id="alert-dialog-description">
               Skylinks are available at the following public link :
           </DialogContentText>
-            <DialogContentText>
+            <DialogContentText className={toggle ? classes.darkText : classes.lightText}>
               <>
                 {content}<Tooltip title="Copy Skylink to clipboard" arrow>
                   <FileCopyOutlinedIcon
@@ -64,8 +78,8 @@ export default function SnInfoModal({ open, onClose, type, title, content, showC
         );
       default:
         return (
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+          <DialogContent className={toggle ? classes.darkRoot : classes.lightRoot}>
+            <DialogContentText id="alert-dialog-description" className={toggle ? classes.darkText : classes.lightText}>
               {content}{showClipboardCopy && (
                 <Tooltip title={clipboardCopyTooltip || "Copy To Clipboard"} arrow>
                   <FileCopyOutlinedIcon
@@ -90,9 +104,9 @@ export default function SnInfoModal({ open, onClose, type, title, content, showC
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="alert-dialog-title" className={toggle ? classes.darkText : classes.lightText}>{title}</DialogTitle>
       {displayContent()}
-      <DialogActions>
+      <DialogActions className={toggle ? classes.darkRoot : classes.lightRoot}>
         <Button
           onClick={onClose}
           autoFocus

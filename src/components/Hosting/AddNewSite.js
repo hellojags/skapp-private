@@ -202,7 +202,7 @@ export default function AddNewSite({ toggle }) {
                             </Box>
                         </Box>
                         <p className={classes.text}>( Note: Hosted App will NOT be Published to AppStore by default. If you wish to publish, you can do so after deployment from "App Hosting" or "Publish App" link)</p>
-                        <Box component="form">
+                        <Box component="form" autocomplete="off">
                             <Box>
                                 {/* <label className={classes.label}>Site Logo</label> */}
                                 <div className="d-none">
@@ -349,7 +349,7 @@ export default function AddNewSite({ toggle }) {
                                                                     <div style={{ color: '#5C757D' }}>
                                                                         Drag and drop files or folder here
                                                                     </div>
-                                                                    <Button className={classes.uploadBtn}>
+                                                                    <Button className={classes.uploadBtn} style={{color: '#5C757D'}}>
                                                                         Select {isFileUpload ? "Files" : "Folder"}
                                                                     </Button>
                                                                 </>
@@ -374,20 +374,20 @@ export default function AddNewSite({ toggle }) {
                                                                         >
                                                                             <div >
 
-                                                                                <Typography className={classes.linkName}>
+                                                                                <Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     <span>
                                                                                         <DescriptionIcon className={classes.descIcon} />
                                                                                     </span>
                                                                                     {fileObj?.file?.path || fileObj?.file?.name}
                                                                                 </Typography>
-                                                                                {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
+                                                                                {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     Skylink: {fileObj?.url}
                                                                                 </Typography>)}
-                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
+                                                                                {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={toggle ? classes.darkLinkName : classes.lightLinkName}>
                                                                                     <><Loader type="Oval" color="#57C074" height={50} width={50} /></>
                                                                                     {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                                                                                 </Typography>)}
-                                                                                <Button className={classes.uploadBtn} style={{ zIndex: 100 }} onClick={(e) => cancelUpload(e, formik)}>
+                                                                                <Button className={classes.uploadBtn} style={{ zIndex: 100, color: '#5C757D' }} onClick={(e) => cancelUpload(e, formik)}>
                                                                                     Cancel
                                                                                 </Button>
                                                                             </div>
@@ -419,6 +419,7 @@ export default function AddNewSite({ toggle }) {
                 </Formik>
             </Box>
             <SnInfoModal
+                toggle={toggle}
                 open={showInfoModal}
                 onClose={onInfoModalClose}
                 title={infoModalTitle}

@@ -62,7 +62,7 @@ const DeploySite = ({toggle}) => {
     return (
         <Box >
             <Box display="flex" alignItems="center" justifyContent='space-between' marginTop='7px'>
-                <h1 className={classes.h1}>
+                <h1 className={toggle ? classes.darkh1 : classes.lighth1}>
                     {appDetail?.content?.appName && `${appDetail.content.appName} / Deploy`}
                 </h1>
                 <Box className={classes.btnBox + " d-none temp"}>
@@ -80,13 +80,13 @@ const DeploySite = ({toggle}) => {
                         <h4 className={classes.h4}>DNS</h4>
                         <div className={toggle ? classes.darkDNSContainer : classes.lightDNSContainer}>
                             <p className={classes.ContentItemTitle}>Skapp URL</p>
-                            <p className={classes.siteLink}>
+                            <p className={toggle ? classes.darkSiteLink : classes.lightSiteLink}>
                                 {genHostedAppSkappUrl(appDetail)}
                             </p>
                             <Box display="flex" justifyContent="space-between" marginTop='15px'>
                                 <div>
                                     <p className={classes.ContentItemTitle}>Skapp Base 32 URL</p>
-                                    <p className={classes.siteLink}>
+                                    <p className={toggle ? classes.darkSiteLink : classes.lightSiteLink}>
                                         { appDetail?.content?.skylink && appDetail.content.storageGateway &&
                                         `https://${getBase32Skylink(appDetail.content.skylink)}.${appDetail?.content?.storageGateway}`}
                                     </p>
@@ -210,7 +210,7 @@ const DeploySite = ({toggle}) => {
                                                 <div style={{ color: '#5C757D' }}>
                                                     Drag and drop files or folder here
                                                 </div>
-                                                <Button className={classes.uploadBtn}>
+                                                <Button className={toggle ? classes.darkUploadBtn : classes.lightUploadBtn}>
                                                     Select {isFileUpload ? "Files" : "Folder"}
                                                 </Button>
                                             </div>

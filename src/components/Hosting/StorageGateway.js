@@ -114,6 +114,12 @@ const useStyles = makeStyles(theme => (
             paddingLeft: '1rem',
             fontWeight: '400'
         },
+        lighth3: {
+            color: '#2A2C34'
+        },
+        darkh3: {
+            color: '#fff'
+        },
         Media1249: {
             width: 'calc(100% - 230px)',
             marginLeft: 'auto!important',
@@ -189,7 +195,7 @@ function StorageGateway({ toggle }) {
     const [editDomain, setEditDomain] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+
     const handleSetDomain = (val) => {
         setError(null);
         setNewDomain(val)
@@ -199,14 +205,14 @@ function StorageGateway({ toggle }) {
             portalUrl: "",
             version: "1"
         };
-    } 
+    }
 
     useEffect(async () => {
         // console.log("came here");
         setIsLoading(true);
         await dispatch(getStorageAction());
         setIsLoading(false);
-      }, []);
+    }, []);
 
     const submitProfileForm = async (e) => {
         setError(null);
@@ -227,7 +233,7 @@ function StorageGateway({ toggle }) {
     const handleDelete = async (e) => {
         dispatch(setDeleteStorageEpic(e));
     }
-  
+
     const handleEdit = async (e) => {
         dispatch(setEditStorageEpic(e));
     }
@@ -245,9 +251,9 @@ function StorageGateway({ toggle }) {
 
     { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
 
-    return ( 
+    return (
         <Fragment>
-            {newDomain && <AddEditStorage error={error} editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e)=>submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
+            {newDomain && <AddEditStorage error={error} editDomain={editDomain} newDomain={newDomain} setNewDomain={(e) => handleSetDomain(e)} submitProfileForm={(e) => submitProfileForm(e)} initailValueFormikObj={initailValueFormikObj} validationSchema={validationSchema} toggle={toggle} />}
             <Box display="flex" className='second-nav' alignItems="center">
                 <Box display="flex" alignItems="center" className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}>
                     <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>Storage Gateway Manager</h1>
@@ -291,8 +297,8 @@ function StorageGateway({ toggle }) {
                 </Box>
 
             </Box>
-            <p className={classes.h3}>(Under Active Development. Coming soon...)</p>
-            { !isLoading ? <StorageTable  handleDelete={(e)=> handleDelete(e)} handleEdit={(e, val) => handleEditSet(e, val)} userStorages={userStorages} toggle={toggle} />: null }
+            <p className={toggle ? classes.darkh3 : classes.lighth3}>(Under Active Development. Coming soon...)</p>
+            {!isLoading ? <StorageTable handleDelete={(e) => handleDelete(e)} handleEdit={(e, val) => handleEditSet(e, val)} userStorages={userStorages} toggle={toggle} /> : null}
         </Fragment>
     )
 }

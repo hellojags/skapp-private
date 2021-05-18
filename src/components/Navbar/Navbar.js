@@ -43,6 +43,9 @@ import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { skylinkToUrl } from "../../service/skynet-api";
+import Announcement from './../Announcement'
+import ToggleButton from './../ToggleButton'
+
 const useStyles = makeStyles((theme) => ({
     rootDark: {
         // backgroundColor: '#fff',
@@ -176,11 +179,18 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "4px",
         padding: 0
     },
-    userName: {
+    lightUserName: {
         paddingLeft: "10px",
         paddingRight: "1rem",
         textTransform: 'capitalize',
         maxWidth: 110,
+    },
+    darkUserName: {
+        paddingLeft: "10px",
+        paddingRight: "1rem",
+        textTransform: 'capitalize',
+        maxWidth: 110,
+        color: '#fff',
     },
     helpText: {
         paddingLeft: '.5rem'
@@ -415,7 +425,7 @@ export default function Navbar({ toggle, setToggle }) {
                     )}
                 </Button>
                 <Tooltip title={person.username} placement="top" arrow >
-                    <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                    <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                 </Tooltip>
                 <KeyboardArrowDownIcon className={classes.AngleDown} />
             </MenuItem>
@@ -448,6 +458,7 @@ export default function Navbar({ toggle, setToggle }) {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
+                <Announcement toggle={toggle} />
             <AppBar position="static" className={toggle ? classes.rootDark : classes.rootLight} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
                     <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
@@ -471,12 +482,13 @@ export default function Navbar({ toggle, setToggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         /> 
                     </div>*/}
-                    <div className={toggle ? classes.darkText : classes.lightText}>
+                    {/* <div className={toggle ? classes.darkText : classes.lightText}>
                         Light
                         <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
                         Dark
-                        {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
-                    </div>
+                    </div> */}
+
+                    <ToggleButton toggle={toggle} setToggle={setToggle} />
 
                     <div className={classes.sectionDesktop}>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
@@ -501,7 +513,7 @@ export default function Navbar({ toggle, setToggle }) {
                                 )}
                             </Button>
                             <Tooltip title={person.username} placement="top" arrow >
-                                <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                                <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                             </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>

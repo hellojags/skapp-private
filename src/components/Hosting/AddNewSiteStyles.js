@@ -54,6 +54,12 @@ const AddNewSiteStyles = () => ({
             minWidth: 70,
         }
     },
+    lightLinkName: {
+        color: '#2A2C34',
+    },
+    darkLinkName: {
+        color: '#fff',
+    },
     submitBtn: {
         background: '#1DBF73!important',
         color: '#fff',
@@ -385,7 +391,7 @@ const AddNewSiteStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        border: '1px solid #1E2029',
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {

@@ -15,7 +15,7 @@ import { setSelectedHostedApp } from '../../redux/action-reducers-epic/SnSelecte
 import { Delete } from '@material-ui/icons';
 
 const useStyles = makeStyles(styles)
-const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
+const HostingItem = ({ ActiveSite, app, handleOpen, id, toggle }) => {
     const classes = useStyles();
     let history = useHistory();
     const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
     };
 
     return (
-        <Box display="flex" className={classes.root} position="relative">
+        <Box display="flex" className={toggle ? classes.darkRoot : classes.lightRoot} position="relative">
             <div className={classes.HostingImgContainer}>
                 {(appContent.imgThumbnailSkylink == null || appContent.imgThumbnailSkylink.trim() === "") && <img src={HostingImg} alt="" />}
                 {appContent.imgThumbnailSkylink != null && appContent.imgThumbnailSkylink.trim() !== "" &&
@@ -48,19 +48,20 @@ const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
                             width: "250px",
                             height: "150px",
                             // border: props.arrSelectedAps.indexOf(app) > -1 ? "2px solid #1ed660" : null,
+                            border: '2px solid #1ed660'
                         }}
                         name="1"
                     />}
             </div>
             <div className={classes.detailsCol}>
-                <h2 className={classes.h2}>{appContent.appName}</h2>
-                <Box display="flex" alignItems="center" className={classes.verisonAndLink}>
+                <h2 className={toggle ? classes.darkh2 : classes.lighth2}>{appContent.appName}</h2>
+                <Box display="flex" alignItems="center" className={toggle ? classes.darkVerisonAndLink : classes.lightVerisonAndLink}>
                     <p>{appContent.hns}
                         <ShareIcon />
                     </p>
                     <span>version:{app.version}</span>
                 </Box>
-                <Box className={classes.updateText}>
+                <Box className={toggle ? classes.darkUpdateText : classes.lightUpdateText}>
                     Last Updated: {moment(app.ts).format(
                     "h:mm:ss A, MMMM D, YYYY"
                 )}
@@ -77,16 +78,16 @@ const HostingItem = ({ ActiveSite, app, handleOpen, id }) => {
                                 Inactive
                             </Button>
                     }
-                    <Button className={classes.manageBtn} onClick={onPublish}>
+                    <Button className={toggle ? classes.darkManageBtn : classes.lightManageBtn} onClick={onPublish}>
                         <span>Publish</span>
                     </Button>
-                    <Button className={classes.manageBtn} onClick={onEdit}>
+                    <Button className={toggle ? classes.darkManageBtn : classes.lightManageBtn} onClick={onEdit}>
                         <span>Edit</span>
                     </Button>
-                    <Button className={classes.trashBtn} onClick={()=> handleOpen(appContent, id)}>
+                    <Button className={toggle ? classes.darkTrashBtn : classes.lightTrashBtn} onClick={()=> handleOpen(appContent, id)}>
                         <Delete />
                     </Button>
-                    <Button className={classes.manageBtn} onClick={onManageDeployment}>
+                    <Button className={toggle ? classes.darkManageBtn : classes.lightManageBtn} onClick={onManageDeployment}>
                         <FolderIcon />
                         <span>Manage Deployment</span>
                         <ChevronRightOutlinedIcon />

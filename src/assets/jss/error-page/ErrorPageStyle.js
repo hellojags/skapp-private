@@ -37,6 +37,12 @@ const errorPageStyle = {
             fontSize: 42,
         }
     },
+    lighth2: {
+        color: '#2A2C34'
+    },
+    darkh2: {
+        color: '#fff'
+    },
     small: {
         fontSize: 14,
         color: '#242F57',

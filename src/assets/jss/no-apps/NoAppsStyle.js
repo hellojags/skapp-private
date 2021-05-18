@@ -47,6 +47,12 @@ const noAppsStyle = {
             fontWeight: 600,
         }
     },
+    lighth3: {
+        color: '#2A2C34'
+    },
+    darkh3: {
+        color: '#fff'
+    },
     p: {
         color: '#5A607F',
         maxWidth: 425,

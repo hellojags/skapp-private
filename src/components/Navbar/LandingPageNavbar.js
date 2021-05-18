@@ -33,6 +33,8 @@ import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { useSelector } from 'react-redux'
+import Announcement from './../Announcement'
+import ToggleButton from './../ToggleButton'
 
 const useStyles = makeStyles((theme) => ({
     lightRoot: {
@@ -343,6 +345,7 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
+                <Announcement toggle={toggle} />
             <AppBar position="static" className={`${toggle ? classes.darkRoot : classes.lightRoot}`} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
 
@@ -363,13 +366,16 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         /> 
                     </div>*/}
+
+                    <ToggleButton toggle={toggle} setToggle={setToggle} />
+
                     <div className={classes.sectionDesktop}>
-                        <div className={toggle ? classes.darkText : classes.lightText}>
+                        {/* <div className={toggle ? classes.darkText : classes.lightText}>
                             Light
                             <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
                             <span className={classes.mr15}>Dark</span>
-                            {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
-                        </div>
+                        </div> */}
+
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>

@@ -202,8 +202,8 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
       )} */}
       <>
         <ShareApp shareModelOpen={modalOpen} shareModelFn={HandleShareModel} />
-        {item && (
-          <Card className={toggle ? classes.darkRoot : classes.lightRoot}>
+        {item &&
+          <Card className={`${toggle ? classes.darkRoot : classes.lightRoot}`}>
             <CardActionArea className={classes.cardActionArea} component="div">
               <div onClick={() => ViewAppDetail(item.id)}>
                 <Box
@@ -401,8 +401,7 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                   className={`${classes.cardSmallText} ${classes.desc}`}
 
                 >
-                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
-Lorem ipsum dolor sit amet co
+                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>} Lorem ipsum dolor sit amet co
                 </div> */}
                 {/* {
                   

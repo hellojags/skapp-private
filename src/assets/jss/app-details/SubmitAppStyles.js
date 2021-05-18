@@ -221,13 +221,16 @@ const SubmitAppStyles = () => ({
         }
     },
     lightInput: {
-        border: '1px solid #1DBF73',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
         padding: 20,
         color: '#2A2C34',
+        border: '1px solid #1DBF73',
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -242,13 +245,16 @@ const SubmitAppStyles = () => ({
         }
     },
     darkInput: {
-        border: '1px solid #1DBF73',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
         padding: 20,
         color: '#fff',
+        border: '1px solid #1DBF73',
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73'
+        },
         '@media only screen and (max-width: 1440px)': {
             height: 50,
             // width: '100%',
@@ -389,6 +395,9 @@ const SubmitAppStyles = () => ({
             marginTop: '16px',
             marginRight: '10px'
         },
+    },
+    iconWithField: {
+        fontSize: 18
     },
     max33: {
         maxWidth: 'calc(33.33% - 1rem)',
@@ -577,7 +586,7 @@ const SubmitAppStyles = () => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid #D9E1EC',
+        border: '1px solid #48494E',
         borderRadius: 8,
         marginBottom: 0,
         '& .MuiDropzoneArea-root': {
@@ -597,11 +606,15 @@ const SubmitAppStyles = () => ({
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
+        fontSize: 18,
         color: '#2A2C34',
+        '&:hover' :{
+            borderColor: '#1DBF73'
+        },
         '&:focus': {
             color: '#2A2C34',
             outline: 'none!important',
-            border: '1px solid #7070701A',
+            border: '1px solid #1DBF73',
         },
         '&:placeholder': {
             color: 'rgba(126, 132, 163 , .32)'
@@ -641,10 +654,14 @@ const SubmitAppStyles = () => ({
         maxWidth: '100%',
         resize: 'none',
         padding: "1rem",
+        fontSize: 18,
+        '&:hover' :{
+            borderColor: '#1DBF73'
+        },
         '&:focus': {
             color: '#fff',
             outline: 'none!important',
-            border: '1px solid #48494E',
+            border: '1px solid #1DBF73',
         },
         '&:placeholder': {
             color: 'rgba(126, 132, 163 , .32)'
@@ -760,6 +777,9 @@ const SubmitAppStyles = () => ({
         height: 55,
         width: '100%',
         fontSize: 18,
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73 !important'
+        },
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
             height: 50,
@@ -771,11 +791,14 @@ const SubmitAppStyles = () => ({
     },
     darkSocialOptionContainer: {
         background: '#2A2C34',
-        border: '1px solid #48494E',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
+        border: '1px solid transparent',
+        '&:hover, &:focus' :{
+            borderColor: '#1DBF73 !important'
+        },
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
             height: 50,
@@ -817,9 +840,16 @@ const SubmitAppStyles = () => ({
             marginRight: 7
         }
     },
-    uploadBtn: {
+    lightUploadBtn: {
         border: '1px solid #4E4E4E',
         color: '#4E4E4E',
+        minWidth: 250,
+        marginTop: '1rem',
+        height: 45
+    },
+    darkUploadBtn: {
+        border: '1px solid #4E4E4E',
+        color: '#5C757D',
         minWidth: 250,
         marginTop: '1rem',
         height: 45
@@ -867,9 +897,15 @@ const SubmitAppStyles = () => ({
         }
 
     },
-    siteLink: {
+    lightSiteLink: {
         fontWeight: 'bold',
         color: '#131523',
+        marginTop: 2,
+        wordBreak: 'break-word'
+    },
+    darkSiteLink: {
+        fontWeight: 'bold',
+        color: '#fff',
         marginTop: 2,
         wordBreak: 'break-word'
     },
