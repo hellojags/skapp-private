@@ -11,7 +11,7 @@ import {
   getFollowingForUser,
 } from "../../service/SnSkappService";
 import DevTable from "./DevTable";
-import UserCard from "./UserCard";
+//import UserCard from "./UserCard";
 
 const useStyles = makeStyles((theme) => ({
   pageHeading: {
@@ -276,7 +276,7 @@ const DescoverDev = ({toggle}) => {
           toggle={toggle}
         />
       </div>
-      <UserCard toggle={toggle} />
+      {/* <UserCard toggle={toggle} /> */}
     </div>
   );
 };
