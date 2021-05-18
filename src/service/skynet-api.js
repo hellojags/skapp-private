@@ -14,8 +14,12 @@ import store from "../redux"
 import { setUserSession } from "../redux/action-reducers-epic/SnUserSessionAction"
 
 const client = new SkynetClient("https://siasky.net");
-//const hostApp = "awesomeskynet.hns";
 const hostApp = "localhost";
+
+//const client = new SkynetClient();
+//const hostApp = "skapp-alpha.hns";
+//const hostApp = "awesomeskynet.hns";
+
 
 
 export const initMySky = async () => {
@@ -24,7 +28,8 @@ export const initMySky = async () => {
     let loggedIn = false
     try {
         // Initialize MySky.
-        const mySky = await client.loadMySky(hostApp, { dev: true, debug: true });
+        //const mySky = await client.loadMySky(hostApp, { dev: true, debug: true });
+        const mySky = await client.loadMySky(hostApp,{ debug: true });
         //const mySky = await client.loadMySky(hostApp);
         const contentDAC = new ContentRecordDAC();
         const userProfileDAC = new UserProfileDAC();
@@ -53,7 +58,7 @@ export const initMySky = async () => {
         }
     } catch (e) {
         console.error(e);
-        return userSession;
+        return { loggedIn, userSession };
     }
     return { loggedIn, userSession };
 }

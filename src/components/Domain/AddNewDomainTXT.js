@@ -338,7 +338,17 @@ const AddNewDomainTXT = ({ toggle, error, editDomain, newDomain, initailValueFor
                                                 Add New TXT record to skapp.io
                                             </Typography>
                                             <p className={classes.p}>TXT records are simple text  notes for your domain and won't affect your email or website settings.</p>
-                                            
+                                            <Box display="flex" className={`${classes.formRow} formSiteRow`}>
+                                                <Box className={`${classes.inputContainer}`} flex={1}>
+                                                    <SnTextInput
+                                                        label="SkyDB Seed"
+                                                        name="seed"
+                                                        className={classes.input}
+                                                        type="text"
+                                                        toggle={toggle}
+                                                    />
+                                                </Box>
+                                            </Box>
                                             <Box display="flex" className={`${classes.formRow} formSiteRow`}>
                                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                                     <SnTextInput

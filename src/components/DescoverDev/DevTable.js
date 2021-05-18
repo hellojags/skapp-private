@@ -22,7 +22,7 @@ import {
   getFollowingCountForUser,
   getGithubUrl,
   getProfile,
-  getPublishedAppsCount,
+  getUsersPublishedAppsCount,
   transformImageUrl,
   unfollow,
 } from "../../service/SnSkappService";
@@ -322,24 +322,26 @@ const DevTable = ({
       (pageNumber + 1) * userPerPage
     );
 
-    const promiseList = idList.map(async (id) => {
-      let [profile = {}, following, appCount] = await Promise.all([
-        getProfile(id),
-        getFollowingCountForUser(id),
-        getPublishedAppsCount(id),
-      ]);
+    const promiseList = idList.map(
+      async (id) =>
+        await Promise.all([
+          getProfile(id),
+          getFollowingCountForUser(id),
+          getUsersPublishedAppsCount(id),
+          Promise.resolve(id),
+        ])
+    );
 
-      if (!profile) {
-        profile = {};
-      }
+    const results = await Promise.all(promiseList);
 
-      profile.following = following || 0;
-      profile.appCount = appCount || 0;
-      profile.uid = id;
-      return profile;
+    const list = results.map((item) => {
+      const profile = item[0] || {};
+      profile.following = item[1] || 0;
+      profile.appCount = item[2] || 0;
+      profile.uid = item[3];
+
+      return { ...profile };
     });
-
-    const list = await Promise.all(promiseList);
 
     pageNumberRef.current = pageNumber + 1;
     prevPageNumberRef.current = pageNumber;

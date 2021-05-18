@@ -196,8 +196,8 @@ const DescoverDev = ({toggle}) => {
     const allUserIDs = await getAggregatedUserIDs(null);
     const followingList = await getFollowingForUser(userID);
 
-    console.log(followingList);
-    console.log("############### allUserIDs ########### " + allUserIDs);
+    //console.log(followingList);
+    //console.log("############### allUserIDs ########### " + allUserIDs);
     // setSearchData(allUserIDs);
 
     setUserList(allUserIDs);
@@ -253,7 +253,7 @@ const DescoverDev = ({toggle}) => {
 
       <div className={toggle ? classes.darkTableContent : classes.lightTableContent}>
         <Box display="flex" alignItems="center" justifyContent="space-between" className={toggle ? classes.darkTableSearch : classes.lightTableSearch} marginTop='1rem' padding="1rem" paddingBottom="0px" flexWrap="wrap">
-          <p>Search developers to follow</p>
+          <p>Search developers to follow</p> <h1>Count: {userList.length}</h1>
           <div className={toggle ? classes.darkSearch : classes.lightSearch}>
             <div className={classes.searchIcon}>
               <SearchIcon />

@@ -17,6 +17,7 @@ import { getPortalUrl } from './skynet-api';
 
 // pick skynet portal
 const skynetClient = new SkynetClient("https://siasky.net");
+//const skynetClient = new SkynetClient();
 let REGISTRY_MAX_REVISION = BigInt("18446744073709551615");
 // "Options"
 // skydb = true | false | undefined. Fetch from IndexedDB first and then SkyDB

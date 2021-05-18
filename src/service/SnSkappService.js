@@ -81,11 +81,13 @@ export const getProfile = async (userID) => {
     if (userID == null || userID === undefined) {
       //If userID is null or empty
       const myUserId = await getUserID();
-      profile =  await profileDAC.getProfile(myUserId);
+      profile = await profileDAC.getProfile(myUserId);
+      profile["userID"] = myUserId;
     } else {
       profile = await profileDAC.getProfile(userID);
+      profile["userID"] = userID;
     }
-    profile["userID"] = userID;
+
     //console.log("############# getProfile" + JSON.stringify(profile))
     return profile;
     //return JSON.parse(BROWSER_STORAGE.getItem('userProfile'));
@@ -276,46 +278,48 @@ export const setPreferences = async (preferencesJSON) => {
 // ### Following/Followers Functionality ###
 
 export const getFollowingForUser = async (userID) => {
-  const socialDAC = await getSocialDAC();
-  const followingList = await socialDAC.getFollowingForUser(
-    userID ?? (await getUserID())
-  );
-  console.log("getFollowingForUser" + followingList);
-  // try {
-  //     // const contentDAC = await getContentDAC();
-  //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
-  //  } catch (e) {
-  //   console.log("contentDAC.recordNewContent : failed =" + e)
-  // }
+  let followingList = [];
+  try {
+    const socialDAC = await getSocialDAC();
+    followingList = await socialDAC.getFollowingForUser(userID);
+    console.log(`getFollowingForUser : ${userID} : ` + followingList?.length);
+    // try {
+    //     // const contentDAC = await getContentDAC();
+    //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
+    //  } catch (e) {
+    //   console.log("contentDAC.recordNewContent : failed =" + e)
+    // }
+  } catch (e) {
+    console.log("Exception : getFollowingForUser() " + e);
+  }
   return followingList;
 };
 
 export const getFollowingCountForUser = async (userID) => {
   let followingCount = 0;
-  try
-  {
-  const socialDAC = await getSocialDAC();
-  const userId = userID ?? (await getUserID());
-  console.log("getFollowingCountForUser:userId" + userId);
-  console.log("getFollowingCountForUser:socialDAC" + socialDAC);
-  followingCount = await socialDAC.getFollowingCountForUser(userId);
-  console.log("getFollowingCountForUser" + followingCount);
-  // try {
-  //     // const contentDAC = await getContentDAC();
-  //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
-  //  } catch (e) {
-  //   console.log("contentDAC.recordNewContent : failed =" + e)
-  // }
+  try {
+    const socialDAC = await getSocialDAC();
+    const userId = userID ?? (await getUserID());
+    console.log("getFollowingCountForUser:userId" + userId);
+    console.log("getFollowingCountForUser:socialDAC" + socialDAC);
+    followingCount = await socialDAC.getFollowingCountForUser(userId);
+    console.log("getFollowingCountForUser" + followingCount);
+    // try {
+    //     // const contentDAC = await getContentDAC();
+    //     // await contentDAC.recordNewContent({ skylink: resultObj.dataLink, metadata: { "contentType": "following", "action": "add" } });
+    //  } catch (e) {
+    //   console.log("contentDAC.recordNewContent : failed =" + e)
+    // }
   } catch (e) {
-     console.log("getFollowingCountForUser: failed =" + e)
+    console.log("getFollowingCountForUser: failed =" + e)
     return followingCount;
-   }
+  }
   return followingCount;
 };
 
 export const follow = async (userID) => {
   const socialDAC = await getSocialDAC();
-  const res = await socialDAC.follow(userID ?? (await getUserID()));
+  const res = await socialDAC.follow(userID);
   console.log(`Success: ${res.success}`);
   console.log(`Error (if unsuccessful): ${res.error}`);
   return res;
@@ -348,35 +352,37 @@ export const getMyPublishedApps = async () => {
 }
 
 //TODO: need to work on it
-export const getPublishedAppsCount = async (userId) => {
+export const getPublishedAppsCount = async () => {
   let count = 0;
   try {
     const skappDAC = await getSkappDAC();
     if (skappDAC) {
-      count = await skappDAC.getPublishedAppsCount([userId]);
+      count = await skappDAC.getPublishedAppsCount();
     }
   }
   catch (e) {
-    console.log("Exception : getPublishedAppsCount() "+e);
+    console.log("Exception : getPublishedAppsCount() " + e);
     return 0;
   }
   return count;
 }
 // TODO: Since we are getting this value from DAC, Remove below method
 export const getUsersPublishedAppsCount = async (userID) => {
-  //let publishedAppsMap = new Map();
-  let publishedAppsMap = [];
+  let count = 0;
   try {
-    let result = await getFile_MySky(DK_PUBLISHED_APPS, {
-      userID,
-      store: IDB_STORE_SKAPP,
-    });
-    publishedAppsMap = result.data;
-  } catch (err) {
-    console.log(err);
+    const skappDAC = await getSkappDAC();
+    //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ skappDAC: " +skappDAC);
+    let appCountsByAppId = await skappDAC.getPublishedAppsCountByUserIds([userID]);
+    //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ UserId: " +userID+" getUsersPublishedAppsCount() " + JSON.stringify(appCountsByAppId) );
+    //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ UserId: " +userID+" App Count : " +appCountsByAppId[userID] ); 
+    count = appCountsByAppId[userID] ?? 0;
+
+  }
+  catch (e) {
+    console.log("Exception : getPublishedAppsCount() " + e);
     return 0;
   }
-  return publishedAppsMap ? publishedAppsMap.length : 0;
+  return count;
 };
 export const publishApp = async (appJSON) => {
   const skappDAC = await getSkappDAC();
@@ -1036,18 +1042,24 @@ export const setHNSEntry = (hnsName, skylink) => { };
 
 //get HNS URL for TXT record
 //export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getUserPublicKey(), hnsName);
-export const getHNSSkyDBURL = async (hnsName, dataLink) => {
-  const { publicKey, privateKey } = snKeyPairFromSeed("dime sushi myth major taken rhino inroads dogs jagged keyboard upright inundate paradise malady nuance mural language dads psychic also bevel tattoo auburn moat inflamed arises being aided adventure")
-  //Step 1: Get Registry URL 
-  let url = await getRegistryEntryURL(publicKey, hnsName);
-  try {
-    //Step 2: setSkylink
-    let data = await setRegistryEntry(hnsName, dataLink, { privateKey: privateKey, publicKey: publicKey });
-    console.log("##### getHNSSkyDBURL - Entry " + data ? JSON.stringify(data) : data);
-  }
-  catch (e) {
-    console.log("Exception while setting dataLink value in SkyDB daatKey" + e);
-    return url;
+export const getHNSSkyDBURL = async (seed, hnsName, dataLink) => {
+  let publicKey, privateKey;
+  let url = `https://${hnsName}.siasky.net`;
+  if (seed) {
+    const result = snKeyPairFromSeed(seed);
+    publicKey = result.publicKey;
+    privateKey = result.privateKey;
+    //Step 1: Get Registry URL 
+    url = await getRegistryEntryURL(publicKey, hnsName);
+    try {
+      //Step 2: setSkylink
+      let data = await setRegistryEntry(hnsName, dataLink, { privateKey: privateKey, publicKey: publicKey });
+      //console.log("##### getHNSSkyDBURL - Entry " + data ? JSON.stringify(data) : data);
+    }
+    catch (e) {
+      console.log("Exception while setting dataLink value in SkyDB daatKey" + e);
+      return url;
+    }
   }
   //getRegistryEntryURL(await getUserID(), hnsName);
   return url;
@@ -1115,76 +1127,100 @@ export const getAllPublishedApps = async (sortOn, orderBy, resultCount) => {
   // TODO: Check Sorting in App stats first and then load remaining appIDs
   //let publishedAppsMap = new Map();
   let allPublishedApps = [];
+  let appIdList = [];
   try {
-    //get Aggregator followings (list of userIDs)
-    //TODO: Remove aggregator hard coding
-    const userIdList = await skappDAC.getFollowingForUser("d0bafbcc4096b3c741fad6c5704cf626c3e418e7a6d3fdac21daa46fc226ac78");
-    if (userIdList) {
-      await Promise.all(
-        userIdList.map(async (userId) => {
-          // get list of AppIds for specific userID
-          const appIdList = await skappDAC.getPublishedAppsByUserId([userId]);
-          //if appID list is not empty. Get AppDetails for each AppId from above step
-          if (appIdList) {
-            await Promise.all(
-              appIdList.map(async (appId) => {
-                const appInfoObj = await skappDAC.getPublishedAppDetailsByUserId(userId, appId)
-                // TODO: get aggregated Stats from aggregator
-                appInfoObj.content.appstats = {
-                  views: 100,
-                  access: 200,
-                  likes: 300,
-                  favorites: 400,
-                  installed: 500,
-                };
-                allPublishedApps.push(appInfoObj);// push AppInfo Object to JSON
-              }));
-          }
-        })
-      );
-      // Set iteratees for Sort operation
-      let iteratees = (obj) => -obj.content.appstats.access;
-      switch (sortOn) {
-        case "VIEWS":
-          iteratees = (obj) =>
-            orderBy === "ASC"
-              ? obj.content.appstats.views
-              : -obj.content.appstats.views;
-          break;
-        case "ACCESS":
-          iteratees = (obj) =>
-            orderBy === "ASC"
-              ? obj.content.appstats.access
-              : -obj.content.appstats.access;
-          break;
-        case "LIKES":
-          iteratees = (obj) =>
-            orderBy === "ASC"
-              ? obj.content.appstats.likes
-              : -obj.content.appstats.likes;
-          break;
-        case "FAVORITES":
-          iteratees = (obj) =>
-            orderBy === "ASC"
-              ? obj.content.appstats.favorites
-              : -obj.content.appstats.favorites;
-          break;
-        default:
-          iteratees = (obj) => -obj.content.appstats.views;
-          console.log("In Dafault sorting 'Views Desc' ");
-          break;
-      }
-      //actual sort operation
-      allPublishedApps = _.orderBy(allPublishedApps, iteratees);
-      if (resultCount && resultCount != 0) {
-        allPublishedApps = allPublishedApps.slice(0, resultCount);
+    //get curator followings (list of userIDs)
+    //TODO: Remove curator hard coding
+    const userIdList = await getFollowingForUser("724ac6e7e628c79efb647102910a294c04c963641c9aafed8a8b7937c0915237");
+    console.log('------userIdList-------------' + userIdList);
+    // get {userId: AppIdsArray} MAP
+    const appIdListByUserId = await skappDAC.getPublishedAppsByUserIds(userIdList);
+    console.log('------appIdListByUserId-------------' + appIdListByUserId);
+    //if appID list is not empty. Get AppDetails for each AppId from above step
+    // Example: {"userId1" : [appId1, appId2, appId3...], "userId2": [appId4, appId5,....]}
+    let appInfoArray = []
+    //Below is working but returning array of array instead of oen dimentional array
+    // const appInfoPromisesArray = Object.entries(appIdListByUserId).map(async ([userId, appIdList]) => {
+    //   console.log(`userId ${userId} : appIdList ${appIdList}`);
+    //   // get all promises and resolve it
+    //    // for each appId pull apps data, TODO: Introduce pagination here. pull only 12/16 AppData at a time
+    //   const promisesArray = appIdList.map(async (appId) => {
+    //   return skappDAC.getPublishedAppDetailsByUserId(userId, appId)
+    //   });
+    //   return await Promise.all(promisesArray);
+    //   //appIdList.push(value);
+    // });
+    const appInfoPromisesArray = Object.entries(appIdListByUserId).map(async ([userId, appIdList]) => {
+      console.log(`userId ${userId} : appIdList ${appIdList}`);
+      // get all promises and resolve it
+       // for each appId pull apps data, TODO: Introduce pagination here. pull only 12/16 AppData at a time
+       for (const appId of appIdList) {
+        return skappDAC.getPublishedAppDetailsByUserId(userId, appId);
+       }
+    });
+    appInfoArray = await Promise.all(appInfoPromisesArray);
+    console.log('------appIdList-------------' + JSON.stringify(appInfoArray));
+   
+   
+    // update appdata with aggregated values
+    // Move appStats fetching logic here from Individual cards
+    for (let i = 0; i < appInfoArray.length; i++) {
+      let appInfoObj = appInfoArray[i];
+      console.log('------appInfoObj-------------' + JSON.stringify(appInfoObj));
+      if (appInfoObj) {
+        // TODO: get aggregated Stats from aggregator
+        appInfoObj.content.appstats = {
+          views: 100,
+          access: 200,
+          likes: 300,
+          favorites: 400,
+          installed: 500,
+        };
+        allPublishedApps.push(appInfoObj);// push AppInfo Object to JSON
       }
     }
+    // Set iteratees for Sort operation
+    let iteratees = (obj) => -obj.content.appstats.access;
+    switch (sortOn) {
+      case "VIEWS":
+        iteratees = (obj) =>
+          orderBy === "ASC"
+            ? obj.content.appstats.views
+            : -obj.content.appstats.views;
+        break;
+      case "ACCESS":
+        iteratees = (obj) =>
+          orderBy === "ASC"
+            ? obj.content.appstats.access
+            : -obj.content.appstats.access;
+        break;
+      case "LIKES":
+        iteratees = (obj) =>
+          orderBy === "ASC"
+            ? obj.content.appstats.likes
+            : -obj.content.appstats.likes;
+        break;
+      case "FAVORITES":
+        iteratees = (obj) =>
+          orderBy === "ASC"
+            ? obj.content.appstats.favorites
+            : -obj.content.appstats.favorites;
+        break;
+      default:
+        iteratees = (obj) => -obj.content.appstats.views;
+        console.log("In Dafault sorting 'Views Desc' ");
+        break;
+    }
+    //actual sort operation
+    allPublishedApps = _.orderBy(allPublishedApps, iteratees);
+    if (resultCount && resultCount != 0) {
+      allPublishedApps = allPublishedApps.slice(0, resultCount);
+    }
   } catch (err) {
-    console.log("Error in getAllPublishedApps : " + err);
-    return allPublishedApps;
-  }
+  console.log("Error in getAllPublishedApps : " + err);
   return allPublishedApps;
+}
+return allPublishedApps;
 };
 
 export const getAggregatedAppStatsByAppId = async (appId) => {

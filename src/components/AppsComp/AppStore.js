@@ -220,12 +220,12 @@ function AppStore({toggle}) {
     useEffect(async () => {
         // console.log("came here");
         //await dispatch(getAllPublishedAppsAction());
-        await dispatch(getAllPublishedAppsAction("ACCESS", "DESC", 0))
-        await dispatch(getAggregatedAppStatsAction()) // I can do pagination here
+        //dispatch(getAllPublishedAppsAction("ACCESS", "DESC", 0))
+        dispatch(getAggregatedAppStatsAction()) // I can do pagination here
         setSearchData(publishedAppsStore)
-        await dispatch(getMyInstalledAppsAction());
+        dispatch(getMyInstalledAppsAction());
         if (installedAppsStoreForLogin) {
-            await dispatch(installedAppAction(installedAppsStoreForLogin));
+            dispatch(installedAppAction(installedAppsStoreForLogin));
         }
     }, []);
 
