@@ -411,6 +411,7 @@ export default function Navbar({ toggle, setToggle }) {
                     <p className={classes.helpText}>Help</p>
                 </Box>
             </MenuItem> */}
+            <ToggleButton toggle={toggle} setToggle={setToggle} className={classes.pr_2} />
             <MenuItem>
                 <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                     <Badge color="secondary" variant="dot">

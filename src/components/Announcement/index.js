@@ -57,7 +57,12 @@ const useStyles = makeStyles((theme) => ({
             color: '#9E9E9E'
         }
     },
-    
+    xicon: {
+        color: '#9E9E9E',
+        paddingLeft: '20px',
+        fontWeight: 'bold',
+        cursor: 'pointer'
+    }
 }))
 
 const Announcement = ({toggle}) => {
@@ -77,7 +82,7 @@ const Announcement = ({toggle}) => {
         <div className={toggle ? classes.darkAnnouncementBar : classes.lightAnnouncementBar} style={checkClicked ? displayNone : null}>
             <div className={classes.leftSide}>
                 <div className="iconWithText">
-                    <div className='icon1' onClick={() => handleSubmit()}><RightArrowGreen /></div>
+                    <div className='icon1'><RightArrowGreen /></div>
                     <div className='text'>Build to Explore: The Skynet Spring 2021 Hackathon</div>
                 </div>
             </div>
@@ -85,6 +90,7 @@ const Announcement = ({toggle}) => {
                 <div className="iconWithText">
                     <div className='icon'><DiscordGreen /></div>
                     <div className='text'>Join our Discord</div>
+                    <span className={classes.xicon} onClick={() => handleSubmit()}>X</span>
                 </div>
             </div>
         </div>
