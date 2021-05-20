@@ -49,14 +49,14 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 85,
       color: "#869EA6",
       "&.Mui-selected": {
-        color: "#000",
+        color: "#2A2C34",
       },
     },
   },
   darkRoot: {
-    backgroundColor: "#2A2C34",
+    backgroundColor: "transparent",
     "& .MuiTabs-indicator": {
-      backgroundColor: "#2A2C34",
+      backgroundColor: "transparent",
     },
     "& .MuiTab-root": {
       fontWeight: 600,
@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#2A2C34',
     boxShadow: "none",
   },
-  lightTabNavigation: {
+  darkTabNavigation: {
     boxShadow: "none",
   },
 }));
@@ -122,7 +122,7 @@ const Settings = ({toggle}) => {
 
       <div className={toggle ? classes.darkRoot : classes.lightRoot}>
         <AppBar
-          className={toggle ? classes.darkTabNavigation : classes.lightTabNavigation}
+          className={toggle ? classes.lightTabNavigation: classes.darkTabNavigation}
           position="static"
           color="default"
         >
