@@ -16,6 +16,7 @@ import DescoverDev from '../components/DescoverDev/DescoverDev'
 import AppStore from '../components/AppsComp/AppStore'
 import Login from '../components/Auth/Login'
 import EditSite from '../components/Hosting/EditSite'
+import BlankLoading from '../components/Home/BlankLoading'
 import {
     Switch,
     Route,
@@ -28,6 +29,9 @@ import UnderDevelopment from '../components/OtherPages/UnderDevelopment';
 const SnRouter = ({ toggle }) => (
     <Switch>
         <Route exact path='/'>
+            <BlankLoading toggle={toggle} />
+        </Route>
+        <Route exact path='/appstore'>
             <AppStore toggle={toggle} />
         </Route>
         <Route exact path='/descoverdev'>

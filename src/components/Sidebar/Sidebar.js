@@ -220,7 +220,7 @@ const Sidebar = ({ style, toggle }) => {
             aria-labelledby="nested-list-subheader"
             className={classes.root}
           >
-            <NavLink exact to="/">
+            <NavLink exact to="/appstore">
               <ListItem button>
                 <ListItemIcon className={classes.listIcon}>
                   <DashboardIcon />

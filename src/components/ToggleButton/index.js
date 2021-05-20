@@ -13,7 +13,7 @@ const ToggleButton = ({toggle, setToggle}) => {
         setToggle(!toggle);
 
         if (e.target.checked == true) {
-            box.setAttribute('style', 'background-color:white;')
+            box.setAttribute('style', 'background-color:black;')
             ball.setAttribute('style', 'transform:translatex(100%);')
           }
         

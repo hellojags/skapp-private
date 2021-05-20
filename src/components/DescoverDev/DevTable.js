@@ -502,6 +502,7 @@ const DevTable = ({
       </InfiniteScroll>
 
       <UserCard
+        toggle={toggle} 
         user={user}
         followingList={followingList}
         handleClose={handleDialogClose}

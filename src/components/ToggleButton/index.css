@@ -46,18 +46,18 @@
 .box .ball {
   width: 30px;
   height: 30px;
-  background-color: grey;
+  background-color: #1DBF73;
   transition: all 1s ease;
   position: absolute;
   border-radius: 50%;
-  border: 3px solid black;
+  border: 2px solid black;
 }
 .box .scenary {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   transition: all 1s ease;
-  padding: 20px 10px 0px 7px;
+  padding: 15px 0px 0px 5px;
 }
 .box .scenary svg {
   width: 30px;

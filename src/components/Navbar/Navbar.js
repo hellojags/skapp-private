@@ -275,24 +275,9 @@ export default function Navbar({ toggle, setToggle }) {
             type: 'dark',
         }
     })
-
-    /* const handleChange = (e) => {
-        setLightMode(!lightMode);
-
-        if(lightMode) {
-            LightTheme();
-        } else {
-            DarkTheme();
-        }
-    } */
-
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
     const userSession = useSelector((state) => state.userSession)
-    // alert("NAV--userSession"+userSession);
-    // alert("NAV--userSession:userID"+userSession?.userID);
-    // alert("NAV--userSession:mysky"+userSession?.mySky);
-    // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
     const [person, setPerson] = useState({ username: "Anonymous", url: "" });
 
     const userProfile = useSelector((state) => state.snUserProfile)
@@ -304,10 +289,10 @@ export default function Navbar({ toggle, setToggle }) {
 
     useEffect(() => {
         const reloadReduxState = async () => {
-            if (userSession?.mySky != null) {
-                console.log("#### On Refresh : Reload Redux State ####");
+            const loginStatus = await userSession?.mySky?.checkLogin() ?? false;
+            if (loginStatus) {
                 console.log("#### On Refresh : Reload Redux State #### [userProfile]");
-                const userProfile = await getProfile();
+                const userProfile = await getProfile(null);
                 let avatarURl = userProfile?.avatar ? userProfile?.avatar[0]?.url : null;
                 setPerson({ username: userProfile?.username, url: avatarURl });
                 dispatch(setUserProfileAction(userProfile));

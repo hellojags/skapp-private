@@ -45,7 +45,7 @@ export const initMySky = async () => {
         loggedIn = await mySky.checkLogin();// check if user is already logged-In
         console.log("checkLogin : loggedIn status: " + loggedIn);
         let portalUrl = await client.portalUrl();
-        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC, skappDAC} };
+        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC, skappDAC}};
         //userSession = { mySky, dacs: { userProfileDAC } };
         // if not logged-in
         if (loggedIn) {
