@@ -197,7 +197,7 @@ const initailValueFormikObGB = {
   portal: "https://siasky.net",
 };
 
-const GlobalPrefrences = () => {
+const GlobalPrefrences = ({toggle}) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [formikObjGB, setFormikObGB] = useState(initailValueFormikObGB); // to store Formik Form data

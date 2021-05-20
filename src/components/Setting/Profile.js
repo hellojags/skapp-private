@@ -305,7 +305,7 @@ const socialConnectionList = [
   { name: "Telegram", icon: <Telegram /> },
 ];
 
-const Profile = () => {
+const Profile = ({toggle}) => {
   const [isInitialDataAvailable, setIsInitialDataAvailable] = useState(false);
   const [followingCount, setFollowingCount] = useState(0);
   const [MyUserID, setMyUserID] = useState("");
