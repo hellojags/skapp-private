@@ -10,21 +10,37 @@ import { setPreferences } from "../../service/SnSkappService";
 import { SnSelect, SnSwitch } from "../Utils/SnFormikControlls";
 
 const useStyles = makeStyles((theme) => ({
-  ProfileRoot: {
-    backgroundColor: "#fff",
-    boxShadow: "0px 2px 5px #15223214",
+  lightProfileRoot: {
+    backgroundColor: '#fff',
+    boxShadow: '0px 2px 5px #15223214',
     borderRadius: 6,
-    padding: "50px 30px",
-    "@media only screen and (max-width: 575px)": {
-      padding: "20px 10px",
+    padding: '50px 30px',
+    '@media only screen and (max-width: 575px)': {
+        padding: '20px 10px',
     },
-    "& h2": {
-      color: "#242F57",
-      marginBottom: "1rem",
-      "@media only screen and (max-width: 575px)": {
-        fontSize: 22,
+    '& h2': {
+      color: '#242F57',
+      marginBottom: '1rem',
+      '@media only screen and (max-width: 575px)': {
+          fontSize: 22,
       },
-    },
+    }
+  },
+  darkProfileRoot: {
+    backgroundColor: '#1E2029',
+    boxShadow: '0px 2px 5px #12141D',
+    borderRadius: 6,
+    padding: '50px 30px',
+    '@media only screen and (max-width: 575px)': {
+        padding: '20px 10px',
+  },
+  '& h2': {
+      color: '#fff',
+      marginBottom: '1rem',
+      '@media only screen and (max-width: 575px)': {
+          fontSize: 22,
+      },
+    }
   },
   textInfo: {
     color: "#000",
@@ -234,7 +250,7 @@ const GlobalPrefrences = ({toggle}) => {
 //console.log(formikObjGB);
 
   return (
-    <div className={classes.ProfileRoot}>
+    <div className={toggle ? classes.darkProfileRoot : classes.lightProfileRoot}>
       <Box>
         {isSuccess && (
           <Snackbar
@@ -288,6 +304,7 @@ const GlobalPrefrences = ({toggle}) => {
                     <label>Skynet Portal</label>
                     <Box>
                       <SnSelect
+                        toggle={toggle}
                         label="Skynet Portal"
                         name="portal"
                         options={portalOptions}

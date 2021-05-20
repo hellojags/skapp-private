@@ -41,38 +41,19 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     // color: "#B4C6CC",
   },
-  inputRoot: {
-    color: "inherit",
+  lightInputRoot: {
+    // color: "inherit",
     width: '100%',
+    color: '#2A2C34!important',
   },
-  
-  lightInputInput: {
-    color: '#2A2C34',
-    background: '#fff',
-    border: '1px solid rgba(0, 0, 0, 0.2)',
-    // padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "100%",
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: "100%",
-    },
-    paddingTop: "10px",
-    paddingBottom: "10px",
-    "@media (max-width: 1660px)": {
-      width: "100%",
-    },
-    "@media (max-width: 1460px)": {
-      width: "100%",
-    },
-  },
-  darkInputInput: {
-    color: '#fff',
+  darkInputRoot: {
+    color: '#fff!important',
     background: '#2A2C34',
-    // padding: theme.spacing(1, 1, 1, 0),
+    width: '100%',
+    border: '1px solid rgba(255, 255, 255, 0.1)'
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -230,8 +211,8 @@ export const SnInputWithIcon = ({ icon, label, className, showError, toggle, ...
         <InputBase
           {...field} {...props}
           classes={{
-            root: classes.inputRoot,
-            input: toggle ? classes.darkInputInput : classes.lightInputInput,
+            root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
+            input: classes.inputInput
           }}
           inputProps={{ "aria-label": "search" }}
         />
