@@ -27,6 +27,11 @@ const appCardStyle = {
         '@media only screen and (max-width: 660px)': { 
         }
     },
+    devAvtar: {
+        height: 17,
+        margin: '10px 0 0',
+        padding: '0px 10px',
+    },
     media: {
         height: 200,
         // '@media(max-width: 1390px)': {
@@ -137,9 +142,20 @@ const appCardStyle = {
             minWidth: 55
         }
     },
-    cardSmallText: {
-        // padding: " 0!important",
+    lightCardSmallText: {
+        // padding: "0!important",
         color: '#48494E',
+        marginTop: 5,
+        '@media(max-width: 1400px)': {
+            fontSize: 12
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 9
+        }
+    },
+    darkCardSmallText: {
+        // padding: "0!important",
+        color: '#9D9D9D',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12

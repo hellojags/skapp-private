@@ -87,24 +87,22 @@ const socialOption = [
 const lightReactSelectStyles = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "white",
     height: 55,
     boxShadow: 0,
     // borderColor: "#1DBF73",
-    borderColor: "#D9E1EC",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
-      background: '#fff',
+      backgroundColor: "white",
       borderColor: '#D9E1EC'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
-      background: '#fff',
+      backgroundColor: "white",
       borderColor: '#D9E1EC'
     },
     "&:hover": {
@@ -123,24 +121,23 @@ const lightReactSelectStyles = {
 const darkReactSelectStyles = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "#2A2C34",
     height: 55,
     boxShadow: 0,
-    borderColor: "#48494E",
-    color: "#fff!important",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
-      background: '#2A2C34',
+      color: 'white!important',
+      backgroundColor: '#2A2C34',
       borderColor: '#48494E'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
-      background: '#2A2C34',
+      color: 'white!important',
+      backgroundColor: '#2A2C34',
       borderColor: '#48494E'
     },
     "&:hover": {

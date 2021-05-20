@@ -16,7 +16,8 @@ import CardMedia from "@material-ui/core/CardMedia"
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
 import AppImg from "../../assets/img/placeholderImg.png"
-import { Box, IconButton, Tooltip } from "@material-ui/core"
+import { Avatar, Box, IconButton, Tooltip } from "@material-ui/core"
+import { PersonOutline } from "@material-ui/icons";
 // import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg"
 import { ReactComponent as HeartIcon1 } from "../../assets/img/icons/Heart1.svg"
 import { ReactComponent as ShareIcon1 } from "../../assets/img/icons/share.11.svg"
@@ -285,12 +286,13 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                   variant="body2"
                   color="textSecondary"
                   component="p"
-                  className={`${classes.cardSmallText} ${classes.desc}`}
-
+                  className={`${toggle ? classes.darkCardSmallText : classes.lightCardSmallText} ${classes.desc}`}
                 >
                   {item.content.appDescription}
+                  
                   {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
 
+                  <img src='https://image.flaticon.com/icons/png/512/3135/3135715.png' alt='Developer Avatar' className={classes.devAvtar} title="Developer Name" />
                 </Typography>
                 {(item.content.tags && allowToolTip) ?
                   <Box position="relative" className={`${classes.tags} tags-card`} ref={tagsRef} >
