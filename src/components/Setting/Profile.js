@@ -94,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 63,
   },
   submitBtn: {
+    backgroundColor: '#1DBF73',
     float: "right",
     "& svg": {
       fontSize: "19px",
@@ -237,6 +238,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  getAvatarButton: {
+    backgroundColor: '#1DBF73',
+    color: '#fff'
   },
   WraperUserFollowing: {
     '@media (max-width: 400px)': {
@@ -682,14 +687,14 @@ const Profile = ({toggle}) => {
                         {!isLogoUploaded &&
                           Object.keys(values.avatar).length === 0 &&(
                             <div className={toggle ? classes.darkProfilePlaceholder : classes.lightProfilePlaceholder}>
-                              <PersonOutlineIcon className={toggle ? classes.darkAvatarIcon : classes.lightAvatarIcon} />:
+                              <PersonOutlineIcon className={toggle ? classes.darkAvatarIcon : classes.lightAvatarIcon} />
                             </div>
                           )}
                           {!isLogoUploaded &&
                           Object.keys(values.avatar).length > 0 && 
                           values.avatar.url == ""   &&(
-                            <div className={classes.profilePlaceholder}>
-                              <PersonOutlineIcon className={toggle ? classes.darkAvatarIcon : classes.lightAvatarIcon} />:
+                            <div className={toggle ? classes.darkProfilePlaceholder : classes.lightProfilePlaceholder}>
+                              <PersonOutlineIcon className={toggle ? classes.darkAvatarIcon : classes.lightAvatarIcon} />
                             </div>
                           )}
                         {!isLogoUploaded &&
@@ -698,7 +703,7 @@ const Profile = ({toggle}) => {
                             <img
                               alt="Image"
                               src={skylinkToUrl(values.avatar.url)}
-                              className={classes.siteLogo}
+                              className={toggle ? classes.darkSiteLogo : classes.lightSiteLogo}
                               onClick={(evt) =>
                                 handleDropZoneClick(evt, imgUploadEleRef)
                               }
@@ -719,7 +724,7 @@ const Profile = ({toggle}) => {
                         <div className={classes.inputGuide}>Upload Image(JPG/PNG) <br /><b>OR</b></div>
                         <Button
                           variant="contained"
-                          color="primary"
+                          className={classes.getAvatarButton}
                           disableElevation
                           onClick={generateRandomAvatarUrl(formik.setFieldValue)}
                         >
