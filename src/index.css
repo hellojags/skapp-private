@@ -703,10 +703,10 @@ button[data-cat="All"] .count-cat{
 
 /* dark tag button */
 
-.darkTagButton{
+/* .darkTagButton{
   background-color: #1dbf73!important;
   color: rgb(75, 33, 33);
-}
+} */
 .darkTagButton.notselected{
   background-color: #fff!important;
   color: rgba(0, 0, 0, 0.87);
@@ -721,6 +721,7 @@ button[data-cat="All"] .count-cat{
 
 .darkTagButton.slickNex, .darkTagButton.slickPrev{
   height: 38px;
+  color: '#fff';
 }
 .darkTagButton.slickPrev{
   position: absolute;

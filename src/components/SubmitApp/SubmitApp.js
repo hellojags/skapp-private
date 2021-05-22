@@ -89,7 +89,6 @@ const lightReactSelectStyles = {
     ...styles,
     height: 55,
     boxShadow: 0,
-    // borderColor: "#1DBF73",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
@@ -112,9 +111,13 @@ const lightReactSelectStyles = {
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
     ...styles,
     backgroundColor: isSelected ? "#1DBF73" : "#fff",
-    "&:foucs": {
-      backgroundColor: "#1DBF73",
+    '&:hover': {
+      backgroundColor: '#1DBF73',
+      color: '#fff'
     },
+    '&:foucs': {
+      backgroundColor: '#1DBF73'
+    }
   }),
 };
 
@@ -129,7 +132,7 @@ const darkReactSelectStyles = {
       // width: '100%',
       fontSize: 16,
       color: 'white!important',
-      backgroundColor: '#2A2C34',
+      backgroundColor: '#1E2029',
       borderColor: '#48494E'
     },
     "@media only screen and (max-width: 575px)": {
@@ -137,7 +140,7 @@ const darkReactSelectStyles = {
       // width: '100%',
       fontSize: 14,
       color: 'white!important',
-      backgroundColor: '#2A2C34',
+      backgroundColor: '#1E2029',
       borderColor: '#48494E'
     },
     "&:hover": {
@@ -146,10 +149,14 @@ const darkReactSelectStyles = {
   }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
     ...styles,
-    backgroundColor: isSelected ? "#1DBF73" : "#fff",
-    "&:foucs": {
-      backgroundColor: "#1DBF73",
+    backgroundColor: isSelected ? "#1DBF73" : "#1E2029",
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#1DBF73',
     },
+    '&:foucs': {
+      backgroundColor: '#1DBF73',
+    }
   }),
 };
 
