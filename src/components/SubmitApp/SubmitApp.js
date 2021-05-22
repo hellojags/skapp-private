@@ -558,7 +558,6 @@ const SubmitApp = ({toggle}) => {
         </Box>
       </Box>
 
-
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -694,6 +693,7 @@ const SubmitApp = ({toggle}) => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appStatus}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
@@ -715,6 +715,7 @@ const SubmitApp = ({toggle}) => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appCatOptions}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
               {isAppCatTrue && (
@@ -773,6 +774,7 @@ const SubmitApp = ({toggle}) => {
                   return { value: selected };
                 }}
                 options={optionsAge}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
@@ -1040,7 +1042,8 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    // 
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="firstSocialLinkTitle"
                     defaultValue={firstSocialLinkTitle}
                     onChange={(e) => setfirstSocialLinkTitle(e.value)}
@@ -1063,7 +1066,7 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="secondSocialLinkTitle"
                     defaultValue={secondSocialLinkTitle}
                     onChange={(e) => setSecondSocialLinkTitle(e.value)}
@@ -1086,7 +1089,7 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="thirdSocialLinkTitle"
                     defaultValue={thirdSocialLinkTitle}
                     onChange={(e) => setThirdSocialLinkTitle(e.value)}

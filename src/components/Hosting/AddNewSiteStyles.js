@@ -212,6 +212,11 @@ const AddNewSiteStyles = () => ({
         maxWidth: 'calc(33.33% - 10px)',
 
     },
+    darkCustomSelectStyling: {
+        '& .css-1uccc91-singleValue': {
+            color:'#fff!important'
+        }
+    },
     select: {
         // background: '#fff',
         // border: '1px solid #D9E1EC',

@@ -346,7 +346,7 @@ export const SnSelect1 = ({ label, className, showError, options, toggle, ...pro
   );
 };
 
-export const SnSelect = ({ label, className, showError, options, toggle, ...props }) => {
+export const SnSelect = ({ label, className, showError, options, toggle, darkCustomSelectStyling, ...props }) => {
   const [field, meta, helpers] = useField(props);
   const { touched, error, value } = meta;
   const { setValue } = helpers;
@@ -360,6 +360,7 @@ export const SnSelect = ({ label, className, showError, options, toggle, ...prop
         name={field.name}
         onChange={(option) => setValue(option.value)}
         instanceId={props.iid}
+        className={toggle ? darkCustomSelectStyling : ''}
         styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
 
