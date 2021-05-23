@@ -127,6 +127,9 @@ const darkReactSelectStyles = {
     height: 55,
     boxShadow: 0,
     borderRadius: 8,
+    color: 'white!important',
+    backgroundColor: '#1E2029',
+    borderColor: '#48494E',
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
