@@ -291,8 +291,6 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                   {item.content.appDescription}
                   
                   {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
-
-                  <img src='https://image.flaticon.com/icons/png/512/3135/3135715.png' alt='Developer Avatar' className={classes.devAvtar} title="Developer Name" />
                 </Typography>
                 {(item.content.tags && allowToolTip) ?
                   <Box position="relative" className={`${classes.tags} tags-card`} ref={tagsRef} >
@@ -511,6 +509,10 @@ Lorem ipsum dolor sit amet co
                 >
                   <MsgIcon className={`${classes.cardFooterIcon} ${toggle ? classes.darkIcon : classes.lightIcon}`} />
                   <Typography variant="caption">{millify(1456044)}</Typography>
+                </Box>
+                <Box className={classes.imageAvatar}>
+                  <img src='https://image.flaticon.com/icons/png/512/3135/3135715.png' alt='Developer Avatar' className={classes.devAvtar} title="Developer Name" />
+                  <Box className={classes.developerName}><Typography component="p">Developer</Typography></Box>
                 </Box>
                 {/* <Box marginLeft="auto">
               <Button

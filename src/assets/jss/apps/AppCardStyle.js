@@ -27,10 +27,25 @@ const appCardStyle = {
         '@media only screen and (max-width: 660px)': { 
         }
     },
+    imageAvatar: {
+        marginLeft: 'auto',
+        '&:hover p': {
+            visibility: 'visible',
+            opacity: '1',
+        }
+    },
     devAvtar: {
-        height: 17,
-        margin: '10px 0 0',
+        height: 35,
         padding: '0px 10px',
+        cursor: 'pointer',
+    },
+    developerName: {
+        marginLeft: 'auto',
+        '& p': {
+            visibility: 'none',
+            opacity: '0',
+            fontSize: '12px'
+        }
     },
     media: {
         height: 200,
