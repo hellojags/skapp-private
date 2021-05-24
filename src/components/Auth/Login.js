@@ -85,6 +85,10 @@ const Login = ({ toggle }) => {
                 result.userSession.userID = userID;
                 dispatch(setUserSession(result.userSession));
             }
+            if (userSession?.mySky != null) {
+                const loggedIn = await userSession.mySky.checkLogin();
+                setIsLoggedIn(loggedIn)
+            }
         }
         initalizeMySky();
     }, []);

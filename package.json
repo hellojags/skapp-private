@@ -69,7 +69,7 @@
     "redux": "^4.0.5",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.3",
-    "skynet-js": "^4.0.6-beta",
+    "skynet-js": "^4.0.7-beta",
     "slick-carousel": "^1.8.1",
     "social-dac-library": "^0.2.3",
     "tweetnacl": "^1.0.3",

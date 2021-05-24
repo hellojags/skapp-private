@@ -341,17 +341,6 @@ const AddNewDomainTXT = ({ toggle, error, editDomain, newDomain, initailValueFor
                                             <Box display="flex" className={`${classes.formRow} formSiteRow`}>
                                                 <Box className={`${classes.inputContainer}`} flex={1}>
                                                     <SnTextInput
-                                                        label="SkyDB Seed"
-                                                        name="seed"
-                                                        className={classes.input}
-                                                        type="text"
-                                                        toggle={toggle}
-                                                    />
-                                                </Box>
-                                            </Box>
-                                            <Box display="flex" className={`${classes.formRow} formSiteRow`}>
-                                                <Box className={`${classes.inputContainer}`} flex={1}>
-                                                    <SnTextInput
                                                         label="DomainName"
                                                         name="domainName"
                                                         className={classes.input}
