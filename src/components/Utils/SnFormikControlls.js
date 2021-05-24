@@ -145,6 +145,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  // '.css-1uccc91-singleValue': {
+  //   color: '#fff!important'
+  // }
 }))
 
 const darkText = {
@@ -258,79 +261,79 @@ export const SnTextInputTag = ({ label, className, showError, ...props }) => {
 
 const lightReactSelectStyles = {
   control: styles => ({
-      ...styles, 
-      backgroundColor: 'white', 
-      height: 55, 
-      boxShadow: 0, 
-      borderColor: '#D9E1EC',
-      borderRadius: 8,
-      '@media only screen and (max-width: 1440px)': {
-          height: 50,
-          // width: '100%',
-          fontSize: 16,
-          background: '#fff',
-          borderColor: '#D9E1EC'
-      },
-      '@media only screen and (max-width: 575px)': {
-          height: 43,
-          // width: '100%',
-          fontSize: 14,
-          background: '#fff',
-          borderColor: '#D9E1EC'
-      },
-      '&:hover': {
-          borderColor: '#1DBF73'
-      }
+    ...styles, 
+    height: 55, 
+    boxShadow: 0, 
+    borderRadius: 8,
+    '@media only screen and (max-width: 1440px)': {
+      height: 50,
+      // width: '100%',
+      fontSize: 16,
+      backgroundColor: "white",
+      borderColor: '#D9E1EC'
+    },
+    '@media only screen and (max-width: 575px)': {
+      height: 43,
+      // width: '100%',
+      fontSize: 14,
+      backgroundColor: "white",
+      borderColor: '#D9E1EC'
+    },
+    '&:hover': {
+      borderColor: '#1DBF73'
+    }
   }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
-      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#fff',
-      '&:foucs': {
-          backgroundColor: '#1DBF73'
-      }
+    ...styles, 
+    backgroundColor: isSelected ? '#1DBF73' : '#fff',
+    '&:hover': {
+      backgroundColor: '#1DBF73',
+      color: '#fff'
+    },
+    '&:foucs': {
+      backgroundColor: '#1DBF73'
+    }
   }),
 };
 
 const darkReactSelectStyles = {
   control: styles => ({
-      ...styles, 
-      height: 55, 
-      boxShadow: 0,
-      borderColor: "#48494E",
-      borderRadius: 8,
-      '@media only screen and (min-width: 300px)': {
-          height: 50,
-          // width: '100%',
-          fontSize: 16,
-          background: '#1E2029',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff !important",
-      },
-      '@media only screen and (max-width: 1440px)': {
-          height: 50,
-          // width: '100%',
-          fontSize: 16,
-          background: '#1E2029!important',
-          // borderColor: '#48494E',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff !important",
-      },
-      '@media only screen and (max-width: 575px)': {
-          height: 43,
-          // width: '100%',
-          fontSize: 14,
-          background: '#1E2029!important',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
-          color: "#fff !important",
-      },
-      '&:hover': {
-          borderColor: '#1DBF73'
-      }
+    ...styles, 
+    height: 55, 
+    boxShadow: 0,
+    borderRadius: 8,
+    '@media only screen and (min-width: 300px)': {
+      height: 50,
+      // width: '100%',
+      fontSize: 16,
+      color: "white!important",
+      backgroundColor: '#1E2029',
+      // borderColor: '#48494E'
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    '@media only screen and (max-width: 1440px)': {
+      height: 50,
+      // width: '100%',
+      fontSize: 16,
+    },
+    '@media only screen and (max-width: 575px)': {
+      height: 43,
+      // width: '100%',
+      fontSize: 14,
+    },
+    '&:hover': {
+      borderColor: '#1DBF73'
+    },
   }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
-      ...styles, backgroundColor: isSelected ? '#1DBF73' : '#2A2C34',
+      ...styles, 
+      backgroundColor: isSelected ? '#1DBF73' : '#1E2029',
       color: '#fff',
+      '&:hover': {
+        backgroundColor: '#1DBF73',
+      },
       '&:foucs': {
-          backgroundColor: '#1DBF73',
+        backgroundColor: '#1DBF73',
       }
   }),
 };
@@ -353,7 +356,7 @@ export const SnSelect1 = ({ label, className, showError, options, toggle, ...pro
   );
 };
 
-export const SnSelect = ({ label, className, showError, options, toggle, ...props }) => {
+export const SnSelect = ({ label, className, showError, options, toggle, darkCustomSelectStyling, ...props }) => {
   const [field, meta, helpers] = useField(props);
   const { touched, error, value } = meta;
   const { setValue } = helpers;
@@ -367,6 +370,7 @@ export const SnSelect = ({ label, className, showError, options, toggle, ...prop
         name={field.name}
         onChange={(option) => setValue(option.value)}
         instanceId={props.iid}
+        className={toggle ? darkCustomSelectStyling : ''}
         styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
       />
 

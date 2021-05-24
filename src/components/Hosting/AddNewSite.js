@@ -151,7 +151,6 @@ export default function AddNewSite({ toggle }) {
         history.push("/hosting");
     };
 
-
     const onCancel = async (evt, formik) => {
         evt.preventDefault();
         evt.stopPropagation();
@@ -272,6 +271,7 @@ export default function AddNewSite({ toggle }) {
                                             label="Storage Gateway"
                                             name="storageGateway"
                                             options={storageGatewayOption}
+                                            darkCustomSelectStyling={classes.darkCustomSelectStyling}
                                         />
                                     </Box>
                                 </Box>

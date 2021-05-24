@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   lightTabNavigation: {
-    backgroundColor: '#2A2C34',
+    backgroundColor: '#1E2029',
     boxShadow: "none",
   },
   darkTabNavigation: {

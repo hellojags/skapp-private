@@ -15,7 +15,6 @@ const SubmitAppStyles = () => ({
         }
     },
     btnBox: {
-
     },
     lightOkBtn: {
         border: '1px solid #ea052f',
@@ -236,12 +235,16 @@ const SubmitAppStyles = () => ({
             // width: '100%',
             fontSize: 16,
             padding: 15,
+            color: '#2A2C34',
+            border: '1px solid #1DBF73',
         },
         '@media only screen and (max-width: 575px)': {
             height: 43,
             // width: '100%',
             fontSize: '14px !important',
             padding: 10,
+            color: '#2A2C34',
+            border: '1px solid #1DBF73',
         }
     },
     darkInput: {
@@ -251,6 +254,7 @@ const SubmitAppStyles = () => ({
         fontSize: 18,
         padding: 20,
         color: '#fff',
+        backgroundColor: '#1E2029',
         border: '1px solid #1DBF73',
         '&:hover, &:focus' :{
             borderColor: '#1DBF73'
@@ -260,12 +264,18 @@ const SubmitAppStyles = () => ({
             // width: '100%',
             fontSize: 16,
             padding: 15,
+            color: '#fff',
+            backgroundColor: '#1E2029',
+            border: '1px solid #1DBF73',
         },
         '@media only screen and (max-width: 575px)': {
             height: 43,
             // width: '100%',
             fontSize: '14px !important',
             padding: 10,
+            color: '#fff',
+            backgroundColor: '#1E2029',
+            border: '1px solid #1DBF73',
         }
     },
     lightInputTag: {
@@ -295,14 +305,14 @@ const SubmitAppStyles = () => ({
         }
     },
     darkInputTag: {
-        color: '#fff',
-        background: '#1E2029',
-        border: '1px solid #48494E',
         borderRadius: 8,
         height: 55,
         width: '100%',
         fontSize: 18,
         padding: 10,
+        color: '#fff',
+        background: '#1E2029',
+        border: '1px solid #48494E',
         '&:hover, &:focus' :{
             borderColor: '#1DBF73'
         },
@@ -311,12 +321,18 @@ const SubmitAppStyles = () => ({
             // width: '100%',
             fontSize: 16,
             padding: 10,
+            color: '#fff',
+            background: '#1E2029',
+            border: '1px solid #48494E',
         },
         '@media only screen and (max-width: 575px)': {
             height: 43,
             // width: '100%',
             fontSize: '14px !important',
             padding: 10,
+            color: '#fff',
+            background: '#1E2029',
+            border: '1px solid #48494E',
         }
     },
     lightInputContainer: {
@@ -407,6 +423,11 @@ const SubmitAppStyles = () => ({
 
         maxWidth: 'calc(33.33% - 10px)',
 
+    },
+    darkCustomSelectStyling: {
+        '& .css-1uccc91-singleValue': {
+            color:'#fff!important'
+        }
     },
     select: {
         // background: '#fff',
@@ -756,7 +777,7 @@ const SubmitAppStyles = () => ({
             width: '100%',
             paddingRight: 10,
             color: '#fff',
-            background: '#2A2C34',
+            background: '#1E2029',
         },
         '& ~ input:hover, & ~ input:focus': {
             border: 0,
@@ -790,7 +811,7 @@ const SubmitAppStyles = () => ({
         },
     },
     darkSocialOptionContainer: {
-        background: '#2A2C34',
+        background: '#1E2029',
         borderRadius: 8,
         height: 55,
         width: '100%',
@@ -802,12 +823,12 @@ const SubmitAppStyles = () => ({
         '@media only screen and (max-width: 1440px)': {
             fontSize: 16,
             height: 50,
-            background: '#2A2C34!important',
+            background: '#1E2029!important',
         },
         '@media only screen and (max-width: 575px)': {
             fontSize: 14,
             height: 43,
-            background: '#2A2C34!important',
+            background: '#1E2029!important',
         },
     },
 

@@ -54,7 +54,7 @@ const useStyles = makeStyles(styles)
           {alldata &&
             alldata.map((item, index) => {
               return (
-                <Grid item xs={6} sm={6} md={4} lg={3} xl={3} key={index}>
+                <Grid item xs={12} sm={12} md={4} lg={3} xl={3} key={index}>
                   <AppCard toggle={toggle} selectable={true} item={item} updated={installedApps.some(x => x && item && x.id == item.id) ? true : undefined } handleInstall={handleInstall}/>
                 </Grid>
               )

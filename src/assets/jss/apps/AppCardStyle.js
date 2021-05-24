@@ -27,6 +27,26 @@ const appCardStyle = {
         '@media only screen and (max-width: 660px)': { 
         }
     },
+    imageAvatar: {
+        marginLeft: 'auto',
+        '&:hover p': {
+            visibility: 'visible',
+            opacity: '1',
+        }
+    },
+    devAvtar: {
+        height: 35,
+        padding: '0px 10px',
+        cursor: 'pointer',
+    },
+    developerName: {
+        marginLeft: 'auto',
+        '& p': {
+            visibility: 'none',
+            opacity: '0',
+            fontSize: '12px'
+        }
+    },
     media: {
         height: 200,
         // '@media(max-width: 1390px)': {
@@ -137,9 +157,20 @@ const appCardStyle = {
             minWidth: 55
         }
     },
-    cardSmallText: {
-        // padding: " 0!important",
+    lightCardSmallText: {
+        // padding: "0!important",
         color: '#48494E',
+        marginTop: 5,
+        '@media(max-width: 1400px)': {
+            fontSize: 12
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 9
+        }
+    },
+    darkCardSmallText: {
+        // padding: "0!important",
+        color: '#9D9D9D',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12

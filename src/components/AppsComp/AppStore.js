@@ -422,8 +422,8 @@ function AppStore({toggle}) {
         // slidesToShow: Math.floor(width / 140),
         slidesToShow: width > 890 ? Math.round(showSlides) - 2 : showSlides,
         slidesToScroll: 2,
-        nextArrow: <SlickNextArrow />,
-        prevArrow: <SlickPrevArrow />,
+        nextArrow: <SlickNextArrow toggle={toggle} />,
+        prevArrow: <SlickPrevArrow toggle={toggle} />,
         responsive: [
 
             {
@@ -514,7 +514,7 @@ function AppStore({toggle}) {
 
                     {catWithCount.map((tag, index) => tag[1] >= 1 && <div key={index}>
                         <Button data-cat={tag[0]} onClick={catClickHandler} className={toggle ? 'darkTagButton' : 'lightTagButton'}>
-                            <span className="value-cat">{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
+                            <span className='value-cat'>{tag[0]}</span> <span className='count-cat'>{tag[1]}</span>
                         </Button>
                     </div>)}
                 </Slider>

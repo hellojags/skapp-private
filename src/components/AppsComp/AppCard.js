@@ -1,22 +1,25 @@
-import { Box, IconButton, Tooltip } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import DataUsageIcon from "@material-ui/icons/DataUsage";
-import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
-import FavoriteOutlinedIcon from "@material-ui/icons/FavoriteOutlined";
-import LaunchOutlinedIcon from "@material-ui/icons/LaunchOutlined";
-import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
-import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { makeStyles } from "@material-ui/core/styles"
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined"
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import LaunchOutlinedIcon from '@material-ui/icons/LaunchOutlined'
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined'
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt'
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined'
+import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined'
+import Card from "@material-ui/core/Card"
+import CardActionArea from "@material-ui/core/CardActionArea"
+import CardActions from "@material-ui/core/CardActions"
+import CardContent from "@material-ui/core/CardContent"
+import CardMedia from "@material-ui/core/CardMedia"
+import Button from "@material-ui/core/Button"
+import Typography from "@material-ui/core/Typography"
+import AppImg from "../../assets/img/placeholderImg.png"
+import { Avatar, Box, IconButton, Tooltip } from "@material-ui/core"
 import millify from "millify";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import DataUsageIcon from "@material-ui/icons/DataUsage";
+import { PersonOutline } from "@material-ui/icons";
 // import { ReactComponent as HeartIcon } from "../../assets/img/icons/Heart.svg"
 import { ReactComponent as HeartIcon1 } from "../../assets/img/icons/Heart1.svg";
 import { ReactComponent as MsgIcon } from "../../assets/img/icons/Messages, Chat.15.svg";
@@ -290,18 +293,11 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                   variant="body2"
                   color="textSecondary"
                   component="p"
-                  className={`${classes.cardSmallText} ${classes.desc}`}
+                  className={`${toggle ? classes.darkCardSmallText : classes.lightCardSmallText} ${classes.desc}`}
                 >
                   {item.content.appDescription}
-                  {showLink && (
-                    <span
-                      className={classes.moreDescBtn}
-                      onClick={() => ViewAppDetail(item.id)}
-                    >
-                      {" "}
-                      ...more
-                    </span>
-                  )}
+
+                  {showLink && <span className={classes.moreDescBtn} onClick={() => ViewAppDetail(item.id)}> ...more</span>}
                 </Typography>
                 {item.content.tags && allowToolTip ? (
                   <Box
@@ -581,6 +577,10 @@ const AppCard = ({ selectable, updated, item, handleInstall, toggle }) => {
                       }`}
                   />
                   <Typography variant="caption">{millify(1456044)}</Typography>
+                </Box>
+                <Box className={classes.imageAvatar}>
+                  <img src='https://image.flaticon.com/icons/png/512/3135/3135715.png' alt='Developer Avatar' className={classes.devAvtar} title="Developer Name" />
+                  <Box className={classes.developerName}><Typography component="p">Developer</Typography></Box>
                 </Box>
                 {/* <Box marginLeft="auto">
               <Button
