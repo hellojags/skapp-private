@@ -45,7 +45,7 @@ export const initMySky = async () => {
         loggedIn = await mySky.checkLogin();// check if user is already logged-In
         console.log("checkLogin : loggedIn status: " + loggedIn);
         let portalUrl = await client.portalUrl();
-        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC, skappDAC} };
+        userSession = { mySky, dacs: { contentDAC, userProfileDAC, feedDAC, socialDAC, skappDAC}};
         //userSession = { mySky, dacs: { userProfileDAC } };
         // if not logged-in
         if (loggedIn) {
@@ -140,39 +140,19 @@ export const getSocialDAC = async () => {
     const userSession = await getUserSession();
     return userSession?.dacs?.socialDAC ?? null;
 }
-export const testUserProfile = async (contentRecord) => {
-    // PREF_PATH: `${DATA_DOMAIN}/${skapp}/preferences.json`,
-    // PROFILE_PATH: `${DATA_DOMAIN}/${skapp}/userprofile.json`,
-    // INDEX_PROFILE: `${DATA_DOMAIN}/userprofileIndex.json`,
-    // INDEX_PREFERENCE: `${DATA_DOMAIN}/preferencesIndex.json`
-    try {
-        //const contentRecord = getUserSession().dacs.userProfileDAC;
-        let profp = await contentRecord.getProfile();// path -> skyuser.hns/index_profile.json
-        console.log("original Profile", profp);
-        let profile = {
-            username: "c3po",
-            aboutMe: "is a droid programmed for etiquette and protocol, built by the heroic Jedi Anakin Skywalker, and a constant companion to astromech R2-D2",
-            location: "Tatooine",
-            topics: ['War', 'Games']
-        }
-        console.log('In the method');
-        await contentRecord.setProfile(profile);// Path -> skyuser.hns/localhost/user-profile.json 
-        let prof = await contentRecord.getProfile();
-        console.log("Updated Profile", prof);
-        let pref = {
-            darkmode: true,
-            portal: "siasky.net"
-        }
-        await contentRecord.setPreference(pref);
-        let prefr = await contentRecord.getPreference();
-        console.log("preferance", prefr);
-        let proHist = await contentRecord.getProfileHistory();
-        console.log("profileHistory", proHist);
-        let prefHist = await contentRecord.getPreferenceHistory();
-        console.log("getPreferanceHistory", prefHist);
-    } catch (error) {
-        console.log(`error with CR DAC: ${error.message}`);
-    }
+
+export const getEntryLink= async (path) => {
+    const userSession = await getUserSession();
+    return await userSession.mySky.getEntryLink(path);
+}
+
+export const getSkylinkUrl= async (skylinkv2) => {
+    return await client.getSkylinkUrl(skylinkv2, { subdomain: true });
+}
+
+export const setDataLink= async (path, dataLink) => {
+    const userSession = await getUserSession();
+    await userSession.mySky.setDataLink(path, dataLink);
 }
 
 export const getFile_MySky = async (dataKey, options) => {

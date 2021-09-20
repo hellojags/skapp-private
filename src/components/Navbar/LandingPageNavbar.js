@@ -12,6 +12,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import { Link } from 'react-router-dom'
 
+
 // import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 // import MailIcon from '@material-ui/icons/Mail'
@@ -33,6 +34,8 @@ import Sidebar from '../Sidebar/Sidebar'
 // import { Translate } from '@material-ui/icons'
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { useSelector } from 'react-redux'
+import Announcement from './../Announcement'
+import ToggleButton from './../ToggleButton'
 
 const useStyles = makeStyles((theme) => ({
     lightRoot: {
@@ -228,7 +231,10 @@ const useStyles = makeStyles((theme) => ({
     },
     mr15: {
         marginRight: '15px'
-    }
+    },
+    pr_2: {
+        paddingRight: '1rem!important'
+    },
 }))
 
 export default function LandingPageNavbar({ toggle, setToggle }) {
@@ -343,6 +349,7 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
+            <Announcement toggle={toggle} />
             <AppBar position="static" className={`${toggle ? classes.darkRoot : classes.lightRoot}`} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
 
@@ -363,29 +370,36 @@ export default function LandingPageNavbar({ toggle, setToggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         /> 
                     </div>*/}
+
+
                     <div className={classes.sectionDesktop}>
-                        <div className={toggle ? classes.darkText : classes.lightText}>
+                        <Box display="flex" alignItems="center" >
+                            <Box>
+                                <ToggleButton toggle={toggle} setToggle={setToggle} className={classes.pr_2} />
+                            </Box>
+                            {/* <div className={toggle ? classes.darkText : classes.lightText}>
                             Light
                             <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
                             <span className={classes.mr15}>Dark</span>
-                            {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
-                        </div>
-                        {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
+                        </div> */}
+
+                            {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
                         </Box> */}
-                        <Box>
-                            <Button className={classes.signupBtn}>
-                                Login
-                                <Link className="link" to="/login" />
-                            </Button>
-                        </Box>
-                        <Box>
-                            <Button className={classes.loginBtn}>
-                                Publish Skapp
-                                <Link className="link" to="/login" />
-                            </Button>
+                            <Box>
+                                <Button className={classes.signupBtn}>
+                                    Login
+                                    <Link className="link" to="/login" />
+                                </Button>
+                            </Box>
+                            <Box>
+                                <Button className={classes.loginBtn}>
+                                    Publish Skapp
+                                    <Link className="link" to="/login" />
+                                </Button>
 
+                            </Box>
                         </Box>
                         {/* <Box display="flex" alignItems="center" >
 

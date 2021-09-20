@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme) => ({
     lightModalHeader: {
         fontSize: 32,
         fontWeight: 'bold',
-        // color: '#333333',
-        color: '#fff',
+        color: '#333333',
         borderBottom: '1px solid #70707085',
         padding: '1.3rem',
         '@media only screen and (max-width: 1440px)': {
@@ -40,8 +39,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         opacity: 1,
         '&, &:focus': {
-            // background: '#fff',
-            background: '#1E2029',
+            background: '#fff',
             border: 0,
             outline: 0,
         }
@@ -122,8 +120,7 @@ const useStyles = makeStyles((theme) => ({
     },
     lightLabel: {
         fontSize: 21,
-        // color: '#000',
-        color: '#fff',
+        color: '#000',
         marginBottom: 10,
         display: 'block',
         '@media only screen and (max-width: 1440px)': {

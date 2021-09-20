@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import { HashRouter as Router } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -13,14 +13,26 @@ import { skappTheme } from "./theme/Theme";
 
 function App() {
   const [toggle, setToggle] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
+  const userSession = useSelector((state) => state.userSession)
+
   useEffect(() => {
     initMySky().then((data) => {
-      if (data && data.loggedIn)
-        // only if login is true set session
+      console.log("### MySky Session Initialized Successfully !!");
+      if (data)
         dispatch(setUserSession(data.userSession));
     });
-  }, [dispatch]);
+  }, []);
+
+  useEffect(() => {
+    if(userSession?.mySky)
+    {
+      userSession.mySky.checkLogin().then((loginStatus)=>{
+        setIsLoggedIn(loginStatus)
+      })
+    }
+  }, [userSession]);
   return (
     <Router>
       <ThemeProvider theme={skappTheme}>
@@ -28,9 +40,10 @@ function App() {
         <div className="App">
           <Nav toggle={toggle} setToggle={setToggle} />
           <section className="main-content">
+            {isLoggedIn ?
             <aside className="app-sidebar">
               <Sidebar toggle={toggle} />
-            </aside>
+            </aside> : null}
             <main className="app-content" id="app-content">
               <SnRouter toggle={toggle} />
             </main>

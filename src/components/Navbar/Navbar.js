@@ -43,6 +43,9 @@ import { getProfile, getPreferences } from '../../service/SnSkappService';
 import { setUserProfileAction } from '../../redux/action-reducers-epic/SnUserProfileAction';
 import { setUserPreferencesAction } from '../../redux/action-reducers-epic/SnUserPreferencesAction';
 import { skylinkToUrl } from "../../service/skynet-api";
+import Announcement from './../Announcement'
+import ToggleButton from './../ToggleButton'
+
 const useStyles = makeStyles((theme) => ({
     rootDark: {
         // backgroundColor: '#fff',
@@ -176,17 +179,27 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "4px",
         padding: 0
     },
-    userName: {
+    lightUserName: {
         paddingLeft: "10px",
         paddingRight: "1rem",
         textTransform: 'capitalize',
         maxWidth: 110,
+    },
+    darkUserName: {
+        paddingLeft: "10px",
+        paddingRight: "1rem",
+        textTransform: 'capitalize',
+        maxWidth: 110,
+        color: '#fff',
     },
     helpText: {
         paddingLeft: '.5rem'
     },
     pr_4: {
         paddingRight: '2rem'
+    },
+    pr_2: {
+        paddingRight: '1rem!important'
     },
     AngleDown: {
         color: '#B4C6CC'
@@ -239,7 +252,7 @@ const useStyles = makeStyles((theme) => ({
     switchButton: {
         marginLeft: '5px',
         marginRight: '5px'
-    }
+    },
 }))
 
 export default function Navbar({ toggle, setToggle }) {
@@ -262,24 +275,9 @@ export default function Navbar({ toggle, setToggle }) {
             type: 'dark',
         }
     })
-
-    /* const handleChange = (e) => {
-        setLightMode(!lightMode);
-
-        if(lightMode) {
-            LightTheme();
-        } else {
-            DarkTheme();
-        }
-    } */
-
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
     const userSession = useSelector((state) => state.userSession)
-    // alert("NAV--userSession"+userSession);
-    // alert("NAV--userSession:userID"+userSession?.userID);
-    // alert("NAV--userSession:mysky"+userSession?.mySky);
-    // alert("NAV--userSession:dac"+userSession?.dacs.userProfileDAC);
     const [person, setPerson] = useState({ username: "Anonymous", url: "" });
 
     const userProfile = useSelector((state) => state.snUserProfile)
@@ -291,10 +289,10 @@ export default function Navbar({ toggle, setToggle }) {
 
     useEffect(() => {
         const reloadReduxState = async () => {
-            if (userSession?.mySky != null) {
-                console.log("#### On Refresh : Reload Redux State ####");
+            const loginStatus = await userSession?.mySky?.checkLogin() ?? false;
+            if (loginStatus) {
                 console.log("#### On Refresh : Reload Redux State #### [userProfile]");
-                const userProfile = await getProfile();
+                const userProfile = await getProfile(null);
                 let avatarURl = userProfile?.avatar ? userProfile?.avatar[0]?.url : null;
                 setPerson({ username: userProfile?.username, url: avatarURl });
                 dispatch(setUserProfileAction(userProfile));
@@ -398,6 +396,7 @@ export default function Navbar({ toggle, setToggle }) {
                     <p className={classes.helpText}>Help</p>
                 </Box>
             </MenuItem> */}
+            <ToggleButton toggle={toggle} setToggle={setToggle} className={classes.pr_2} />
             <MenuItem>
                 <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                     <Badge color="secondary" variant="dot">
@@ -415,7 +414,7 @@ export default function Navbar({ toggle, setToggle }) {
                     )}
                 </Button>
                 <Tooltip title={person.username} placement="top" arrow >
-                    <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                    <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                 </Tooltip>
                 <KeyboardArrowDownIcon className={classes.AngleDown} />
             </MenuItem>
@@ -448,6 +447,7 @@ export default function Navbar({ toggle, setToggle }) {
                     right: 0,
                     display: width > 890 ? 'none' : undefined,
                 }}></div>}
+                <Announcement toggle={toggle} />
             <AppBar position="static" className={toggle ? classes.rootDark : classes.rootLight} color='default'>
                 <Toolbar className={classes.toolBarRoot} >
                     <IconButton edge="start" onClick={menuButtonHandler} className={classes.menuButton} color="inherit" aria-label="menu">
@@ -471,20 +471,19 @@ export default function Navbar({ toggle, setToggle }) {
                             inputProps={{ 'aria-label': 'search' }}
                         /> 
                     </div>*/}
-                    <div className={toggle ? classes.darkText : classes.lightText}>
+                    {/* <div className={toggle ? classes.darkText : classes.lightText}>
                         Light
                         <Switch color="primary" checked={toggle} onChange={() => setToggle(!toggle)} className={classes.switchButton} />
                         Dark
-                        {/* <Switch color="primary" checked={toggle} onChange={(e) => handleChange(e)}/> */}
-                    </div>
+                    </div> */}
 
                     <div className={classes.sectionDesktop}>
                         {/* <Box display='flex' alignItems="center" className={classes.pr_4}>
                             <QuestionIcon className={classes.QuestionIcon} />
                             <p className={classes.helpText}>Help</p>
                         </Box> */}
+                        <ToggleButton toggle={toggle} setToggle={setToggle} className={classes.pr_2} />
                         <Box display="flex" alignItems="center" className={classes.pr_4}>
-
                             <IconButton aria-label="show 17 new notifications" color="inherit" style={{ width: '30px', height: "28px" }}>
                                 <Badge color="secondary" variant="dot">
                                     <NotificationIcon />
@@ -501,7 +500,7 @@ export default function Navbar({ toggle, setToggle }) {
                                 )}
                             </Button>
                             <Tooltip title={person.username} placement="top" arrow >
-                                <Typography className={classes.userName} noWrap>{person.username}</Typography>
+                                <Typography className={toggle ? classes.darkUserName : classes.lightUserName} noWrap>{person.username}</Typography>
                             </Tooltip>
                             <KeyboardArrowDownIcon className={classes.AngleDown} />
                         </Box>

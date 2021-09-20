@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+/* body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  transition: all 1s ease;
+  min-height: 100vh;
+  font-family: 'Poppins';
+} */
+.toggleButtonContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+@media (min-width: 500px) {
+  .toggleButtonContainer {
+    width: 50%;
+  }
+}
+.toggleButtonContainer input[type='checkbox'] {
+  display: none;
+}
+.btn {
+  align-self: center;
+  margin: 15px 0;
+}
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60px;
+  height: 30px;
+  background-color: black;
+  transition: all 1s ease;
+  position: relative;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.box .ball {
+  width: 30px;
+  height: 30px;
+  background-color: #1DBF73;
+  transition: all 1s ease;
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid black;
+}
+.box .scenary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: all 1s ease;
+  padding: 15px 0px 0px 5px;
+}
+.box .scenary svg {
+  width: 30px;
+}

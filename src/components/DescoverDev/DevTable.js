@@ -224,8 +224,11 @@ const useStyles = makeStyles(({ palette }) => ({
       transform: "rotate(90deg)",
     },
   },
-  checkBox: {
-    color: "#4B5060",
+  lightCheckBox: {
+    color: '#4B5060'
+  },
+  darkCheckBox: {
+    color: '#fff'
   },
   colorDanger: {
     color: "#FF6060",
@@ -384,6 +387,7 @@ const DevTable = ({
                 <TableCell>
                   <Checkbox
                     color="primary"
+                    className={toggle ? classes.darkCheckBox : classes.lightCheckBox}
                     inputProps={{ "aria-label": "secondary checkbox" }}
                   />
                 </TableCell>
@@ -430,6 +434,7 @@ const DevTable = ({
                   <TableCell scope="row">
                     <Checkbox
                       color="primary"
+                      className={toggle ? classes.darkCheckBox : classes.lightCheckBox}
                       inputProps={{ "aria-label": "secondary checkbox" }}
                     />
                   </TableCell>
@@ -497,6 +502,7 @@ const DevTable = ({
       </InfiniteScroll>
 
       <UserCard
+        toggle={toggle} 
         user={user}
         followingList={followingList}
         handleClose={handleDialogClose}

@@ -33,6 +33,9 @@ import {
   getUserID,
   putFile_MySky,
   getSkappDAC,
+  getEntryLink,
+  getSkylinkUrl,
+  setDataLink
 } from "./skynet-api";
 import { emitEvent } from "./SnSkyMQEventEmitter";
 import {
@@ -1042,27 +1045,24 @@ export const setHNSEntry = (hnsName, skylink) => { };
 
 //get HNS URL for TXT record
 //export const getHNSSkyDBURL = (hnsName) => getRegistryEntryURL(getUserPublicKey(), hnsName);
-export const getHNSSkyDBURL = async (seed, hnsName, dataLink) => {
-  let publicKey, privateKey;
-  let url = `https://${hnsName}.siasky.net`;
-  if (seed) {
-    const result = snKeyPairFromSeed(seed);
-    publicKey = result.publicKey;
-    privateKey = result.privateKey;
-    //Step 1: Get Registry URL 
-    url = await getRegistryEntryURL(publicKey, hnsName);
-    try {
-      //Step 2: setSkylink
-      let data = await setRegistryEntry(hnsName, dataLink, { privateKey: privateKey, publicKey: publicKey });
-      //console.log("##### getHNSSkyDBURL - Entry " + data ? JSON.stringify(data) : data);
-    }
-    catch (e) {
-      console.log("Exception while setting dataLink value in SkyDB daatKey" + e);
-      return url;
-    }
+export const getHNSSkyDBURL = async (hnsName, dataLink) => {
+  let pathUrl = "";
+  try {
+    //Example: "domain-dac/sites/skyspaces.hns";
+    const path = 'domain-dac/sites/' + hnsName;
+    const v2 = await getEntryLink(path);// from path its going to give Dynamic link URL. Registry pointer. Skylink V2
+    console.log('getEntryLink :: ', v2);
+    pathUrl = await getSkylinkUrl(v2, { subdomain: true });
+    console.log('pathUrl', pathUrl);
+    //set V2 Skylink
+    await setDataLink(path, dataLink);
+    console.log('wrote', path, dataLink);
   }
-  //getRegistryEntryURL(await getUserID(), hnsName);
-  return url;
+  catch (e) {
+    console.log("Exception while setting dataLink value in SkyDB daatKey" + e);
+    return pathUrl;
+  }
+  return pathUrl;
 }
 
 export const initializeLocalDatabaseFromBackup = async () => {
@@ -1153,15 +1153,15 @@ export const getAllPublishedApps = async (sortOn, orderBy, resultCount) => {
     const appInfoPromisesArray = Object.entries(appIdListByUserId).map(async ([userId, appIdList]) => {
       console.log(`userId ${userId} : appIdList ${appIdList}`);
       // get all promises and resolve it
-       // for each appId pull apps data, TODO: Introduce pagination here. pull only 12/16 AppData at a time
-       for (const appId of appIdList) {
+      // for each appId pull apps data, TODO: Introduce pagination here. pull only 12/16 AppData at a time
+      for (const appId of appIdList) {
         return skappDAC.getPublishedAppDetailsByUserId(userId, appId);
-       }
+      }
     });
     appInfoArray = await Promise.all(appInfoPromisesArray);
     console.log('------appIdList-------------' + JSON.stringify(appInfoArray));
-   
-   
+
+
     // update appdata with aggregated values
     // Move appStats fetching logic here from Individual cards
     for (let i = 0; i < appInfoArray.length; i++) {
@@ -1217,10 +1217,10 @@ export const getAllPublishedApps = async (sortOn, orderBy, resultCount) => {
       allPublishedApps = allPublishedApps.slice(0, resultCount);
     }
   } catch (err) {
-  console.log("Error in getAllPublishedApps : " + err);
+    console.log("Error in getAllPublishedApps : " + err);
+    return allPublishedApps;
+  }
   return allPublishedApps;
-}
-return allPublishedApps;
 };
 
 export const getAggregatedAppStatsByAppId = async (appId) => {

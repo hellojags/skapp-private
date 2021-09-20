@@ -20,7 +20,7 @@ import { setLoaderDisplay } from '../../redux/action-reducers-epic/SnLoaderActio
 import NoApps from '../OtherPages/NoApps';
 
 const useStyles = makeStyles((theme) => ({
-  search: {
+  lightSearch: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade("#fff", 1),
@@ -43,6 +43,29 @@ const useStyles = makeStyles((theme) => ({
       width: "auto",
     },
   },
+  darkSearch: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade("#2A2C34", 1),
+    "&:hover": {
+      backgroundColor: fade("#2A2C34", 0.9),
+    },
+    marginRight: theme.spacing(2),
+    // marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
+    },
+    color: "#8B9DA5",
+    boxShadow: "0px 1px 2px #15223214",
+    border: '1px solid rgba(0, 0, 0, 0.8);',
+    // hieght: '41px',
+    marginLeft: "16px!important",
+    "@media (max-width: 1650px)": {
+      width: "auto",
+    },
+  },
   searchIcon: {
     padding: theme.spacing(0, 2),
     height: "100%",
@@ -53,8 +76,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     color: "#B4C6CC",
   },
-  inputRoot: {
-    color: "inherit",
+  lightInputRoot: {
+    // color: "inherit",
+    color: '#2A2C34!important',
+  },
+  darkInputRoot: {
+    collightIr: '#fff!important',
+    border: '1px solid rgba(255, 255, 255, 0.1)'
   },
   inputInput: {
     // padding: theme.spacing(1, 1, 1, 0),
@@ -77,8 +105,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  pageHeading: {
+  lightPageHeading: {
     color: "#131523",
+    fontSize: "28px",
+  },
+  darkPageHeading: {
+    color: "#fff",
     fontSize: "28px",
   },
   smallText: {
@@ -188,13 +220,13 @@ function Apps({toggle}) {
           alignItems="center"
           className={`${classes.margnBottomMediaQuery} ${classes.MobileFontStyle}`}
         >
-          <h1 className={classes.pageHeading}>My Published Apps</h1>
+          <h1 className={toggle ? classes.darkPageHeading : classes.lightPageHeading}>My Published Apps</h1>
           <small className={classes.smallText}>{publishedAppsStore.length} Results</small>
         </Box>
         {width < 1250 && (
           //remove the style property to show it again, in future
           <div
-            className={`${classes.search} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}
+            className={`${toggle ? classes.darkSearch : classes.lightSearch} ${classes.Media1249} ${classes.margnBottomMediaQuery}`}
             style={{ display: 'none' }}
           >
             <Box>
@@ -205,7 +237,7 @@ function Apps({toggle}) {
             <InputBase
               placeholder="Search Apps"
               classes={{
-                root: classes.inputRoot,
+                root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
@@ -225,7 +257,7 @@ function Apps({toggle}) {
 
           {width > 1249 && (
             //remove the style property to show it again, in future
-            <div className={classes.search} style={{ display: 'none' }}>
+            <div className={toggle ? classes.darkSearch : classes.lightSearch} style={{ display: 'none' }}>
               <Box>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
@@ -234,7 +266,7 @@ function Apps({toggle}) {
               <InputBase
                 placeholder="Search Apps"
                 classes={{
-                  root: classes.inputRoot,
+                  root: toggle ? classes.darkInputRoot : classes.lightInputRoot,
                   input: classes.inputInput,
                 }}
                 inputProps={{ "aria-label": "search" }}
@@ -256,7 +288,7 @@ function Apps({toggle}) {
       {selectedPage && <SelectedAppsHeader />}
       { !isLoading && publishedAppsStore.length > 0 ?
         <div>
-          <AppsList newData={publishedAppsStore} installedApps={installedAppsStore} updated={undefined} handleInstall={handleInstall}/>
+          <AppsList toggle={toggle} newData={publishedAppsStore} installedApps={installedAppsStore} updated={undefined} handleInstall={handleInstall}/>
         </div>
         : <NoApps toggle={toggle} showTitle={true} pageTitle="My Published Apps" heading="No Published Apps to display" pharase="Publish your App using 'Publish App' BUTTON" />
       }

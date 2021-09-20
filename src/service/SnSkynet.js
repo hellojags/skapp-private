@@ -245,8 +245,9 @@ export const getRegistryEntry = async (publicKey, dataKey, options) => {
     if (publicKey == null) {
       throw new Error("Invalid Keys")
     }
-    const { entry, signature } = await skynetClient.registry.getEntry(publicKey, dataKey)
-    return entry
+    let { entry, signature } = await skynetClient.registry.getEntry(publicKey, dataKey)
+    entry.data = entry ? uint8ArrayToString(entry.data) : null
+     return entry;
   } catch (error) {
     // setErrorMessage(error.message);
     console.log(`error.message ${error.message}`)
@@ -269,7 +270,7 @@ export const setRegistryEntry = async (dataKey, content, options) => {
       revision = entry && entry != "undefined" && entry?.revision != NaN && entry.revision != "undefined" ? entry.revision : 0
       revision++;
     }
-    let entry = { dataKey: dataKey, data: content + "", revision: BigInt(revision) };
+    let entry = { dataKey: dataKey, data: stringToUint8Array(content + ""), revision: BigInt(revision) };
     let value = await skynetClient.registry.setEntry(privateKey, entry);
     if (options.skipIDB && options.skipIDB != true) {
       await setJSONinIDB(dataKey, [BigInt(revision), content], options)
@@ -291,41 +292,6 @@ export async function getRegistryEntryURL(publicKey, dataKey) {
     return null;
   }
 }
-
-// ################################ Skylink Methods ######################
-// gets Skylink Content.
-// TODO :  ahandling for Folder ?
-// client.downloadFile(skylink, { path: "dir2/file3" });
-// export const getSkylinkContent = async (skylink, options) => {
-
-//   const skynetOptions = {
-//       method: "GET",
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//       },
-//   }
-//  const  url =  getPortal() + `${skylink}?format=concat`;
-//  return fetch(url, options)
-//     .then((res) => {
-//       res.json()
-//     })
-//     .catch((err) => err);
-
-//   // ajax({
-//   //   url: getPortal() + `${skylink}?format=concat`,
-//   //   method: "GET",
-//   //   responseType: "",
-//   // }).pipe(
-//   //   map((res) => {
-//   //     return res
-//   //   }),
-//   //   catchError((error) => {
-//   //     console.log("getSkylinkHeader::error: ", error)
-//   //     return of(error)
-//   //   })
-// }
-
 export const getSkylinkMetadata = async (skylink) => {
   try {
     const md = await skynetClient.getMetadata(skylink);
@@ -404,6 +370,15 @@ export const uploadDirectory = async (files) => {
   }
 }
 export const snKeyPairFromSeed = (userSeed) => genKeyPairFromSeed(userSeed)
+
+function stringToUint8Array(bufferString) {
+	let uint8Array = new TextEncoder("utf-8").encode(bufferString);
+	return uint8Array;
+}
+function uint8ArrayToString(bufferValue) {
+	return new TextDecoder("utf-8").decode(bufferValue);
+}
+
 // export const getPublicApps = async (hash) =>
 //   await fetch(
 //     `${document.location.origin.indexOf("localhost") === -1

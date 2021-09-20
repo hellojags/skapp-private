@@ -87,24 +87,21 @@ const socialOption = [
 const lightReactSelectStyles = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "white",
     height: 55,
     boxShadow: 0,
-    // borderColor: "#1DBF73",
-    borderColor: "#D9E1EC",
     borderRadius: 8,
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
-      background: '#fff',
+      backgroundColor: "white",
       borderColor: '#D9E1EC'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
-      background: '#fff',
+      backgroundColor: "white",
       borderColor: '#D9E1EC'
     },
     "&:hover": {
@@ -114,33 +111,39 @@ const lightReactSelectStyles = {
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
     ...styles,
     backgroundColor: isSelected ? "#1DBF73" : "#fff",
-    "&:foucs": {
-      backgroundColor: "#1DBF73",
+    '&:hover': {
+      backgroundColor: '#1DBF73',
+      color: '#fff'
     },
+    '&:foucs': {
+      backgroundColor: '#1DBF73'
+    }
   }),
 };
 
 const darkReactSelectStyles = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "#2A2C34",
     height: 55,
     boxShadow: 0,
-    borderColor: "#48494E",
-    color: "#fff!important",
     borderRadius: 8,
+    color: 'white!important',
+    backgroundColor: '#1E2029',
+    borderColor: '#48494E',
     "@media only screen and (max-width: 1440px)": {
       height: 50,
       // width: '100%',
       fontSize: 16,
-      background: '#2A2C34',
+      color: 'white!important',
+      backgroundColor: '#1E2029',
       borderColor: '#48494E'
     },
     "@media only screen and (max-width: 575px)": {
       height: 43,
       // width: '100%',
       fontSize: 14,
-      background: '#2A2C34',
+      color: 'white!important',
+      backgroundColor: '#1E2029',
       borderColor: '#48494E'
     },
     "&:hover": {
@@ -149,10 +152,14 @@ const darkReactSelectStyles = {
   }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
     ...styles,
-    backgroundColor: isSelected ? "#1DBF73" : "#fff",
-    "&:foucs": {
-      backgroundColor: "#1DBF73",
+    backgroundColor: isSelected ? "#1DBF73" : "#1E2029",
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#1DBF73',
     },
+    '&:foucs': {
+      backgroundColor: '#1DBF73',
+    }
   }),
 };
 
@@ -554,7 +561,6 @@ const SubmitApp = ({toggle}) => {
         </Box>
       </Box>
 
-
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -586,7 +592,7 @@ const SubmitApp = ({toggle}) => {
           </Box>
         </Fade>
       </Modal>
-      <Box component="form">
+      <Box component="form" autocomplete="off">
         <Box>
           <label className={classes.label}>Site Logo</label>
           <div className="d-none">
@@ -690,6 +696,7 @@ const SubmitApp = ({toggle}) => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appStatus}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
@@ -711,6 +718,7 @@ const SubmitApp = ({toggle}) => {
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={appCatOptions}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
               {isAppCatTrue && (
@@ -769,6 +777,7 @@ const SubmitApp = ({toggle}) => {
                   return { value: selected };
                 }}
                 options={optionsAge}
+                className={toggle ? classes.darkCustomSelectStyling : ''}
                 styles={toggle ? darkReactSelectStyles : lightReactSelectStyles}
               />
             </Box>
@@ -1036,7 +1045,8 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    // 
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="firstSocialLinkTitle"
                     defaultValue={firstSocialLinkTitle}
                     onChange={(e) => setfirstSocialLinkTitle(e.value)}
@@ -1046,6 +1056,7 @@ const SubmitApp = ({toggle}) => {
                   <input
                     value={firstSocialLink}
                     placeholder=""
+                    classes={classes.iconWithField}
                     onChange={(e) => setfirstSocialLink(e.target.value)}
                   />
                 </Box>
@@ -1058,7 +1069,7 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="secondSocialLinkTitle"
                     defaultValue={secondSocialLinkTitle}
                     onChange={(e) => setSecondSocialLinkTitle(e.value)}
@@ -1067,6 +1078,7 @@ const SubmitApp = ({toggle}) => {
                   />
                   <input
                     placeholder=""
+                    classes={classes.iconWithField}
                     value={secondSocialLink}
                     onChange={(e) => setSecondSocialLink(e.target.value)}
                   />
@@ -1080,7 +1092,7 @@ const SubmitApp = ({toggle}) => {
                     ref={register}
                     control={control}
                     classNamePrefix="socialMedia"
-                    className={toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect}
+                    className={`${toggle ? classes.darkSocilaMediaSelect : classes.lightSocilaMediaSelect} ${toggle ? classes.darkCustomSelectStyling : ''}`}
                     name="thirdSocialLinkTitle"
                     defaultValue={thirdSocialLinkTitle}
                     onChange={(e) => setThirdSocialLinkTitle(e.value)}
@@ -1089,6 +1101,7 @@ const SubmitApp = ({toggle}) => {
                   />
                   <input
                     placeholder=""
+                    classes={classes.iconWithField}
                     value={thirdSocialLink}
                     onChange={(e) => setThirdSocialLink(e.target.value)}
                   />

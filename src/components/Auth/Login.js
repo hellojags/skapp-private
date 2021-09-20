@@ -49,13 +49,13 @@ const useStyles = makeStyles({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        
+
     },
     lightText: {
-        color:'#fff'
+        color: '#fff'
     },
     darkText: {
-        color:'#2A2C34!important'
+        color: '#2A2C34!important'
     },
     poweredBy: {
         display: 'flex',
@@ -68,65 +68,59 @@ const useStyles = makeStyles({
         marginBottom: '3.5rem'
     },
 })
-const Login = ({toggle}) => {
+const Login = ({ toggle }) => {
     const classes = useStyles()
     const dispatch = useDispatch()
     const history = useHistory()
     const userSession = useSelector((state) => state.userSession)
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userID, setUserID] = useState();
     // choose a data domain for saving files in MySky
     const { installedAppsStoreForLogin } = useSelector((state) => state.snInstalledAppsStore);
-
+    useEffect(() => {
+        const initalizeMySky = async () => {
+            if (userSession == null || userSession?.mySky == null) {
+                const result = await initMySky();
+                let userID = await result.userSession.mySky.userID();
+                result.userSession.userID = userID;
+                dispatch(setUserSession(result.userSession));
+            }
+            if (userSession?.mySky != null) {
+                const loggedIn = await userSession.mySky.checkLogin();
+                setIsLoggedIn(loggedIn)
+            }
+        }
+        initalizeMySky();
+    }, []);
     useEffect(() => {
         console.log("##### checkActiveLogin :: userSession = " + userSession);
-        if (userSession?.mySky != null) {
+        if (userSession?.mySky != null && isLoggedIn) {
             if (installedAppsStoreForLogin) {
                 history.push('/');
             } else {
-                history.push('/apps');
+                history.push('/appstore');
             }
         }
-    }, [userSession]);
+    }, [userSession, isLoggedIn]);
     const handleLogin = async () => {
         let result = null;
         try {
             dispatch(setLoaderDisplay(true));
-            //console.log("BEFORE: userSession" + userSession);
-            // if user session and mysky is present and user is already logged in
-            if (userSession != null && userSession?.mySky != null) {
+            const loggedIn = await userSession.mySky.checkLogin();
+            if (!loggedIn) {
+                await userSession.mySky.requestLoginAccess();
                 const loggedIn = await userSession.mySky.checkLogin();
-                if (!loggedIn) {
-                    await userSession.mySky.requestLoginAccess();
-                }
-                return;
-            }
-            else {
-                result = await initMySky();
-                if (!result.loggedIn) {
-                    await result.userSession.mySky.requestLoginAccess();
-                    let userID = await result.userSession.mySky.userID();
-                    result.userSession.userID = userID;
+                if(loggedIn)
+                {
+                    const userProfile = await getProfile();
+                    dispatch(setUserProfileAction(userProfile));
+                    const userPrefrences = await getPreferences();
+                    dispatch(setUserPreferencesAction(userPrefrences));
+                    userSession.isLogin = true
+                    dispatch(setUserSession(userSession));
+                    setIsLoggedIn(true)
                 }
             }
-            //innocent motherly hull focus gnaw elapse custom sipped dazed eden sifting jump lush inkling
-            dispatch(setUserSession(result.userSession));
-            // on success do following
-            //alert("handleLogin: newSession " + result.userSession);
-            //alert("handleLogin: newSession " + result.userSession.userID);
-            const userProfile = await getProfile();
-            dispatch(setUserProfileAction(userProfile));
-            const userPrefrences = await getPreferences();
-            dispatch(setUserPreferencesAction(userPrefrences));
-            //const userProfileObj = await getUserProfile(result.userSession);// dont proceed without pulling profile
-            //newSession = { ...newSession, userProfile: userProfileObj};
-            //alert("AFTER: userSession(old)" + userSession);
-            //history.push('/apps');
-            // get userFollowers
-            //await dispatch(getMyFollowersAction(null));
-            // get userFollowings
-            //await dispatch(getMyFollowingsAction(null));
-            //window.history.pushState({}, '', '/appdetail')
             dispatch(setLoaderDisplay(false));
         } catch (error) {
             console.log(error);
@@ -134,7 +128,7 @@ const Login = ({toggle}) => {
         }
     }
 
-    {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
+    { toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor" }
 
     return (
         <div className={classes.loginFormContainer}>
@@ -142,8 +136,12 @@ const Login = ({toggle}) => {
                 <div>
                     {toggle ? <Logo1 /> : <Logo />}
                     <h3 className={toggle ? classes.lightText : classes.darkText}>Sign In to Skapp</h3>
-                    <Button onClick={handleLogin}> Login using MySky
-                    </Button>
+                    {(userSession?.mySky) ?
+                        <Button onClick={handleLogin}> Login using MySky
+                        </Button> :
+                        <Button onClick={handleLogin}> Loading...
+                        </Button>
+                    }
                     <div className={classes.poweredBy}>
                         <span className={toggle ? classes.lightText : classes.darkText}>Powered by </span>
                         <SiteLogoDark />

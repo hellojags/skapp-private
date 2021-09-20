@@ -39,7 +39,7 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  lightRoot: {
     backgroundColor: "transparent",
     "& .MuiTabs-indicator": {
       backgroundColor: "transparent",
@@ -49,7 +49,21 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 85,
       color: "#869EA6",
       "&.Mui-selected": {
-        color: "#000",
+        color: "#2A2C34",
+      },
+    },
+  },
+  darkRoot: {
+    backgroundColor: "transparent",
+    "& .MuiTabs-indicator": {
+      backgroundColor: "transparent",
+    },
+    "& .MuiTab-root": {
+      fontWeight: 600,
+      minWidth: 85,
+      color: "#869EA6",
+      "&.Mui-selected": {
+        color: "#fff",
       },
     },
   },
@@ -79,17 +93,23 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 70,
     },
   },
-  tabNavigation: {
+  lightTabNavigation: {
+    backgroundColor: '#1E2029',
+    boxShadow: "none",
+  },
+  darkTabNavigation: {
     boxShadow: "none",
   },
 }));
 
-const Settings = () => {
+const Settings = ({toggle}) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  {toggle ? document.body.className = "darkBodyColor" : document.body.className = "lightBodyColor"}
 
   return (
     <Fragment>
@@ -100,9 +120,9 @@ const Settings = () => {
                 </Box>
             </Box> */}
 
-      <div className={classes.root}>
+      <div className={toggle ? classes.darkRoot : classes.lightRoot}>
         <AppBar
-          className={classes.tabNavigation}
+          className={toggle ? classes.lightTabNavigation: classes.darkTabNavigation}
           position="static"
           color="default"
         >
@@ -117,10 +137,10 @@ const Settings = () => {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <Profile />
+          <Profile toggle={toggle} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <GlobalPrefrences />
+          <GlobalPrefrences toggle={toggle} />
         </TabPanel>
       </div>
     </Fragment>

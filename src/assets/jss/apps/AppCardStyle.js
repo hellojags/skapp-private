@@ -5,13 +5,47 @@ const appCardStyle = {
         maxWidth: 'auto',
         borderRadius: 10,
         background: '#2A2C34',
+        margin: '0 10px',
         boxShadow: ' 0px 1px 4px #15223214',
+        transition: '0.2s all',
+        '&:hover': {
+            transform: 'scale(0.9, 0.9)'
+        },
+        '@media only screen and (max-width: 660px)': {
+        }
     },
     lightRoot: {
         maxWidth: 'auto',
         borderRadius: 10,
         background: '#fff',
+        margin: '0 10px',
         boxShadow: ' 0px 1px 4px #15223214',
+        transition: '0.2s all',
+        '&:hover': {
+            transform: 'scale(0.9, 0.9)'
+        },
+        '@media only screen and (max-width: 660px)': { 
+        }
+    },
+    imageAvatar: {
+        marginLeft: 'auto',
+        '&:hover p': {
+            visibility: 'visible',
+            opacity: '1',
+        }
+    },
+    devAvtar: {
+        height: 35,
+        padding: '0px 10px',
+        cursor: 'pointer',
+    },
+    developerName: {
+        marginLeft: 'auto',
+        '& p': {
+            visibility: 'none',
+            opacity: '0',
+            fontSize: '12px'
+        }
     },
     media: {
         height: 200,
@@ -123,9 +157,20 @@ const appCardStyle = {
             minWidth: 55
         }
     },
-    cardSmallText: {
-        // padding: " 0!important",
+    lightCardSmallText: {
+        // padding: "0!important",
         color: '#48494E',
+        marginTop: 5,
+        '@media(max-width: 1400px)': {
+            fontSize: 12
+        },
+        '@media only screen and (max-width: 575px)': {
+            fontSize: 9
+        }
+    },
+    darkCardSmallText: {
+        // padding: "0!important",
+        color: '#9D9D9D',
         marginTop: 5,
         '@media(max-width: 1400px)': {
             fontSize: 12
